@@ -31,6 +31,8 @@ MESSAGE(" ----- ")
 rosbuild_add_executable(joint_trajectory_action_controller src/joint_trajectory_action_controller.cpp)
 rosbuild_add_executable(joint_spline_trajectory_action_controller src/joint_spline_trajectory_action_controller.cpp)
 
+rosbuild_add_executable(simple_spline_trajectory example/simple_spline_trajectory.cpp)
+
 rosbuild_add_library(${PROJECT_NAME}
   src/srh_fake_joint_calibration_controller.cpp
   src/srh_joint_position_controller.cpp

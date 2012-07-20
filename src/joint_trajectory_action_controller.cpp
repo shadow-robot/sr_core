@@ -4,7 +4,7 @@
  * @date   Fri Mar  4 13:08:22 2011
  *
  * @brief  Implement an actionlib server to execute a
- * ontrol_msgs::FollowJointTrajectoryAction. Follows the
+ * control_msgs::FollowJointTrajectoryAction. Follows the
  * given trajectory with the arm.
  *
  *
