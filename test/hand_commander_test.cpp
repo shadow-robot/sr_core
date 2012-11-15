@@ -1,6 +1,6 @@
 
 // We are testing this
-#include "sr_hand/hand_commander.h"
+#include "sr_hand/hand_commander.hpp"
 
 // ROS
 #include "ros/ros.h"

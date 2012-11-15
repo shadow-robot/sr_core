@@ -1,5 +1,5 @@
 /**
- * @file   hand_commander.h
+ * @file   hand_commander.hpp
  * @author Toni Oliver <toni@shadowrobot.com>, Contact <contact@shadowrobot.com>
  * @date   Thu Nov 08 15:34:37 2012
  *
@@ -84,6 +84,8 @@ private:
      * It can be called if we know that there's an ethercat hand (pr2_controller_manager running)
      */
     void initializeEthercatHand();
+
+    static const double TIMEOUT_TO_DETECT_CONTROLLER_MANAGER;
 }; // end class ShadowhandSubscriber
 
 } // end namespace

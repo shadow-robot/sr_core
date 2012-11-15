@@ -27,7 +27,7 @@
  *
  */
 
-#include <sr_hand/hand_commander.h>
+#include <sr_hand/hand_commander.hpp>
 #include <pr2_mechanism_msgs/ListControllers.h>
 #include <sr_robot_msgs/sendupdate.h>
 #include <std_msgs/Float64.h>
@@ -36,7 +36,7 @@
 namespace shadowrobot
 {
 
-#define TIMEOUT_TO_DETECT_CONTROLLER_MANAGER 3.0
+const double HandCommander::TIMEOUT_TO_DETECT_CONTROLLER_MANAGER = 3.0;
 
 HandCommander::HandCommander():
     hand_type(shadowhandRosLib::UNKNOWN),
