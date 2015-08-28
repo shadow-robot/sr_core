@@ -1,0 +1,21 @@
+language: python
+python:
+  - 2.7
+
+# codecov token and slack web hook URL (encrypted)
+env:
+  - secure: lZbctnLZaj0nuyyCXB4igJwAbkwSxkiqqBuFlu38yXJUF4odutF+FcwxQf7TIlk++J/xLnTTWnh62nKcr5Sw1ILulQsRCFOz1+P2VBYdALhshCqFizHG1n9v2MQQTnVqya5ZIdztsZUoKmB3bAJN3alv43o8j4Ofm2wJmDRE0QIiiTD9s8f3WPuD8lRXIS+aQxt0FnZyy8K0RhxyEsld+tULqr0iEavBgfvrcG9ysIGt1w1W7jDz1IUlDuX9jEPWGNxyzKRwy3h/Oy4es+CbKm8PaD2lXzSyUbz9iFI/mbYd476/vaOj0HeVD7PAtMFdmHHYzrxIhnggkmqSB0+HoQ==
+
+install:
+  - sudo apt-get update
+  - sudo apt-get install curl -y
+
+script:
+  - export toolset_branch="master"
+  - export server_type="shippable"
+  - export used_modules="build_pr_only,check_cache,install,create_workspace,codecov_tool"
+  - export remote_shell_script="https://raw.githubusercontent.com/shadow-robot/sr-build-tools/$toolset_branch/bin/sr-run-ci-build.sh"
+  - curl -s "$( echo "$remote_shell_script" | sed 's/#/%23/g' )" | bash /dev/stdin "$toolset_branch" $server_type $used_modules
+
+after_failure:
+  - curl -X POST --data-urlencode "payload={\"channel\":\"#bots\", \"username\":\"shippable\", \"text\":\"[$SHIPPABLE_REPO_SLUG branch $BRANCH] <$BUILD_URL|Build $SHIPPABLE_BUILD_NUMBER> failed\", \"icon_emoji\":\":monkey_face:\"}" $SLACK_WEB_HOOK_URL
