@@ -34,6 +34,8 @@
 #include <map>
 #include <vector>
 #include <iostream>
+#include <utility>
+#include <string>
 
 namespace threadsafe
 {
@@ -50,14 +52,14 @@ namespace threadsafe
 
     T find(std::string first)
     {
-      boost::shared_lock< boost::shared_mutex > lock( *(mutex_.get()) );
+      boost::shared_lock< boost::shared_mutex > lock(*(mutex_.get()));
 
       return map_->find(first)->second;
     }
 
     bool insert(const std::string& first, const T& value)
     {
-      if(!mutex_->timed_lock(boost::posix_time::microseconds(lock_wait_time)))
+      if (!mutex_->timed_lock(boost::posix_time::microseconds(lock_wait_time)))
         return false;
 
       keys_.push_back(first);
@@ -68,13 +70,12 @@ namespace threadsafe
 
     bool update(const std::string& first, const T& value)
     {
-      if(!mutex_->timed_lock(boost::posix_time::microseconds(lock_wait_time)))
+      if (!mutex_->timed_lock(boost::posix_time::microseconds(lock_wait_time)))
         return false;
 
       (*map_)[first] = value;
       mutex_->unlock();
       return true;
-
     }
 
     std::vector<std::string> keys()
@@ -92,7 +93,7 @@ namespace threadsafe
     boost::shared_ptr<boost::shared_mutex> mutex_;
     std::vector<std::string> keys_;
   };
-}
+}  // namespace threadsafe
 
 /* For the emacs weenies in the crowd.
 Local Variables:
