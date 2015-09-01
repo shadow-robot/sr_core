@@ -34,7 +34,7 @@
 class TestMultiThread
 {
 public:
-  TestMultiThread(int num_threads)
+  explicit TestMultiThread(int num_threads)
   {
     last_value = 1;
     map_.insert("a", last_value);
@@ -43,8 +43,8 @@ public:
     boost::thread_group tg;
     tg.create_thread(boost::bind(&TestMultiThread::write, this));
 
-    for(int i=0; i<num_threads; ++i)
-      tg.create_thread(boost::bind(&TestMultiThread::read, this ));
+    for (int i = 0; i < num_threads; ++i)
+      tg.create_thread(boost::bind(&TestMultiThread::read, this));
 
     boost::this_thread::sleep(boost::posix_time::seconds(2));
     tg.join_all();
@@ -70,7 +70,7 @@ public:
     mut.unlock_shared();
 
     value = map_.find("b");
-    //b should be constant
+    // b should be constant
     EXPECT_EQ(value, 2);
 
     boost::this_thread::sleep(boost::posix_time::microseconds(1));
@@ -97,8 +97,8 @@ TEST(ThreadSafeMapOneThread, initialization)
 
   EXPECT_EQ(map.keys().size(), 2);
 
-  EXPECT_EQ(map.keys()[0].compare("a"), 0 );
-  EXPECT_EQ(map.keys()[1].compare("b"), 0 );
+  EXPECT_STREQ("a", map.keys()[0]);
+  EXPECT_STREQ("b", map.keys()[1]);
 }
 
 TEST(ThreadSafeMapOneThread, update)

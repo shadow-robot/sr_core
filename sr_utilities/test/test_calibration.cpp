@@ -28,6 +28,7 @@
 #include "sr_utilities/calibration.hpp"
 #include <gtest/gtest.h>
 #include <ros/ros.h>
+#include <vector>
 
 class CalibrationTest
 {
@@ -399,4 +400,3 @@ int main(int argc, char **argv)
    c-basic-offset: 2
    End:
 */
-
