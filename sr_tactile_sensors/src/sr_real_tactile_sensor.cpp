@@ -33,8 +33,8 @@ namespace shadowrobot
  *         TACTILE SENSOR         *
  **********************************/
   SrRealTactileSensor::SrRealTactileSensor(std::string name,
-                                           std::string touch_name ) :
-    SrGenericTactileSensor(name, touch_name)
+                                           std::string touch_name) :
+          SrGenericTactileSensor(name, touch_name)
   {
     /* We need to attach the program to the robot, or fail if we cannot. */
     if (robot_init() < 0)
@@ -45,19 +45,22 @@ namespace shadowrobot
 
     res_touch = robot_name_to_sensor(touch_name.c_str(), &sensor_touch);
 
-    if(res_touch)
+    if (res_touch)
     {
       ROS_ERROR("Can't open sensor %s", touch_name.c_str());
     }
   }
 
   SrRealTactileSensor::~SrRealTactileSensor()
-  {}
+  {
+  }
 
   double SrRealTactileSensor::get_touch_data()
   {
-    if(res_touch)
+    if (res_touch)
+    {
       return -1000.0;
+    }
 
     return robot_read_sensor(&sensor_touch);
   }
@@ -67,21 +70,22 @@ namespace shadowrobot
  *     TACTILE SENSOR MANAGER     *
  **********************************/
   SrRealTactileSensorManager::SrRealTactileSensorManager() :
-    SrTactileSensorManager()
+          SrTactileSensorManager()
   {
-    std::vector<std::vector<std::string> > all_names = get_all_names();
+    std::vector <std::vector<std::string>> all_names = get_all_names();
 
-    for( unsigned int i=0; i < all_names[0].size() ; ++i)
+    for (unsigned int i = 0; i < all_names[0].size(); ++i)
     {
       tactile_sensors.push_back(
-        boost::shared_ptr<SrRealTactileSensor>(
-          new SrRealTactileSensor(all_names[0][i],
-                                  all_names[1][i]) ));
+              boost::shared_ptr<SrRealTactileSensor>(
+                      new SrRealTactileSensor(all_names[0][i],
+                                              all_names[1][i])));
     }
   }
 
   SrRealTactileSensorManager::~SrRealTactileSensorManager()
-  {}
+  {
+  }
 }
 
 
@@ -95,15 +99,17 @@ namespace shadowrobot
  *
  * @return -1 if error linking with the robot (i.e. robot code not started)
  */
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
   ros::init(argc, argv, "sr_tactile_sensor");
   ros::NodeHandle n;
 
   shadowrobot::SrRealTactileSensorManager tact_sens_mgr;
 
-  while( ros::ok() )
+  while (ros::ok())
+  {
     tact_sens_mgr.publish_all();
+  }
 
   return 0;
 }

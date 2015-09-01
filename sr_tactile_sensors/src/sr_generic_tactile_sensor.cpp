@@ -26,6 +26,9 @@
  */
 
 #include "sr_tactile_sensors/sr_generic_tactile_sensor.hpp"
+#include <string>
+#include <vector>
+
 
 namespace shadowrobot
 {
@@ -33,16 +36,17 @@ namespace shadowrobot
  *         TACTILE SENSOR         *
  **********************************/
   SrGenericTactileSensor::SrGenericTactileSensor(std::string name,
-                                                 std::string touch_name ) :
-    n_tilde("~")
+                                                 std::string touch_name) :
+          n_tilde("~")
   {
-    std::string full_topic_touch = "touch/"+name;
+    std::string full_topic_touch = "touch/" + name;
 
     touch_pub = n_tilde.advertise<std_msgs::Float64>(full_topic_touch, 10);
   }
 
   SrGenericTactileSensor::~SrGenericTactileSensor()
-  {}
+  {
+  }
 
   void SrGenericTactileSensor::publish_current_values()
   {
@@ -55,7 +59,7 @@ namespace shadowrobot
  *     TACTILE SENSOR MANAGER     *
  **********************************/
   SrTactileSensorManager::SrTactileSensorManager() :
-    n_tilde("~"), publish_rate(20.0)
+          n_tilde("~"), publish_rate(20.0)
   {
     using namespace XmlRpc;
     double publish_freq;
@@ -64,21 +68,23 @@ namespace shadowrobot
 
     //initializing the thresholds to test if the hand is holding
     //something or not (compared agains the pressure value).
-    double tmp[5]={117,117,113,111,0};
+    double tmp[5] = {117, 117, 113, 111, 0};
     XmlRpc::XmlRpcValue threshold_xmlrpc;
-    if(n_tilde.getParam("/grasp_touch_thresholds",threshold_xmlrpc))
+    if (n_tilde.getParam("/grasp_touch_thresholds", threshold_xmlrpc))
     {
       ROS_ASSERT(threshold_xmlrpc.getType() == XmlRpc::XmlRpcValue::TypeArray);
-      if(threshold_xmlrpc.getType() == XmlRpc::XmlRpcValue::TypeArray)
+      if (threshold_xmlrpc.getType() == XmlRpc::XmlRpcValue::TypeArray)
       {
-        if(threshold_xmlrpc.size() == 5)
+        if (threshold_xmlrpc.size() == 5)
         {
           for (int i = 0; i < threshold_xmlrpc.size(); ++i)
           {
-            if(threshold_xmlrpc[i].getType() == XmlRpc::XmlRpcValue::TypeDouble)
+            if (threshold_xmlrpc[i].getType() == XmlRpc::XmlRpcValue::TypeDouble)
+            {
               tmp[i] = static_cast<double>(threshold_xmlrpc[i]);
+            }
             else
-              ROS_ERROR("grasp_touch_thresholds value %d is not a double, not loading",i+1);
+              ROS_ERROR("grasp_touch_thresholds value %d is not a double, not loading", i + 1);
           }
         }
         else
@@ -90,28 +96,35 @@ namespace shadowrobot
     else
       ROS_WARN("grasp_touch_thresholds not set, using default values");
 
-    is_hand_occupied_thresholds = std::vector<double>(tmp, tmp+5);
-    ROS_DEBUG("is_hand_occupied_thresholds:[%f %f %f %f %f]", is_hand_occupied_thresholds.at(0),is_hand_occupied_thresholds.at(1),is_hand_occupied_thresholds.at(2),is_hand_occupied_thresholds.at(3),is_hand_occupied_thresholds.at(4));
+    is_hand_occupied_thresholds = std::vector<double>(tmp, tmp + 5);
+    ROS_DEBUG("is_hand_occupied_thresholds:[%f %f %f %f %f]", is_hand_occupied_thresholds.at(0),
+              is_hand_occupied_thresholds.at(1), is_hand_occupied_thresholds.at(2), is_hand_occupied_thresholds.at(3),
+              is_hand_occupied_thresholds.at(4));
 
 
-    is_hand_occupied_server = n_tilde.advertiseService("is_hand_occupied", &SrTactileSensorManager::is_hand_occupied_cb, this);
-    which_fingers_are_touching_server = n_tilde.advertiseService("which_fingers_are_touching", &SrTactileSensorManager::which_fingers_are_touching_cb, this);
+    is_hand_occupied_server = n_tilde.advertiseService("is_hand_occupied", &SrTactileSensorManager::is_hand_occupied_cb,
+                                                       this);
+    which_fingers_are_touching_server = n_tilde.advertiseService("which_fingers_are_touching",
+                                                                 &SrTactileSensorManager::which_fingers_are_touching_cb,
+                                                                 this);
   }
 
   SrTactileSensorManager::~SrTactileSensorManager()
-  {}
+  {
+  }
 
-  bool SrTactileSensorManager::is_hand_occupied_cb(sr_robot_msgs::is_hand_occupied::Request  &req,
-                                                   sr_robot_msgs::is_hand_occupied::Response &res )
+  bool SrTactileSensorManager::is_hand_occupied_cb(sr_robot_msgs::is_hand_occupied::Request &req,
+                                                   sr_robot_msgs::is_hand_occupied::Response &res)
   {
     bool is_occupied = true;
 
-    for(unsigned int i=0; i < tactile_sensors.size(); ++i)
+    for (unsigned int i = 0; i < tactile_sensors.size(); ++i)
     {
-      if(tactile_sensors[i]->get_touch_data() < is_hand_occupied_thresholds[i])
+      if (tactile_sensors[i]->get_touch_data() < is_hand_occupied_thresholds[i])
       {
         is_occupied = false;
-        ROS_DEBUG("is_hand_occupied_thresholds %d with val %f is smaller than threshold %f",i,tactile_sensors[i]->get_touch_data(),is_hand_occupied_thresholds[i]);
+        ROS_DEBUG("is_hand_occupied_thresholds %d with val %f is smaller than threshold %f", i,
+                  tactile_sensors[i]->get_touch_data(), is_hand_occupied_thresholds[i]);
         break;
       }
     }
@@ -121,20 +134,24 @@ namespace shadowrobot
     return true;
   }
 
-  bool SrTactileSensorManager::which_fingers_are_touching_cb(sr_robot_msgs::which_fingers_are_touching::Request  &req,
-                                                             sr_robot_msgs::which_fingers_are_touching::Response &res )
+  bool SrTactileSensorManager::which_fingers_are_touching_cb(sr_robot_msgs::which_fingers_are_touching::Request &req,
+                                                             sr_robot_msgs::which_fingers_are_touching::Response &res)
   {
     std::vector<double> touch_values(5);
     ROS_ASSERT(tactile_sensors.size() == 5);
 
     double value_tmp = 0.0;
-    for(unsigned int i=0; i < tactile_sensors.size(); ++i)
+    for (unsigned int i = 0; i < tactile_sensors.size(); ++i)
     {
       value_tmp = tactile_sensors[i]->get_touch_data();
-      if(value_tmp < req.force_thresholds[i])
+      if (value_tmp < req.force_thresholds[i])
+      {
         touch_values[i] = 0.0;
+      }
       else
+      {
         touch_values[i] = value_tmp;
+      }
     }
     res.touch_forces = touch_values;
     return true;
@@ -151,30 +168,40 @@ namespace shadowrobot
     bool bad_params = false;
 
     n_tilde.getParam("display_names", my_list);
-    if(my_list.getType() != XmlRpc::XmlRpcValue::TypeArray)
+    if (my_list.getType() != XmlRpc::XmlRpcValue::TypeArray)
+    {
       bad_params = true;
+    }
     list_size = my_list.size();
     for (int32_t i = 0; i < list_size; ++i)
     {
-      if(my_list[i].getType() != XmlRpc::XmlRpcValue::TypeString)
+      if (my_list[i].getType() != XmlRpc::XmlRpcValue::TypeString)
+      {
         bad_params = true;
-      names.push_back( static_cast<std::string>(my_list[i]) );
+      }
+      names.push_back(static_cast<std::string>(my_list[i]));
     }
 
     n_tilde.getParam("sensor_touch_names", my_list);
-    if(my_list.getType() != XmlRpc::XmlRpcValue::TypeArray)
+    if (my_list.getType() != XmlRpc::XmlRpcValue::TypeArray)
+    {
       bad_params = true;
-    if(my_list.size() != list_size)
+    }
+    if (my_list.size() != list_size)
+    {
       bad_params = true;
+    }
     list_size = my_list.size();
     for (int32_t i = 0; i < list_size; ++i)
     {
-      if(my_list[i].getType() != XmlRpc::XmlRpcValue::TypeString)
+      if (my_list[i].getType() != XmlRpc::XmlRpcValue::TypeString)
+      {
         bad_params = true;
-      sensor_touch_names.push_back( static_cast<std::string>(my_list[i]) );
+      }
+      sensor_touch_names.push_back(static_cast<std::string>(my_list[i]));
     }
 
-    if(bad_params)
+    if (bad_params)
     {
       ROS_ERROR("Error while reading the parameter for the tactile sensors; using standard parameters");
       names.clear();
@@ -201,8 +228,10 @@ namespace shadowrobot
 
   void SrTactileSensorManager::publish_all()
   {
-    for(unsigned int i=0; i < tactile_sensors.size(); ++i)
+    for (unsigned int i = 0; i < tactile_sensors.size(); ++i)
+    {
       tactile_sensors[i]->publish_current_values();
+    }
 
     publish_rate.sleep();
     ros::spinOnce();
