@@ -43,21 +43,21 @@ using namespace ros;
 using namespace shadowrobot;
 //using namespace shadowhand_config_server;
 
-  /////////////////////////////////
-  //           MAIN              //
-  /////////////////////////////////
+/////////////////////////////////
+//           MAIN              //
+/////////////////////////////////
 
-void run_diagnotics(boost::shared_ptr<SRDiagnosticer> shadowhand_diag)
+void run_diagnotics(boost::shared_ptr <SRDiagnosticer> shadowhand_diag)
 {
-  while( ok() )
+  while (ok())
   {
     shadowhand_diag->publish();
   }
 }
 
-void run_publisher(boost::shared_ptr<SRPublisher> shadowhand_pub)
+void run_publisher(boost::shared_ptr <SRPublisher> shadowhand_pub)
 {
-  while( ok() )
+  while (ok())
   {
     shadowhand_pub->publish();
   }
@@ -74,22 +74,24 @@ void run_publisher(boost::shared_ptr<SRPublisher> shadowhand_pub)
  * 
  * @return -1 if error linking with the robot (i.e. robot code not started)
  */
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
   ros::init(argc, argv, "shadowhand");
   NodeHandle n;
 
-  boost::shared_ptr<RealShadowhand> real_sh(new RealShadowhand());
-  boost::shared_ptr<SRSubscriber> shadowhand_subscriber(new SRSubscriber(real_sh));
+  boost::shared_ptr <RealShadowhand> real_sh(new RealShadowhand());
+  boost::shared_ptr <SRSubscriber> shadowhand_subscriber(new SRSubscriber(real_sh));
 
 
-  boost::shared_ptr<SRPublisher> shadowhand_pub( new SRPublisher(real_sh));
-  boost::shared_ptr<SRDiagnosticer> shadowhand_diag( new SRDiagnosticer(real_sh, sr_hand_hardware));
+  boost::shared_ptr <SRPublisher> shadowhand_pub(new SRPublisher(real_sh));
+  boost::shared_ptr <SRDiagnosticer> shadowhand_diag(new SRDiagnosticer(real_sh, sr_hand_hardware));
 
-  boost::thread thrd1( boost::bind( &run_diagnotics, shadowhand_diag ));
-  boost::thread thrd2( boost::bind( &run_publisher, shadowhand_pub ));
+  boost::thread
+  thrd1(boost::bind(&run_diagnotics, shadowhand_diag));
+  boost::thread
+  thrd2(boost::bind(&run_publisher, shadowhand_pub));
   thrd1.join();
   thrd2.join();
-  
+
   return 0;
 }

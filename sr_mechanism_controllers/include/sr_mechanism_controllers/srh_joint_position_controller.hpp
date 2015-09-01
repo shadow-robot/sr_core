@@ -33,22 +33,25 @@
 
 namespace controller
 {
-  class SrhJointPositionController : public SrController
+  class SrhJointPositionController :
+          public SrController
   {
   public:
     SrhJointPositionController();
 
     bool init(ros_ethercat_model::RobotState *robot, ros::NodeHandle &n);
 
-    virtual void starting(const ros::Time& time);
+    virtual void starting(const ros::Time &time);
 
     /*!
      * \brief Issues commands to the joint. Should be called at regular intervals
      */
-    virtual void update(const ros::Time& time, const ros::Duration& period);
+    virtual void update(const ros::Time &time, const ros::Duration &period);
 
     virtual void getGains(double &p, double &i, double &d, double &i_max, double &i_min);
-    virtual bool resetGains(std_srvs::Empty::Request& req, std_srvs::Empty::Response& resp);
+
+    virtual bool resetGains(std_srvs::Empty::Request &req, std_srvs::Empty::Response &resp);
+
     bool setGains(sr_robot_msgs::SetPidGains::Request &req, sr_robot_msgs::SetPidGains::Response &resp);
 
   private:
@@ -64,7 +67,7 @@ namespace controller
     void read_parameters();
 
     ///set the position target from a topic
-    void setCommandCB(const std_msgs::Float64ConstPtr& msg);
+    void setCommandCB(const std_msgs::Float64ConstPtr &msg);
 
     void resetJointState();
 

@@ -60,7 +60,7 @@ namespace shadowrobot
   class HandCommander
   {
   public:
-    HandCommander(const std::string& ns = "");
+    HandCommander(const std::string &ns = "");
 
     /// Destructor
     ~HandCommander();
@@ -104,7 +104,7 @@ namespace shadowrobot
     ///Publisher for the CAN hand targets
     Publisher sr_hand_target_pub;
     ///Publishers for the ethercat hand targets for every joint
-    boost::ptr_map<std::string,Publisher> sr_hand_target_pub_map;
+    boost::ptr_map<std::string, Publisher> sr_hand_target_pub_map;
 
     ///A map of topics for the controller states
     std::map<std::string, std::string> sr_hand_sub_topics;

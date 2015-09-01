@@ -50,9 +50,9 @@ namespace shadowrobot
 /////////////////////////////////
 //    CONSTRUCTOR/DESTRUCTOR   //
 /////////////////////////////////
-SRPublisher::SRPublisher( boost::shared_ptr<SRArticulatedRobot> sh ) :
-    n_tilde("~"), publish_rate(0.0)
-{
+  SRPublisher::SRPublisher(boost::shared_ptr<SRArticulatedRobot> sh) :
+          n_tilde("~"), publish_rate(0.0)
+  {
     sr_articulated_robot = sh;
 
     // set publish frequency
@@ -66,26 +66,26 @@ SRPublisher::SRPublisher( boost::shared_ptr<SRArticulatedRobot> sh ) :
     n_tilde.searchParam("shadowhand_prefix", searched_param);
     n_tilde.param(searched_param, prefix, std::string());
     std::string full_topic = prefix + "position/joint_states";
-    sr_jointstate_pos_pub = node.advertise<sensor_msgs::JointState> (full_topic, 2);
+    sr_jointstate_pos_pub = node.advertise<sensor_msgs::JointState>(full_topic, 2);
     full_topic = prefix + "target/joint_states";
-    sr_jointstate_target_pub = node.advertise<sensor_msgs::JointState> (full_topic, 2);
+    sr_jointstate_target_pub = node.advertise<sensor_msgs::JointState>(full_topic, 2);
 
     //publishes standard joints data (pos, targets, temp, current, ...)
     full_topic = prefix + "shadowhand_data";
-    sr_pub = node.advertise<sr_robot_msgs::joints_data> (full_topic, 2);
-}
+    sr_pub = node.advertise<sr_robot_msgs::joints_data>(full_topic, 2);
+  }
 
-SRPublisher::~SRPublisher()
-{
+  SRPublisher::~SRPublisher()
+  {
     //if( shadowhand != NULL )
     // delete shadowhand;
-}
+  }
 
 /////////////////////////////////
 //       PUBLISH METHOD        //
 /////////////////////////////////
-void SRPublisher::publish()
-{
+  void SRPublisher::publish()
+  {
     SRArticulatedRobot::JointsMap joints_map = sr_articulated_robot->getAllJointsData();
 
     sr_robot_msgs::joints_data msg;
@@ -95,51 +95,53 @@ void SRPublisher::publish()
     sensor_msgs::JointState jointstate_target_msg;
 
     ros::Time now = ros::Time::now();
-    jointstate_pos_msg.header.stamp = now; 
+    jointstate_pos_msg.header.stamp = now;
     jointstate_target_msg.header.stamp = now;
 
-    for( SRArticulatedRobot::JointsMap::const_iterator it = joints_map.begin(); it != joints_map.end(); ++it )
+    for (SRArticulatedRobot::JointsMap::const_iterator it = joints_map.begin(); it != joints_map.end(); ++it)
     {
-        sr_robot_msgs::joint joint;
-        JointData currentData = it->second;
+      sr_robot_msgs::joint joint;
+      JointData currentData = it->second;
 
-        //compute the angular velocity of the joint
-        if(currentData.last_pos_time.toSec() != 0.0)
-        {
-            currentData.velocity = (currentData.position - currentData.last_pos);
-            currentData.velocity /= (now - currentData.last_pos_time).toSec();
-            ROS_DEBUG("Velocity = (%f - %f)/(%f) = %f", currentData.position, currentData.last_pos, (now - currentData.last_pos_time).toSec(), currentData.velocity);
-        }
+      //compute the angular velocity of the joint
+      if (currentData.last_pos_time.toSec() != 0.0)
+      {
+        currentData.velocity = (currentData.position - currentData.last_pos);
+        currentData.velocity /= (now - currentData.last_pos_time).toSec();
+        ROS_DEBUG("Velocity = (%f - %f)/(%f) = %f", currentData.position, currentData.last_pos,
+                  (now - currentData.last_pos_time).toSec(), currentData.velocity);
+      }
 
-        joint.joint_name = it->first;
-        jointstate_pos_msg.name.push_back(it->first);
-        jointstate_target_msg.name.push_back(it->first);
+      joint.joint_name = it->first;
+      jointstate_pos_msg.name.push_back(it->first);
+      jointstate_target_msg.name.push_back(it->first);
 
-        jointstate_target_msg.position.push_back(toRad(currentData.target));
-        jointstate_target_msg.velocity.push_back(0.0);
-        jointstate_target_msg.effort.push_back(0.0);
+      jointstate_target_msg.position.push_back(toRad(currentData.target));
+      jointstate_target_msg.velocity.push_back(0.0);
+      jointstate_target_msg.effort.push_back(0.0);
 
-        jointstate_pos_msg.position.push_back(toRad(currentData.position));
-        jointstate_pos_msg.velocity.push_back(currentData.velocity);
-        jointstate_pos_msg.effort.push_back(currentData.force);
+      jointstate_pos_msg.position.push_back(toRad(currentData.position));
+      jointstate_pos_msg.velocity.push_back(currentData.velocity);
+      jointstate_pos_msg.effort.push_back(currentData.force);
 
-        joint.joint_position = currentData.position;
-        joint.joint_target = currentData.target;
-        joint.joint_torque = currentData.force;
-        joint.joint_temperature = currentData.temperature;
-        joint.joint_current = currentData.current;
+      joint.joint_position = currentData.position;
+      joint.joint_target = currentData.target;
+      joint.joint_torque = currentData.force;
+      joint.joint_temperature = currentData.temperature;
+      joint.joint_current = currentData.current;
 
-        //update data for the velocity
-        currentData.last_pos_time = now;
-        currentData.last_pos = currentData.position;
+      //update data for the velocity
+      currentData.last_pos_time = now;
+      currentData.last_pos = currentData.position;
 
-        sr_articulated_robot->joints_map_mutex.lock();
-        sr_articulated_robot->joints_map[it->first] = JointData(currentData);
-        sr_articulated_robot->joints_map_mutex.unlock();
+      sr_articulated_robot->joints_map_mutex.lock();
+      sr_articulated_robot->joints_map[it->first] = JointData(currentData);
+      sr_articulated_robot->joints_map_mutex.unlock();
 
-        ROS_DEBUG("last_pos_time[%s] = %f / %f", it->first.c_str(), currentData.last_pos_time.toSec(), joints_map[it->first].last_pos_time.toSec());
+      ROS_DEBUG("last_pos_time[%s] = %f / %f", it->first.c_str(), currentData.last_pos_time.toSec(),
+                joints_map[it->first].last_pos_time.toSec());
 
-        jointVector.push_back(joint);
+      jointVector.push_back(joint);
     }
 
     msg.joints_list_length = jointVector.size();
@@ -154,7 +156,7 @@ void SRPublisher::publish()
 
     ros::spinOnce();
     publish_rate.sleep();
-}
+  }
 
 }// end namespace
 

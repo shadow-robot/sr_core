@@ -34,10 +34,12 @@ class CalibrationTest
 {
 public:
   CalibrationTest()
-  {}
+  {
+  }
 
   ~CalibrationTest()
-  {}
+  {
+  }
 };
 
 ///////////////////////
@@ -65,7 +67,7 @@ TEST(Calibration2Points, before)
   point.calibrated_value = 5.0;
   cal_table.push_back(point);
 
-  shadow_robot::JointCalibration* cal = new shadow_robot::JointCalibration(cal_table);
+  shadow_robot::JointCalibration *cal = new shadow_robot::JointCalibration(cal_table);
 
   EXPECT_EQ(cal->compute(0.0), 1.0);
 
@@ -93,7 +95,7 @@ TEST(Calibration2Points, in)
   point.calibrated_value = 5.0;
   cal_table.push_back(point);
 
-  shadow_robot::JointCalibration* cal = new shadow_robot::JointCalibration(cal_table);
+  shadow_robot::JointCalibration *cal = new shadow_robot::JointCalibration(cal_table);
 
   EXPECT_EQ(cal->compute(1.5), 4.0);
   delete cal;
@@ -120,7 +122,7 @@ TEST(Calibration2Points, after)
   point.calibrated_value = 5.0;
   cal_table.push_back(point);
 
-  shadow_robot::JointCalibration* cal = new shadow_robot::JointCalibration(cal_table);
+  shadow_robot::JointCalibration *cal = new shadow_robot::JointCalibration(cal_table);
 
   EXPECT_EQ(cal->compute(3.0), 7.0);
   delete cal;
@@ -147,7 +149,7 @@ TEST(Calibration2Points, on)
   point.calibrated_value = 5.0;
   cal_table.push_back(point);
 
-  shadow_robot::JointCalibration* cal = new shadow_robot::JointCalibration(cal_table);
+  shadow_robot::JointCalibration *cal = new shadow_robot::JointCalibration(cal_table);
 
   EXPECT_EQ(cal->compute(2.0), 5.0);
   EXPECT_EQ(cal->compute(1.0), 3.0);
@@ -185,7 +187,7 @@ TEST(Calibration3Points, before)
   point.calibrated_value = 4.0;
   cal_table.push_back(point);
 
-  shadow_robot::JointCalibration* cal = new shadow_robot::JointCalibration(cal_table);
+  shadow_robot::JointCalibration *cal = new shadow_robot::JointCalibration(cal_table);
 
   EXPECT_EQ(cal->compute(0.0), 1.0);
   delete cal;
@@ -216,7 +218,7 @@ TEST(Calibration3Points, first_interval)
   point.calibrated_value = 4.0;
   cal_table.push_back(point);
 
-  shadow_robot::JointCalibration* cal = new shadow_robot::JointCalibration(cal_table);
+  shadow_robot::JointCalibration *cal = new shadow_robot::JointCalibration(cal_table);
 
   EXPECT_EQ(cal->compute(1.5), 4.0);
   delete cal;
@@ -247,7 +249,7 @@ TEST(Calibration3Points, second_interval)
   point.calibrated_value = 4.0;
   cal_table.push_back(point);
 
-  shadow_robot::JointCalibration* cal = new shadow_robot::JointCalibration(cal_table);
+  shadow_robot::JointCalibration *cal = new shadow_robot::JointCalibration(cal_table);
 
   EXPECT_EQ(cal->compute(2.5), 4.5);
   delete cal;
@@ -278,7 +280,7 @@ TEST(Calibration3Points, after)
   point.calibrated_value = 4.0;
   cal_table.push_back(point);
 
-  shadow_robot::JointCalibration* cal = new shadow_robot::JointCalibration(cal_table);
+  shadow_robot::JointCalibration *cal = new shadow_robot::JointCalibration(cal_table);
 
   EXPECT_EQ(cal->compute(4.0), 3.0);
   delete cal;
@@ -309,7 +311,7 @@ TEST(Calibration3Points, on)
   point.calibrated_value = 4.0;
   cal_table.push_back(point);
 
-  shadow_robot::JointCalibration* cal = new shadow_robot::JointCalibration(cal_table);
+  shadow_robot::JointCalibration *cal = new shadow_robot::JointCalibration(cal_table);
 
   EXPECT_EQ(cal->compute(1.0), 3.0);
   EXPECT_EQ(cal->compute(2.0), 5.0);
@@ -366,16 +368,16 @@ TEST(Calibration5Points, mixed_and_big_test)
   point.calibrated_value = -4.0;
   cal_table.push_back(point);
 
-  shadow_robot::JointCalibration* cal = new shadow_robot::JointCalibration(cal_table);
+  shadow_robot::JointCalibration *cal = new shadow_robot::JointCalibration(cal_table);
 
   EXPECT_EQ(cal->compute(0.0), -4.0);
   EXPECT_EQ(cal->compute(1.0), -2.0);
   EXPECT_EQ(cal->compute(1.5), -1.0);
-  EXPECT_EQ(cal->compute(2.0),  0.0);
+  EXPECT_EQ(cal->compute(2.0), 0.0);
   EXPECT_EQ(cal->compute(2.5), -2.0);
   EXPECT_EQ(cal->compute(3.0), -4.0);
-  EXPECT_EQ(cal->compute(4.0),  1.0);
-  EXPECT_EQ(cal->compute(5.0),  6.0);
+  EXPECT_EQ(cal->compute(4.0), 1.0);
+  EXPECT_EQ(cal->compute(5.0), 6.0);
   EXPECT_EQ(cal->compute(7.5), 3.0);
   EXPECT_EQ(cal->compute(10.), 0.0);
   EXPECT_EQ(cal->compute(15.), -6.0);

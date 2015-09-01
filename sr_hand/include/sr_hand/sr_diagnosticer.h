@@ -49,17 +49,17 @@ namespace shadowrobot
  */
 
 ///An enum containing the different types of hardware the diagnosticer is publishing data about
-enum hardware_types
-{
+  enum hardware_types
+  {
     ///the Dextrous Hand
-    sr_hand_hardware,
+            sr_hand_hardware,
     ///the Shadow Arm
-    sr_arm_hardware
-};
+            sr_arm_hardware
+  };
 
-class SRDiagnosticer
-{
-public:
+  class SRDiagnosticer
+  {
+  public:
     /**
      * Constructor initializing the ROS node, and setting the topic to which it publishes.
      * The frequency at which this node will publish data is set by a parameter, read from ROS parameter server.
@@ -67,7 +67,7 @@ public:
      * @param sr_art_robot A SRArticulatedRobot object, where the information to be published comes from.
      * @param hw_type The type of hardware we are publishing diagnostics about.
      */
-    SRDiagnosticer( boost::shared_ptr<SRArticulatedRobot> sr_art_robot, hardware_types hw_type );
+    SRDiagnosticer(boost::shared_ptr<SRArticulatedRobot> sr_art_robot, hardware_types hw_type);
 
     /// Destructor
     ~SRDiagnosticer();
@@ -77,7 +77,7 @@ public:
      */
     void publish();
 
-private:
+  private:
     ///const to convert the rate data to Hz
     static const double palm_numb_msg_const;
     ///const to convert the rate data to Hz
@@ -96,7 +96,7 @@ private:
 
     ///store the hardware_type for this diagnosticer.
     hardware_types hardware_type;
-}; // end class ShadowhandDiagnosticer
+  }; // end class ShadowhandDiagnosticer
 
 } // end namespace
 

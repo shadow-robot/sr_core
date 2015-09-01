@@ -42,7 +42,8 @@
 
 namespace shadowrobot
 {
-  class SrVirtualTactileSensor : public SrGenericTactileSensor
+  class SrVirtualTactileSensor :
+          public SrGenericTactileSensor
   {
   public:
     /**
@@ -57,6 +58,7 @@ namespace shadowrobot
      * @return
      */
     SrVirtualTactileSensor(std::string name, std::string touch_name);
+
     ~SrVirtualTactileSensor();
 
     /**
@@ -80,6 +82,7 @@ namespace shadowrobot
      * the touch_value based on the joint positions
      */
     ros::Subscriber sub;
+
     /**
      * Callback function called when a msg is received on the
      * shadowhand__data topic. Update the touch_value based on
@@ -88,13 +91,15 @@ namespace shadowrobot
      *
      * @param msg the message containing the joint positions
      */
-    void callback(const sr_robot_msgs::joints_dataConstPtr& msg);
+    void callback(const sr_robot_msgs::joints_dataConstPtr &msg);
   };
 
-  class SrVirtualTactileSensorManager : public SrTactileSensorManager
+  class SrVirtualTactileSensorManager :
+          public SrTactileSensorManager
   {
   public:
     SrVirtualTactileSensorManager();
+
     ~SrVirtualTactileSensorManager();
   };
 }  // namespace shadowrobot

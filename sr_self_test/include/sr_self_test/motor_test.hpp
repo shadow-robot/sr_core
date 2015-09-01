@@ -37,18 +37,21 @@ namespace shadow_robot
   class MotorTest
   {
   public:
-    MotorTest( self_test::TestRunner* test_runner,
-               std::string joint_name,
-               shadowrobot::HandCommander* hand_commander);
-    virtual ~MotorTest() {};
+    MotorTest(self_test::TestRunner *test_runner,
+              std::string joint_name,
+              shadowrobot::HandCommander *hand_commander);
 
-    void run_test(diagnostic_updater::DiagnosticStatusWrapper& status);
+    virtual ~MotorTest()
+    {
+    };
+
+    void run_test(diagnostic_updater::DiagnosticStatusWrapper &status);
 
   protected:
     ros::NodeHandle nh_;
-    self_test::TestRunner* test_runner_;
+    self_test::TestRunner *test_runner_;
     std::string joint_name_;
-    shadowrobot::HandCommander* hand_commander_;
+    shadowrobot::HandCommander *hand_commander_;
     ros::Publisher effort_pub_;
     ros::Subscriber diagnostic_sub_;
     double PWM_target_;
@@ -69,14 +72,14 @@ namespace shadow_robot
      * Susbscribed to the diagnostics_agg topic.
      * @param msg new incoming msg
      */
-    void diagnostics_agg_cb_(const diagnostic_msgs::DiagnosticArray::ConstPtr& msg);
+    void diagnostics_agg_cb_(const diagnostic_msgs::DiagnosticArray::ConstPtr &msg);
   };
 }
 
-  /* For the emacs weenies in the crowd.
-     Local Variables:
-     c-basic-offset: 2
-     End:
-  */
+/* For the emacs weenies in the crowd.
+   Local Variables:
+   c-basic-offset: 2
+   End:
+*/
 
 #endif /* _MOTOR_TEST_H_ */

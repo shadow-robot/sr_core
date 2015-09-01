@@ -58,8 +58,8 @@ namespace shadowrobot
 //    CONSTRUCTOR/DESTRUCTOR   //
 /////////////////////////////////
 
-  SRDiagnosticer::SRDiagnosticer( boost::shared_ptr<SRArticulatedRobot> sr_art_robot, hardware_types hw_type ) :
-    n_tilde("~"), publish_rate(0.0)
+  SRDiagnosticer::SRDiagnosticer(boost::shared_ptr<SRArticulatedRobot> sr_art_robot, hardware_types hw_type) :
+          n_tilde("~"), publish_rate(0.0)
   {
     sr_articulated_robot = sr_art_robot;
 
@@ -69,7 +69,7 @@ namespace shadowrobot
     publish_rate = Rate(publish_freq);
 
     //publishes /diagnostics messages
-    sr_diagnostics_pub = node.advertise<diagnostic_msgs::DiagnosticArray> ("diagnostics", 2);
+    sr_diagnostics_pub = node.advertise<diagnostic_msgs::DiagnosticArray>("diagnostics", 2);
 
     hardware_type = hw_type;
   }
@@ -93,7 +93,7 @@ namespace shadowrobot
 
     std::stringstream ss;
 
-    for( unsigned int i = 0; i < diagnostics.size(); ++i )
+    for (unsigned int i = 0; i < diagnostics.size(); ++i)
     {
       diagnostic_msgs::DiagnosticStatus diag;
 
@@ -101,17 +101,17 @@ namespace shadowrobot
 
       diag.level = diagnostics[i].level;
 
-      switch( hardware_type )
+      switch (hardware_type)
       {
-      case sr_hand_hardware:
-        diag.name = "srh/" + diagnostics[i].joint_name;
-        break;
-      case sr_arm_hardware:
-        diag.name = "sr_arm/" + diagnostics[i].joint_name;
-        break;
-      default:
-        diag.name = diagnostics[i].joint_name;
-        break;
+        case sr_hand_hardware:
+          diag.name = "srh/" + diagnostics[i].joint_name;
+          break;
+        case sr_arm_hardware:
+          diag.name = "sr_arm/" + diagnostics[i].joint_name;
+          break;
+        default:
+          diag.name = diagnostics[i].joint_name;
+          break;
       }
 
       diagnostic_msgs::KeyValue keyval;
@@ -136,8 +136,8 @@ namespace shadowrobot
 
       //get all the debug values
       std::map<const std::string, const unsigned int>::const_iterator iter;
-      for(iter = debug_values::names_and_offsets.begin();
-          iter !=  debug_values::names_and_offsets.end(); ++iter)
+      for (iter = debug_values::names_and_offsets.begin();
+           iter != debug_values::names_and_offsets.end(); ++iter)
       {
         keyval.key = iter->first;
         ss.str("");
@@ -145,8 +145,10 @@ namespace shadowrobot
         keyval.value = ss.str();
         keyvalues.push_back(keyval);
       }
-      if( diag.level == 0 )
+      if (diag.level == 0)
+      {
         diag.message = "OK";
+      }
 
       diag.values = keyvalues;
       vec_diag_msg.push_back(diag);

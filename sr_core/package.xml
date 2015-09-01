@@ -1,27 +1,27 @@
 <?xml version="1.0"?>
 <package>
-  <name>sr_core</name>
-  <version>0.0.0</version>
-  <description>These are the core packages for the Shadow Robot hardware and simulation.</description>
+    <name>sr_core</name>
+    <version>0.0.0</version>
+    <description>These are the core packages for the Shadow Robot hardware and simulation.</description>
 
-  <maintainer email="software@shadowrobot.com">Shadow Robot's software team</maintainer>
+    <maintainer email="software@shadowrobot.com">Shadow Robot's software team</maintainer>
 
-  <license>GPL</license>
+    <license>GPL</license>
 
-  <author email="ugo@shadowrobot.com">Ugo Cupcic</author>
+    <author email="ugo@shadowrobot.com">Ugo Cupcic</author>
 
-  <buildtool_depend>catkin</buildtool_depend>
+    <buildtool_depend>catkin</buildtool_depend>
 
-  <run_depend>sr_gazebo_sim</run_depend>
-  <run_depend>sr_hand</run_depend>
-  <run_depend>sr_hardware_interface</run_depend>
-  <run_depend>sr_mechanism_controllers</run_depend>
-  <run_depend>sr_mechanism_model</run_depend>
-  <run_depend>sr_self_test</run_depend>
-  <run_depend>sr_tactile_sensors</run_depend>
-  <run_depend>sr_utilities</run_depend>
+    <run_depend>sr_gazebo_sim</run_depend>
+    <run_depend>sr_hand</run_depend>
+    <run_depend>sr_hardware_interface</run_depend>
+    <run_depend>sr_mechanism_controllers</run_depend>
+    <run_depend>sr_mechanism_model</run_depend>
+    <run_depend>sr_self_test</run_depend>
+    <run_depend>sr_tactile_sensors</run_depend>
+    <run_depend>sr_utilities</run_depend>
 
-  <export>
-    <metapackage/>
-  </export>
+    <export>
+        <metapackage/>
+    </export>
 </package>

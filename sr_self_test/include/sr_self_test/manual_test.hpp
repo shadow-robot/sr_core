@@ -36,11 +36,13 @@ namespace shadow_robot
   class ManualTests
   {
   public:
-    ManualTests( std::string message, int id);
-    virtual ~ManualTests()
-    {};
+    ManualTests(std::string message, int id);
 
-    void run_manual_tests(diagnostic_updater::DiagnosticStatusWrapper& status);
+    virtual ~ManualTests()
+    {
+    };
+
+    void run_manual_tests(diagnostic_updater::DiagnosticStatusWrapper &status);
 
   private:
     ros::NodeHandle nh_;

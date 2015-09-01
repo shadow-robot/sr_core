@@ -49,14 +49,18 @@ using namespace shadowrobot;
 
 void run_diagnotics(boost::shared_ptr<SRDiagnosticer> shadowhand_diag)
 {
-  while( ok() )
+  while (ok())
+  {
     shadowhand_diag->publish();
+  }
 }
 
 void run_publisher(boost::shared_ptr<SRPublisher> shadowhand_pub)
 {
-  while( ok() )
+  while (ok())
+  {
     shadowhand_pub->publish();
+  }
 }
 
 
@@ -70,19 +74,19 @@ void run_publisher(boost::shared_ptr<SRPublisher> shadowhand_pub)
 *
 * @return 0 on success
 */
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
   ros::init(argc, argv, "shadowarm");
   NodeHandle n;
 
-  boost::shared_ptr<VirtualArm> virt_arm( new VirtualArm() );
+  boost::shared_ptr<VirtualArm> virt_arm(new VirtualArm());
   boost::shared_ptr<SRSubscriber> shadowhand_subscriber(new SRSubscriber(virt_arm));
 
-  boost::shared_ptr<SRPublisher> shadowhand_pub( new SRPublisher(virt_arm));
-  boost::shared_ptr<SRDiagnosticer> shadowhand_diag( new SRDiagnosticer(virt_arm, sr_arm_hardware));
+  boost::shared_ptr<SRPublisher> shadowhand_pub(new SRPublisher(virt_arm));
+  boost::shared_ptr<SRDiagnosticer> shadowhand_diag(new SRDiagnosticer(virt_arm, sr_arm_hardware));
 
-  boost::thread thrd1( boost::bind( &run_diagnotics, shadowhand_diag ));
-  boost::thread thrd2( boost::bind( &run_publisher, shadowhand_pub ));
+  boost::thread thrd1(boost::bind(&run_diagnotics, shadowhand_diag));
+  boost::thread thrd2(boost::bind(&run_publisher, shadowhand_pub));
   thrd1.join();
   thrd2.join();
 

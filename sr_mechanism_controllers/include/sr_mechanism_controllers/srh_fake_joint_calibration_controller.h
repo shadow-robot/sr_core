@@ -39,30 +39,40 @@
 namespace controller
 {
 
-  class SrhFakeJointCalibrationController : public controller_interface::Controller<ros_ethercat_model::RobotState>
+  class SrhFakeJointCalibrationController :
+          public controller_interface::Controller<ros_ethercat_model::RobotState>
   {
   public:
     SrhFakeJointCalibrationController();
 
     virtual bool init(ros_ethercat_model::RobotState *robot, ros::NodeHandle &n);
 
-    virtual void update(const ros::Time& time, const ros::Duration& period);
+    virtual void update(const ros::Time &time, const ros::Duration &period);
 
-    bool calibrated() { return calibration_state_ == CALIBRATED; }
+    bool calibrated()
+    {
+      return calibration_state_ == CALIBRATED;
+    }
+
     void beginCalibration()
     {
       if (calibration_state_ == IS_INITIALIZED)
+      {
         calibration_state_ = BEGINNING;
+      }
     }
 
   protected:
 
-    ros_ethercat_model::RobotState* robot_;
+    ros_ethercat_model::RobotState *robot_;
     ros::NodeHandle node_;
     boost::scoped_ptr<realtime_tools::RealtimePublisher<std_msgs::Empty> > pub_calibrated_;
     ros::Time last_publish_time_;
 
-    enum { IS_INITIALIZED, BEGINNING, MOVING_TO_LOW, MOVING_TO_HIGH, CALIBRATED };
+    enum
+    {
+      IS_INITIALIZED, BEGINNING, MOVING_TO_LOW, MOVING_TO_HIGH, CALIBRATED
+    };
     int calibration_state_;
 
     ros_ethercat_model::Actuator *actuator_;

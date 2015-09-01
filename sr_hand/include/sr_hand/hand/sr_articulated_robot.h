@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef   	SHADOWHAND_H_
-# define   	SHADOWHAND_H_
+#ifndef    SHADOWHAND_H_
+# define    SHADOWHAND_H_
 
 #include <ros/ros.h>
 #include <string>
@@ -53,22 +53,22 @@ namespace debug_values
 {
   ///a map containing the names and offsets of the smart motor node
   static const std::map<const std::string, const unsigned int> names_and_offsets
-    = boost::assign::map_list_of ("Sensor PID last in",         0) \
-                                 ("Sensor PID iState",          1) \
-                                 ("Sensor PID last D",          2) \
-                                 ("Sensor PID last out",        3) \
-                                 ("PID last in",                4) \
-                                 ("PID iState",                 5) \
-                                 ("PID last D",                 6) \
-                                 ("PID last out",               7) \
-                                 ("Strain Gauge Offset 0",      8) \
-                                 ("Strain Gauge Offset 1",      9) \
-                                 ("Num setup Msgs received",   10) \
-                                 ("Num sensor Msgs received",  11) \
-                                 ("Sensor Val (motor set P)",  12) \
-                                 ("Sensor Val (motor sensor)", 13) \
-                                 ("H-Bridge Duty",             14) \
-                                 ("Duty Temp",                 15) ;
+          = boost::assign::map_list_of("Sensor PID last in", 0) \
+("Sensor PID iState", 1) \
+("Sensor PID last D", 2) \
+("Sensor PID last out", 3) \
+("PID last in", 4) \
+("PID iState", 5) \
+("PID last D", 6) \
+("PID last out", 7) \
+("Strain Gauge Offset 0", 8) \
+("Strain Gauge Offset 1", 9) \
+("Num setup Msgs received", 10) \
+("Num sensor Msgs received", 11) \
+("Sensor Val (motor set P)", 12) \
+("Sensor Val (motor sensor)", 13) \
+("H-Bridge Duty", 14) \
+("Duty Temp", 15);
 }
 
 
@@ -101,20 +101,25 @@ namespace shadowrobot
     double last_pos;
     double velocity;
 
-  JointData() :
-    position(0.0), target(0.0), temperature(0.0), current(0.0), force(0.0), flags(""), jointIndex(0), min(0.0), max(90.0), isJointZero(0), publisher_index(0), last_pos_time(0.0), last_pos(0.0), velocity(0.0)
+    JointData() :
+            position(0.0), target(0.0), temperature(0.0), current(0.0), force(0.0), flags(""), jointIndex(0), min(0.0),
+            max(90.0), isJointZero(0), publisher_index(0), last_pos_time(0.0), last_pos(0.0), velocity(0.0)
     {
     }
 
-  JointData(JointData& jd) :
-    position(jd.position), target(jd.target), temperature(jd.temperature), current(jd.current), force(jd.force),
-      flags(jd.flags), jointIndex(jd.jointIndex), min(jd.min), max(jd.max), isJointZero(jd.isJointZero), publisher_index(jd.publisher_index), last_pos_time(jd.last_pos_time), last_pos(jd.last_pos), velocity(jd.velocity)
+    JointData(JointData &jd) :
+            position(jd.position), target(jd.target), temperature(jd.temperature), current(jd.current), force(jd.force),
+            flags(jd.flags), jointIndex(jd.jointIndex), min(jd.min), max(jd.max), isJointZero(jd.isJointZero),
+            publisher_index(jd.publisher_index), last_pos_time(jd.last_pos_time), last_pos(jd.last_pos),
+            velocity(jd.velocity)
     {
     }
 
-  JointData(const JointData& jd) :
-    position(jd.position), target(jd.target), temperature(jd.temperature), current(jd.current), force(jd.force),
-      flags(jd.flags), jointIndex(jd.jointIndex), min(jd.min), max(jd.max), isJointZero(jd.isJointZero), publisher_index(jd.publisher_index), last_pos_time(jd.last_pos_time), last_pos(jd.last_pos), velocity(jd.velocity)
+    JointData(const JointData &jd) :
+            position(jd.position), target(jd.target), temperature(jd.temperature), current(jd.current), force(jd.force),
+            flags(jd.flags), jointIndex(jd.jointIndex), min(jd.min), max(jd.max), isJointZero(jd.isJointZero),
+            publisher_index(jd.publisher_index), last_pos_time(jd.last_pos_time), last_pos(jd.last_pos),
+            velocity(jd.velocity)
     {
     }
   };
@@ -146,8 +151,8 @@ namespace shadowrobot
     PARAM_force_deadband, //!< PARAM_force_deadband
     PARAM_force_offset, //!< PARAM_force_offset
     PARAM_sensor_imax, //!< PARAM_sensor_imax
-    PARAM_sensor_out_shift,//!< PARAM_sensor_out_shift
-    PARAM_sensor_deadband, //!< PARAM_sensor_deadband
+    PARAM_sensor_out_shift, //!< PARAM_sensor_out_shift
+            PARAM_sensor_deadband, //!< PARAM_sensor_deadband
     PARAM_sensor_offset, //!< PARAM_sensor_offset
     PARAM_max_temperature, //!< PARAM_max_temperature
     PARAM_max_current, //!< PARAM_max_current
@@ -167,18 +172,18 @@ namespace shadowrobot
     ///value of the parameter
     std::string value;
 
-  Parameters() :
-    name(""), value("")
+    Parameters() :
+            name(""), value("")
     {
     }
 
-  Parameters( Parameters& param ) :
-    name(param.name), value(param.value)
+    Parameters(Parameters &param) :
+            name(param.name), value(param.value)
     {
     }
 
-  Parameters( const Parameters& param ) :
-    name(param.name), value(param.value)
+    Parameters(const Parameters &param) :
+            name(param.name), value(param.value)
     {
     }
   };
@@ -190,22 +195,21 @@ namespace shadowrobot
   {
     std::vector<Parameters> data;
 
-  JointControllerData() :
-    data()
+    JointControllerData() :
+            data()
     {
     }
 
-  JointControllerData( JointControllerData& jcd ) :
-    data(jcd.data)
+    JointControllerData(JointControllerData &jcd) :
+            data(jcd.data)
     {
     }
 
-  JointControllerData( const JointControllerData& jcd ) :
-    data(jcd.data)
+    JointControllerData(const JointControllerData &jcd) :
+            data(jcd.data)
     {
     }
   };
-
 
 
 /**
@@ -252,7 +256,8 @@ namespace shadowrobot
  * One (or more) ROS subscriber and publisher can then share the same instance
  * of a Shadowhand object to update the information contained in this object.
  */
-  class SRArticulatedRobot : boost::noncopyable
+  class SRArticulatedRobot :
+          boost::noncopyable
   {
   public:
     /**
@@ -260,16 +265,14 @@ namespace shadowrobot
      */
     SRArticulatedRobot()
     {
-    }
-    ;
+    };
 
     /**
      * empty destructor.
      */
     virtual ~SRArticulatedRobot()
     {
-    }
-    ;
+    };
 
     ///@see joints_map
     typedef std::map<std::string, JointData> JointsMap;
@@ -282,14 +285,14 @@ namespace shadowrobot
      * @param target The target in degree
      * @return 0 if success ; -1 if error
      */
-    virtual short sendupdate( std::string joint_name, double target ) = 0;
+    virtual short sendupdate(std::string joint_name, double target) = 0;
 
     /**
      * Get the joint data for a specific joint. @see JointData
      * @param joint_name The name of the joint, as specified in joints_map.
      * @return The information regarding this joint.
      */
-    virtual JointData getJointData( std::string joint_name ) = 0;
+    virtual JointData getJointData(std::string joint_name) = 0;
 
     /**
      * Get the data for all the joints.
@@ -303,14 +306,14 @@ namespace shadowrobot
      * @param ctrlr_data The data to pass to this controller.
      * @return 0 if success.
      */
-    virtual short setContrl( std::string contrlr_name, JointControllerData ctrlr_data ) = 0;
+    virtual short setContrl(std::string contrlr_name, JointControllerData ctrlr_data) = 0;
 
     /**
      * Get the controller parameters for a given controller name.
      * @param contrlr_name the name of the controller.
      * @return The parameters of this controller
      */
-    virtual JointControllerData getContrl( std::string contrlr_name ) = 0;
+    virtual JointControllerData getContrl(std::string contrlr_name) = 0;
 
     /**
      * Set the config of the palm
@@ -319,7 +322,7 @@ namespace shadowrobot
      * @param myConfig
      * @return
      */
-    virtual short setConfig( std::vector<std::string> myConfig ) = 0;
+    virtual short setConfig(std::vector<std::string> myConfig) = 0;
 
     /**
      * Get the config of the palm
@@ -327,7 +330,7 @@ namespace shadowrobot
      *
      * @param joint_name
      */
-    virtual void getConfig( std::string joint_name ) = 0;
+    virtual void getConfig(std::string joint_name) = 0;
 
     /**
      * Get the diagnostics for the whole articulated robot.

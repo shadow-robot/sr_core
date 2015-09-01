@@ -33,7 +33,6 @@
 #include <utility>
 
 
-
 #include <control_toolbox/pid.h>
 #include <boost/thread/condition.hpp>
 #include <realtime_tools/realtime_publisher.h>
@@ -52,6 +51,7 @@ namespace sr_friction_compensation
   public:
 
     SrFrictionCompensator(const std::string &joint_name);
+
     ~SrFrictionCompensator();
 
     /**
@@ -76,7 +76,7 @@ namespace sr_friction_compensation
      *
      * @return the force necessary to have the joint ready to move.
      */
-    double friction_compensation( double position, double velocity, int force_demand, int deadband );
+    double friction_compensation(double position, double velocity, int force_demand, int deadband);
 
   private:
     ///node handle for reading the map from the parameters server.

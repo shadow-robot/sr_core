@@ -51,30 +51,43 @@
 namespace controller
 {
 
-  class SrController : public controller_interface::Controller<ros_ethercat_model::RobotState>
+  class SrController :
+          public controller_interface::Controller<ros_ethercat_model::RobotState>
   {
   public:
 
     SrController();
+
     virtual ~SrController();
 
     virtual bool init(ros_ethercat_model::RobotState *robot, ros::NodeHandle &n) = 0;
 
-    virtual void starting(const ros::Time& time) {};
+    virtual void starting(const ros::Time &time)
+    {
+    };
 
     /*!
      * \brief Issues commands to the joint. Should be called at regular intervals
      */
-    virtual void update(const ros::Time& time, const ros::Duration& period) = 0;
+    virtual void update(const ros::Time &time, const ros::Duration &period) = 0;
 
-    virtual bool resetGains(std_srvs::Empty::Request& req, std_srvs::Empty::Response& resp) { return true; };
+    virtual bool resetGains(std_srvs::Empty::Request &req, std_srvs::Empty::Response &resp)
+    {
+      return true;
+    };
 
-    virtual void getGains(double &p, double &i, double &d, double &i_max, double &i_min) {};
+    virtual void getGains(double &p, double &i, double &d, double &i_max, double &i_min)
+    {
+    };
 
     std::string getJointName();
-    ros_ethercat_model::JointState *joint_state_;   /**< Joint we're controlling. */
-    ros_ethercat_model::JointState *joint_state_2;  /**< 2ndJoint we're controlling if joint 0. */
-    bool has_j2;                                    /**< true if this is a joint 0. */
+
+    ros_ethercat_model::JointState *joint_state_;
+    /**< Joint we're controlling. */
+    ros_ethercat_model::JointState *joint_state_2;
+    /**< 2ndJoint we're controlling if joint 0. */
+    bool has_j2;
+    /**< true if this is a joint 0. */
     double command_;                                /**< Last commanded position. */
 
   protected:
@@ -95,7 +108,7 @@ namespace controller
      *
      * @return the clamped command
      */
-    virtual double clamp_command( double cmd );
+    virtual double clamp_command(double cmd);
 
     /**
      * Reads the min and max from the robot model for
@@ -104,24 +117,28 @@ namespace controller
      * @param model the urdf description of the robot
      * @param joint_name the name of the joint
      */
-    void get_min_max( urdf::Model model, std::string joint_name );
+    void get_min_max(urdf::Model model, std::string joint_name);
 
     ///Min and max range of the joint, used to clamp the command.
     double min_, max_;
 
     int loop_count_;
     bool initialized_;
-    ros_ethercat_model::RobotState *robot_;              /**< Pointer to robot structure. */
+    ros_ethercat_model::RobotState *robot_;
+    /**< Pointer to robot structure. */
 
     ros::NodeHandle node_, n_tilde_;
     std::string joint_name_;
 
-    boost::scoped_ptr<realtime_tools::RealtimePublisher<control_msgs::JointControllerState> > controller_state_publisher_ ;
+    boost::scoped_ptr<realtime_tools::RealtimePublisher<control_msgs::JointControllerState> > controller_state_publisher_;
 
     boost::scoped_ptr<sr_friction_compensation::SrFrictionCompensator> friction_compensator;
 
     ///set the command from a topic
-    virtual void setCommandCB(const std_msgs::Float64ConstPtr& msg) {}
+    virtual void setCommandCB(const std_msgs::Float64ConstPtr &msg)
+    {
+    }
+
     ros::Subscriber sub_command_;
     ros::ServiceServer serve_set_gains_;
     ros::ServiceServer serve_reset_gains_;
@@ -139,12 +156,13 @@ namespace controller
     //This is intended to be used e.g. as part of a hand self protection mechanism, where max_force is reduced in certain cases
     double max_force_factor_;
     ros::Subscriber sub_max_force_factor_;
+
     /**
      * Callback function for the max force factor topic
      *
      * @param msg the message receiver over the topic
      */
-    void maxForceFactorCB(const std_msgs::Float64ConstPtr& msg);
+    void maxForceFactorCB(const std_msgs::Float64ConstPtr &msg);
   };
 } // namespace
 

@@ -42,10 +42,12 @@
 
 namespace shadowrobot
 {
-  class SrRealTactileSensor : public SrGenericTactileSensor
+  class SrRealTactileSensor :
+          public SrGenericTactileSensor
   {
   public:
     SrRealTactileSensor(std::string name, std::string touch_name);
+
     virtual ~SrRealTactileSensor();
 
     /**
@@ -60,10 +62,12 @@ namespace shadowrobot
     int res_touch;
   };
 
-  class SrRealTactileSensorManager : public SrTactileSensorManager
+  class SrRealTactileSensorManager :
+          public SrTactileSensorManager
   {
   public:
     SrRealTactileSensorManager();
+
     ~SrRealTactileSensorManager();
   };
 }  // namespace shadowrobot

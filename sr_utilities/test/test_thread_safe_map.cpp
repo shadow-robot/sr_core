@@ -44,14 +44,17 @@ public:
     tg.create_thread(boost::bind(&TestMultiThread::write, this));
 
     for (int i = 0; i < num_threads; ++i)
+    {
       tg.create_thread(boost::bind(&TestMultiThread::read, this));
+    }
 
     boost::this_thread::sleep(boost::posix_time::seconds(2));
     tg.join_all();
   };
 
   ~TestMultiThread()
-  {};
+  {
+  };
 
   void write()
   {

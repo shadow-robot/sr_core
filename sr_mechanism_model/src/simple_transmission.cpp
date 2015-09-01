@@ -48,48 +48,50 @@ PLUGINLIB_EXPORT_CLASS(sr_mechanism_model::SimpleTransmission, Transmission)
 namespace sr_mechanism_model
 {
 
-bool SimpleTransmission::initXml(TiXmlElement *elt, RobotState *robot)
-{
-  if (!ros_ethercat_model::Transmission::initXml(elt, robot))
-    return false;
-
-  //reading the joint name
-  TiXmlElement *jel = elt->FirstChildElement("joint");
-  if (!jel || !jel->Attribute("name"))
+  bool SimpleTransmission::initXml(TiXmlElement *elt, RobotState *robot)
   {
-    ROS_ERROR_STREAM("Joint name not specified in transmission " << name_);
-    return false;
+    if (!ros_ethercat_model::Transmission::initXml(elt, robot))
+    {
+      return false;
+    }
+
+    //reading the joint name
+    TiXmlElement *jel = elt->FirstChildElement("joint");
+    if (!jel || !jel->Attribute("name"))
+    {
+      ROS_ERROR_STREAM("Joint name not specified in transmission " << name_);
+      return false;
+    }
+
+    TiXmlElement *ael = elt->FirstChildElement("actuator");
+    if (!ael || !ael->Attribute("name"))
+    {
+      ROS_ERROR_STREAM("Transmission " << name_ << " has no actuator in configuration");
+      return false;
+    }
+
+    joint_ = robot->getJointState(jel->Attribute("name"));
+    actuator_ = new SrMotorActuator();
+    actuator_->name_ = ael->Attribute("name");
+    actuator_->command_.enable_ = true;
+
+    return true;
   }
 
-  TiXmlElement *ael = elt->FirstChildElement("actuator");
-  if (!ael || !ael->Attribute("name"))
+  void SimpleTransmission::propagatePosition()
   {
-    ROS_ERROR_STREAM("Transmission " << name_ << " has no actuator in configuration");
-    return false;
+    SrMotorActuator *act = static_cast<SrMotorActuator *>(actuator_);
+    joint_->position_ = act->state_.position_;
+    joint_->velocity_ = act->state_.velocity_;
+    joint_->effort_ = act->state_.last_measured_effort_;
   }
 
-  joint_ = robot->getJointState(jel->Attribute("name"));
-  actuator_ = new SrMotorActuator();
-  actuator_->name_ = ael->Attribute("name");
-  actuator_->command_.enable_ = true;
-
-  return true;
-}
-
-void SimpleTransmission::propagatePosition()
-{
-  SrMotorActuator *act = static_cast<SrMotorActuator*>(actuator_);
-  joint_->position_ = act->state_.position_;
-  joint_->velocity_ = act->state_.velocity_;
-  joint_->effort_ = act->state_.last_measured_effort_;
-}
-
-void SimpleTransmission::propagateEffort()
-{
-  SrMotorActuator *act = static_cast<SrMotorActuator*>(actuator_);
-  act->command_.enable_ = true;
-  act->command_.effort_ = joint_->commanded_effort_;
-}
+  void SimpleTransmission::propagateEffort()
+  {
+    SrMotorActuator *act = static_cast<SrMotorActuator *>(actuator_);
+    act->command_.enable_ = true;
+    act->command_.effort_ = joint_->commanded_effort_;
+  }
 
 } //end namespace
 

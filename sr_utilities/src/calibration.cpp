@@ -74,7 +74,7 @@ namespace shadow_robot
     // That takes care of computing a reading that's before
     // the calibration table as well as a reading that's in the
     // first calibration table case.
-    low_point  = calibration_table_[0];
+    low_point = calibration_table_[0];
     high_point = calibration_table_[1];
 
     bool found = false;
@@ -90,7 +90,7 @@ namespace shadow_robot
           if ((raw_reading >= calibration_table_[index_cal - 1].raw_value) &&
               (raw_reading < calibration_table_[index_cal].raw_value))
           {
-            low_point  = calibration_table_[index_cal - 1];
+            low_point = calibration_table_[index_cal - 1];
             high_point = calibration_table_[index_cal];
 
             found = true;

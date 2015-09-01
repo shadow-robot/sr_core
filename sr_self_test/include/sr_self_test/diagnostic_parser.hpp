@@ -44,15 +44,17 @@ namespace shadow_robot
   class DiagnosticParser
   {
   public:
-    DiagnosticParser(self_test::TestRunner* test_runner);
+    DiagnosticParser(self_test::TestRunner *test_runner);
+
     ~DiagnosticParser()
-    {};
+    {
+    };
 
   private:
     ros::NodeHandle nh_;
 
     ///Pointer to the test runner to be able to add new tests for each parser.
-    self_test::TestRunner* test_runner_;
+    self_test::TestRunner *test_runner_;
 
     ///ROS subscriber to the diagnostics_agg topic
     ros::Subscriber diag_sub_;
@@ -64,7 +66,7 @@ namespace shadow_robot
      * Susbscribed to the diagnostics_agg topic.
      * @param msg new incoming msg
      */
-    void diagnostics_agg_cb_(const diagnostic_msgs::DiagnosticArray::ConstPtr& msg);
+    void diagnostics_agg_cb_(const diagnostic_msgs::DiagnosticArray::ConstPtr &msg);
 
     boost::ptr_vector<BaseDiagnostics> diagnostics_;
 
@@ -73,10 +75,10 @@ namespace shadow_robot
   };
 }
 
-  /* For the emacs weenies in the crowd.
-     Local Variables:
-     c-basic-offset: 2
-     End:
-  */
+/* For the emacs weenies in the crowd.
+   Local Variables:
+   c-basic-offset: 2
+   End:
+*/
 
 #endif /* _DIAGNOSTIC_PARSER_HPP_ */

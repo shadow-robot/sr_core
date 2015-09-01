@@ -47,6 +47,7 @@ namespace shadowrobot
   {
   public:
     SrGenericTactileSensor(std::string name, std::string touch_name);
+
     virtual ~SrGenericTactileSensor();
 
     /**
@@ -73,6 +74,7 @@ namespace shadowrobot
   {
   public:
     SrTactileSensorManager();
+
     ~SrTactileSensorManager();
 
     /**
@@ -88,6 +90,7 @@ namespace shadowrobot
 
     ros::ServiceServer is_hand_occupied_server;
     std::vector<double> is_hand_occupied_thresholds;
+
     /**
      * Callback for the service to check if the hand is occupied. This is were
      * we actually check if the hand is holding something or not.
@@ -100,10 +103,11 @@ namespace shadowrobot
      *
      * @return
      */
-    bool is_hand_occupied_cb(sr_robot_msgs::is_hand_occupied::Request  &req,
+    bool is_hand_occupied_cb(sr_robot_msgs::is_hand_occupied::Request &req,
                              sr_robot_msgs::is_hand_occupied::Response &res);
 
     ros::ServiceServer which_fingers_are_touching_server;
+
     /**
      * Callback for the service to check which fingers are touching, with a
      * given force.
@@ -114,7 +118,7 @@ namespace shadowrobot
      *
      * @return
      */
-    bool which_fingers_are_touching_cb(sr_robot_msgs::which_fingers_are_touching::Request  &req,
+    bool which_fingers_are_touching_cb(sr_robot_msgs::which_fingers_are_touching::Request &req,
                                        sr_robot_msgs::which_fingers_are_touching::Response &res);
 
     /**

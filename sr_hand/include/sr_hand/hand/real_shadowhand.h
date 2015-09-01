@@ -25,8 +25,8 @@
  *
  */
 
-#ifndef   	REAL_SHADOWHAND_H_
-# define   	REAL_SHADOWHAND_H_
+#ifndef    REAL_SHADOWHAND_H_
+# define    REAL_SHADOWHAND_H_
 
 #include "sr_hand/hand/sr_articulated_robot.h"
 
@@ -51,7 +51,8 @@ namespace shadowrobot
 /**
  * The real shadowhand class is a class used to access the C code of the Dextrous Hand.
  */
-  class RealShadowhand : public SRArticulatedRobot
+  class RealShadowhand :
+          public SRArticulatedRobot
   {
   public:
     /**
@@ -70,16 +71,22 @@ namespace shadowrobot
      * @param target The target in degree
      * @return 0 if success ; -1 if error
      */
-    virtual short sendupdate( std::string joint_name, double target );
+    virtual short sendupdate(std::string joint_name, double target);
 
-    virtual JointData getJointData( std::string joint_name );
+    virtual JointData getJointData(std::string joint_name);
+
     virtual JointsMap getAllJointsData();
 
-    virtual short setContrl( std::string contrlr_name, JointControllerData ctrlr_data );
-    virtual JointControllerData getContrl( std::string contrlr_name );
-    virtual short setConfig( std::vector<std::string> myConfig );
-    virtual void getConfig( std::string joint_name );
-    virtual std::vector<DiagnosticData> getDiagnostics();
+    virtual short setContrl(std::string contrlr_name, JointControllerData ctrlr_data);
+
+    virtual JointControllerData getContrl(std::string contrlr_name);
+
+    virtual short setConfig(std::vector <std::string> myConfig);
+
+    virtual void getConfig(std::string joint_name);
+
+    virtual std::vector <DiagnosticData> getDiagnostics();
+
   protected:
     /***
      * Initializes the mapping between the joint_names and their data. This function fetches the joint_names from
@@ -87,8 +94,8 @@ namespace shadowrobot
      */
     void initializeMap();
 
-      /////////////////
-     //    TESTS    //
+    /////////////////
+    //    TESTS    //
     /////////////////
 
     /**
@@ -99,7 +106,7 @@ namespace shadowrobot
      *
      * @param status the status of the pretest
      */
-    void pretest(diagnostic_updater::DiagnosticStatusWrapper& status);
+    void pretest(diagnostic_updater::DiagnosticStatusWrapper &status);
 
     /**
      * A set of tasks to run after the tests:
@@ -108,7 +115,7 @@ namespace shadowrobot
      *
      * @param status the status of the posttest
      */
-    void posttest(diagnostic_updater::DiagnosticStatusWrapper& status);
+    void posttest(diagnostic_updater::DiagnosticStatusWrapper &status);
 
     /**
      * A test to check the number of messages received is the same as the
@@ -117,7 +124,7 @@ namespace shadowrobot
      *
      * @param status the test result.
      */
-    void test_messages(diagnostic_updater::DiagnosticStatusWrapper& status);
+    void test_messages(diagnostic_updater::DiagnosticStatusWrapper &status);
 
     /**
      * The routine called during the test: test the number of received messages
@@ -130,7 +137,8 @@ namespace shadowrobot
      * @return a pair containing the status of the test (error or ok), and a message
      *         to display.
      */
-    std::pair<unsigned char, std::string> test_messages_routine(std::string joint_name, unsigned int repeat, ros::Rate rate);
+    std::pair<unsigned char, std::string> test_messages_routine(std::string joint_name, unsigned int repeat,
+                                                                ros::Rate rate);
 
   }; //end class
 }

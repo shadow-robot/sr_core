@@ -30,10 +30,10 @@ namespace shadowrobot
 
   private:
     ros::NodeHandle nh;
-    JointPubMap    joint_pub;
+    JointPubMap joint_pub;
     boost::shared_ptr<JTAS> action_server;
 
-    void execute_trajectory(const control_msgs::FollowJointTrajectoryGoalConstPtr& goal);
+    void execute_trajectory(const control_msgs::FollowJointTrajectoryGoalConstPtr &goal);
   };
 }
 

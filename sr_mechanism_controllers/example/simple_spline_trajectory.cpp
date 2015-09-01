@@ -4,14 +4,14 @@
 #include <control_msgs/FollowJointTrajectoryAction.h>
 #include <actionlib/client/simple_action_client.h>
 
-typedef actionlib::SimpleActionClient< control_msgs::FollowJointTrajectoryAction > TrajClient;
+typedef actionlib::SimpleActionClient<control_msgs::FollowJointTrajectoryAction> TrajClient;
 
 class ShadowTrajectory
 {
 private:
   // Action client for the joint trajectory action
   // used to trigger the arm movement action
-  TrajClient* traj_client_;
+  TrajClient *traj_client_;
 
 public:
   //! Initialize the action client and wait for action server to come up
@@ -21,7 +21,8 @@ public:
     traj_client_ = new TrajClient("r_arm_controller/joint_trajectory_action", true);
 
     // wait for action server to come up
-    while(!traj_client_->waitForServer(ros::Duration(5.0))){
+    while (!traj_client_->waitForServer(ros::Duration(5.0)))
+    {
       ROS_INFO("Waiting for the joint_trajectory_action server");
     }
   }
@@ -36,13 +37,17 @@ public:
   void startTrajectory(control_msgs::FollowJointTrajectoryGoal goal)
   {
     // When to start the trajectory: 1s from now
-    goal.trajectory.header.stamp = ros::Time::now()- ros::Duration(0.01);
+    goal.trajectory.header.stamp = ros::Time::now() - ros::Duration(0.01);
     traj_client_->sendGoal(goal);
   }
 
   //! Wait for currently running trajectory to finish
-  void waitTrajectory() {
-    while(!getState().isDone() && ros::ok()) { usleep(50000); }
+  void waitTrajectory()
+  {
+    while (!getState().isDone() && ros::ok())
+    {
+      usleep(50000);
+    }
   }
 
   //! Generates a simple trajectory to move the arm.
@@ -144,7 +149,7 @@ public:
 
 };
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
   // Init the ROS node
   ros::init(argc, argv, "shadow_trajectory_driver");

@@ -31,14 +31,15 @@
 #include <sr_utilities/sr_math_utils.hpp>
 #include <std_msgs/Float64.h>
 
-PLUGINLIB_EXPORT_CLASS( controller::SrhSyntouchController, controller_interface::ControllerBase)
+PLUGINLIB_EXPORT_CLASS(controller::SrhSyntouchController, controller_interface::ControllerBase)
 
 using namespace std;
 
-namespace controller {
+namespace controller
+{
 
   SrhSyntouchController::SrhSyntouchController()
-    : SrController()
+          : SrController()
   {
   }
 
@@ -53,7 +54,8 @@ namespace controller {
     robot_ = robot;
     node_ = n;
 
-    if (!node_.getParam("joint", joint_name_)) {
+    if (!node_.getParam("joint", joint_name_))
+    {
       ROS_ERROR("No joint given (namespace: %s)", node_.getNamespace().c_str());
       return false;
     }
@@ -75,30 +77,34 @@ namespace controller {
     }
 
     //init the pointer to the biotacs data, updated at 1kHz
-    actuator_ = static_cast<sr_actuator::SrMotorActuator*>( robot->getActuator( joint_name_ ) );
+    actuator_ = static_cast<sr_actuator::SrMotorActuator *>( robot->getActuator(joint_name_));
 
     after_init();
     return true;
   }
 
 
-  void SrhSyntouchController::starting(const ros::Time& time)
+  void SrhSyntouchController::starting(const ros::Time &time)
   {
     command_ = joint_state_->position_;
 
     ROS_WARN_STREAM("Reseting PID for joint  " << joint_state_->joint_->name);
   }
 
-  void SrhSyntouchController::update(const ros::Time& time, const ros::Duration& period)
+  void SrhSyntouchController::update(const ros::Time &time, const ros::Duration &period)
   {
     if (!joint_state_->calibrated_)
+    {
       return;
+    }
 
     ROS_ASSERT(robot_);
     ROS_ASSERT(joint_state_->joint_);
 
     if (initialized_)
+    {
       command_ = joint_state_->commanded_position_;
+    }
     else
     {
       initialized_ = true;
@@ -116,7 +122,7 @@ namespace controller {
     /////
     //you have access here to the whole data coming from the 5 tactiles at full speed.
     double my_first_finger_tactile_pac0 = actuator_->motor_state_.tactiles_->at(0).biotac.pac0;
-    if(loop_count_ % 10 == 0)
+    if (loop_count_ % 10 == 0)
     {
       ROS_ERROR_STREAM("PAC0, tactile " << my_first_finger_tactile_pac0);
     }
@@ -132,9 +138,9 @@ namespace controller {
 
     joint_state_->commanded_effort_ = commanded_effort;
 
-    if(loop_count_ % 10 == 0)
+    if (loop_count_ % 10 == 0)
     {
-      if(controller_state_publisher_ && controller_state_publisher_->trylock())
+      if (controller_state_publisher_ && controller_state_publisher_->trylock())
       {
         controller_state_publisher_->msg_.header.stamp = time;
         controller_state_publisher_->msg_.set_point = command_;

@@ -34,27 +34,29 @@
 
 namespace controller
 {
-  class SrhSyntouchController : public SrController
+  class SrhSyntouchController :
+          public SrController
   {
   public:
 
     SrhSyntouchController();
+
     ~SrhSyntouchController();
 
     bool init(ros_ethercat_model::RobotState *robot, ros::NodeHandle &n);
 
-    virtual void starting(const ros::Time& time);
+    virtual void starting(const ros::Time &time);
 
     /*!
      * \brief Issues commands to the joint. Should be called at regular intervals
      */
-    virtual void update(const ros::Time& time, const ros::Duration& period);
+    virtual void update(const ros::Time &time, const ros::Duration &period);
 
   private:
     //publish our joint controller state
     boost::scoped_ptr<realtime_tools::RealtimePublisher<sr_robot_msgs::JointControllerState> > controller_state_publisher_;
 
-    sr_actuator::SrMotorActuator* actuator_;
+    sr_actuator::SrMotorActuator *actuator_;
   };
 } // namespace
 

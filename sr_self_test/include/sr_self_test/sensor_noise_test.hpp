@@ -37,16 +37,19 @@ namespace shadow_robot
   {
   public:
     SensorNoiseTest();
-    virtual ~SensorNoiseTest()
-    {};
 
-    void test_sensor_noise(diagnostic_updater::DiagnosticStatusWrapper& status);
+    virtual ~SensorNoiseTest()
+    {
+    };
+
+    void test_sensor_noise(diagnostic_updater::DiagnosticStatusWrapper &status);
 
   private:
     ros::NodeHandle nh_;
     ros::Subscriber joint_states_sub_;
 
-    void joint_states_cb_(const sensor_msgs::JointState::ConstPtr& msg);
+    void joint_states_cb_(const sensor_msgs::JointState::ConstPtr &msg);
+
     ///reordering the joint states, keeping all the values in one vector per joint
     std::map<std::string, std::vector<double> > all_joint_states_;
 

@@ -41,7 +41,7 @@
 namespace shadowrobot
 {
   VirtualShadowhand::VirtualShadowhand() :
-    SRArticulatedRobot(), n_tilde("~")
+          SRArticulatedRobot(), n_tilde("~")
   {
 #ifdef GAZEBO
     ROS_INFO("This ROS interface is built for Gazebo.");
@@ -88,7 +88,8 @@ namespace shadowrobot
     std::string robot_desc_string;
     node.param("hand_description", robot_desc_string, std::string());
     urdf::Model robot_model;
-    if (!robot_model.initString(robot_desc_string)){
+    if (!robot_model.initString(robot_desc_string))
+    {
       ROS_ERROR("Failed to parse urdf file");
       return;
     }
@@ -102,13 +103,13 @@ namespace shadowrobot
     int tmp_index = 0;
 #endif
 
-    for (; iter != all_joints.end(); ++iter )
+    for (; iter != all_joints.end(); ++iter)
     {
-      if( iter->second->type == urdf::Joint::REVOLUTE)
+      if (iter->second->type == urdf::Joint::REVOLUTE)
       {
         std::string current_joint_name = iter->first;
 
-        ROS_DEBUG_STREAM(" joint: " << current_joint_name << '\t' << iter->second );
+        ROS_DEBUG_STREAM(" joint: " << current_joint_name << '\t' << iter->second);
 
         //check if we need to create a joint 0
         // create them when we have the joint 2
@@ -121,8 +122,8 @@ namespace shadowrobot
 
         bool create_joint_zero = false;
         boost::algorithm::to_lower(current_joint_name);
-        if( current_joint_name == "ffj2" || current_joint_name == "mfj2"
-            || current_joint_name == "rfj2" || current_joint_name == "lfj2" )
+        if (current_joint_name == "ffj2" || current_joint_name == "mfj2"
+            || current_joint_name == "rfj2" || current_joint_name == "lfj2")
         {
           create_joint_zero = true;
 
@@ -139,7 +140,7 @@ namespace shadowrobot
         }
 #endif
 
-        if( create_joint_zero )
+        if (create_joint_zero)
         {
 #ifdef GAZEBO
           full_topic = topic_prefix + std::string(1, current_joint_name[0]) + "fj0" + topic_suffix;
@@ -172,8 +173,8 @@ namespace shadowrobot
           tmpData.min = sr_math_utils::to_degrees(iter->second->limits->lower);
           tmpData.max = sr_math_utils::to_degrees(iter->second->limits->upper);
           boost::algorithm::to_upper(current_joint_name);
-          joints_map[ current_joint_name ] = tmpData;
-          controllers_map[ current_joint_name ] = tmpController;
+          joints_map[current_joint_name] = tmpData;
+          controllers_map[current_joint_name] = tmpController;
         }
       }
     }
@@ -218,7 +219,7 @@ namespace shadowrobot
     joints_map_mutex.unlock();
   }
 
-  short VirtualShadowhand::sendupdate( std::string joint_name, double target )
+  short VirtualShadowhand::sendupdate(std::string joint_name, double target)
   {
     joints_map_mutex.lock();
 
@@ -228,7 +229,7 @@ namespace shadowrobot
 #endif
 
     //not found
-    if( iter == joints_map.end() )
+    if (iter == joints_map.end())
     {
       ROS_DEBUG("Joint %s not found", joint_name.c_str());
 
@@ -242,14 +243,18 @@ namespace shadowrobot
     //2;
     // if using gazebo, we just send the target to the joint 0 controller
     // which is then controlling both joints.
-    if( iter->second.isJointZero == 1 )
+    if (iter->second.isJointZero == 1)
     {
       //push target and position to the given target for Joint 0
       JointData tmpData0 = JointData(iter->second);
-      if( target < tmpData0.min )
+      if (target < tmpData0.min)
+      {
         target = tmpData0.min;
-      if( target > tmpData0.max )
+      }
+      if (target > tmpData0.max)
+      {
         target = tmpData0.max;
+      }
 
 #ifndef GAZEBO
       tmpData0.position = target;
@@ -289,10 +294,14 @@ namespace shadowrobot
     //joint found
     JointData tmpData(iter->second);
 
-    if( target < tmpData.min )
+    if (target < tmpData.min)
+    {
       target = tmpData.min;
-    if( target > tmpData.max )
+    }
+    if (target > tmpData.max)
+    {
       target = tmpData.max;
+    }
 
 #ifdef GAZEBO
     //gazebo targets are in radians
@@ -309,20 +318,20 @@ namespace shadowrobot
     return 0;
   }
 
-  JointData VirtualShadowhand::getJointData( std::string joint_name )
+  JointData VirtualShadowhand::getJointData(std::string joint_name)
   {
     joints_map_mutex.lock();
 
     JointsMap::iterator iter = joints_map.find(joint_name);
 
     //joint found
-    if( iter != joints_map.end() )
+    if (iter != joints_map.end())
     {
       //return the position
-      iter->second.temperature = ((double)(rand() % 100) / 100.0);
-      iter->second.current = ((double)(rand() % 100) / 100.0);
+      iter->second.temperature = ((double) (rand() % 100) / 100.0);
+      iter->second.current = ((double) (rand() % 100) / 100.0);
 #ifndef GAZEBO
-      iter->second.force = ((double)(rand() % 100) / 100.0);
+      iter->second.force = ((double) (rand() % 100) / 100.0);
 #endif
 
       JointData tmp = JointData(iter->second);
@@ -341,13 +350,13 @@ namespace shadowrobot
   {
     joints_map_mutex.lock();
 
-    for( JointsMap::const_iterator it = joints_map.begin(); it != joints_map.end(); ++it )
+    for (JointsMap::const_iterator it = joints_map.begin(); it != joints_map.end(); ++it)
     {
       JointData tmpData = it->second;
-      tmpData.temperature = ((double)(rand() % 100) / 100.0);
-      tmpData.current = ((double)(rand() % 100) / 100.0);
+      tmpData.temperature = ((double) (rand() % 100) / 100.0);
+      tmpData.current = ((double) (rand() % 100) / 100.0);
 #ifndef GAZEBO
-      tmpData.force = ((double)(rand() % 100) / 100.0);
+      tmpData.force = ((double) (rand() % 100) / 100.0);
 #endif
       tmpData.jointIndex = 0;
       tmpData.flags = "";
@@ -360,14 +369,14 @@ namespace shadowrobot
     return tmp_map;
   }
 
-  short VirtualShadowhand::setContrl( std::string contrlr_name, JointControllerData ctrlr_data )
+  short VirtualShadowhand::setContrl(std::string contrlr_name, JointControllerData ctrlr_data)
   {
     controllers_map_mutex.lock();
 
     ControllersMap::iterator iter = controllers_map.find(contrlr_name);
 
     //joint found
-    if( iter != controllers_map.end() )
+    if (iter != controllers_map.end())
     {
       controllers_map[iter->first] = ctrlr_data;
     }
@@ -380,32 +389,32 @@ namespace shadowrobot
     return 0;
   }
 
-  JointControllerData VirtualShadowhand::getContrl( std::string contrlr_name )
+  JointControllerData VirtualShadowhand::getContrl(std::string contrlr_name)
   {
     controllers_map_mutex.lock();
     ControllersMap::iterator iter = controllers_map.find(contrlr_name);
 
     //joint found
-    if( iter != controllers_map.end() )
+    if (iter != controllers_map.end())
     {
       JointControllerData tmp = JointControllerData(iter->second);
       controllers_map_mutex.unlock();
       return tmp;
     }
 
-    ROS_ERROR("Controller %s not found", contrlr_name.c_str() );
+    ROS_ERROR("Controller %s not found", contrlr_name.c_str());
     JointControllerData no_result;
     controllers_map_mutex.unlock();
     return no_result;
   }
 
-  short VirtualShadowhand::setConfig( std::vector<std::string> myConfig )
+  short VirtualShadowhand::setConfig(std::vector<std::string> myConfig)
   {
     ROS_WARN("The set config function is not implemented in the virtual shadowhand.");
     return 0;
   }
 
-  void VirtualShadowhand::getConfig( std::string joint_name )
+  void VirtualShadowhand::getConfig(std::string joint_name)
   {
     ROS_WARN("The get config function is not implemented in the virtual shadowhand.");
   }
@@ -415,7 +424,7 @@ namespace shadowrobot
     joints_map_mutex.lock();
     std::vector<DiagnosticData> returnVect;
 
-    for( JointsMap::const_iterator it = joints_map.begin(); it != joints_map.end(); ++it )
+    for (JointsMap::const_iterator it = joints_map.begin(); it != joints_map.end(); ++it)
     {
       DiagnosticData tmpDiag;
       tmpDiag.joint_name = it->first;
@@ -424,7 +433,7 @@ namespace shadowrobot
       tmpDiag.target_sensor_num = 0;
       tmpDiag.target = it->second.target;
       tmpDiag.position_sensor_num = 0;
-      tmpDiag.position = it-> second.position;
+      tmpDiag.position = it->second.position;
 
       returnVect.push_back(tmpDiag);
     }

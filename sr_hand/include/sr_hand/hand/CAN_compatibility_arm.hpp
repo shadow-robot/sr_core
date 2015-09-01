@@ -28,8 +28,8 @@
  *
  */
 
-#ifndef   	_CAN_COMPATIBILITY_ARM_HPP_
-# define   	_CAN_COMPATIBILITY_ARM_HPP_
+#ifndef    _CAN_COMPATIBILITY_ARM_HPP_
+# define    _CAN_COMPATIBILITY_ARM_HPP_
 
 #include "sr_hand/hand/sr_articulated_robot.h"
 #include <sensor_msgs/JointState.h>
@@ -41,13 +41,15 @@ namespace shadowrobot
  * ROS driver. It is used to present the same interface as the CAN hand.
  *
  */
-  class CANCompatibilityArm : public SRArticulatedRobot
+  class CANCompatibilityArm :
+          public SRArticulatedRobot
   {
   public:
     /**
      * Initializes the necessary mappings with a static list of names.
      */
     ROS_DEPRECATED CANCompatibilityArm();
+
     virtual ~CANCompatibilityArm();
 
     //virtual classes defined in Shadowhand
@@ -58,7 +60,7 @@ namespace shadowrobot
      * @param target The target in degree
      * @return 0 if success ; -1 if error
      */
-    virtual short sendupdate( std::string joint_name, double target );
+    virtual short sendupdate(std::string joint_name, double target);
 
     /**
      * Returns the last data we received for the given joint.
@@ -66,14 +68,17 @@ namespace shadowrobot
      * @param joint_name The name of the joint, as specified in joints_map.
      * @return The information regarding this joint.
      */
-    virtual JointData getJointData( std::string joint_name );
+    virtual JointData getJointData(std::string joint_name);
+
     virtual JointsMap getAllJointsData();
 
-    virtual short setContrl( std::string contrlr_name, JointControllerData ctrlr_data );
-    virtual JointControllerData getContrl( std::string ctrlr_name );
+    virtual short setContrl(std::string contrlr_name, JointControllerData ctrlr_data);
 
-    virtual short setConfig( std::vector<std::string> myConfig );
-    virtual void getConfig( std::string joint_name );
+    virtual JointControllerData getContrl(std::string ctrlr_name);
+
+    virtual short setConfig(std::vector <std::string> myConfig);
+
+    virtual void getConfig(std::string joint_name);
 
     /**
      * Not used in this interface: the diagnostics are published directly by the EtherCAT hand
@@ -81,7 +86,8 @@ namespace shadowrobot
      *
      *@return A vector containing all the diagnostics for the hand (motor information, etc...)
      */
-    virtual std::vector<DiagnosticData> getDiagnostics();
+    virtual std::vector <DiagnosticData> getDiagnostics();
+
   protected:
     ros::NodeHandle node, n_tilde;
 
@@ -91,7 +97,7 @@ namespace shadowrobot
      *
      * @param msg the joint state message.
      */
-    void joint_states_callback(const sensor_msgs::JointStateConstPtr& msg);
+    void joint_states_callback(const sensor_msgs::JointStateConstPtr &msg);
 
     /**
      * Initialize a mapping for the joints and the publishers.
@@ -99,7 +105,7 @@ namespace shadowrobot
     void initializeMap();
 
     ///This vector stores publishers to each joint controller.
-    std::vector< ros::Publisher > CAN_publishers;
+    std::vector <ros::Publisher> CAN_publishers;
 
     ///a subscriber for the /joint_states topic.
     ros::Subscriber joint_state_subscriber;

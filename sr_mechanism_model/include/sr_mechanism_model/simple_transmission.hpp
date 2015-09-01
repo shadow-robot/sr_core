@@ -49,13 +49,16 @@
 namespace sr_mechanism_model
 {
 
-class SimpleTransmission : public ros_ethercat_model::Transmission
-{
-public:
-  bool initXml(TiXmlElement *config, ros_ethercat_model::RobotState *robot);
-  void propagatePosition();
-  void propagateEffort();
-};
+  class SimpleTransmission :
+          public ros_ethercat_model::Transmission
+  {
+  public:
+    bool initXml(TiXmlElement *config, ros_ethercat_model::RobotState *robot);
+
+    void propagatePosition();
+
+    void propagateEffort();
+  };
 
 } // namespace sr_mechanism_model
 

@@ -48,63 +48,65 @@ PLUGINLIB_EXPORT_CLASS(sr_mechanism_model::SimpleTransmissionForMuscle, Transmis
 namespace sr_mechanism_model
 {
 
-bool SimpleTransmissionForMuscle::initXml(TiXmlElement *elt, RobotState *robot)
-{
-  if (!SimpleTransmission::Transmission::initXml(elt, robot))
-    return false;
-
-  string act_name = actuator_->name_;
-  delete actuator_; // That's a SrMotorActuator at this point
-  actuator_ = new SrMuscleActuator();
-  actuator_->name_ = act_name;
-  actuator_->command_.enable_ = true;
-
-  return true;
-}
-
-void SimpleTransmissionForMuscle::propagatePosition()
-{
-  SrMuscleActuator *act = static_cast<SrMuscleActuator*>(actuator_);
-  joint_->position_ = act->state_.position_;
-  joint_->velocity_ = act->state_.velocity_;
-
-  // We don't want to define a modified version of JointState, as that would imply using a modified version
-  // of robot_state.hpp, controller manager, ethercat_hardware and ros_etherCAT main loop
-  // So we will encode the two uint16_t that contain the data from the muscle pressure sensors
-  // into the double effort_. (We don't have any measured effort in the muscle hand anyway).
-  // Then in the joint controller we will decode that back into uint16_t.
-  joint_->effort_ = ((double) (act->muscle_state_.pressure_[1]) * 0x10000)
-                           +  (double) (act->muscle_state_.pressure_[0]);
-}
-
-void SimpleTransmissionForMuscle::propagateEffort()
-{
-  SrMuscleActuator *act = static_cast<SrMuscleActuator*>(actuator_);
-  act->command_.enable_ = true;
-
-  // We don't want to define a modified version of JointState, as that would imply using a modified version
-  // of robot_state.hpp, controller manager, ethercat_hardware and ros_etherCAT main loop
-  // So the controller encodes the two int16 that contain the valve commands into the double effort_.
-  // (We don't have any real commanded_effort_ in the muscle hand anyway).
-  // Here we decode them back into two int16_t.
-  double valve_0 = fmod(joint_->commanded_effort_, 0x10);
-  int8_t valve_0_tmp = (int8_t) (valve_0 + 0.5);
-  if (valve_0_tmp >= 8)
+  bool SimpleTransmissionForMuscle::initXml(TiXmlElement *elt, RobotState *robot)
   {
-    valve_0_tmp -= 8;
-    valve_0_tmp *= (-1);
+    if (!SimpleTransmission::Transmission::initXml(elt, robot))
+    {
+      return false;
+    }
+
+    string act_name = actuator_->name_;
+    delete actuator_; // That's a SrMotorActuator at this point
+    actuator_ = new SrMuscleActuator();
+    actuator_->name_ = act_name;
+    actuator_->command_.enable_ = true;
+
+    return true;
   }
 
-  int8_t valve_1_tmp = (int8_t) (((fmod(joint_->commanded_effort_, 0x100) - valve_0) / 0x10) + 0.5);
-  if (valve_1_tmp >= 8)
+  void SimpleTransmissionForMuscle::propagatePosition()
   {
-    valve_1_tmp -= 8;
-    valve_1_tmp *= (-1);
+    SrMuscleActuator *act = static_cast<SrMuscleActuator *>(actuator_);
+    joint_->position_ = act->state_.position_;
+    joint_->velocity_ = act->state_.velocity_;
+
+    // We don't want to define a modified version of JointState, as that would imply using a modified version
+    // of robot_state.hpp, controller manager, ethercat_hardware and ros_etherCAT main loop
+    // So we will encode the two uint16_t that contain the data from the muscle pressure sensors
+    // into the double effort_. (We don't have any measured effort in the muscle hand anyway).
+    // Then in the joint controller we will decode that back into uint16_t.
+    joint_->effort_ = ((double) (act->muscle_state_.pressure_[1]) * 0x10000)
+                      + (double) (act->muscle_state_.pressure_[0]);
   }
 
-  act->muscle_command_.valve_[0] = valve_0_tmp;
-  act->muscle_command_.valve_[1] = valve_1_tmp;
-}
+  void SimpleTransmissionForMuscle::propagateEffort()
+  {
+    SrMuscleActuator *act = static_cast<SrMuscleActuator *>(actuator_);
+    act->command_.enable_ = true;
+
+    // We don't want to define a modified version of JointState, as that would imply using a modified version
+    // of robot_state.hpp, controller manager, ethercat_hardware and ros_etherCAT main loop
+    // So the controller encodes the two int16 that contain the valve commands into the double effort_.
+    // (We don't have any real commanded_effort_ in the muscle hand anyway).
+    // Here we decode them back into two int16_t.
+    double valve_0 = fmod(joint_->commanded_effort_, 0x10);
+    int8_t valve_0_tmp = (int8_t) (valve_0 + 0.5);
+    if (valve_0_tmp >= 8)
+    {
+      valve_0_tmp -= 8;
+      valve_0_tmp *= (-1);
+    }
+
+    int8_t valve_1_tmp = (int8_t) (((fmod(joint_->commanded_effort_, 0x100) - valve_0) / 0x10) + 0.5);
+    if (valve_1_tmp >= 8)
+    {
+      valve_1_tmp -= 8;
+      valve_1_tmp *= (-1);
+    }
+
+    act->muscle_command_.valve_[0] = valve_0_tmp;
+    act->muscle_command_.valve_[1] = valve_1_tmp;
+  }
 
 } //end namespace
 

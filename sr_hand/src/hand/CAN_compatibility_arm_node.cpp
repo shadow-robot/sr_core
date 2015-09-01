@@ -40,13 +40,13 @@ using namespace std;
 using namespace ros;
 using namespace shadowrobot;
 
-  /////////////////////////////////
-  //           MAIN              //
-  /////////////////////////////////
+/////////////////////////////////
+//           MAIN              //
+/////////////////////////////////
 
-void run_publisher(boost::shared_ptr<SRPublisher> shadowarm_pub)
+void run_publisher(boost::shared_ptr <SRPublisher> shadowarm_pub)
 {
-  while( ok() )
+  while (ok())
   {
     shadowarm_pub->publish();
   }
@@ -64,17 +64,18 @@ void run_publisher(boost::shared_ptr<SRPublisher> shadowarm_pub)
  *
  * @return 0 on success
  */
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
   ros::init(argc, argv, "shadowarm");
   NodeHandle n;
 
-  boost::shared_ptr<CANCompatibilityArm> can_sa(new CANCompatibilityArm());
-  boost::shared_ptr<SRSubscriber> shadowarm_subscriber(new SRSubscriber(can_sa));
+  boost::shared_ptr <CANCompatibilityArm> can_sa(new CANCompatibilityArm());
+  boost::shared_ptr <SRSubscriber> shadowarm_subscriber(new SRSubscriber(can_sa));
 
-  boost::shared_ptr<SRPublisher> shadowarm_pub( new SRPublisher(can_sa));
+  boost::shared_ptr <SRPublisher> shadowarm_pub(new SRPublisher(can_sa));
 
-  boost::thread thrd2( boost::bind( &run_publisher, shadowarm_pub ));
+  boost::thread
+  thrd2(boost::bind(&run_publisher, shadowarm_pub));
   thrd2.join();
 
   return 0;

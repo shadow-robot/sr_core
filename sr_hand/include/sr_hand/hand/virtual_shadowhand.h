@@ -26,8 +26,8 @@
  *
  */
 
-#ifndef   	VIRTUAL_SHADOWHAND_H_
-# define   	VIRTUAL_SHADOWHAND_H_
+#ifndef    VIRTUAL_SHADOWHAND_H_
+# define    VIRTUAL_SHADOWHAND_H_
 
 #include "sr_hand/hand/sr_articulated_robot.h"
 
@@ -40,13 +40,15 @@ namespace shadowrobot
  *
  */
 
-class VirtualShadowhand : public SRArticulatedRobot
-{
-public:
+  class VirtualShadowhand :
+          public SRArticulatedRobot
+  {
+  public:
     /**
      * Initializes the necessary mappings with a static list of names.
      */
     VirtualShadowhand();
+
     virtual ~VirtualShadowhand();
 
     //virtual classes defined in Shadowhand
@@ -60,7 +62,7 @@ public:
      * @param target The target in degree
      * @return 0 if success ; -1 if error
      */
-    virtual short sendupdate( std::string joint_name, double target );
+    virtual short sendupdate(std::string joint_name, double target);
 
     /**
      * In the virtual hand, getJointData() simply fetches the data from a given joint in the joints_map. As the targets
@@ -70,14 +72,17 @@ public:
      * @param joint_name The name of the joint, as specified in joints_map.
      * @return The information regarding this joint.
      */
-    virtual JointData getJointData( std::string joint_name );
+    virtual JointData getJointData(std::string joint_name);
+
     virtual JointsMap getAllJointsData();
 
-    virtual short setContrl( std::string contrlr_name, JointControllerData ctrlr_data );
-    virtual JointControllerData getContrl( std::string ctrlr_name );
+    virtual short setContrl(std::string contrlr_name, JointControllerData ctrlr_data);
 
-    virtual short setConfig( std::vector<std::string> myConfig );
-    virtual void getConfig( std::string joint_name );
+    virtual JointControllerData getContrl(std::string ctrlr_name);
+
+    virtual short setConfig(std::vector<std::string> myConfig);
+
+    virtual void getConfig(std::string joint_name);
 
     /**
      * Generates a set of random data to be published by the diagnostic publisher, but keep the position and target as
@@ -85,7 +90,8 @@ public:
      * @return A vector containing all the diagnostics for the hand (motor information, etc...)
      */
     virtual std::vector<DiagnosticData> getDiagnostics();
-protected:
+
+  protected:
     ///ROS Node handles
     ros::NodeHandle node, n_tilde;
 
@@ -114,9 +120,9 @@ protected:
      * @param deg the angle in degrees
      * @return the value in rads.
      */
-    inline double toRad( double deg )
+    inline double toRad(double deg)
     {
-        return deg * 3.14159265 / 180.0;
+      return deg * 3.14159265 / 180.0;
     }
 
     /**
@@ -124,10 +130,10 @@ protected:
      * @param rad the angle in rads
      * @return the value in degrees.
      */
-    inline double toDegrees( double rad )
+    inline double toDegrees(double rad)
     {
-        return rad * 180.0 / 3.14159265;
+      return rad * 180.0 / 3.14159265;
     }
-}; //end class
+  }; //end class
 }
 #endif 	    /* !VIRTUAL_SHADOWHAND_H_ */

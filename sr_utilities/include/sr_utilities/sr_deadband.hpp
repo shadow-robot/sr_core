@@ -41,13 +41,13 @@ namespace sr_deadband
    * @return true if the demand is in the deadband
    */
 
-  template <class T>
+  template<class T>
   static inline bool simple_deadband(T value, T deadband)
   {
-    return ( fabs(value) > deadband );
+    return (fabs(value) > deadband);
   }
 
-  template <class T>
+  template<class T>
   class HysteresisDeadband
   {
   public:
@@ -58,12 +58,13 @@ namespace sr_deadband
      * is getting bigger than x*deadband, or if we receive a new command.
      */
     HysteresisDeadband() :
-      last_demand(static_cast<T>(0.0)), entered_small_deadband(false)
+            last_demand(static_cast<T>(0.0)), entered_small_deadband(false)
     {
     };
 
     ~HysteresisDeadband()
-    {};
+    {
+    };
 
     /**
      * Are we in the hysteresis deadband? If we are in it, then we're just
@@ -87,7 +88,7 @@ namespace sr_deadband
 
       last_errors.push_back(error);
       double avg_error = 0.0;
-      for (unsigned int i = 0 ; i < last_errors.size(); ++i)
+      for (unsigned int i = 0; i < last_errors.size(); ++i)
       {
         avg_error += last_errors[i];
       }
@@ -109,10 +110,12 @@ namespace sr_deadband
 
         // we always compute the error if we haven't entered the small deadband
         if (!entered_small_deadband)
+        {
           is_in_deadband = false;
+        }
         else
         {
-          if (fabs(avg_error) > deadband_multiplicator*deadband)
+          if (fabs(avg_error) > deadband_multiplicator * deadband)
           {
             // we're outside of the big deadband -> compute the error
             is_in_deadband = false;
@@ -128,7 +131,9 @@ namespace sr_deadband
       }
 
       if (last_errors.size() > nb_errors_for_avg)
+      {
         last_errors.pop_front();
+      }
 
       return is_in_deadband;
     };

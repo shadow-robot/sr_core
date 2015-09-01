@@ -13,6 +13,7 @@
 #include <map>
 #include <string>
 #include "sr_utilities/sr_hand_finder.hpp"
+
 using std::vector;
 using std::map;
 using std::string;
@@ -29,6 +30,7 @@ TEST(SrHandFinder, hand_absent_test)
   ASSERT_EQ(controller_tuning.host_control_.size(), 0);
   ASSERT_EQ(controller_tuning.motor_control_.size(), 0);
 }
+
 TEST(SrHandFinder, hand_present_test)
 {
   ros::NodeHandle nh;
@@ -44,7 +46,7 @@ TEST(SrHandFinder, hand_present_test)
     for (size_t i = 0; i != iter->second.size(); ++i)
     {
       ROS_DEBUG_STREAM(iter->second[i]);
-      ASSERT_STREQ(iter->second[i].c_str(), ("rh_" +  joint_names[i]).c_str());
+      ASSERT_STREQ(iter->second[i].c_str(), ("rh_" + joint_names[i]).c_str());
     }
   }
   string ethercat_path = ros::package::getPath("sr_ethercat_hand_config");
@@ -56,30 +58,30 @@ TEST(SrHandFinder, hand_present_test)
   }
   shadow_robot::HandControllerTuning controller_tuning(hand_finder.get_hand_controller_tuning());
   for (map<string, string>::const_iterator iter = controller_tuning.friction_compensation_.begin();
-      iter != controller_tuning.friction_compensation_.end(); ++iter)
+       iter != controller_tuning.friction_compensation_.end(); ++iter)
   {
-    ASSERT_STREQ(iter->second.c_str(), (ethercat_path  + "/controls/friction_compensation.yaml").c_str());
+    ASSERT_STREQ(iter->second.c_str(), (ethercat_path + "/controls/friction_compensation.yaml").c_str());
     ROS_DEBUG_STREAM(iter->second);
   }
   for (map<string, string>::const_iterator iter = controller_tuning.motor_control_.begin();
-        iter != controller_tuning.motor_control_.end(); ++iter)
+       iter != controller_tuning.motor_control_.end(); ++iter)
   {
     ASSERT_STREQ(iter->second.c_str(),
-                 (ethercat_path  + "/controls/motors/rh/motor_board_effort_controllers.yaml").c_str());
+                 (ethercat_path + "/controls/motors/rh/motor_board_effort_controllers.yaml").c_str());
     ROS_DEBUG_STREAM(iter->second);
   }
   for (map<string, vector<string> >::const_iterator iter = controller_tuning.host_control_.begin();
-          iter != controller_tuning.host_control_.end(); ++iter)
+       iter != controller_tuning.host_control_.end(); ++iter)
   {
     string host_array[] = {"sr_edc_calibration_controllers.yaml",
-                         "sr_edc_joint_velocity_controllers_PWM.yaml",
-                         "sr_edc_effort_controllers_PWM.yaml",
-                         "sr_edc_joint_velocity_controllers.yaml",
-                         "sr_edc_effort_controllers.yaml",
-                         "sr_edc_mixed_position_velocity_joint_controllers_PWM.yaml",
-                         "sr_edc_joint_position_controllers_PWM.yaml",
-                         "sr_edc_mixed_position_velocity_joint_controllers.yaml",
-                         "sr_edc_joint_position_controllers.yaml"};
+                           "sr_edc_joint_velocity_controllers_PWM.yaml",
+                           "sr_edc_effort_controllers_PWM.yaml",
+                           "sr_edc_joint_velocity_controllers.yaml",
+                           "sr_edc_effort_controllers.yaml",
+                           "sr_edc_mixed_position_velocity_joint_controllers_PWM.yaml",
+                           "sr_edc_joint_position_controllers_PWM.yaml",
+                           "sr_edc_mixed_position_velocity_joint_controllers.yaml",
+                           "sr_edc_joint_position_controllers.yaml"};
     vector<string> host_controller_files(host_array, host_array + 9);
     ASSERT_EQ(host_controller_files.size(), iter->second.size());
     for (size_t i = 0; i != iter->second.size(); ++i)

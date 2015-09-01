@@ -31,18 +31,19 @@
 #include <string>
 #include <std_srvs/Empty.h>
 
-PLUGINLIB_EXPORT_CLASS( controller::SrhFakeJointCalibrationController, controller_interface::ControllerBase)
+PLUGINLIB_EXPORT_CLASS(controller::SrhFakeJointCalibrationController, controller_interface::ControllerBase)
 
 using namespace std;
 
-namespace controller {
+namespace controller
+{
 
   SrhFakeJointCalibrationController::SrhFakeJointCalibrationController()
-    : robot_(NULL),
-      last_publish_time_(0),
-      calibration_state_(IS_INITIALIZED),
-      actuator_(NULL),
-      joint_(NULL)
+          : robot_(NULL),
+            last_publish_time_(0),
+            calibration_state_(IS_INITIALIZED),
+            actuator_(NULL),
+            joint_(NULL)
   {
   }
 
@@ -97,43 +98,43 @@ namespace controller {
 
     // "Calibrated" topic
     pub_calibrated_.reset(
-      new realtime_tools::RealtimePublisher<std_msgs::Empty>(node_, "calibrated", 1));
+            new realtime_tools::RealtimePublisher<std_msgs::Empty>(node_, "calibrated", 1));
 
     return true;
   }
 
 
-  void SrhFakeJointCalibrationController::update(const ros::Time& time, const ros::Duration& period)
+  void SrhFakeJointCalibrationController::update(const ros::Time &time, const ros::Duration &period)
   {
     ROS_ASSERT(joint_);
     ROS_ASSERT(actuator_);
 
-    switch(calibration_state_)
+    switch (calibration_state_)
     {
-    case IS_INITIALIZED:
-      calibration_state_ = BEGINNING;
-      break;
-    case BEGINNING:
-      initialize_pids();
-      joint_->calibrated_ = true;
-      calibration_state_ = CALIBRATED;
-      //We add the following line to delay for some time the first publish and allow the correct initialization of the subscribers in calibrate.py
-      last_publish_time_ = robot_->getTime();
-      break;
-    case CALIBRATED:
-      if (pub_calibrated_)
-      {
-        if (last_publish_time_ + ros::Duration(0.5) < robot_->getTime())
+      case IS_INITIALIZED:
+        calibration_state_ = BEGINNING;
+        break;
+      case BEGINNING:
+        initialize_pids();
+        joint_->calibrated_ = true;
+        calibration_state_ = CALIBRATED;
+        //We add the following line to delay for some time the first publish and allow the correct initialization of the subscribers in calibrate.py
+        last_publish_time_ = robot_->getTime();
+        break;
+      case CALIBRATED:
+        if (pub_calibrated_)
         {
-          ROS_ASSERT(pub_calibrated_);
-          if (pub_calibrated_->trylock())
+          if (last_publish_time_ + ros::Duration(0.5) < robot_->getTime())
           {
-            last_publish_time_ = robot_->getTime();
-            pub_calibrated_->unlockAndPublish();
+            ROS_ASSERT(pub_calibrated_);
+            if (pub_calibrated_->trylock())
+            {
+              last_publish_time_ = robot_->getTime();
+              pub_calibrated_->unlockAndPublish();
+            }
           }
         }
-      }
-      break;
+        break;
     }
   }
 
@@ -141,9 +142,9 @@ namespace controller {
   {
     ///Reset the motor to make sure we have the proper 0 + correct PID settings
     // trim any prefix in the actuator_name for low level driver to find it
-    std::string lowlevel_actuator_name= actuator_name_.substr(actuator_name_.size()-4,4);
+    std::string lowlevel_actuator_name = actuator_name_.substr(actuator_name_.size() - 4, 4);
     string service_name = "realtime_loop/" + ns_ + "reset_motor_" + boost::to_upper_copy(lowlevel_actuator_name);
-    if( ros::service::waitForService (service_name, ros::Duration(2.0)) )
+    if (ros::service::waitForService(service_name, ros::Duration(2.0)))
     {
       std_srvs::Empty srv;
       if (ros::service::call(service_name, srv))

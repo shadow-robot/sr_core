@@ -40,20 +40,22 @@ class TestControllers
 {
 public:
   TestControllers();
+
   virtual ~TestControllers();
 
   void init();
 
   virtual void init_controller() = 0;
+
   virtual double compute_output(double input, double current_position) = 0;
 
-  boost::shared_ptr<controller::SrController> controller;
-  boost::shared_ptr<pr2_hardware_interface::HardwareInterface> hw;
-  boost::shared_ptr<pr2_mechanism_model::Robot> robot;
-  boost::shared_ptr<pr2_mechanism_model::RobotState> robot_state;
-  boost::shared_ptr<TiXmlDocument> model;
-  boost::shared_ptr<sr_actuator::SrMotorActuator> actuator;
-  pr2_mechanism_model::JointState* joint_state;
+  boost::shared_ptr <controller::SrController> controller;
+  boost::shared_ptr <pr2_hardware_interface::HardwareInterface> hw;
+  boost::shared_ptr <pr2_mechanism_model::Robot> robot;
+  boost::shared_ptr <pr2_mechanism_model::RobotState> robot_state;
+  boost::shared_ptr <TiXmlDocument> model;
+  boost::shared_ptr <sr_actuator::SrMotorActuator> actuator;
+  pr2_mechanism_model::JointState *joint_state;
 };
 
 

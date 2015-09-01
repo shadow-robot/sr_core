@@ -45,18 +45,19 @@ namespace shadowrobot
      * Initializes the necessary mappings with a static list of names.
      */
     Valves();
+
     ///destructor
     ~Valves();
 
     void publish();
 
   private:
-    void valve_command(const std_msgs::Float64ConstPtr& msg, int index_valve);
+    void valve_command(const std_msgs::Float64ConstPtr &msg, int index_valve);
 
     std::vector<struct sensor> valves_sensors;
 
-    std::vector<ros::Publisher> valves_publishers;
-    std::vector<ros::Subscriber> valves_subscribers;
+    std::vector <ros::Publisher> valves_publishers;
+    std::vector <ros::Subscriber> valves_subscribers;
 
     ros::NodeHandle n_tilde;
     ros::Rate publish_rate;

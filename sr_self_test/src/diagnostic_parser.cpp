@@ -29,14 +29,14 @@
 
 namespace shadow_robot
 {
-  DiagnosticParser::DiagnosticParser(self_test::TestRunner* test_runner)
-    : test_runner_(test_runner)
+  DiagnosticParser::DiagnosticParser(self_test::TestRunner *test_runner)
+          : test_runner_(test_runner)
   {
-    diagnostics_.push_back( new RTLoopDiagnostics("Realtime Control Loop", test_runner_));
-    diagnostics_.push_back( new EtherCATMasterDiagnostics("EtherCAT Master", test_runner_));
-    diagnostics_.push_back( new MotorDiagnostics("SRDMotor", test_runner_));
-    diagnostics_.push_back( new IsOKDiagnostics("EtherCAT Dual CAN Palm", test_runner_));
-    diagnostics_.push_back( new IsOKDiagnostics("SRBridge", test_runner_)); //TODO: not sure what's the 00
+    diagnostics_.push_back(new RTLoopDiagnostics("Realtime Control Loop", test_runner_));
+    diagnostics_.push_back(new EtherCATMasterDiagnostics("EtherCAT Master", test_runner_));
+    diagnostics_.push_back(new MotorDiagnostics("SRDMotor", test_runner_));
+    diagnostics_.push_back(new IsOKDiagnostics("EtherCAT Dual CAN Palm", test_runner_));
+    diagnostics_.push_back(new IsOKDiagnostics("SRBridge", test_runner_)); //TODO: not sure what's the 00
 
     run_tests_();
   }
@@ -47,44 +47,45 @@ namespace shadow_robot
 
     //wait for 5 seconds while we parse the diagnostics.
     // spin to make sure we get the messages
-    for(size_t i=0; i<50; ++i)
+    for (size_t i = 0; i < 50; ++i)
     {
       ros::Duration(0.1).sleep();
       ros::spinOnce();
     }
 
-    BOOST_FOREACH(DiagnosticsMap::value_type diag, all_diagnostics_)
-    {
-      diag.second->add_test();
-    }
+    BOOST_FOREACH(DiagnosticsMap::value_type
+                          diag, all_diagnostics_)
+          {
+            diag.second->add_test();
+          }
 
     diag_sub_.shutdown();
   }
 
-  void DiagnosticParser::diagnostics_agg_cb_(const diagnostic_msgs::DiagnosticArray::ConstPtr& msg)
+  void DiagnosticParser::diagnostics_agg_cb_(const diagnostic_msgs::DiagnosticArray::ConstPtr &msg)
   {
-    for( size_t status_i = 0; status_i < msg->status.size(); ++status_i )
+    for (size_t status_i = 0; status_i < msg->status.size(); ++status_i)
     {
-      for( size_t diag_i = 0; diag_i < diagnostics_.size() ; ++diag_i )
+      for (size_t diag_i = 0; diag_i < diagnostics_.size(); ++diag_i)
       {
-        if( msg->status[status_i].name.find(diagnostics_[diag_i].name) != std::string::npos )
+        if (msg->status[status_i].name.find(diagnostics_[diag_i].name) != std::string::npos)
         {
           std::string full_name = msg->status[status_i].name;
           DiagnosticsMap::iterator it;
           it = all_diagnostics_.find(full_name);
 
           //insert a new diag if it doesn't exist already
-          if( it == all_diagnostics_.end() )
+          if (it == all_diagnostics_.end())
           {
-            all_diagnostics_.insert( full_name,
-                                     diagnostics_[diag_i].shallow_clone(full_name) );
+            all_diagnostics_.insert(full_name,
+                                    diagnostics_[diag_i].shallow_clone(full_name));
 
             it = all_diagnostics_.find(full_name);
           }
 
-          it->second->parse_diagnostics( msg->status[status_i].values,
-                                         msg->status[status_i].level,
-                                         full_name );
+          it->second->parse_diagnostics(msg->status[status_i].values,
+                                        msg->status[status_i].level,
+                                        full_name);
         }
       }
     }
