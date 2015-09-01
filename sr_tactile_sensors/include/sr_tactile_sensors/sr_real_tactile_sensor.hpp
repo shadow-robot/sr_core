@@ -31,7 +31,9 @@
 
 #include <ros/ros.h>
 
-//our robot code
+#include <string>
+
+// our robot code
 #include <robot/robot.h>
 #include <robot/hand.h>
 #include <robot/hand_protocol.h>
@@ -64,7 +66,7 @@ namespace shadowrobot
     SrRealTactileSensorManager();
     ~SrRealTactileSensorManager();
   };
-}
+}  // namespace shadowrobot
 
 /* For the emacs weenies in the crowd.
 Local Variables:

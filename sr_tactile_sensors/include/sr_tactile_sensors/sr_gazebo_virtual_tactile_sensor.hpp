@@ -32,6 +32,7 @@
 #include <ros/ros.h>
 
 #include <boost/thread.hpp>
+#include <string>
 
 #include "sr_tactile_sensors/sr_generic_tactile_sensor.hpp"
 
@@ -75,7 +76,7 @@ namespace shadowrobot
     SrGazeboVirtualTactileSensorManager();
     ~SrGazeboVirtualTactileSensorManager();
   };
-}
+}  // namespace shadowrobot
 
 /* For the emacs weenies in the crowd.
 Local Variables:

@@ -31,10 +31,10 @@
 
 #include <boost/thread.hpp>
 
-//messages
+// messages
 #include <std_msgs/Float64.h>
 
-//a ros subscriber (will be instantiated later on)
+// a ros subscriber (will be instantiated later on)
 ros::Subscriber sub[5];
 std_msgs::Float64::_data_type data[5];
 boost::mutex update_mutex;
@@ -74,7 +74,7 @@ void callback_th(const std_msgs::Float64ConstPtr& msg)
 
 int main(int argc, char** argv)
 {
-  //init the ros node
+  // init the ros node
   ros::init(argc, argv, "test_tactile");
 
   ros::NodeHandle node_tactile;
@@ -88,10 +88,10 @@ int main(int argc, char** argv)
   ros::Rate publish_rate = ros::Rate(20.0);
   std_msgs::Float64::_data_type cur_data[5] = {0};
 
-  while( ros::ok() )
+  while (ros::ok())
   {
     update_mutex.lock();
-    for (int i=0; i<5; i++)
+    for (int i = 0; i < 5; i++)
       cur_data[i] = data[i];
     update_mutex.unlock();
 

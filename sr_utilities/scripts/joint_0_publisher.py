@@ -21,10 +21,10 @@ class Joint0Publisher:
         self.joint_state_msg.effort = []
 
         fj0 = [0.0, 0.0, 0.0]
-        for name,position,velocity,effort in zip(data.name,
-                                                 data.position,
-                                                 data.velocity,
-                                                 data.effort):
+        for name, position, velocity, effort in zip(data.name,
+                                                   data.position,
+                                                   data.velocity,
+                                                   data.effort):
             if "FJ1" in name and len(name) == 4:
                 fj0 = [position, velocity, effort]
 
