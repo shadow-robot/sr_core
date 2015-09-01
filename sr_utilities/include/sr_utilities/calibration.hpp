@@ -106,8 +106,8 @@ namespace shadow_robot
      * The size of the calibration table, used for quick access
      */
     unsigned int calibration_table_size_;
-  };  // namespace shadow_robot
-}
+  };
+}  // namespace shadow_robot
 
 /* For the emacs weenies in the crowd.
 Local Variables:

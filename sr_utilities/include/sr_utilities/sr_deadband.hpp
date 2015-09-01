@@ -80,8 +80,8 @@ namespace sr_deadband
      * @return true if the demand is in the deadband.
      */
     bool is_in_deadband(T demand, T error, T deadband,
-			double deadband_multiplicator = 5.0,
-			unsigned int nb_errors_for_avg = 50)
+                        double deadband_multiplicator = 5.0,
+                        unsigned int nb_errors_for_avg = 50)
     {
       bool is_in_deadband = false;
 
@@ -114,16 +114,16 @@ namespace sr_deadband
         {
           if (fabs(avg_error) > deadband_multiplicator*deadband)
           {
-	    // we're outside of the big deadband -> compute the error
+            // we're outside of the big deadband -> compute the error
             is_in_deadband = false;
             // when we leave the big deadband we wait until we're back in the small deadband before stopping the motor
             entered_small_deadband = false;
           }
           else
-	  {
+          {
             // we're in the big deadband -> send a force demand of 0.0
             is_in_deadband = true;
-	  }
+          }
         }
       }
 
