@@ -58,7 +58,7 @@ namespace joint_calibration
   {
     return p1.raw_value < p2.raw_value;
   }
-}
+}  // namespace joint_calibration
 
 namespace shadow_robot
 {
@@ -69,7 +69,7 @@ namespace shadow_robot
   class JointCalibration
   {
   public:
-    JointCalibration(std::vector<joint_calibration::Point> calibration_table);
+    explicit JointCalibration(std::vector<joint_calibration::Point> calibration_table);
 
     /**
      * Computes the calibrated joint position from the ADC raw reading.
@@ -87,10 +87,10 @@ namespace shadow_robot
     {
       out << " calibration = {";
       out << "size: " << calib.calibration_table_size_;
-      for( unsigned int i=0; i< calib.calibration_table_.size(); ++i)
+      for ( unsigned int i = 0; i < calib.calibration_table_.size(); ++i)
       {
         out << " [raw: " << calib.calibration_table_[i].raw_value;
-        out << ", cal: " << calib.calibration_table_[i].calibrated_value<<"]";
+        out << ", cal: " << calib.calibration_table_[i].calibrated_value << "]";
       }
       out << " }";
       return out;
@@ -106,7 +106,7 @@ namespace shadow_robot
      * The size of the calibration table, used for quick access
      */
     unsigned int calibration_table_size_;
-  };
+  };  // namespace shadow_robot
 }
 
 /* For the emacs weenies in the crowd.
@@ -116,4 +116,3 @@ End:
 */
 
 #endif
-
