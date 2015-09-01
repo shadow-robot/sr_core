@@ -37,17 +37,18 @@ namespace shadowrobot
  **********************************/
   SrGazeboVirtualTactileSensor::SrGazeboVirtualTactileSensor(std::string name,
                                                              std::string gazebo_bumper_topic) :
-    SrGenericTactileSensor(name, ""),
-    touch_value(0.0),
-    touch_freshdata(false)
+          SrGenericTactileSensor(name, ""),
+          touch_value(0.0),
+          touch_freshdata(false)
   {
     sub = nh.subscribe(gazebo_bumper_topic, 2, &SrGazeboVirtualTactileSensor::callback, this);
   }
 
   SrGazeboVirtualTactileSensor::~SrGazeboVirtualTactileSensor()
-  {}
+  {
+  }
 
-  void SrGazeboVirtualTactileSensor::callback(const gazebo_msgs::ContactsState& msg)
+  void SrGazeboVirtualTactileSensor::callback(const gazebo_msgs::ContactsState &msg)
   {
     double tmp_value;
     ::geometry_msgs::Vector3 v;
@@ -63,11 +64,11 @@ namespace shadowrobot
     if (msg.states.size() > 0)
     {
       size_t nb_wrench = msg.states[0].wrenches.size();
-      for (unsigned int i=0;i<nb_wrench;i++)
+      for (unsigned int i = 0; i < nb_wrench; i++)
       {
-          v.x = v.x + msg.states[0].wrenches[i].force.x;
-          v.y = v.y + msg.states[0].wrenches[i].force.y;
-          v.z = v.z + msg.states[0].wrenches[i].force.z;
+        v.x = v.x + msg.states[0].wrenches[i].force.x;
+        v.y = v.y + msg.states[0].wrenches[i].force.y;
+        v.z = v.z + msg.states[0].wrenches[i].force.z;
       }
       v.x = v.x / nb_wrench;
       v.y = v.y / nb_wrench;
@@ -75,7 +76,7 @@ namespace shadowrobot
       tmp_value = sqrt(pow(v.x, 2) + pow(v.y, 2) + pow(v.z, 2));
       touch_mutex.lock();
       touch_value = tmp_value;
-      touch_freshdata =  true;
+      touch_freshdata = true;
       touch_mutex.unlock();
     }
   }
@@ -84,14 +85,14 @@ namespace shadowrobot
   {
     double return_value;
     touch_mutex.lock();
-    if(touch_freshdata)
+    if (touch_freshdata)
     {
-        return_value = touch_value;
-        touch_freshdata=false;
+      return_value = touch_value;
+      touch_freshdata = false;
     }
     else
     {
-        return_value= 0.0;
+      return_value = 0.0;
     }
     touch_mutex.unlock();
 
@@ -103,24 +104,23 @@ namespace shadowrobot
  *     TACTILE SENSOR MANAGER     *
  **********************************/
   SrGazeboVirtualTactileSensorManager::SrGazeboVirtualTactileSensorManager() :
-    SrTactileSensorManager()
+          SrTactileSensorManager()
   {
     std::vector<std::vector<std::string> > all_names = get_all_names();
 
-    for( unsigned int i=0; i< all_names[0].size() ; ++i)
+    for (unsigned int i = 0; i < all_names[0].size(); ++i)
     {
       tactile_sensors.push_back(
-        boost::shared_ptr<SrGazeboVirtualTactileSensor>(
-          new SrGazeboVirtualTactileSensor(all_names[0][i],
-                                           "contacts/"+all_names[0][i]+"/distal")
-        )
-      );
+              boost::shared_ptr<SrGazeboVirtualTactileSensor>(
+                      new SrGazeboVirtualTactileSensor(all_names[0][i],
+                                                       "contacts/" + all_names[0][i] + "/distal")));
     }
   }
 
   SrGazeboVirtualTactileSensorManager::~SrGazeboVirtualTactileSensorManager()
-  {}
-}
+  {
+  }
+}  // namespace shadowrobot
 
 
 /**
@@ -131,15 +131,17 @@ namespace shadowrobot
  *
  * @return -1 if error linking with the robot (i.e. robot code not started)
  */
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
   ros::init(argc, argv, "sr_tactile_sensor");
   ros::NodeHandle n;
 
   shadowrobot::SrGazeboVirtualTactileSensorManager tact_sens_mgr;
 
-  while( ros::ok() )
+  while (ros::ok())
+  {
     tact_sens_mgr.publish_all();
+  }
 
   return 0;
 }
