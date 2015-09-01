@@ -42,7 +42,7 @@ namespace shadowrobot
   {
     if (name.find("th") != std::string::npos)
     {
-      //fills the vector of joint names: we're taking J2 and J1 for TH
+      // fills the vector of joint names: we're taking J2 and J1 for TH
       std::string tmp = boost::to_upper_copy(name);
       tmp += "J2";
       names_joints_linked.push_back(tmp);
@@ -52,7 +52,7 @@ namespace shadowrobot
     }
     else
     {
-      //fills the vector of joint names: we're taking J3 and J0
+      // fills the vector of joint names: we're taking J3 and J0
       std::string tmp = boost::to_upper_copy(name);
       tmp += "J3";
       names_joints_linked.push_back(tmp);
@@ -74,14 +74,14 @@ namespace shadowrobot
     int msg_length = msg->joints_list_length;
     for (size_t index_msg = 0; index_msg < msg_length; ++index_msg)
     {
-      //get the sensor name
+      // get the sensor name
       std::string sensor_name = msg->joints_list[index_msg].joint_name;
 
       for (size_t index_name = 0; index_name < names_joints_linked.size(); ++index_name)
       {
         if (sensor_name.compare(names_joints_linked[index_name]) == 0)
         {
-          //pressure value = sum(positions)
+          // ressure value = sum(positions)
           tmp_value += msg->joints_list[index_msg].joint_position;
           break;
         }

@@ -27,6 +27,9 @@
 #ifndef _TEST_JOINT_MOVEMENT_HPP_
 #define _TEST_JOINT_MOVEMENT_HPP_
 
+#include <map>
+#include <string>
+#include <vector>
 #include <sr_movements/movement_from_image.hpp>
 #include <sr_movements/movement_publisher.hpp>
 #include <sr_robot_msgs/JointControllerState.h>
@@ -78,7 +81,7 @@ namespace shadow_robot
     /// used with the sole purpose of knowing the name of the topic we want to subscribe to
     boost::shared_ptr<shadowrobot::HandCommander> hand_commander_;
   };
-}
+}  // namespace shadow_robot
 
 /* For the emacs weenies in the crowd.
    Local Variables:

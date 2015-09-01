@@ -27,6 +27,10 @@
 #ifndef SR_SELF_TEST_HPP_
 #define SR_SELF_TEST_HPP_
 
+#include <map>
+#include <string>
+#include <vector>
+
 #include <diagnostic_msgs/SelfTest.h>
 
 #include "sr_self_test/sr_test_runner.hpp"
@@ -66,24 +70,24 @@ namespace shadow_robot
     ros::NodeHandle nh_;
     // self_test::TestRunner is the handles sequencing driver self-tests.
     shadow_robot::SrTestRunner test_runner_;
-    ///The hand commander is used for getting a list of all controlled joints
+    /// The hand commander is used for getting a list of all controlled joints
     boost::shared_ptr<shadowrobot::HandCommander> hand_commander_;
     /// True if testing gazebo, false if testing etherCAT hand
     bool simulated_;
 
-    ///Add some services to be checked for existence
+    /// Add some services to be checked for existence
     void test_services_();
 
-    ///a vector containing all the joints to be tested
+    /// a vector containing all the joints to be tested
     std::vector<std::string> joints_to_test_;
 
-    ///a vector containing the test to be run on the motors.
+    /// a vector containing the test to be run on the motors.
     boost::ptr_vector<MotorTest> motor_tests_;
 
     ///////
     // TESTING MOVEMENTS
 
-    ///The index of the current joint being tested (movement)
+    /// The index of the current joint being tested (movement)
     size_t index_joints_to_test_;
 
     /**
@@ -93,7 +97,7 @@ namespace shadow_robot
      */
     void add_all_movements_tests_(const ros::TimerEvent &event);
 
-    ///Timer used to start add_all_movements_tests_ asynchronously
+    /// Timer used to start add_all_movements_tests_ asynchronously
     ros::Timer test_movement_timer_;
 
     /**
@@ -109,10 +113,10 @@ namespace shadow_robot
      */
     void send_safe_target_(std::string joint_name);
 
-    ///A map storing the safe targets for the joints (only those different than min)
+    /// A map storing the safe targets for the joints (only those different than min)
     boost::shared_ptr<std::map<std::string, sr_robot_msgs::joint> > safe_targets_;
 
-    ///Initialises the map safe_targets_
+    /// Initialises the map safe_targets_
     void init_safe_targets_();
 
     /**
@@ -123,17 +127,17 @@ namespace shadow_robot
      */
     void update_safe_targets_(std::string joint_name);
 
-    ///mapping the joint name to a TestJointMovement
+    /// mapping the joint name to a TestJointMovement
     std::map<std::string, boost::shared_ptr<TestJointMovement> > test_mvts_;
-    ///The maximum MSE we can accept for the test to succeed
+    /// The maximum MSE we can accept for the test to succeed
     static const double MAX_MSE_CONST_;
-    ///Where the plots of the movements are stored
+    /// Where the plots of the movements are stored
     std::string path_to_plots_;
 
-    ///Thread for running the tests in parallel when doing the tests on real hand
+    /// Thread for running the tests in parallel when doing the tests on real hand
     boost::shared_ptr<boost::thread> test_thread_;
   };
-}
+}  // namespace shadow_robot
 
 /* For the emacs weenies in the crowd.
    Local Variables:

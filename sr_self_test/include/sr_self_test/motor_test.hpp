@@ -29,6 +29,7 @@
 #ifndef _MOTOR_TEST_H_
 #define _MOTOR_TEST_H_
 
+#include <string>
 #include <self_test/self_test.h>
 #include <sr_hand/hand_commander.hpp>
 
@@ -55,8 +56,8 @@ namespace shadow_robot
     ros::Publisher effort_pub_;
     ros::Subscriber diagnostic_sub_;
     double PWM_target_;
-    ///0 if not recording, 1 if going +, -1 if going -
-    short record_data_;
+    /// 0 if not recording, 1 if going +, -1 if going -
+    int16_t record_data_;
 
     bool test_current_zero_;
     bool test_current_moving_;
@@ -74,7 +75,7 @@ namespace shadow_robot
      */
     void diagnostics_agg_cb_(const diagnostic_msgs::DiagnosticArray::ConstPtr &msg);
   };
-}
+}  // namespace shadow_robot
 
 /* For the emacs weenies in the crowd.
    Local Variables:

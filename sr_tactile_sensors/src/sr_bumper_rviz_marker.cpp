@@ -28,6 +28,7 @@
 #include <gazebo_msgs/ContactsState.h>
 
 #include <string>
+#include <vector>
 
 #include <boost/thread.hpp>
 

@@ -29,6 +29,7 @@
 #ifndef _MANUAL_TEST_H_
 #define _MANUAL_TEST_H_
 
+#include <string>
 #include <diagnostic_updater/DiagnosticStatusWrapper.h>
 
 namespace shadow_robot
@@ -47,15 +48,15 @@ namespace shadow_robot
   private:
     ros::NodeHandle nh_;
 
-    ///the message we want the user to see
+    /// the message we want the user to see
     std::string message_;
-    ///an id for the test
+    /// an id for the test
     int id_;
 
-    ///Service client for getting the user input
+    /// Service client for getting the user input
     ros::ServiceClient user_input_client_;
   };
-} //end namespace
+}  // namespace shadow_robot
 
 /* For the emacs weenies in the crowd.
    Local Variables:

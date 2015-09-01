@@ -27,6 +27,9 @@
 
 #include "sr_tactile_sensors/sr_real_tactile_sensor.hpp"
 
+#include <string>
+#include <vector>
+
 namespace shadowrobot
 {
 /**********************************
@@ -86,7 +89,7 @@ namespace shadowrobot
   SrRealTactileSensorManager::~SrRealTactileSensorManager()
   {
   }
-}
+}  // namespace shadowrobot
 
 
 /**

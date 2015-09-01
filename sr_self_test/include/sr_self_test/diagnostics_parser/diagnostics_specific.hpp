@@ -35,6 +35,8 @@
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/variant.hpp>
 #include <sstream>
+#include <utility>
+#include <string>
 #include <ros/ros.h>
 
 #include "sr_self_test/diagnostics_parser/diagnostics_common.hpp"
@@ -51,7 +53,7 @@ namespace shadow_robot
     {
       values_.reset(new DiagMap());
       DiagnosticTest jitter;
-      jitter.min_max = std::make_pair(0.0, 100.0); //min and max acceptable jitter
+      jitter.min_max = std::make_pair(0.0, 100.0);  // min and max acceptable jitter
       values_->insert(std::pair<std::string, DiagnosticTest>("Avg Loop Jitter (us)", jitter));
     }
 
@@ -80,8 +82,8 @@ namespace shadow_robot
     {
       values_.reset(new DiagMap());
       DiagnosticTest dropped_packet;
-      dropped_packet.min_max = std::make_pair(0, 200); //min and max acceptable dropped packets
-      //max  (TODO: this should be a ratio dropped/sent packets??)
+      dropped_packet.min_max = std::make_pair(0, 200);  // min and max acceptable dropped packets
+      // max  (TODO: this should be a ratio dropped/sent packets??)
       values_->insert(std::pair<std::string, DiagnosticTest>("Dropped Packets", dropped_packet));
     }
 
@@ -107,11 +109,11 @@ namespace shadow_robot
     {
       values_.reset(new DiagMap());
       DiagnosticTest voltage;
-      voltage.min_max = std::make_pair(23.5, 24.5); //min and max acceptable voltage
+      voltage.min_max = std::make_pair(23.5, 24.5);  // min and max acceptable voltage
       values_->insert(std::pair<std::string, DiagnosticTest>("Measured Voltage", voltage));
 
       DiagnosticTest temperature;
-      temperature.min_max = std::make_pair(20.0, 50.0); //min and max acceptable temperature
+      temperature.min_max = std::make_pair(20.0, 50.0);  // min and max acceptable temperature
       values_->insert(std::pair<std::string, DiagnosticTest>("Temperature", temperature));
     };
 
@@ -125,7 +127,7 @@ namespace shadow_robot
       return tmp;
     };
   };
-}
+}  // namespace shadow_robot
 
 /* For the emacs weenies in the crowd.
    Local Variables:

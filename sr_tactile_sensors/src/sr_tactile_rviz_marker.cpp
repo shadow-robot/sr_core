@@ -27,11 +27,11 @@
 #include <string>
 #include <boost/thread.hpp>
 
-//messages
+// messages
 #include <std_msgs/Float64.h>
 #include <visualization_msgs/Marker.h>
 
-//a ros subscriber (will be instantiated later on)
+// a ros subscriber (will be instantiated later on)
 ros::Subscriber sub[5];
 ros::Publisher marker_pub;
 std_msgs::Float64::_data_type data[5];

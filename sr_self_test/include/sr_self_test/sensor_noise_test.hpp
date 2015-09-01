@@ -27,6 +27,10 @@
 #ifndef _SENSOR_NOISE_TEST_H_
 #define _SENSOR_NOISE_TEST_H_
 
+#include <map>
+#include <string>
+#include <vector>
+
 #include <ros/ros.h>
 #include <sensor_msgs/JointState.h>
 #include "diagnostic_updater/DiagnosticStatusWrapper.h"
@@ -50,13 +54,13 @@ namespace shadow_robot
 
     void joint_states_cb_(const sensor_msgs::JointState::ConstPtr &msg);
 
-    ///reordering the joint states, keeping all the values in one vector per joint
+    /// reordering the joint states, keeping all the values in one vector per joint
     std::map<std::string, std::vector<double> > all_joint_states_;
 
     static const double MAX_NOISE_CONST_;
     static const double NOISE_EPSILON_CONST_;
   };
-}
+}  // namespace shadow_robot
 
 /* For the emacs weenies in the crowd.
    Local Variables:

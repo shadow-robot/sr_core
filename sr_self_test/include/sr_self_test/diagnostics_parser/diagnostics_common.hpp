@@ -38,6 +38,7 @@
 #include <sstream>
 #include <vector>
 #include <string>
+#include <utility>
 #include <map>
 #include <ros/ros.h>
 #include <self_test/self_test.h>
@@ -129,7 +130,7 @@ namespace shadow_robot
     }
 
     virtual void parse_diagnostics(std::vector<diagnostic_msgs::KeyValue> values,
-                                   short level, std::string full_name) = 0;
+                                   int16_t level, std::string full_name) = 0;
 
     virtual void add_test()
     {
@@ -175,7 +176,7 @@ namespace shadow_robot
     };
 
     virtual void parse_diagnostics(std::vector<diagnostic_msgs::KeyValue> values,
-                                   short level, std::string full_name)
+                                   int16_t level, std::string full_name)
     {
       this->full_name = full_name;
 
@@ -216,13 +217,13 @@ namespace shadow_robot
       VariantGreaterThan greater_than;
       for (values_it = values_->begin(); values_it != values_->end(); ++values_it)
       {
-        //We're checking all values. If one is out of the specified range -> test fails
+        // We're checking all values. If one is out of the specified range -> test fails
         for (size_t i = 0; i < values_it->second.received_values.size(); ++i)
         {
-          //is value > min?
+          // is value > min?
           bool min_comp = boost::apply_visitor(greater_than, values_it->second.received_values[i],
                                                values_it->second.min_max.first);
-          //is value > max?
+          // is value > max?
           bool max_comp = boost::apply_visitor(greater_than, values_it->second.received_values[i],
                                                values_it->second.min_max.second);
 
@@ -234,7 +235,7 @@ namespace shadow_robot
           {
             ok = false;
             out_of_range_value = values_it->second.received_values[i];
-            break; //test fails no need to go further
+            break;  // test fails no need to go further
           }
         }
         if (ok)
@@ -246,7 +247,7 @@ namespace shadow_robot
           ss << " ERROR(";
         }
 
-        //we're returning the first value that was out of the range
+        // we're returning the first value that was out of the range
         ss << values_it->first << "=" << out_of_range_value << ")";
       }
 
@@ -269,7 +270,7 @@ namespace shadow_robot
     };
 
     virtual void parse_diagnostics(std::vector<diagnostic_msgs::KeyValue> values,
-                                   short level, std::string full_name)
+                                   int16_t level, std::string full_name)
     {
       this->full_name = full_name;
       level_ = level;
@@ -282,7 +283,7 @@ namespace shadow_robot
     };
 
   protected:
-    short level_;
+    int16_t level_;
 
     virtual std::pair<bool, std::string> to_string_()
     {

@@ -28,6 +28,10 @@
 #ifndef SR_TEST_RUNNER_HPP_
 #define SR_TEST_RUNNER_HPP_
 
+#include <map>
+#include <string>
+#include <vector>
+
 #include <self_test/self_test.h>
 #include "sr_self_test/gnuplot-iostream.h"
 #include "sr_self_test/diagnostic_parser.hpp"
@@ -52,10 +56,10 @@ namespace shadow_robot
 
     void addServicesTest(std::vector<std::string> services_to_test);
 
-    ///Those tests require the user input
+    /// Those tests require the user input
     void addManualTests();
 
-    ///Tests the noise of the pose sensor
+    /// Tests the noise of the pose sensor
     void addSensorNoiseTest();
 
     void plot(std::map<std::string, std::vector<double> > joints);
@@ -66,7 +70,7 @@ namespace shadow_robot
 
     void plot(std::map<std::string, std::vector<double> > joints, std::string path, bool testing);
 
-    ///Adding a test which parses diagnostics for jitter, dropped messages, etc...
+    /// Adding a test which parses diagnostics for jitter, dropped messages, etc...
     void add_diagnostic_parser();
 
   private:
@@ -80,16 +84,15 @@ namespace shadow_robot
 
     boost::shared_ptr<Gnuplot> gnuplot_;
 
-    ///Class used for parsing the diagnostics
+    /// Class used for parsing the diagnostics
     boost::shared_ptr<DiagnosticParser> diagnostic_parser_;
 
-    ///runs manual test (visual calibration check, tactiles...)
+    /// runs manual test (visual calibration check, tactiles...)
     std::vector<boost::shared_ptr<ManualTests> > manual_tests_;
 
     boost::shared_ptr<SensorNoiseTest> sensor_noise_test_;
   };
-
-}
+}  // namespace shadow_robot
 
 /* For the emacs weenies in the crowd.
    Local Variables:

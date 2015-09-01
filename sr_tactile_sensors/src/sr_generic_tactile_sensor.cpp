@@ -61,13 +61,12 @@ namespace shadowrobot
   SrTactileSensorManager::SrTactileSensorManager() :
           n_tilde("~"), publish_rate(20.0)
   {
-    using namespace XmlRpc;
     double publish_freq;
     n_tilde.param("publish_frequency", publish_freq, 20.0);
     publish_rate = ros::Rate(publish_freq);
 
-    //initializing the thresholds to test if the hand is holding
-    //something or not (compared agains the pressure value).
+    // initializing the thresholds to test if the hand is holding
+    // something or not (compared agains the pressure value).
     double tmp[5] = {117, 117, 113, 111, 0};
     XmlRpc::XmlRpcValue threshold_xmlrpc;
     if (n_tilde.getParam("/grasp_touch_thresholds", threshold_xmlrpc))
@@ -236,7 +235,7 @@ namespace shadowrobot
     publish_rate.sleep();
     ros::spinOnce();
   }
-}
+}  // namespace shadowrobot
 
 
 /* For the emacs weenies in the crowd.
