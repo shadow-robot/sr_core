@@ -53,7 +53,7 @@ namespace shadow_robot
      * growing values of the raw_value
      */
     std::sort(this->calibration_table_.begin(), this->calibration_table_.end(),
-	      joint_calibration::sort_growing_raw_operator);
+              joint_calibration::sort_growing_raw_operator);
   }
 
   /**
