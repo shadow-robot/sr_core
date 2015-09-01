@@ -51,27 +51,27 @@ namespace shadowrobot
   {
     double tmp_value;
     ::geometry_msgs::Vector3 v;
-    v.x=0;
-    v.y=0;
-    v.z=0;
+    v.x = 0;
+    v.y = 0;
+    v.z = 0;
 
     ROS_DEBUG("Touch by %s", msg.header.frame_id.c_str());
     // Parse the message to retrieve the relevant touch pressure information
     // Currently the sum of all contacts.
     // More sophisticated analysis can be done to take the contact that is the most aligned with the distal link normal
 
-    if(msg.states.size()>0)
+    if (msg.states.size() > 0)
     {
-      unsigned int nb_wrench = msg.states[0].wrenches.size();
+      size_t nb_wrench = msg.states[0].wrenches.size();
       for (unsigned int i=0;i<nb_wrench;i++)
       {
-          v.x=v.x+msg.states[0].wrenches[i].force.x;
-          v.y=v.y+msg.states[0].wrenches[i].force.y;
-          v.z=v.z+msg.states[0].wrenches[i].force.z;
+          v.x = v.x + msg.states[0].wrenches[i].force.x;
+          v.y = v.y + msg.states[0].wrenches[i].force.y;
+          v.z = v.z + msg.states[0].wrenches[i].force.z;
       }
-      v.x=v.x/nb_wrench;
-      v.y=v.y/nb_wrench;
-      v.z=v.z/nb_wrench;
+      v.x = v.x / nb_wrench;
+      v.y = v.y / nb_wrench;
+      v.z = v.z / nb_wrench;
       tmp_value = sqrt(pow(v.x, 2) + pow(v.y, 2) + pow(v.z, 2));
       touch_mutex.lock();
       touch_value = tmp_value;
