@@ -36,7 +36,7 @@ class InteractiveConnectorSelector(object):
         self.select_controls = {}
 
         for object_name in self.object_names:
-            self.create_marker( object_name )
+            self.create_marker(object_name)
 
     def create_marker(self, object_name):
         # create an interactive marker for our server
@@ -46,7 +46,7 @@ class InteractiveConnectorSelector(object):
         int_marker.description = "Select this object"
         int_marker.pose.position.z = -0.3
 
-        self.int_markers[ object_name ] = int_marker
+        self.int_markers[object_name] = int_marker
 
         # create a marker over the object
         object_marker = Marker()
@@ -66,12 +66,12 @@ class InteractiveConnectorSelector(object):
         object_control = InteractiveMarkerControl()
         object_control.interaction_mode = InteractiveMarkerControl.BUTTON
         object_control.always_visible = True
-        object_control.markers.append( object_marker )
+        object_control.markers.append(object_marker)
 
         self.object_controls[object_name] = object_control
 
         # add the control to the interactive marker
-        self.int_markers[object_name].controls.append( object_control )
+        self.int_markers[object_name].controls.append(object_control)
 
         # add the interactive marker to our collection &
         # tell the server to call processFeedback() when feedback arrives for it
@@ -93,7 +93,7 @@ class InteractiveConnectorSelector(object):
 
         # we loop through all our interactive markers.
         for index, name in enumerate(self.object_controls):
-            self.object_controls[name].markers.remove( self.object_markers[name] )
+            self.object_controls[name].markers.remove(self.object_markers[name])
 
             if name == selected_name:
                 # the selected object marker is set
@@ -118,13 +118,13 @@ class InteractiveConnectorSelector(object):
                 self.object_markers[name].color.g = 0.02
                 self.object_markers[name].color.b = 1.0
 
-            self.object_controls[name].markers.append( self.object_markers[name] )
+            self.object_controls[name].markers.append(self.object_markers[name])
 
             self.server.insert(self.int_markers[name])
 
         # we update the interactive marker server
         self.server.applyChanges()
-        self.callback_function( selected_name )
+        self.callback_function(selected_name)
 
 
 # this is just used for debug

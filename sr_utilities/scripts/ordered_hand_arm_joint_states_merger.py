@@ -4,7 +4,8 @@ from sensor_msgs.msg import JointState
 from sr_utilities.srv import getJointState
 import thread
 
-RATE=100
+RATE = 100
+
 
 class MergeMessages(object):
     def __init__(self):
@@ -25,7 +26,7 @@ class MergeMessages(object):
 
         self.mutex = thread.allocate_lock()
 
-        r = rospy.Rate( RATE )
+        r = rospy.Rate(RATE)
         while not rospy.is_shutdown():
             self.publish()
             r.sleep()
@@ -50,8 +51,8 @@ class MergeMessages(object):
             self.msg_1_received = False
             self.msg_2_received = False
 
-    def getJointStateCB(self,req):
-        res=self.joint_state_msg
+    def getJointStateCB(self, req):
+        res = self.joint_state_msg
         return res
 
 

@@ -34,9 +34,7 @@ class FilterMessages(object):
 
         return mean/self.queue_len
 
-
     def callback(self, data):
-
         self.queue.append(data)
 
         if len(self.queue) >= self.queue_len:

@@ -6,6 +6,7 @@ import thread
 
 RATE = 100
 
+
 class GetJointState(object):
     def __init__(self):
         rospy.init_node('get_joint_state_service', anonymous=True)
@@ -24,7 +25,7 @@ class GetJointState(object):
     def callback1(self, data):
         self.joint_state_msg = data
 
-    def getJointStateCB(self,req):
+    def getJointStateCB(self, req):
         res = self.joint_state_msg
         return res
 
