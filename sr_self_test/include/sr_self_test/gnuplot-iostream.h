@@ -20,8 +20,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#ifndef GNUPLOT_IOSTREAM_H
-#define GNUPLOT_IOSTREAM_H
+#ifndef SR_SELF_TEST_GNUPLOT_IOSTREAM_H
+#define SR_SELF_TEST_GNUPLOT_IOSTREAM_H
 
 // C system includes
 #include <stdio.h>
@@ -30,7 +30,7 @@ THE SOFTWARE.
 #include <termios.h>
 #include <unistd.h>
 #include <pty.h>
-#endif // GNUPLOT_ENABLE_PTY
+#endif  // GNUPLOT_ENABLE_PTY
 
 // C++ system includes
 #include <fstream>
@@ -58,7 +58,7 @@ THE SOFTWARE.
 
 #include "boost/filesystem.hpp"
 
-#endif // BOOST_VERSION
+#endif  // BOOST_VERSION
 
 // Patch for Windows by Damien Loison
 #ifdef WIN32
@@ -99,7 +99,8 @@ public:
     try
     {
       remove(file);
-    } catch (const std::exception &e)
+    }
+    catch (const std::exception &e)
     {
       std::cerr << "Failed to remove temporary file " << file << std::endl;
     }
@@ -109,7 +110,7 @@ public:
   boost::filesystem::path file;
 };
 
-#endif // GNUPLOT_USE_TMPFILE
+#endif  // GNUPLOT_USE_TMPFILE
 
 ///////////////////////////////////////////////////////////
 
@@ -138,7 +139,8 @@ private:
 
 #ifdef GNUPLOT_ENABLE_PTY
 #define GNUPLOT_ENABLE_FEEDBACK
-class GnuplotFeedbackPty : public GnuplotFeedback {
+class GnuplotFeedbackPty : public GnuplotFeedback
+{
 public:
   explicit GnuplotFeedbackPty(bool debug_messages) :
     pty_fn(),
@@ -147,34 +149,40 @@ public:
     slave_fd(-1)
   {
   // adapted from http://www.gnuplot.info/files/gpReadMouseTest.c
-    if(0 > openpty(&master_fd, &slave_fd, NULL, NULL, NULL)) {
+    if (0 > openpty(&master_fd, &slave_fd, NULL, NULL, NULL))
+    {
       perror("openpty");
       throw std::runtime_error("openpty failed");
     }
     char pty_fn_buf[1024];
-    if(ttyname_r(slave_fd, pty_fn_buf, 1024)) {
+    if (ttyname_r(slave_fd, pty_fn_buf, 1024))
+    {
       perror("ttyname_r");
       throw std::runtime_error("ttyname failed");
     }
     pty_fn = std::string(pty_fn_buf);
-    if(debug_messages) {
+    if (debug_messages)
+    {
       std::cerr << "feedback_fn=" << pty_fn << std::endl;
     }
 
     // disable echo
     struct termios tios;
-    if(tcgetattr(slave_fd, &tios) < 0) {
+    if (tcgetattr(slave_fd, &tios) < 0)
+    {
       perror("tcgetattr");
       throw std::runtime_error("tcgetattr failed");
     }
     tios.c_lflag &= ~(ECHO | ECHONL);
-    if(tcsetattr(slave_fd, TCSAFLUSH, &tios) < 0) {
+    if (tcsetattr(slave_fd, TCSAFLUSH, &tios) < 0)
+    {
       perror("tcsetattr");
       throw std::runtime_error("tcsetattr failed");
     }
 
     pty_fh = fdopen(master_fd, "r");
-    if(!pty_fh) {
+    if (!pty_fh)
+    {
       throw std::runtime_error("fdopen failed");
     }
   }
@@ -185,17 +193,23 @@ private:
   const GnuplotFeedbackPty& operator=(const GnuplotFeedbackPty &);
 
 public:
-  ~GnuplotFeedbackPty() {
-    if(pty_fh) fclose(pty_fh);
-    if(master_fd > 0) ::close(master_fd);
-    if(slave_fd  > 0) ::close(slave_fd);
+  ~GnuplotFeedbackPty()
+  {
+    if (pty_fh)
+      fclose(pty_fh);
+    if (master_fd > 0)
+      ::close(master_fd);
+    if (slave_fd  > 0)
+      ::close(slave_fd);
   }
 
-  std::string filename() const {
+  std::string filename() const
+  {
     return pty_fn;
   }
 
-  FILE *handle() const {
+  FILE *handle() const
+  {
     return pty_fh;
   }
 
@@ -204,44 +218,7 @@ private:
   FILE *pty_fh;
   int master_fd, slave_fd;
 };
-//#elif defined GNUPLOT_USE_TMPFILE
-//// Currently this doesn't work since fscanf doesn't block (need something like "tail -f")
-//#define GNUPLOT_ENABLE_FEEDBACK
-//class GnuplotFeedbackTmpfile : public GnuplotFeedback {
-//public:
-//	explicit GnuplotFeedbackTmpfile(bool debug_messages) :
-//		tmp_file(),
-//		fh(NULL)
-//	{
-//		if(debug_messages) {
-//			std::cerr << "feedback_fn=" << filename() << std::endl;
-//		}
-//		fh = fopen(filename().c_str(), "a");
-//	}
-//
-//	~GnuplotFeedbackTmpfile() {
-//		fclose(fh);
-//	}
-//
-//private:
-//	// noncopyable
-//	GnuplotFeedbackTmpfile(const GnuplotFeedbackTmpfile &);
-//	const GnuplotFeedbackTmpfile& operator=(const GnuplotFeedbackTmpfile &);
-//
-//public:
-//	std::string filename() const {
-//		return tmp_file.file.string();
-//	}
-//
-//	FILE *handle() const {
-//		return fh;
-//	}
-//
-//private:
-//	GnuplotTmpfile tmp_file;
-//	FILE *fh;
-//};
-#endif // GNUPLOT_ENABLE_PTY, GNUPLOT_USE_TMPFILE
+#endif  // GNUPLOT_ENABLE_PTY, GNUPLOT_USE_TMPFILE
 
 ///////////////////////////////////////////////////////////
 
@@ -338,7 +315,7 @@ public:
     }
     if (send_e)
     {
-      *stream << "e" << std::endl; // gnuplot's "end of array" token
+      *stream << "e" << std::endl;  // gnuplot's "end of array" token
     }
   }
 
@@ -357,7 +334,7 @@ public:
     assert(x == x_last && y == y_last);
     if (send_e)
     {
-      *stream << "e" << std::endl; // gnuplot's "end of array" token
+      *stream << "e" << std::endl;  // gnuplot's "end of array" token
     }
   }
 
@@ -406,7 +383,7 @@ public:
     }
     if (send_e)
     {
-      *stream << "e" << std::endl; // gnuplot's "end of array" token
+      *stream << "e" << std::endl;  // gnuplot's "end of array" token
     }
   }
 
@@ -448,52 +425,65 @@ public:
 
 #ifdef GNUPLOT_ENABLE_BLITZ
   // Note: T could be either a scalar or a blitz::TinyVector.
-  template <class T>
-  void send(const blitz::Array<T, 2> &a) {
-    for(int i=a.lbound(0); i<=a.ubound(0); i++) {
-      for(int j=a.lbound(1); j<=a.ubound(1); j++) {
+  template<class T>
+  void send(const blitz::Array<T, 2> &a)
+  {
+    for (int i = a.lbound(0); i <= a.ubound(0); i++)
+    {
+      for (int j = a.lbound(1); j <= a.ubound(1); j++)
+      {
         sendEntry(a(i, j));
         *stream << "\n";
       }
-      *stream << "\n"; // blank line between rows
+      *stream << "\n";  // blank line between rows
     }
-    if(send_e) {
-      *stream << "e" << std::endl; // gnuplot's "end of array" token
+    if (send_e)
+    {
+      *stream << "e" << std::endl;  // gnuplot's "end of array" token
     }
   }
 
-  template <class T, int d>
-  void sendBinary(const blitz::Array<T, d> &arr) {
+  template<class T, int d>
+  void sendBinary(const blitz::Array <T, d> &arr)
+  {
     stream->write(reinterpret_cast<const char *>(arr.data()), arr.size() * sizeof(T));
   }
 
-  template <class T>
-  std::string binfmt(const blitz::Array<T, 2> &arr) {
+  template<class T>
+  std::string binfmt(const blitz::Array<T, 2> &arr)
+  {
     std::ostringstream tmp;
-    tmp << " format='" << formatCode((T*)NULL) << "'";
+    tmp << " format='" << formatCode((T *) NULL) << "'";
     tmp << " array=(" << arr.extent(0) << "," << arr.extent(1) << ")";
-    if(arr.isMajorRank(0)) tmp << "scan=yx"; // i.e. C-style ordering
+    if (arr.isMajorRank(0))
+    {
+      tmp << "scan=yx";
+    } // i.e. C-style ordering
     tmp << " ";
     return tmp.str();
   }
 
 private:
-  template <class T, int N>
-  void sendEntry(blitz::TinyVector<T, N> v) {
-    for(int i=0; i<N; i++) {
+  template<class T, int N>
+  void sendEntry(blitz::TinyVector <T, N> v)
+  {
+    for (int i = 0; i < N; i++)
+    {
       sendEntry(v[i]);
     }
   }
 
-  template <class T, int N>
-  std::string formatCode(blitz::TinyVector<T, N> *) {
+  template<class T, int N>
+  std::string formatCode(blitz::TinyVector <T, N> *)
+  {
     std::ostringstream tmp;
-    for(int i=0; i<N; i++) {
-      tmp << formatCode((T*)NULL);
+    for (int i = 0; i < N; i++)
+    {
+      tmp << formatCode((T *) NULL);
     }
     return tmp.str();
   }
-#endif // GNUPLOT_ENABLE_BLITZ
+#endif  // GNUPLOT_ENABLE_BLITZ
 
 private:
   std::ostream *stream;
@@ -512,7 +502,7 @@ public:
                   FILENO(pout = POPEN(cmd.c_str(), "w")),
                   boost::iostreams::never_close_handle
           ),
-          pout(pout), // keeps '-Weff++' quiet
+          pout(pout),  // keeps '-Weff++' quiet
           is_pipe(true),
           feedback(NULL),
           writer(this),
@@ -527,7 +517,7 @@ public:
                   FILENO(pout = fh),
                   boost::iostreams::never_close_handle
           ),
-          pout(pout), // keeps '-Weff++' quiet
+          pout(pout),  // keeps '-Weff++' quiet
           is_pipe(false),
           feedback(NULL),
           writer(this),
@@ -639,7 +629,7 @@ private:
     return tmp_file->file.string();
 #else
     throw(std::logic_error("no filename given and temporary files not enabled"));
-#endif // GNUPLOT_USE_TMPFILE
+#endif  // GNUPLOT_USE_TMPFILE
   }
 
 public:
@@ -692,37 +682,40 @@ public:
   // window is closed, button -1 is returned.  The msg parameter is the prompt
   // that is printed to the console.
   void getMouse(
-    double &mx, double &my, int &mb,
-    std::string msg="Click Mouse!"
-  ) {
+          double &mx, double &my, int &mb,
+          std::string msg = "Click Mouse!"
+  )
+  {
     allocFeedback();
 
     *this << "set mouse" << std::endl;
     *this << "pause mouse \"" << msg << "\\n\"" << std::endl;
     *this << "if (exists(\"MOUSE_X\")) print MOUSE_X, MOUSE_Y, MOUSE_BUTTON; else print 0, 0, -1;" << std::endl;
-    if(debug_messages) {
+    if (debug_messages)
+    {
       std::cerr << "begin scanf" << std::endl;
     }
-    if(3 != fscanf(feedback->handle(), "%50lf %50lf %50d", &mx, &my, &mb)) {
+    if (3 != fscanf(feedback->handle(), "%50lf %50lf %50d", &mx, &my, &mb))
+    {
       throw std::runtime_error("could not parse reply");
     }
-    if(debug_messages) {
+    if (debug_messages)
+    {
       std::cerr << "end scanf" << std::endl;
     }
   }
 
-  void allocFeedback() {
-    if(!feedback) {
+  void allocFeedback()
+  {
+    if (!feedback)
+    {
 #ifdef GNUPLOT_ENABLE_PTY
       feedback = new GnuplotFeedbackPty(debug_messages);
-//#elif defined GNUPLOT_USE_TMPFILE
-//// Currently this doesn't work since fscanf doesn't block (need something like "tail -f")
-//			feedback = new GnuplotFeedbackTmpfile(debug_messages);
 #endif
       *this << "set print \"" << feedback->filename() << "\"" << std::endl;
     }
   }
-#endif // GNUPLOT_ENABLE_FEEDBACK
+#endif  // GNUPLOT_ENABLE_FEEDBACK
 
 private:
   FILE *pout;
@@ -734,10 +727,10 @@ private:
 #else
   // just a placeholder
   std::vector<int> tmp_files;
-#endif // GNUPLOT_USE_TMPFILE
+#endif  // GNUPLOT_USE_TMPFILE
 
 public:
   bool debug_messages;
 };
 
-#endif // GNUPLOT_IOSTREAM_H
+#endif  // SR_SELF_TEST_GNUPLOT_IOSTREAM_H

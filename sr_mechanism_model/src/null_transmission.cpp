@@ -38,10 +38,11 @@
  */
 
 #include "sr_mechanism_model/null_transmission.hpp"
+#include <string>
 
-using namespace ros_ethercat_model;
-using namespace std;
-using namespace sr_actuator;
+using std::string;
+using ros_ethercat_model::RobotState;
+using ros_ethercat_model::Transmission;
 
 PLUGINLIB_EXPORT_CLASS(sr_mechanism_model::NullTransmission, Transmission)
 
@@ -50,12 +51,12 @@ namespace sr_mechanism_model
 
   bool NullTransmission::initXml(TiXmlElement *elt, RobotState *robot)
   {
-    if (!ros_ethercat_model::Transmission::initXml(elt, robot))
+    if (!Transmission::initXml(elt, robot))
     {
       return false;
     }
 
-    //reading the joint name
+    // reading the joint name
     TiXmlElement *jel = elt->FirstChildElement("joint");
     if (!jel || !jel->Attribute("name"))
     {
@@ -93,7 +94,7 @@ namespace sr_mechanism_model
 //  act->command_.effort_ = joint_->commanded_effort_;
   }
 
-} //end namespace
+}  // namespace sr_mechanism_model
 
 /* For the emacs weenies in the crowd.
 Local Variables:

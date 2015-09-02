@@ -26,10 +26,12 @@
  */
 
 #include "sr_mechanism_model/joint_0_transmission_for_muscle.hpp"
+#include <string>
 
-using namespace ros_ethercat_model;
-using namespace std;
-using namespace sr_actuator;
+using std::string;
+using sr_actuator::SrMuscleActuator;
+using ros_ethercat_model::RobotState;
+using ros_ethercat_model::Transmission;
 
 PLUGINLIB_EXPORT_CLASS(sr_mechanism_model::J0TransmissionForMuscle, Transmission)
 
@@ -52,7 +54,7 @@ namespace sr_mechanism_model
 
   void J0TransmissionForMuscle::propagatePosition()
   {
-    //the size is either 2 or 0 when the joint hasn't been updated yet
+    // the size is either 2 or 0 when the joint hasn't been updated yet
     // (joint 0 is composed of the 2 calibrated values: joint 1 and joint 2)
     SrMuscleActuator *act = static_cast<SrMuscleActuator *>(actuator_);
     size_t size = act->muscle_state_.calibrated_sensor_values_.size();
@@ -73,31 +75,14 @@ namespace sr_mechanism_model
       // So we will encode the two uint16_t that contain the data from the muscle pressure sensors
       // into the double effort_. (We don't have any measured effort in the muscle hand anyway).
       // Then in the joint controller we will decode that back into uint16_t.
-      joint_->effort_ = ((double) (act->muscle_state_.pressure_[1]) * 0x10000)
-                        + (double) (act->muscle_state_.pressure_[0]);
-      joint2_->effort_ = ((double) (act->muscle_state_.pressure_[1]) * 0x10000)
-                         + (double) (act->muscle_state_.pressure_[0]);
-    }
-    else if (size == 0)
-    {
-      ROS_DEBUG_STREAM("READING pos from Gazebo " << act->state_.position_
-                       << " J1 " << act->state_.position_ / 2.0
-                       << " J2 " << act->state_.position_ / 2.0);
-
-      //TODO: use a real formula for the coupling??
-      //GAZEBO
-      joint_->position_ = act->state_.position_ / 2.0;
-      joint2_->position_ = act->state_.position_ / 2.0;
-
-      joint_->velocity_ = act->state_.velocity_ / 2.0;
-      joint2_->velocity_ = act->state_.velocity_ / 2.0;
-
-      joint_->effort_ = act->state_.last_measured_effort_ / 2.0;
-      joint2_->effort_ = act->state_.last_measured_effort_ / 2.0;
+      joint_->effort_ = (static_cast<double>((act->muscle_state_.pressure_[1]) * 0x10000))
+                        + static_cast<double>(act->muscle_state_.pressure_[0]);
+      joint2_->effort_ = (static_cast<double>((act->muscle_state_.pressure_[1]) * 0x10000))
+                         + static_cast<double>(act->muscle_state_.pressure_[0]);
     }
   }
 
-} //end namespace sr_mechanism_model
+}  // namespace sr_mechanism_model
 
 /* For the emacs weenies in the crowd.
 Local Variables:
