@@ -26,16 +26,18 @@
  *
  */
 
-#ifndef SR_DIAGNOSTICER_H_
-#define SR_DIAGNOSTICER_H_
+#ifndef SR_HAND_SR_DIAGNOSTICER_H
+#define SR_HAND_SR_DIAGNOSTICER_H
 
 #include <ros/ros.h>
 #include <boost/smart_ptr.hpp>
 
 #include "sr_hand/hand/sr_articulated_robot.h"
 
-using namespace ros;
-using namespace shadowrobot;
+using ros::NodeHandle;
+using ros::Rate;
+using ros::Publisher;
+using shadowrobot::SRArticulatedRobot;
 
 namespace shadowrobot
 {
@@ -48,12 +50,12 @@ namespace shadowrobot
  *
  */
 
-///An enum containing the different types of hardware the diagnosticer is publishing data about
+/// An enum containing the different types of hardware the diagnosticer is publishing data about
   enum hardware_types
   {
-    ///the Dextrous Hand
+    /// the Dexterous Hand
             sr_hand_hardware,
-    ///the Shadow Arm
+    /// the Shadow Arm
             sr_arm_hardware
   };
 
@@ -78,26 +80,26 @@ namespace shadowrobot
     void publish();
 
   private:
-    ///const to convert the rate data to Hz
+    /// const to convert the rate data to Hz
     static const double palm_numb_msg_const;
-    ///const to convert the rate data to Hz
+    /// const to convert the rate data to Hz
     static const double palm_msg_rate_const;
 
-    ///The shadowhand object (can be either an object connected to the real robot or a virtual hand).
+    /// The shadowhand object (can be either an object connected to the real robot or a virtual hand).
     boost::shared_ptr<SRArticulatedRobot> sr_articulated_robot;
 
-    ///ros node handle
+    /// ros node handle
     NodeHandle node, n_tilde;
-    ///the rate at which the data will be published. This can be set by a parameter in the launch file.
+    /// the rate at which the data will be published. This can be set by a parameter in the launch file.
     Rate publish_rate;
 
-    ///The publisher which publishes the data to the \/diagnostics topic.
+    /// The publisher which publishes the data to the \/diagnostics topic.
     Publisher sr_diagnostics_pub;
 
-    ///store the hardware_type for this diagnosticer.
+    /// store the hardware_type for this diagnosticer.
     hardware_types hardware_type;
   }; // end class ShadowhandDiagnosticer
 
-} // end namespace
+}  // namespace shadowrobot
 
-#endif 	    /* !SR_DIAGNOSTICER_H_ */
+#endif 	    /* SR_HAND_SR_DIAGNOSTICER_H */

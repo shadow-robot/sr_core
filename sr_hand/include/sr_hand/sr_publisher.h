@@ -26,16 +26,18 @@
  *
  */
 
-#ifndef SHADOWHAND_PUBLISHER_H_
-#define SHADOWHAND_PUBLISHER_H_
+#ifndef SR_HAND_SR_PUBLISHER_H
+#define SR_HAND_SR_PUBLISHER_H
 
 #include <boost/smart_ptr.hpp>
 
 #include <ros/ros.h>
 #include "sr_hand/hand/sr_articulated_robot.h"
 
-using namespace ros;
-using namespace shadowrobot;
+using ros::NodeHandle;
+using ros::Rate;
+using ros::Publisher;
+using shadowrobot::SRArticulatedRobot;
 
 namespace shadowrobot
 {
@@ -57,7 +59,7 @@ namespace shadowrobot
      *
      * @param sr_art_robot A Shadowhand or Shadowarm object, where the information to be published comes from.
      */
-    SRPublisher(boost::shared_ptr<SRArticulatedRobot> sr_art_robot);
+    explicit SRPublisher(boost::shared_ptr<SRArticulatedRobot> sr_art_robot);
 
     /// Destructor
     ~SRPublisher();
@@ -68,19 +70,19 @@ namespace shadowrobot
     void publish();
 
   private:
-    ///ros node handle
+    /// ros node handle
     NodeHandle node, n_tilde;
-    ///the rate at which the data will be published. This can be set by a parameter in the launch file.
+    /// the rate at which the data will be published. This can be set by a parameter in the launch file.
     Rate publish_rate;
 
-    ///The shadowhand object (can be either an object connected to the real robot or a virtual hand).
+    /// The shadowhand object (can be either an object connected to the real robot or a virtual hand).
     boost::shared_ptr<SRArticulatedRobot> sr_articulated_robot;
 
-    ///The publisher which publishes the data to the \/{prefix}\/position\/joint_states topic.
+    /// The publisher which publishes the data to the \/{prefix}\/position\/joint_states topic.
     Publisher sr_jointstate_pos_pub;
-    ///The publisher which publishes the data to the \/{prefix}\/target\/joint_states topic.
+    /// The publisher which publishes the data to the \/{prefix}\/target\/joint_states topic.
     Publisher sr_jointstate_target_pub;
-    ///The publisher which publishes the data to the \/{prefix}\/shadowhand_data topic.
+    /// The publisher which publishes the data to the \/{prefix}\/shadowhand_data topic.
     Publisher sr_pub;
 
     /**
@@ -92,8 +94,8 @@ namespace shadowrobot
     {
       return deg * 3.14159265 / 180.0;
     }
-  }; // end class ShadowhandPublisher
+  };  // end class ShadowhandPublisher
 
-} // end namespace
+}  // namespace shadowrobot
 
-#endif 	    /* !SHADOWHAND_PUBLISHER_H_ */
+#endif 	    /* SR_HAND_SR_PUBLISHER_H */

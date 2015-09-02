@@ -25,26 +25,29 @@
  *
  */
 
-#ifndef    REAL_SHADOWHAND_H_
-# define    REAL_SHADOWHAND_H_
+#ifndef    SR_HAND_HAND_REAL_SHADOWHAND_H
+#define    SR_HAND_HAND_REAL_SHADOWHAND_H
 
 #include "sr_hand/hand/sr_articulated_robot.h"
+#include <utility>
+#include <string>
+#include <vector>
 
 namespace sr_self_tests
 {
-  ///The number of targets to send during the test.
+  /// The number of targets to send during the test.
   static const unsigned int nb_targets_to_send = 100;
 
-  ///the size of the msgs_frequency array
+  /// the size of the msgs_frequency array
   static const unsigned int msgs_frequency_size = 5;
-  //the rate at which we'll publish the data
+  /// the rate at which we'll publish the data
   static const int msgs_frequency[msgs_frequency_size] = {1, 5, 10, 20, 100};
 
-  ///the size of the joints_to_test array
+  /// the size of the joints_to_test array
   static const unsigned int joints_to_test_size = 1;
-  ///the name of the joint on which we want to run the test.
+  ///t he name of the joint on which we want to run the test.
   static const std::string joints_to_test[joints_to_test_size] = {"FFJ3"};
-}
+}  // namespace sr_self_tests
 
 namespace shadowrobot
 {
@@ -139,9 +142,8 @@ namespace shadowrobot
      */
     std::pair<unsigned char, std::string> test_messages_routine(std::string joint_name, unsigned int repeat,
                                                                 ros::Rate rate);
-
-  }; //end class
-}
+  };  // end class
+}  // namespace shadowrobot
 
 /* For the emacs weenies in the crowd.
 Local Variables:
@@ -149,4 +151,4 @@ Local Variables:
 End:
 */
 
-#endif 	    /* !REAL_SHADOWHAND_H_ */
+#endif 	    /* SR_HAND_HAND_REAL_SHADOWHAND_H */

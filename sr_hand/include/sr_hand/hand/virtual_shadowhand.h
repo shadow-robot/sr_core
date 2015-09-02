@@ -26,10 +26,12 @@
  *
  */
 
-#ifndef    VIRTUAL_SHADOWHAND_H_
-# define    VIRTUAL_SHADOWHAND_H_
+#ifndef    SR_HAND_HAND_VIRTUAL_SHADOWHAND_H
+#define    SR_HAND_HAND_VIRTUAL_SHADOWHAND_H
 
 #include "sr_hand/hand/sr_articulated_robot.h"
+#include <string>
+#include <vector>
 
 namespace shadowrobot
 {
@@ -51,7 +53,7 @@ namespace shadowrobot
 
     virtual ~VirtualShadowhand();
 
-    //virtual classes defined in Shadowhand
+    // virtual classes defined in Shadowhand
     /**
      * This function will set the target of the object to the given angle. It will also set the position to this
      * target.
@@ -62,7 +64,7 @@ namespace shadowrobot
      * @param target The target in degree
      * @return 0 if success ; -1 if error
      */
-    virtual short sendupdate(std::string joint_name, double target);
+    virtual int16_t sendupdate(std::string joint_name, double target);
 
     /**
      * In the virtual hand, getJointData() simply fetches the data from a given joint in the joints_map. As the targets
@@ -76,11 +78,11 @@ namespace shadowrobot
 
     virtual JointsMap getAllJointsData();
 
-    virtual short setContrl(std::string contrlr_name, JointControllerData ctrlr_data);
+    virtual int16_t setContrl(std::string contrlr_name, JointControllerData ctrlr_data);
 
     virtual JointControllerData getContrl(std::string ctrlr_name);
 
-    virtual short setConfig(std::vector<std::string> myConfig);
+    virtual int16_t setConfig(std::vector<std::string> myConfig);
 
     virtual void getConfig(std::string joint_name);
 
@@ -92,7 +94,7 @@ namespace shadowrobot
     virtual std::vector<DiagnosticData> getDiagnostics();
 
   protected:
-    ///ROS Node handles
+    /// ROS Node handles
     ros::NodeHandle node, n_tilde;
 
 #ifdef GAZEBO
@@ -110,9 +112,9 @@ namespace shadowrobot
      */
     void initializeMap();
 
-    ///@see controllers_map
+    /// @see controllers_map
     typedef std::map<std::string, JointControllerData> ControllersMap;
-    ///Contains the mapping between the controller names and their data.
+    /// Contains the mapping between the controller names and their data.
     ControllersMap controllers_map;
 
     /**
@@ -134,6 +136,7 @@ namespace shadowrobot
     {
       return rad * 180.0 / 3.14159265;
     }
-  }; //end class
-}
-#endif 	    /* !VIRTUAL_SHADOWHAND_H_ */
+  };  // end class
+}  // namespace shadowrobot
+
+#endif     /* SR_HAND_HAND_VIRTUAL_SHADOWHAND_H */

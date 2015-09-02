@@ -24,20 +24,20 @@
  *
  */
 
-#ifndef VALVES_H_
-#define VALVES_H_
+#ifndef SR_HAND_HAND_VALVES_H
+#define SR_HAND_HAND_VALVES_H
 
 #include <robot/config.h>
 #include <robot/robot.h>
 #include <robot/hand.h>
 #include <robot/hand_protocol.h>
 #include <ros/ros.h>
+#include <vector>
 
 #include <std_msgs/Float64.h>
 
 namespace shadowrobot
 {
-
   class Valves
   {
   public:
@@ -46,7 +46,7 @@ namespace shadowrobot
      */
     Valves();
 
-    ///destructor
+    /// destructor
     ~Valves();
 
     void publish();
@@ -65,9 +65,9 @@ namespace shadowrobot
     void init_subs_and_pubs(int index_joint);
   };
 
-}//end namespace
+}  // namespace shadowrobot
 
-#endif /* VALVES_H_ */
+#endif /* SR_HAND_HAND_VALVES_H */
 
 /* For the emacs weenies in the crowd.
 Local Variables:

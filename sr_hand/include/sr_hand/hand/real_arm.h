@@ -23,10 +23,12 @@
  *
  */
 
-#ifndef REAL_ARM_H_
-#define REAL_ARM_H_
+#ifndef SR_HAND_HAND_REAL_ARM_H
+#define SR_HAND_HAND_REAL_ARM_H
 
 #include <robot/config.h>
+#include <string>
+#include <vector>
 
 #include "sr_hand/hand/sr_articulated_robot.h"
 
@@ -44,7 +46,7 @@ namespace shadowrobot
 
     virtual ~RealArm();
 
-    //virtual classes defined in SRArticulatedRobot
+    // virtual classes defined in SRArticulatedRobot
     /**
      * This function will set the target of the object to the given angle and send it to
      * the robot.
@@ -54,7 +56,7 @@ namespace shadowrobot
      * @param target The target in degree
      * @return 0 if success ; -1 if error
      */
-    virtual short sendupdate(std::string joint_name, double target);
+    virtual int16_t sendupdate(std::string joint_name, double target);
 
     /**
      * Reads the data from the robot.
@@ -66,11 +68,11 @@ namespace shadowrobot
 
     virtual JointsMap getAllJointsData();
 
-    virtual short setContrl(std::string contrlr_name, JointControllerData ctrlr_data);
+    virtual int16_t setContrl(std::string contrlr_name, JointControllerData ctrlr_data);
 
     virtual JointControllerData getContrl(std::string ctrlr_name);
 
-    virtual short setConfig(std::vector <std::string> myConfig);
+    virtual int16_t setConfig(std::vector <std::string> myConfig);
 
     virtual void getConfig(std::string joint_name);
 
@@ -87,6 +89,6 @@ namespace shadowrobot
     void initializeMap();
   };
 
-}//end namespace
+}  // namespace shadowrobot
 
-#endif /* REAL_ARM_H_ */
+#endif /* SR_HAND_HAND_REAL_ARM_H */

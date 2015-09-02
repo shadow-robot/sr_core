@@ -25,8 +25,8 @@
  *
  */
 
-#ifndef SHADOWHAND_SUBSCRIBER_H_
-#define SHADOWHAND_SUBSCRIBER_H_
+#ifndef SR_HAND_SR_SUBSCRIBER_H
+#define SR_HAND_SR_SUBSCRIBER_H
 
 #include <ros/ros.h>
 #include <vector>
@@ -35,7 +35,7 @@
 
 #include <boost/smart_ptr.hpp>
 
-//messages
+// messages
 #include <sr_robot_msgs/joints_data.h>
 #include <sr_robot_msgs/joint.h>
 #include <sr_robot_msgs/contrlr.h>
@@ -46,8 +46,9 @@
 
 #include "sr_hand/hand/sr_articulated_robot.h"
 
-using namespace ros;
-using namespace shadowrobot;
+using ros::NodeHandle;
+using ros::Subscriber;
+using shadowrobot::SRArticulatedRobot;
 
 namespace shadowrobot
 {
@@ -64,19 +65,19 @@ namespace shadowrobot
      *
      * @param sr_art_robot A Shadowhand object, where the information to be published comes from.
      */
-    SRSubscriber(boost::shared_ptr<SRArticulatedRobot> sr_art_robot);
+    explicit SRSubscriber(boost::shared_ptr<SRArticulatedRobot> sr_art_robot);
 
     /// Destructor
     ~SRSubscriber();
 
   private:
-    ///ros node handle
+    /// ros node handle
     NodeHandle node, n_tilde;
 
-    ///The shadowhand / shadowarm object (can be either an object connected to the real robot or a virtual hand).
+    /// The shadowhand / shadowarm object (can be either an object connected to the real robot or a virtual hand).
     boost::shared_ptr<SRArticulatedRobot> sr_articulated_robot;
 
-    ///init function
+    /// init function
     void init();
 
     /////////////////
@@ -91,7 +92,7 @@ namespace shadowrobot
      */
     void sendupdateCallback(const sr_robot_msgs::sendupdateConstPtr &msg);
 
-    ///The subscriber to the sendupdate topic.
+    /// The subscriber to the sendupdate topic.
     Subscriber sendupdate_sub;
 
     /**
@@ -102,7 +103,7 @@ namespace shadowrobot
      */
     void cmd_callback(const std_msgs::Float64ConstPtr &msg, std::string &joint_name);
 
-    ///The vector of subscribers to the different joint topics.
+    /// The vector of subscribers to the different joint topics.
     std::vector<Subscriber> controllers_sub;
 
     /**
@@ -112,7 +113,7 @@ namespace shadowrobot
      */
     void contrlrCallback(const sr_robot_msgs::contrlrConstPtr &msg);
 
-    ///The subscriber to the contrlr topic
+    /// The subscriber to the contrlr topic
     Subscriber contrlr_sub;
 
     /**
@@ -121,10 +122,10 @@ namespace shadowrobot
      */
     void configCallback(const sr_robot_msgs::configConstPtr &msg);
 
-    ///The subscriber to the config topic
+    /// The subscriber to the config topic
     Subscriber config_sub;
-  }; // end class ShadowhandSubscriber
+  };  // end class ShadowhandSubscriber
 
-} // end namespace
+}  // namespace shadowrobot
 
-#endif 	    /* !SHADOWHAND_SUBSCRIBER_H_ */
+#endif 	    // SR_HAND_SR_SUBSCRIBER_H

@@ -36,9 +36,10 @@
 #include "sr_hand/sr_publisher.h"
 #include "sr_hand/hand/CAN_compatibility_arm.hpp"
 
-using namespace std;
-using namespace ros;
-using namespace shadowrobot;
+using ros::NodeHandle;
+using shadowrobot::SRSubscriber;
+using shadowrobot::SRPublisher;
+using shadowrobot::CANCompatibilityArm;
 
 /////////////////////////////////
 //           MAIN              //

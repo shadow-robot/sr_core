@@ -23,14 +23,15 @@
  *
  */
 
-#ifndef VIRTUAL_ARM_H_
-#define VIRTUAL_ARM_H_
+#ifndef SR_HAND_HAND_VIRTUAL_ARM_H
+#define SR_HAND_HAND_VIRTUAL_ARM_H
 
 #include "sr_hand/hand/sr_articulated_robot.h"
+#include <string>
+#include <vector>
 
 namespace shadowrobot
 {
-
   class VirtualArm :
           public SRArticulatedRobot
   {
@@ -42,7 +43,7 @@ namespace shadowrobot
 
     virtual ~VirtualArm();
 
-    //virtual classes defined in SRArticulatedRobot
+    // virtual classes defined in SRArticulatedRobot
     /**
      * This function will set the target of the object to the given angle. It will also set the position to this
      * target.
@@ -53,7 +54,7 @@ namespace shadowrobot
      * @param target The target in degree
      * @return 0 if success ; -1 if error
      */
-    virtual short sendupdate(std::string joint_name, double target);
+    virtual int16_t sendupdate(std::string joint_name, double target);
 
     /**
      * In the virtual arm, getJointData() simply fetches the data from a given joint in the joints_map. As the targets
@@ -67,11 +68,11 @@ namespace shadowrobot
 
     virtual JointsMap getAllJointsData();
 
-    virtual short setContrl(std::string contrlr_name, JointControllerData ctrlr_data);
+    virtual int16_t setContrl(std::string contrlr_name, JointControllerData ctrlr_data);
 
     virtual JointControllerData getContrl(std::string ctrlr_name);
 
-    virtual short setConfig(std::vector<std::string> myConfig);
+    virtual int16_t setConfig(std::vector<std::string> myConfig);
 
     virtual void getConfig(std::string joint_name);
 
@@ -119,6 +120,6 @@ namespace shadowrobot
     }
   };
 
-}//end namespace
+}  // namespace shadowrobot
 
-#endif /* VIRTUAL_ARM_H_ */
+#endif /* SR_HAND_HAND_VIRTUAL_ARM_H */

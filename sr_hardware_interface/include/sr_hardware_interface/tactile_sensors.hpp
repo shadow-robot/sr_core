@@ -183,7 +183,7 @@ namespace tactiles
     };
 
 
-    PST3Data(const GenericTactileData &gtd)
+    explicit PST3Data(const GenericTactileData &gtd)
             : GenericTactileData(gtd.tactile_data_valid, gtd.sample_frequency,
                                  gtd.manufacturer, gtd.serial_number,
                                  gtd.software_version_current,
@@ -275,7 +275,7 @@ namespace tactiles
 
     int tac;  // int16u in word[2]
     int tdc;  // int16u in word[2]
-    boost::array<int16_t, 19ul> electrodes; // int16u in word[2]
+    boost::array<int16_t, 19ul> electrodes;  // int16u in word[2]
   };
 
   class UBI0Data

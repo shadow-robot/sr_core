@@ -31,6 +31,8 @@
 #include <time.h>
 #include <ros/ros.h>
 #include <std_msgs/Float64.h>
+#include <string>
+#include <vector>
 
 namespace shadowrobot
 {
@@ -102,7 +104,7 @@ namespace shadowrobot
     joints_map_mutex.unlock();
   }
 
-  short CANCompatibilityArm::sendupdate(std::string joint_name, double target)
+  int16_t CANCompatibilityArm::sendupdate(std::string joint_name, double target)
   {
     if (!joints_map_mutex.try_lock())
     {
@@ -111,7 +113,7 @@ namespace shadowrobot
     JointsMap::iterator iter = joints_map.find(joint_name);
     std_msgs::Float64 target_msg;
 
-    //not found
+    // not found
     if (iter == joints_map.end())
     {
       ROS_DEBUG("Joint %s not found", joint_name.c_str());
@@ -120,7 +122,7 @@ namespace shadowrobot
       return -1;
     }
 
-    //joint found
+    // joint found
     JointData tmpData(iter->second);
 
     if (target < tmpData.min)
@@ -135,10 +137,11 @@ namespace shadowrobot
     tmpData.target = target;
 
     joints_map[joint_name] = tmpData;
-    //the targets are in radians
+    // the targets are in radians
     target_msg.data = sr_math_utils::to_rad(target);
 
-    //	ROS_ERROR("Joint %s ,pub index %d, pub name %s", joint_name.c_str(),tmpData.publisher_index,CAN_publishers[tmpData.publisher_index].getTopic().c_str());
+    // ROS_ERROR("Joint %s ,pub index %d, pub name %s", joint_name.c_str(),tmpData.publisher_index,
+    // CAN_publishers[tmpData.publisher_index].getTopic().c_str());
     CAN_publishers[tmpData.publisher_index].publish(target_msg);
 
     joints_map_mutex.unlock();
@@ -155,7 +158,7 @@ namespace shadowrobot
 
     JointsMap::iterator iter = joints_map.find(joint_name);
 
-    //joint found
+    // joint found
     if (iter != joints_map.end())
     {
       JointData tmp = JointData(iter->second);
@@ -174,10 +177,11 @@ namespace shadowrobot
     return joints_map;
   }
 
-  short CANCompatibilityArm::setContrl(std::string contrlr_name, JointControllerData ctrlr_data)
+  int16_t CANCompatibilityArm::setContrl(std::string contrlr_name, JointControllerData ctrlr_data)
   {
     ROS_WARN(
-            "The set Controller function is not implemented in the CAN compatibility wrapper, please use the provided services directly.");
+            "The set Controller function is not implemented in the CAN compatibility wrapper,"
+                    " please use the provided services directly.");
     return 0;
   }
 
@@ -185,11 +189,12 @@ namespace shadowrobot
   {
     JointControllerData no_result;
     ROS_WARN(
-            "The get Controller function is not implemented in the CAN compatibility wrapper, please use the provided services directly.");
+            "The get Controller function is not implemented in the CAN compatibility wrapper,"
+                    " please use the provided services directly.");
     return no_result;
   }
 
-  short CANCompatibilityArm::setConfig(std::vector <std::string> myConfig)
+  int16_t CANCompatibilityArm::setConfig(std::vector <std::string> myConfig)
   {
     ROS_WARN("The set config function is not implemented.");
     return 0;
@@ -212,32 +217,31 @@ namespace shadowrobot
     {
       return;
     }
-    //loop on all the names in the joint_states message
-    for (unsigned int index = 0; index < msg->name.size(); ++index)
+    // loop on all the names in the joint_states message
+    for (size_t index = 0; index < msg->name.size(); ++index)
     {
       std::string joint_name = msg->name[index];
       JointsMap::iterator iter = joints_map.find(joint_name);
 
-      //not found => can be a joint from the arm / hand
+      // not found => can be a joint from the arm / hand
       if (iter == joints_map.end())
       {
         continue;
       }
 
-      //joint found
+      // joint found
       JointData tmpData(iter->second);
 
       tmpData.position = sr_math_utils::to_degrees(msg->position[index]);
       tmpData.force = msg->effort[index];
       tmpData.velocity = msg->velocity[index];
       joints_map[joint_name] = tmpData;
-
     }
 
     joints_map_mutex.unlock();
   }
 
-} //end namespace
+}  // namespace shadowrobot
 
 
 /* For the emacs weenies in the crowd.

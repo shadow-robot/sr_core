@@ -27,15 +27,16 @@
  *
  */
 
-#ifndef    SHADOWHAND_H_
-# define    SHADOWHAND_H_
+#ifndef    SR_HAND_HAND_SR_ARTICULATED_ROBOT_H
+#define    SR_HAND_HAND_SR_ARTICULATED_ROBOT_H
 
 #include <ros/ros.h>
 #include <string>
 #include <vector>
 #include <map>
+#include <algorithm>
 
-//self_test
+// self_test
 #include "diagnostic_msgs/SelfTest.h"
 #include "self_test/self_test.h"
 
@@ -51,7 +52,7 @@
 
 namespace debug_values
 {
-  ///a map containing the names and offsets of the smart motor node
+  /// a map containing the names and offsets of the smart motor node
   static const std::map<const std::string, const unsigned int> names_and_offsets
           = boost::assign::map_list_of("Sensor PID last in", 0) \
 ("Sensor PID iState", 1) \
@@ -69,7 +70,7 @@ namespace debug_values
 ("Sensor Val (motor sensor)", 13) \
 ("H-Bridge Duty", 14) \
 ("Duty Temp", 15);
-}
+}  // namespace debug_values
 
 
 namespace shadowrobot
@@ -88,7 +89,7 @@ namespace shadowrobot
     int jointIndex;
     double min;
     double max;
-    short isJointZero;
+    int16_t isJointZero;
 
     /**
      * GAZEBO and the etherCAT wrapper have one publisher / subscriber
@@ -129,37 +130,35 @@ namespace shadowrobot
  */
   enum controller_parameters
   {
-    PARAM_sensor, //!<select the sensor that is being controller
-    PARAM_target, //!< select the sensor to read the setpoint from
-    PARAM_valve, //!< select which valve is being controlled, if appropriate
-    PARAM_deadband, //!< select the deadband value, if appropriate (actual deadband used is \f$2^{(deadband-16)}\f$)
-    PARAM_p, //!< change the proportional gain
-    PARAM_i, //!< change the integral gain
-    PARAM_d, //!< change the derivative gain
-    PARAM_imax, //!< PARAM_imax
-    PARAM_output_offset, //!< PARAM_output_offset
-    PARAM_shift, //!< PARAM_shift
-    PARAM_output_max, //!< PARAM_output_max
+    PARAM_sensor,  // select the sensor that is being controller
+    PARAM_target,  //  select the sensor to read the setpoint from
+    PARAM_valve,  //  select which valve is being controlled, if appropriate
+    PARAM_deadband,  //  select the deadband value, if appropriate (actual deadband used is \f$2^{(deadband-16)}\f$)
+    PARAM_p,  //  change the proportional gain
+    PARAM_i,  //  change the integral gain
+    PARAM_d,  //  change the derivative gain
+    PARAM_imax,  //  PARAM_imax
+    PARAM_output_offset,  //  PARAM_output_offset
+    PARAM_shift,  //  PARAM_shift
+    PARAM_output_max,  //  PARAM_output_max
 
-    PARAM_motor_maxforce, //!< PARAM_motor_maxforce
-    PARAM_motor_safeforce, //!< PARAM_motor_safeforce
-    PARAM_force_p, //!< PARAM_force_p
-    PARAM_force_i, //!< PARAM_force_i
-    PARAM_force_d, //!< PARAM_force_d
-    PARAM_force_imax, //!< PARAM_force_imax
-    PARAM_force_out_shift, //!< PARAM_force_out_shift
-    PARAM_force_deadband, //!< PARAM_force_deadband
-    PARAM_force_offset, //!< PARAM_force_offset
-    PARAM_sensor_imax, //!< PARAM_sensor_imax
-    PARAM_sensor_out_shift, //!< PARAM_sensor_out_shift
-            PARAM_sensor_deadband, //!< PARAM_sensor_deadband
-    PARAM_sensor_offset, //!< PARAM_sensor_offset
-    PARAM_max_temperature, //!< PARAM_max_temperature
-    PARAM_max_current, //!< PARAM_max_current
-    PARAM_type_of_sensor, //!< PARAM_type_of_sensor
-    PARAM_type_of_setpoint
-//!< PARAM_type_of_setpoint
-
+    PARAM_motor_maxforce,  //  PARAM_motor_maxforce
+    PARAM_motor_safeforce,  //  PARAM_motor_safeforce
+    PARAM_force_p,  //  PARAM_force_p
+    PARAM_force_i,  //  PARAM_force_i
+    PARAM_force_d,  //  PARAM_force_d
+    PARAM_force_imax,  //  PARAM_force_imax
+    PARAM_force_out_shift,  //  PARAM_force_out_shift
+    PARAM_force_deadband,  //  PARAM_force_deadband
+    PARAM_force_offset,  //  PARAM_force_offset
+    PARAM_sensor_imax,  //  PARAM_sensor_imax
+    PARAM_sensor_out_shift,  //  PARAM_sensor_out_shift
+    PARAM_sensor_deadband,  //  PARAM_sensor_deadband
+    PARAM_sensor_offset,  //  PARAM_sensor_offset
+    PARAM_max_temperature,  //  PARAM_max_temperature
+    PARAM_max_current,  //  PARAM_max_current
+    PARAM_type_of_sensor,  //  PARAM_type_of_sensor
+    PARAM_type_of_setpoint  //  PARAM_type_of_setpoint
   };
 
 /**
@@ -167,9 +166,9 @@ namespace shadowrobot
  */
   struct Parameters
   {
-    ///name of the parameter
+    /// name of the parameter
     std::string name;
-    ///value of the parameter
+    /// value of the parameter
     std::string value;
 
     Parameters() :
@@ -220,33 +219,32 @@ namespace shadowrobot
     /// the name of the joint
     std::string joint_name;
     /// the level of alert: 0 = OK, 1 = WARNING, 2 = ERROR
-    short level;
+    int16_t level;
 
     /// a string containing flags: FORCE, TEMPERATURE, ... indicating the different cutouts / warning sent by the hand.
     std::string flags;
 
-    ///the channel number of the target sensor
+    /// the channel number of the target sensor
     int target_sensor_num;
-    ///the channel number of the position sensor
+    /// the channel number of the position sensor
     int position_sensor_num;
-    ///the actual value of the target
+    /// the actual value of the target
     double target;
 
-    ///the debug values
+    /// the debug values
     std::map<std::string, int> debug_values;
-    ///the actual value of the position
+    /// the actual value of the position
     double position;
 
-    ///temperature value
+    /// temperature value
     double temperature;
-    ///current value
+    /// current value
     double current;
-    ///force value
+    /// force value
     double force;
 
-    //values read from the debug node.
+    /// values read from the debug node.
     uint64_t num_sensor_msgs_received;
-
   };
 
 /**
@@ -274,9 +272,9 @@ namespace shadowrobot
     {
     };
 
-    ///@see joints_map
+    /// @see joints_map
     typedef std::map<std::string, JointData> JointsMap;
-    ///@see parameters_map
+    /// @see parameters_map
     typedef std::map<std::string, enum controller_parameters> ParametersMap;
 
     /**
@@ -285,7 +283,7 @@ namespace shadowrobot
      * @param target The target in degree
      * @return 0 if success ; -1 if error
      */
-    virtual short sendupdate(std::string joint_name, double target) = 0;
+    virtual int16_t sendupdate(std::string joint_name, double target) = 0;
 
     /**
      * Get the joint data for a specific joint. @see JointData
@@ -306,7 +304,7 @@ namespace shadowrobot
      * @param ctrlr_data The data to pass to this controller.
      * @return 0 if success.
      */
-    virtual short setContrl(std::string contrlr_name, JointControllerData ctrlr_data) = 0;
+    virtual int16_t setContrl(std::string contrlr_name, JointControllerData ctrlr_data) = 0;
 
     /**
      * Get the controller parameters for a given controller name.
@@ -322,7 +320,7 @@ namespace shadowrobot
      * @param myConfig
      * @return
      */
-    virtual short setConfig(std::vector<std::string> myConfig) = 0;
+    virtual int16_t setConfig(std::vector<std::string> myConfig) = 0;
 
     /**
      * Get the config of the palm
@@ -349,16 +347,15 @@ namespace shadowrobot
     boost::mutex controllers_map_mutex;
 
   protected:
-    ///this is the handle for the self tests.
+    /// this is the handle for the self tests.
     boost::shared_ptr<self_test::TestRunner> self_test;
 #ifdef GAZEBO
     std::vector<ros::Publisher> gazebo_publishers;
     ros::Subscriber gazebo_subscriber;
 #endif
-  }; //end class
+  };  //end class
 
-}//end namespace
-
+}  // namespace shadowrobot
 
 /* For the emacs weenies in the crowd.
 Local Variables:
@@ -366,4 +363,4 @@ Local Variables:
 End:
 */
 
-#endif 	    /* !SHADOWHAND_H_ */
+#endif 	    /* SR_HAND_HAND_SR_ARTICULATED_ROBOT_H */
