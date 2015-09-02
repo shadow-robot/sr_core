@@ -28,10 +28,12 @@
 
 
 #include "sr_mechanism_model/joint_0_transmission.hpp"
+#include <string>
 
-using namespace ros_ethercat_model;
-using namespace std;
-using namespace sr_actuator;
+using std::string;
+using sr_actuator::SrMotorActuator;
+using ros_ethercat_model::RobotState;
+using ros_ethercat_model::Transmission;
 
 PLUGINLIB_EXPORT_CLASS(sr_mechanism_model::J0Transmission, Transmission)
 
@@ -54,7 +56,7 @@ namespace sr_mechanism_model
 
   void J0Transmission::propagatePosition()
   {
-    //the size is either 2 or 0 when the joint hasn't been updated yet
+    // the size is either 2 or 0 when the joint hasn't been updated yet
     // (joint 0 is composed of the 2 calibrated values: joint 1 and joint 2)
 
     SrMotorActuator *act = static_cast<SrMotorActuator *>(actuator_);
@@ -80,8 +82,8 @@ namespace sr_mechanism_model
                        << " J1 " << act->state_.position_ / 2.0
                        << " J2 " << act->state_.position_ / 2.0);
 
-      //TODO: use a real formula for the coupling??
-      //GAZEBO
+      // use a real formula for the coupling??
+      // GAZEBO
       joint_->position_ = act->state_.position_ / 2.0;
       joint2_->position_ = act->state_.position_ / 2.0;
 
@@ -93,7 +95,7 @@ namespace sr_mechanism_model
     }
   }
 
-} //end namespace sr_mechanism_model
+}  // namespace sr_mechanism_model
 
 /* For the emacs weenies in the crowd.
 Local Variables:

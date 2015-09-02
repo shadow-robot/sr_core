@@ -27,6 +27,7 @@
 #include "sr_tactile_sensors/sr_gazebo_virtual_tactile_sensor.hpp"
 #include <boost/algorithm/string.hpp>
 #include <string>
+#include <vector>
 #include <math.h>
 #include <ros/ros.h>
 

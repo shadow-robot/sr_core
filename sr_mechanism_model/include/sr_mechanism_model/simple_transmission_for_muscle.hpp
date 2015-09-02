@@ -55,6 +55,6 @@ namespace sr_mechanism_model
     void propagateEffort();
   };
 
-} // namespace sr_mechanism_model
+}  // namespace sr_mechanism_model
 
 #endif

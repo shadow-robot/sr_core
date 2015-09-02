@@ -45,7 +45,7 @@ namespace sr_mechanism_model
     ros_ethercat_model::JointState *joint2_;
   };
 
-} //end namespace sr_mechanism_model
+}  // namespace sr_mechanism_model
 
 /* For the emacs weenies in the crowd.
 Local Variables:
