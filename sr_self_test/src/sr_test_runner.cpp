@@ -114,7 +114,7 @@ namespace shadow_robot
       *gnuplot_.get() << "set output '" + path + "'\n";
     }
 
-    //plot legend and style
+    // plot legend and style
     std::string cmd = "plot ";
     std::string title = "";
     std::map<std::string, std::vector<double> >::const_iterator last_it = joints.end();

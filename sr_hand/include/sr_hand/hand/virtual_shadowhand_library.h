@@ -41,7 +41,7 @@ namespace shadowrobot
     virtual void getConfig(std::string joint_name);
 
     virtual std::vector<DiagnosticData> getDiagnostics();
-  };//end class
+  };  //end class
 
-}//end namespace
+}  // namespace shadowrobot
 #endif /* VIRTUAL_SHADOWHAND_LIBRARY_H_ */

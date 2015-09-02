@@ -25,7 +25,6 @@ THE SOFTWARE.
 
 // C system includes
 #include <stdio.h>
-#include <string>
 
 #ifdef GNUPLOT_ENABLE_PTY
 #include <termios.h>
@@ -365,7 +364,7 @@ public:
   std::string binfmt(const std::vector<T> &arr)
   {
     std::ostringstream tmp;
-    tmp << " format='" << formatCode((T *) NULL) << "'";
+    tmp << " format='" << formatCode(reinterpret_cast<T *>(NULL)) << "'";
     tmp << " array=(" << arr.size() << ")";
     tmp << " ";
     return tmp.str();
@@ -404,7 +403,7 @@ public:
     tmp << " format='";
     for (size_t i = 0; i < arr.size(); i++)
     {
-      tmp << formatCode((T *) NULL);
+      tmp << formatCode(reinterpret_cast<T *>(NULL));
     }
     tmp << "' array=(" << arr[0].size() << ")";
     tmp << " ";
@@ -462,7 +461,7 @@ public:
   std::string binfmt(const blitz::Array<T, 2> &arr)
   {
     std::ostringstream tmp;
-    tmp << " format='" << formatCode((T *) NULL) << "'";
+    tmp << " format='" << formatCode(reinterpret_cast<T *>(NULL)) << "'";
     tmp << " array=(" << arr.extent(0) << "," << arr.extent(1) << ")";
     if (arr.isMajorRank(0))
     {

@@ -83,7 +83,7 @@ namespace tactiles
      */
     void set_software_version(std::string version)
     {
-      //split the string to fill the different versions
+      // split the string to fill the different versions
       std::vector<std::string> splitted_string;
       boost::split(splitted_string, version, boost::is_any_of("\n"));
 
@@ -127,7 +127,7 @@ namespace tactiles
      */
     virtual std::string get_software_version()
     {
-      //concatenate versions in a string.
+      // concatenate versions in a string.
       std::string full_version;
 
       std::stringstream ss;
@@ -215,7 +215,7 @@ namespace tactiles
      */
     virtual std::string get_software_version()
     {
-      //concatenate versions in a string.
+      // concatenate versions in a string.
       std::string full_version;
 
       std::stringstream ss;
@@ -254,7 +254,7 @@ namespace tactiles
       }
     };
 
-    BiotacData(const GenericTactileData &gtd)
+    explicit BiotacData(const GenericTactileData &gtd)
             : GenericTactileData(gtd.tactile_data_valid, gtd.sample_frequency,
                                  gtd.manufacturer, gtd.serial_number,
                                  gtd.software_version_current,
@@ -268,14 +268,14 @@ namespace tactiles
     {
     };
 
-    int pac0; //always there, in word[0] and 1; int16u (2kHz)
-    int pac1; //int16u
+    int pac0;  // always there, in word[0] and 1; int16u (2kHz)
+    int pac1;  // int16u
 
-    int pdc; //int16u in word[2]
+    int pdc;  // int16u in word[2]
 
-    int tac; //int16u in word[2]
-    int tdc; //int16u in word[2]
-    boost::array<short int, 19ul> electrodes; //int16u in word[2]
+    int tac;  // int16u in word[2]
+    int tdc;  // int16u in word[2]
+    boost::array<int16_t, 19ul> electrodes; // int16u in word[2]
   };
 
   class UBI0Data
@@ -310,7 +310,7 @@ namespace tactiles
       }
     };
 
-    UBI0Data(const GenericTactileData &gtd)
+    explicit UBI0Data(const GenericTactileData &gtd)
             : GenericTactileData(gtd.tactile_data_valid, gtd.sample_frequency,
                                  gtd.manufacturer, gtd.serial_number,
                                  gtd.software_version_current,
@@ -325,9 +325,9 @@ namespace tactiles
     };
 
 
-    boost::array<unsigned short int, 12ul> distal;
-    boost::array<unsigned short int, 4ul> middle;
-    boost::array<unsigned short int, 4ul> proximal;
+    boost::array<unsigned int16_t, 12ul> distal;
+    boost::array<unsigned int16_t, 4ul> middle;
+    boost::array<unsigned int16_t, 4ul> proximal;
   };
 
   class UBI0PalmData
@@ -349,7 +349,7 @@ namespace tactiles
     {
     };
 
-    boost::array<unsigned short int, 16ul> palm;
+    boost::array<unsigned int16_t, 16ul> palm;
   };
 
   struct AllTactileData
@@ -358,7 +358,7 @@ namespace tactiles
     PST3Data pst;
     UBI0Data ubi0;
   };
-}
+}  // namespace tactiles
 
 /* For the emacs weenies in the crowd.
    Local Variables:

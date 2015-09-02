@@ -30,9 +30,12 @@
 #include "sr_hardware_interface/tactile_sensors.hpp"
 #include <ros_ethercat_model/hardware_interface.hpp>
 
+#include <utility>
+#include <string>
+#include <vector>
+
 namespace sr_actuator
 {
-
   class SrActuatorState
   {
   public:
@@ -56,14 +59,15 @@ namespace sr_actuator
     {
     }
 
-    //Serial number is composed of a low and a high byte.
+    // Serial number is composed of a low and a high byte.
     void set_serial_number_low(unsigned int serial)
     {
       serial_number_low = serial;
       serial_number_low_set = true;
 
       if (serial_number_high_set)
-      { //we received both bytes
+      {
+        // we received both bytes
         compute_serial();
       }
     };
@@ -74,7 +78,8 @@ namespace sr_actuator
       serial_number_high_set = true;
 
       if (serial_number_low_set)
-      { //we received both bytes
+      {
+        // we received both bytes
         compute_serial();
       }
     };
@@ -119,7 +124,7 @@ namespace sr_actuator
     std::vector<std::pair<std::string, bool> > flags_;
 
     std::vector<tactiles::AllTactileData> *tactiles_;
-  }; //end class SrActuatorState
+  };  // end class SrActuatorState
 
   class SrMotorActuatorState :
           public SrActuatorState
@@ -143,8 +148,8 @@ namespace sr_actuator
     {
     }
 
-    signed short strain_gauge_left_;
-    signed short strain_gauge_right_;
+    int16_t strain_gauge_left_;
+    int16_t strain_gauge_right_;
 
     double force_unfiltered_;
 
@@ -165,7 +170,7 @@ namespace sr_actuator
     int force_control_iterm;
     int force_control_dterm;
     double temperature_;
-  }; //end class SrMotorActuatorState
+  };  // end class SrMotorActuatorState
 
   class SrMuscleActuatorState :
           public SrActuatorState
@@ -177,10 +182,10 @@ namespace sr_actuator
     {
     }
 
-    ///Pressure sensors for each of the two muscles of the actuator
+    /// Pressure sensors for each of the two muscles of the actuator
     uint16_t pressure_[2];
     int8_t last_commanded_valve_[2];
-  }; //end class SrMuscleActuatorState
+  };  // end class SrMuscleActuatorState
 
   class SrMuscleActuatorCommand
   {
@@ -191,7 +196,7 @@ namespace sr_actuator
     }
 
     int8_t valve_[2];
-  }; //end class SrMuscleActuatorCommand
+  };  // end class SrMuscleActuatorCommand
 
 /**
  * This class defines a Motor actuator
@@ -200,9 +205,8 @@ namespace sr_actuator
           public ros_ethercat_model::Actuator
   {
   public:
-
     SrMotorActuatorState motor_state_;
-  }; //end class SrMotorActuator
+  };  // end class SrMotorActuator
 
 /**
  * This class defines a Muscle actuator
@@ -211,11 +215,10 @@ namespace sr_actuator
           public ros_ethercat_model::Actuator
   {
   public:
-
     SrMuscleActuatorState muscle_state_;
     SrMuscleActuatorCommand muscle_command_;
-  }; //end class SrMotorActuator
-}
+  };  // end class SrMotorActuator
+}  // namespace sr_actuator
 
 /* For the emacs weenies in the crowd.
 Local Variables:

@@ -55,7 +55,7 @@ namespace sr_mechanism_model
       return false;
     }
 
-    //reading the joint name
+    // reading the joint name
     TiXmlElement *jel = elt->FirstChildElement("joint");
     if (!jel || !jel->Attribute("name"))
     {
