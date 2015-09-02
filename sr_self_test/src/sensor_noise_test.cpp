@@ -26,11 +26,15 @@
  */
 
 #include "sr_self_test/sensor_noise_test.hpp"
+#include <map>
+#include <string>
+#include <vector>
 
 namespace shadow_robot
 {
-  const double SensorNoiseTest::MAX_NOISE_CONST_ = 0.0087; //0.5 degrees
-  const double SensorNoiseTest::NOISE_EPSILON_CONST_ = 0.000000001; //So small that no real sensor can have smaller noise
+  const double SensorNoiseTest::MAX_NOISE_CONST_ = 0.0087;  // 0.5 degrees
+  const double SensorNoiseTest::NOISE_EPSILON_CONST_ = 0.000000001;  // So small that no real sensor can
+                                                                     // have smaller noise
 
   SensorNoiseTest::SensorNoiseTest()
   {
@@ -62,7 +66,7 @@ namespace shadow_robot
         min = joint_states->second[0];
         max = joint_states->second[0];
 
-        //starting loop at 1, as we already assigned 0 to min/max
+        // starting loop at 1, as we already assigned 0 to min/max
         for (size_t i = 1; i < joint_states->second.size(); ++i)
         {
           if (joint_states->second[i] < min)
@@ -111,7 +115,7 @@ namespace shadow_robot
       all_joint_states_[msg->name[i]].push_back(msg->position[i]);
     }
   }
-}
+}  // end namespace shadow_robot
 
 /* For the emacs weenies in the crowd.
    Local Variables:

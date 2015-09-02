@@ -279,7 +279,7 @@ namespace sr_math_utils
 
       std::pair<double, double> value_derivative;
     };
-  }// namespace filters
+  }  // namespace filters
 
 
 ////////////////

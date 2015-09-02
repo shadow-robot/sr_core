@@ -26,6 +26,7 @@
 
 #include "sr_self_test/diagnostic_parser.hpp"
 #include <boost/foreach.hpp>
+#include <string>
 
 namespace shadow_robot
 {
@@ -36,7 +37,7 @@ namespace shadow_robot
     diagnostics_.push_back(new EtherCATMasterDiagnostics("EtherCAT Master", test_runner_));
     diagnostics_.push_back(new MotorDiagnostics("SRDMotor", test_runner_));
     diagnostics_.push_back(new IsOKDiagnostics("EtherCAT Dual CAN Palm", test_runner_));
-    diagnostics_.push_back(new IsOKDiagnostics("SRBridge", test_runner_)); //TODO: not sure what's the 00
+    diagnostics_.push_back(new IsOKDiagnostics("SRBridge", test_runner_));
 
     run_tests_();
   }
@@ -45,7 +46,7 @@ namespace shadow_robot
   {
     diag_sub_ = nh_.subscribe("diagnostics_agg", 1, &DiagnosticParser::diagnostics_agg_cb_, this);
 
-    //wait for 5 seconds while we parse the diagnostics.
+    // wait for 5 seconds while we parse the diagnostics.
     // spin to make sure we get the messages
     for (size_t i = 0; i < 50; ++i)
     {
@@ -53,11 +54,10 @@ namespace shadow_robot
       ros::spinOnce();
     }
 
-    BOOST_FOREACH(DiagnosticsMap::value_type
-                          diag, all_diagnostics_)
-          {
-            diag.second->add_test();
-          }
+    BOOST_FOREACH(DiagnosticsMap::value_type diag, all_diagnostics_)
+    {
+      diag.second->add_test();
+    }
 
     diag_sub_.shutdown();
   }
@@ -74,7 +74,7 @@ namespace shadow_robot
           DiagnosticsMap::iterator it;
           it = all_diagnostics_.find(full_name);
 
-          //insert a new diag if it doesn't exist already
+          // insert a new diag if it doesn't exist already
           if (it == all_diagnostics_.end())
           {
             all_diagnostics_.insert(full_name,
@@ -90,7 +90,7 @@ namespace shadow_robot
       }
     }
   }
-}
+}  // namespace shadow_robot
 
 /* For the emacs weenies in the crowd.
    Local Variables:

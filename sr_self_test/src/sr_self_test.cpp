@@ -27,6 +27,11 @@
 #include "sr_self_test/sr_self_test.hpp"
 #include <sr_utilities/sr_math_utils.hpp>
 #include <boost/filesystem.hpp>
+#include <utility>
+#include <map>
+#include <string>
+#include <vector>
+
 
 namespace shadow_robot
 {
@@ -51,44 +56,44 @@ namespace shadow_robot
     {
       home += "/.ros/log/";
     }
-    //rename existing folder if it exists
+    // rename existing folder if it exists
     if (boost::filesystem::exists(home + "self_tests"))
     {
-      //delete the last backup if it exists
+      // delete the last backup if it exists
       if (boost::filesystem::exists(home + "self_tests.bk"))
       {
         boost::filesystem::remove_all(home + "self_tests.bk");
       }
 
-      //backup last test plots
+      // backup last test plots
       boost::filesystem::rename(home + "self_tests", home + "self_tests.bk");
     }
-    //create folder in /tmp for storing the plots
+    // create folder in /tmp for storing the plots
     path_to_plots_ = home + "self_tests/" + ros::this_node::getName() + "/";
     boost::filesystem::create_directories(path_to_plots_);
 
     test_runner_.setID("12345");
 
-    //add the different tests
+    // add the different tests
     test_services_();
 
-    //some tests can only be run on the real hand
+    // some tests can only be run on the real hand
     if (!simulated_)
     {
-      //parses the diagnostics to find common problems
+      // parses the diagnostics to find common problems
       test_runner_.add_diagnostic_parser();
 
-      //manual tests come after diagnostic parsing
+      // manual tests come after diagnostic parsing
       // as we notify the user that the hand
       // connection seems to be fine if the previous
       // tests passed
-      //add manual tests (tactile, calibration)
+      // add manual tests (tactile, calibration)
       test_runner_.addManualTests();
-      //test the noise of the sensors
+      // test the noise of the sensors
       test_runner_.addSensorNoiseTest();
     }
 
-    //calling this from a oneshot timer because we're using the
+    // calling this from a oneshot timer because we're using the
     // hand commander which needs the hand to be fully initialised
     // before we can instantiate it.
     // Using 30s sleep here is a pain... not sure how to best get
@@ -129,7 +134,7 @@ namespace shadow_robot
     else
     {
       joints_to_test_.clear();
-      //we're adding all the possible joints here. They're checked against
+      // we're adding all the possible joints here. They're checked against
       // controlled joints from hand commander later in the movement test.
       joints_to_test_.push_back("FFJ0");
       joints_to_test_.push_back("FFJ3");
@@ -163,12 +168,12 @@ namespace shadow_robot
     index_joints_to_test_ = 0;
     for (size_t i = 0; i < joints_to_test_.size(); ++i)
     {
-      //checking the movement of the finger
+      // checking the movement of the finger
       test_runner_.add("Check movements [" + joints_to_test_[i] + "]", this, &SrSelfTest::test_movement_);
 
       if (!simulated_)
       {
-        //running some tests on the motor (PWM mode, strain gauge response, etc...)
+        // running some tests on the motor (PWM mode, strain gauge response, etc...)
         motor_tests_.push_back(new MotorTest(&test_runner_, joints_to_test_[i], hand_commander_.get()));
       }
     }
@@ -183,7 +188,7 @@ namespace shadow_robot
 
     if (index_joints_to_test_ == 0)
     {
-      //send all the joints to their safe positions:
+      // send all the joints to their safe positions:
       for (size_t i = 0; i < joints_to_test_.size(); ++i)
       {
         send_safe_target_(joints_to_test_[i]);
@@ -195,7 +200,7 @@ namespace shadow_robot
 
     if (!simulated_)
     {
-      //only test the joint that are controlled from the hand commander
+      // only test the joint that are controlled from the hand commander
       bool test_joint = false;
       for (size_t i = 0; i < hand_commander_->get_all_joints().size(); ++i)
       {
@@ -211,7 +216,7 @@ namespace shadow_robot
       }
     }
 
-    //sends the joint to a collision safe position
+    // sends the joint to a collision safe position
     send_safe_target_(joint_name);
     ros::Duration(0.5).sleep();
 
@@ -224,13 +229,13 @@ namespace shadow_robot
     }
     test_mvts_[joint_name].reset(new TestJointMovement(joint_name, hand_commander_.get()));
 
-    //wait a bit for mse to be received
+    // wait a bit for mse to be received
     ros::Duration(1.0).sleep();
 
-    //plot the data
+    // plot the data
     test_runner_.plot(test_mvts_[joint_name]->values, path_to_plots_ + joint_name + ".png");
 
-    //check they are correct
+    // check they are correct
     std::stringstream diag_msg;
     diag_msg << "Movement for " << joint_name << " (mse = " << test_mvts_[joint_name]->mse << ")";
     if (test_mvts_[joint_name]->mse < MAX_MSE_CONST_)
@@ -270,7 +275,7 @@ namespace shadow_robot
       safe_target = safe_targets_->find(joints_to_test_[i]);
       if (safe_target == safe_targets_->end())
       {
-        //joint not found in the map -> use the min
+        // joint not found in the map -> use the min
         joint_vector[i].joint_name = joints_to_test_[i];
         joint_vector[i].joint_target = sr_math_utils::to_degrees(
                 hand_commander_->get_min_max(joints_to_test_[i]).first);
@@ -288,7 +293,7 @@ namespace shadow_robot
 
   void SrSelfTest::update_safe_targets_(std::string joint_name)
   {
-    //This is very hugly.... not sure how to make it prettier easily - haven't much time...
+    // This is very ugly.... not sure how to make it prettier easily - haven't much time...
     if (joint_name.compare("FFJ4") == 0)
     {
       (*safe_targets_.get())["FFJ3"].joint_target = 45.0;
@@ -357,7 +362,7 @@ namespace shadow_robot
         }
       }
     }
-    //we ignore the other joints
+    // we ignore the other joints
   }
 
   void SrSelfTest::init_safe_targets_()
@@ -365,7 +370,7 @@ namespace shadow_robot
     safe_targets_.reset(new std::map<std::string, sr_robot_msgs::joint>());
     sr_robot_msgs::joint safe_target;
 
-    //??J4 -> min or max or 0... need to find a way to do that
+    // ??J4 -> min or max or 0... need to find a way to do that
     safe_target.joint_name = "FFJ4";
     safe_target.joint_target = 0.0;
     safe_targets_->insert(std::pair<std::string, sr_robot_msgs::joint>(safe_target.joint_name, safe_target));
@@ -379,7 +384,7 @@ namespace shadow_robot
     safe_target.joint_target = 0.0;
     safe_targets_->insert(std::pair<std::string, sr_robot_msgs::joint>(safe_target.joint_name, safe_target));
 
-    //wrist -> 0
+    // wrist -> 0
     safe_target.joint_name = "WRJ1";
     safe_target.joint_target = 0.0;
     safe_targets_->insert(std::pair<std::string, sr_robot_msgs::joint>(safe_target.joint_name, safe_target));
@@ -387,7 +392,7 @@ namespace shadow_robot
     safe_target.joint_target = 0.0;
     safe_targets_->insert(std::pair<std::string, sr_robot_msgs::joint>(safe_target.joint_name, safe_target));
 
-    //thumb -> 0
+    // thumb -> 0
     safe_target.joint_name = "THJ2";
     safe_target.joint_target = 0.0;
     safe_targets_->insert(std::pair<std::string, sr_robot_msgs::joint>(safe_target.joint_name, safe_target));

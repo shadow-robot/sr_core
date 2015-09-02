@@ -25,6 +25,7 @@ THE SOFTWARE.
 
 // C system includes
 #include <stdio.h>
+#include <string>
 
 #ifdef GNUPLOT_ENABLE_PTY
 #include <termios.h>
@@ -252,54 +253,62 @@ private:
     sendEntry(u);
   }
 
-  std::string formatCode(float *)
+  template<typename T>
+  std::string to_string(const T &n)
   {
-    return "%float";
+    std::ostringstream stm;
+    stm << n;
+    return stm.str();
   }
 
-  std::string formatCode(double *)
+  std::string formatCode(float* value)
   {
-    return "%double";
+    return to_string(value);
   }
 
-  std::string formatCode(int8_t *)
+  std::string formatCode(double* value)
   {
-    return "%int8";
+    return to_string(value);
   }
 
-  std::string formatCode(uint8_t *)
+  std::string formatCode(int8_t* value)
   {
-    return "%uint8";
+    return to_string(value);
   }
 
-  std::string formatCode(int16_t *)
+  std::string formatCode(uint8_t* value)
   {
-    return "%int16";
+    return to_string(value);
   }
 
-  std::string formatCode(uint16_t *)
+  std::string formatCode(int16_t* value)
   {
-    return "%uint16";
+    return to_string(value);
   }
 
-  std::string formatCode(int32_t *)
+  std::string formatCode(uint16_t* value)
   {
-    return "%int32";
+    return to_string(value);
   }
 
-  std::string formatCode(uint32_t *)
+  std::string formatCode(int32_t* value)
   {
-    return "%uint32";
+    return to_string(value);
   }
 
-  std::string formatCode(int64_t *)
+  std::string formatCode(uint32_t* value)
   {
-    return "%int64";
+    return to_string(value);
   }
 
-  std::string formatCode(uint64_t *)
+  std::string formatCode(int64_t* value)
   {
-    return "%uint64";
+    return to_string(value);
+  }
+
+  std::string formatCode(uint64_t* value)
+  {
+    return to_string(value);
   }
 
 public:
@@ -458,7 +467,7 @@ public:
     if (arr.isMajorRank(0))
     {
       tmp << "scan=yx";
-    } // i.e. C-style ordering
+    }  // i.e. C-style ordering
     tmp << " ";
     return tmp.str();
   }
@@ -479,7 +488,7 @@ private:
     std::ostringstream tmp;
     for (int i = 0; i < N; i++)
     {
-      tmp << formatCode((T *) NULL);
+      tmp << formatCode(reinterpret_cast<T *>(NULL));
     }
     return tmp.str();
   }
@@ -500,8 +509,7 @@ public:
   explicit Gnuplot(const std::string &cmd = "gnuplot") :
           boost::iostreams::stream<boost::iostreams::file_descriptor_sink>(
                   FILENO(pout = POPEN(cmd.c_str(), "w")),
-                  boost::iostreams::never_close_handle
-          ),
+                  boost::iostreams::never_close_handle),
           pout(pout),  // keeps '-Weff++' quiet
           is_pipe(true),
           feedback(NULL),
@@ -515,8 +523,7 @@ public:
   explicit Gnuplot(FILE *fh) :
           boost::iostreams::stream<boost::iostreams::file_descriptor_sink>(
                   FILENO(pout = fh),
-                  boost::iostreams::never_close_handle
-          ),
+                  boost::iostreams::never_close_handle),
           pout(pout),  // keeps '-Weff++' quiet
           is_pipe(false),
           feedback(NULL),
@@ -547,7 +554,7 @@ public:
     *this << std::flush;
     fflush(pout);
     // Wish boost had a pclose method...
-    //close();
+    // close();
 
     if (is_pipe)
     {

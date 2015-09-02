@@ -33,14 +33,15 @@
 #include <sr_robot_msgs/ChangeControlType.h>
 #include <std_msgs/Float64.h>
 #include <sstream>
+#include <string>
 
 namespace shadow_robot
 {
-  const double MotorTest::STANDARD_PWM_TARGET_ = 150.0; //Used for most of the motors
-  const double MotorTest::WRJ1_PWM_TARGET_ = 250.0; //Used for WRJ1
-  const double MotorTest::WRJ2_PWM_TARGET_ = 190.0; //Used for WRJ2
+  const double MotorTest::STANDARD_PWM_TARGET_ = 150.0;  // Used for most of the motors
+  const double MotorTest::WRJ1_PWM_TARGET_ = 250.0;  // Used for WRJ1
+  const double MotorTest::WRJ2_PWM_TARGET_ = 190.0;  // Used for WRJ2
 
-  const int MotorTest::STRAIN_GAUGE_THRESHOLD_ = 40; //the minimum value of the SG when pulling in that direction
+  const int MotorTest::STRAIN_GAUGE_THRESHOLD_ = 40;  // the minimum value of the SG when pulling in that direction
 
   MotorTest::MotorTest(self_test::TestRunner *test_runner,
                        std::string joint_name,
@@ -49,7 +50,7 @@ namespace shadow_robot
             record_data_(0), test_current_zero_(true), test_current_moving_(true), test_strain_gauge_right_(true),
             test_strain_gauge_left_(true), PWM_target_(STANDARD_PWM_TARGET_)
   {
-    //joint name is lower case in the controller topics
+    // joint name is lower case in the controller topics
     boost::algorithm::to_lower(joint_name_);
 
     if (joint_name_.compare("wrj1") == 0)
@@ -70,13 +71,13 @@ namespace shadow_robot
 
   void MotorTest::run_test(diagnostic_updater::DiagnosticStatusWrapper &status)
   {
-    //reset test results
+    // reset test results
     test_current_zero_ = true;
     test_current_moving_ = true;
     test_strain_gauge_right_ = true;
     test_strain_gauge_left_ = true;
 
-    //check current control type
+    // check current control type
     sr_robot_msgs::ControlType current_ctrl_type;
     sr_robot_msgs::ChangeControlType change_ctrl_type;
     change_ctrl_type.request.control_type.control_type = sr_robot_msgs::ControlType::QUERY;
@@ -91,7 +92,7 @@ namespace shadow_robot
       return;
     }
 
-    //switch to PWM
+    // switch to PWM
     change_ctrl_type.request.control_type.control_type = sr_robot_msgs::ControlType::PWM;
     if (!ros::service::call("realtime_loop/change_control_type", change_ctrl_type))
     {
@@ -100,11 +101,11 @@ namespace shadow_robot
       return;
     }
 
-    //subscribe to diagnostic topic
+    // subscribe to diagnostic topic
     diagnostic_sub_ = nh_.subscribe("diagnostics_agg", 1, &MotorTest::diagnostics_agg_cb_, this);
 
     std::string current_ctrl, effort_ctrl;
-    //list currently running controllers and find the one for effort control
+    // list currently running controllers and find the one for effort control
     controller_manager_msgs::ListControllers list_ctrl;
     if (ros::service::call("controller_manager/list_controllers", list_ctrl))
     {
@@ -130,7 +131,7 @@ namespace shadow_robot
       return;
     }
 
-    //load the effort controller if necessary
+    // load the effort controller if necessary
     if (effort_ctrl.compare("") == 0)
     {
       effort_ctrl = "sh_" + joint_name_ + "_effort_controller";
@@ -143,7 +144,7 @@ namespace shadow_robot
       }
     }
 
-    //switching to effort controllers (in PWM -> send direct PWM demand)
+    // switching to effort controllers (in PWM -> send direct PWM demand)
     controller_manager_msgs::SwitchController switch_ctrl;
     switch_ctrl.request.start_controllers.push_back(effort_ctrl);
     switch_ctrl.request.stop_controllers.push_back(current_ctrl);
@@ -156,12 +157,12 @@ namespace shadow_robot
       return;
     }
 
-    //apply effort and start recording data
+    // apply effort and start recording data
     effort_pub_ = nh_.advertise<std_msgs::Float64>(effort_ctrl + "/command", 5, true);
     std_msgs::Float64 target;
     ros::Rate rate(2.0);
 
-    //first one way
+    // first one way
     target.data = PWM_target_;
     record_data_ = 1;
 
@@ -171,7 +172,7 @@ namespace shadow_robot
       rate.sleep();
     }
 
-    //then the other
+    // then the other
     target.data = -PWM_target_;
     record_data_ = -1;
     for (unsigned int i = 0; i < 10; ++i)
@@ -180,7 +181,7 @@ namespace shadow_robot
       rate.sleep();
     }
 
-    //then nothing (to check that current is back to 0)
+    // then nothing (to check that current is back to 0)
     target.data = 0.0;
     record_data_ = 0;
     for (unsigned int i = 0; i < 10; ++i)
@@ -189,10 +190,10 @@ namespace shadow_robot
       rate.sleep();
     }
 
-    //stop the subscriber
+    // stop the subscriber
     diagnostic_sub_.shutdown();
 
-    //reset to previous control mode
+    // reset to previous control mode
     change_ctrl_type.request.control_type = current_ctrl_type;
     if (!ros::service::call("realtime_loop/change_control_type", change_ctrl_type))
     {
@@ -212,7 +213,7 @@ namespace shadow_robot
       return;
     }
 
-    //test results
+    // test results
     std::stringstream ss;
     if (test_current_zero_ && test_current_moving_ &&
         test_strain_gauge_right_ && test_strain_gauge_left_)
@@ -221,7 +222,7 @@ namespace shadow_robot
       return;
     }
 
-      //there was an error during the test
+    // there was an error during the test
     else
     {
       ss << "Test failed: ";
@@ -259,7 +260,7 @@ namespace shadow_robot
           {
             double current = ::atof(msg->status[status_i].values[value_i].value.c_str());
 
-            //not sending any targets, current should be close to 0
+            // not sending any targets, current should be close to 0
             if (record_data_ == 0)
             {
               if (current > 0.016)
@@ -274,8 +275,8 @@ namespace shadow_robot
             }
             else
             {
-              //sending some targets, current should be between ? and ?
-              //@todo find min max values for current when driving motors
+              // sending some targets, current should be between ? and ?
+              // find min max values for current when driving motors
               if (current > 0.5 || current < 0.012)
               {
                 test_current_moving_ = false;
@@ -290,9 +291,9 @@ namespace shadow_robot
           else if (msg->status[status_i].values[value_i].key.compare("Strain Gauge Left") == 0 &&
                    record_data_ == -1)
           {
-            //@todo is it always SGL for + and SGR for - ??
+            // is it always SGL for + and SGR for - ??
             int sgl = ::atoi(msg->status[status_i].values[value_i].value.c_str());
-            //@todo check min value for SG under tension
+            // check min value for SG under tension
             if (sgl < STRAIN_GAUGE_THRESHOLD_)
             {
               test_strain_gauge_left_ = false;
@@ -306,7 +307,7 @@ namespace shadow_robot
           else if (msg->status[status_i].values[value_i].key.compare("Strain Gauge Right") == 0 &&
                    record_data_ == 1)
           {
-            //@todo same here
+            // same here
             int sgr = ::atoi(msg->status[status_i].values[value_i].value.c_str());
             if (sgr < STRAIN_GAUGE_THRESHOLD_)
             {
@@ -320,10 +321,9 @@ namespace shadow_robot
           }
         }
       }
-
     }
   }
-}
+}  // namespace shadow_robot
 
 /* For the emacs weenies in the crowd.
    Local Variables:
