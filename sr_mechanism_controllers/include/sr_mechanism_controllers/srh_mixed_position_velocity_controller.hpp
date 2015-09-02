@@ -40,7 +40,6 @@ namespace controller
           public SrController
   {
   public:
-
     SrhMixedPositionVelocityJointController();
 
     bool init(ros_ethercat_model::RobotState *robot, ros::NodeHandle &n);
@@ -62,12 +61,14 @@ namespace controller
                   sr_robot_msgs::SetMixedPositionVelocityPidGains::Response &resp);
 
   private:
+    /// Internal PID controller for the position loop.
     boost::scoped_ptr<control_toolbox::Pid> pid_controller_position_;
-    /**< Internal PID controller for the position loop. */
-    boost::scoped_ptr<control_toolbox::Pid> pid_controller_velocity_;       /**< Internal PID controller for the velocity loop. */
+    /// Internal PID controller for the velocity loop.
+    boost::scoped_ptr<control_toolbox::Pid> pid_controller_velocity_;
 
-    //publish our joint controller state
-    boost::scoped_ptr<realtime_tools::RealtimePublisher<sr_robot_msgs::JointControllerState> > controller_state_publisher_;
+    // publish our joint controller state
+    boost::scoped_ptr<realtime_tools::RealtimePublisher
+            <sr_robot_msgs::JointControllerState> > controller_state_publisher_;
 
     /// The values for the velocity demand saturation
     double max_velocity_, min_velocity_;
@@ -75,30 +76,26 @@ namespace controller
 #ifdef DEBUG_PUBLISHER
     ros::Publisher debug_pub;
 #endif
-
-    //ros::Subscriber sub_command_;
-    //void setCommandCB(const std_msgs::Float64ConstPtr& msg);
-
     ros::ServiceServer serve_set_gains_;
 
-    ///the deadband on the position demand
+    /// the deadband on the position demand
     double position_deadband;
 
-    ///We're using an hysteresis deadband.
+    /// We're using an hysteresis deadband.
     sr_deadband::HysteresisDeadband<double> hysteresis_deadband;
 
-    ///read all the controller settings from the parameter server
+    /// read all the controller settings from the parameter server
     void read_parameters();
 
-    ///smallest demand we can send to the motors
+    /// smallest demand we can send to the motors
     int motor_min_force_threshold;
 
-    ///set the position target from a topic
+    /// set the position target from a topic
     void setCommandCB(const std_msgs::Float64ConstPtr &msg);
 
     void resetJointState();
   };
-} // namespace
+}  // namespace controller
 
 /* For the emacs weenies in the crowd.
 Local Variables:

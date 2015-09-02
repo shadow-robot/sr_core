@@ -56,13 +56,13 @@ namespace controller
                   sr_robot_msgs::SetEffortControllerGains::Response &resp);
 
   private:
-    ///read all the controller settings from the parameter server
+    /// read all the controller settings from the parameter server
     void read_parameters();
 
-    ///set the effort target from a topic
+    /// set the effort target from a topic
     void setCommandCB(const std_msgs::Float64ConstPtr &msg);
   };
-} // namespace
+}  // namespace controller
 
 /* For the emacs weenies in the crowd.
 Local Variables:

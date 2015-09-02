@@ -40,6 +40,7 @@
 #include <control_msgs/JointControllerState.h>
 
 #include <utility>
+#include <string>
 
 #include <sr_robot_msgs/SetPidGains.h>
 
@@ -50,12 +51,10 @@
 
 namespace controller
 {
-
   class SrController :
           public controller_interface::Controller<ros_ethercat_model::RobotState>
   {
   public:
-
     SrController();
 
     virtual ~SrController();
@@ -97,7 +96,7 @@ namespace controller
     // set joint_state_ and joint_state_2
     void get_joints_states_1_2();
 
-    ///call this function at the end of the init function in the inheriting classes.
+    /// call this function at the end of the init function in the inheriting classes.
     void after_init();
 
     /**
@@ -119,7 +118,7 @@ namespace controller
      */
     void get_min_max(urdf::Model model, std::string joint_name);
 
-    ///Min and max range of the joint, used to clamp the command.
+    /// Min and max range of the joint, used to clamp the command.
     double min_, max_;
 
     int loop_count_;
@@ -130,11 +129,12 @@ namespace controller
     ros::NodeHandle node_, n_tilde_;
     std::string joint_name_;
 
-    boost::scoped_ptr<realtime_tools::RealtimePublisher<control_msgs::JointControllerState> > controller_state_publisher_;
+    boost::scoped_ptr<realtime_tools::RealtimePublisher
+            <control_msgs::JointControllerState> > controller_state_publisher_;
 
     boost::scoped_ptr<sr_friction_compensation::SrFrictionCompensator> friction_compensator;
 
-    ///set the command from a topic
+    /// set the command from a topic
     virtual void setCommandCB(const std_msgs::Float64ConstPtr &msg)
     {
     }
@@ -143,17 +143,18 @@ namespace controller
     ros::ServiceServer serve_set_gains_;
     ros::ServiceServer serve_reset_gains_;
 
-    ///clamps the force demand to this value
+    /// clamps the force demand to this value
     double max_force_demand;
-    ///the deadband for the friction compensation algorithm
+    /// the deadband for the friction compensation algorithm
     int friction_deadband;
 
-    ///We're using an hysteresis deadband.
+    /// We're using an hysteresis deadband.
     sr_deadband::HysteresisDeadband<double> hysteresis_deadband;
 
-    //The max force factor is a number between 0.0 and 1.0 that will multiply the max_force_demand
-    //it is initialized to 1.0 and can be updated via a topic.
-    //This is intended to be used e.g. as part of a hand self protection mechanism, where max_force is reduced in certain cases
+    // The max force factor is a number between 0.0 and 1.0 that will multiply the max_force_demand
+    // it is initialized to 1.0 and can be updated via a topic.
+    // This is intended to be used e.g. as part of a hand self protection mechanism, where max_force is reduced
+    // in certain cases
     double max_force_factor_;
     ros::Subscriber sub_max_force_factor_;
 
@@ -164,7 +165,7 @@ namespace controller
      */
     void maxForceFactorCB(const std_msgs::Float64ConstPtr &msg);
   };
-} // namespace
+}  // namespace controller
 
 /* For the emacs weenies in the crowd.
 Local Variables:

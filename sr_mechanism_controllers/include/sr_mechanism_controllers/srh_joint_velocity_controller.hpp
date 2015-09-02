@@ -38,7 +38,6 @@ namespace controller
           public SrController
   {
   public:
-
     SrhJointVelocityController();
 
     bool init(ros_ethercat_model::RobotState *robot, ros::NodeHandle &n);
@@ -57,23 +56,24 @@ namespace controller
     bool setGains(sr_robot_msgs::SetPidGains::Request &req, sr_robot_msgs::SetPidGains::Response &resp);
 
   private:
-    boost::scoped_ptr<control_toolbox::Pid> pid_controller_velocity_;       /**< Internal PID controller for the velocity loop. */
+    /// Internal PID controller for the velocity loop.
+    boost::scoped_ptr<control_toolbox::Pid> pid_controller_velocity_;
 
-    ///the velocity deadband value used in the hysteresis_deadband
+    /// the velocity deadband value used in the hysteresis_deadband
     double velocity_deadband;
 
-    ///We're using an hysteresis deadband.
+    /// We're using an hysteresis deadband.
     sr_deadband::HysteresisDeadband<double> hysteresis_deadband;
 
-    ///read all the controller settings from the parameter server
+    /// read all the controller settings from the parameter server
     void read_parameters();
 
-    ///set the velocity target from a topic
+    /// set the velocity target from a topic
     void setCommandCB(const std_msgs::Float64ConstPtr &msg);
 
     void resetJointState();
   };
-} // namespace
+}  // namespace controller
 
 /* For the emacs weenies in the crowd.
 Local Variables:

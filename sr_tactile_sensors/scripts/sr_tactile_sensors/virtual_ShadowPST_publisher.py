@@ -17,7 +17,7 @@ class MergeMessages(object):
         self.th_sub = rospy.Subscriber('/sr_tactile/touch/th', Float64, self.th_cb)
         self.rate = rospy.Rate(25.0)
         self.pub = rospy.Publisher("/tactile", ShadowPST)
-        self.pst=[0.0,0.0,0.0,0.0,0.0]
+        self.pst = [0.0, 0.0, 0.0, 0.0, 0.0]
         self.mutex = thread.allocate_lock()
 
     def ff_cb(self, msg):
