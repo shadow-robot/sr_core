@@ -26,6 +26,7 @@
 
 #include "sr_self_test/test_joint_movement.hpp"
 #include <stdio.h>
+#include <string>
 #include "boost/iostreams/device/file_descriptor.hpp"
 #include "boost/iostreams/stream.hpp"
 
@@ -37,10 +38,10 @@ namespace shadow_robot
   {
     joint_name_ = joint_name;
 
-    //subscribes to the mean square error (published by movement pub below)
+    // subscribes to the mean square error (published by movement pub below)
     mse_sub_ = nh_tilde_.subscribe("mse_out", 1, &TestJointMovement::mse_cb_, this);
 
-    //initialises the movement publisher
+    // initialises the movement publisher
     std::string img_path;
     nh_tilde_.getParam("image_path", img_path);
 
@@ -106,7 +107,7 @@ namespace shadow_robot
   {
     mse = msg->data;
 
-    //unsubscribe after receiving the message
+    // unsubscribe after receiving the message
     mse_sub_.shutdown();
     sub_state_.shutdown();
   }
@@ -129,7 +130,7 @@ namespace shadow_robot
 
     boost_fd fd(fileno(myfile), boost::iostreams::never_close_handle);
     boost_stream stream(fd);
-    //stream.set_auto_close(false); // https://svn.boost.org/trac/boost/ticket/3517
+    // stream.set_auto_close(false); // https://svn.boost.org/trac/boost/ticket/3517
     std::string topic_type;
     if (!std::getline(stream, topic_type))
     {
@@ -139,7 +140,7 @@ namespace shadow_robot
     pclose(myfile);
     return topic_type;
   }
-}
+}  // namespace shadow_robot
 
 /* For the emacs weenies in the crowd.
    Local Variables:

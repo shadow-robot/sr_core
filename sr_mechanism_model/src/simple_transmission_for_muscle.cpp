@@ -38,10 +38,12 @@
  */
 
 #include "sr_mechanism_model/simple_transmission_for_muscle.hpp"
+#include <string>
 
-using namespace ros_ethercat_model;
-using namespace std;
-using namespace sr_actuator;
+using ros_ethercat_model::Transmission;
+using ros_ethercat_model::RobotState;
+using sr_actuator::SrMuscleActuator;
+using std::string;
 
 PLUGINLIB_EXPORT_CLASS(sr_mechanism_model::SimpleTransmissionForMuscle, Transmission)
 
@@ -56,7 +58,7 @@ namespace sr_mechanism_model
     }
 
     string act_name = actuator_->name_;
-    delete actuator_; // That's a SrMotorActuator at this point
+    delete actuator_;  // That's a SrMotorActuator at this point
     actuator_ = new SrMuscleActuator();
     actuator_->name_ = act_name;
     actuator_->command_.enable_ = true;
@@ -75,8 +77,8 @@ namespace sr_mechanism_model
     // So we will encode the two uint16_t that contain the data from the muscle pressure sensors
     // into the double effort_. (We don't have any measured effort in the muscle hand anyway).
     // Then in the joint controller we will decode that back into uint16_t.
-    joint_->effort_ = ((double) (act->muscle_state_.pressure_[1]) * 0x10000)
-                      + (double) (act->muscle_state_.pressure_[0]);
+    joint_->effort_ = (static_cast<double>(act->muscle_state_.pressure_[1]) * 0x10000)
+                      + static_cast<double>(act->muscle_state_.pressure_[0]);
   }
 
   void SimpleTransmissionForMuscle::propagateEffort()
@@ -108,7 +110,7 @@ namespace sr_mechanism_model
     act->muscle_command_.valve_[1] = valve_1_tmp;
   }
 
-} //end namespace
+}  // namespace sr_mechanism_model
 
 /* For the emacs weenies in the crowd.
 Local Variables:

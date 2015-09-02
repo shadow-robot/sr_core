@@ -26,6 +26,9 @@
 
 #include "sr_self_test/sr_self_test.hpp"
 #include <ros/ros.h>
+#include <map>
+#include <string>
+#include <vector>
 
 #include <diagnostic_msgs/SelfTest.h>
 #include <sr_robot_msgs/ManualSelfTest.h>
@@ -33,7 +36,6 @@
 class MyNode
 {
 public:
-
   // self_test::TestRunner is the handles sequencing driver self-tests.
   shadow_robot::SrTestRunner self_test_;
 
@@ -92,10 +94,10 @@ public:
     std::vector<double> ffj0_pos, ffj0_tar, ffj3_pos, ffj3_tar;
     for (int i = 0; i < 20; ++i)
     {
-      ffj0_pos.push_back(1.0 / float(i));
-      ffj0_tar.push_back(1.0 / float(i + 1));
-      ffj3_pos.push_back(1.0 / float(i * 2));
-      ffj3_tar.push_back(2.0 / float(i));
+      ffj0_pos.push_back(1.0 / static_cast<float>(i));
+      ffj0_tar.push_back(1.0 / static_cast<float>(i + 1));
+      ffj3_pos.push_back(1.0 / static_cast<float>(i * 2));
+      ffj3_tar.push_back(2.0 / static_cast<float>(i));
     }
 
     joints["FFJ0 positions"] = ffj0_pos;

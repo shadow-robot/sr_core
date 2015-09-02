@@ -120,7 +120,8 @@ namespace sr_gazebo_sim
   }
 
   void SrGazeboHWSim::initializeFakeRobotState(const urdf::Model *const urdf_model,
-                                               const std::vector<transmission_interface::TransmissionInfo> &transmissions)
+                                               const std::vector<transmission_interface::TransmissionInfo>
+                                               &transmissions)
   {
     this->fake_state_.robot_model_ = *urdf_model;
 

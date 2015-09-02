@@ -39,9 +39,9 @@
 
 #include "sr_mechanism_model/simple_transmission.hpp"
 
-using namespace ros_ethercat_model;
-using namespace std;
-using namespace sr_actuator;
+using ros_ethercat_model::Transmission;
+using ros_ethercat_model::RobotState;
+using sr_actuator::SrMotorActuator;
 
 PLUGINLIB_EXPORT_CLASS(sr_mechanism_model::SimpleTransmission, Transmission)
 
@@ -93,7 +93,7 @@ namespace sr_mechanism_model
     act->command_.effort_ = joint_->commanded_effort_;
   }
 
-} //end namespace
+}  // namespace sr_mechanism_model
 
 /* For the emacs weenies in the crowd.
 Local Variables:

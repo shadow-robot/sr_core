@@ -26,11 +26,12 @@
  */
 
 #include "sr_self_test/sr_test_runner.hpp"
+#include <map>
+#include <string>
+#include <vector>
 
 namespace shadow_robot
 {
-//const double SrTestRunner::SERVICE_TIMEOUT_CONST_ = 1.0;
-
   SrTestRunner::SrTestRunner() :
           self_test::TestRunner(), index_service_to_test_(0)
   {
@@ -99,14 +100,14 @@ namespace shadow_robot
   {
     if (testing)
     {
-      gnuplot_.reset(new Gnuplot("gnuplot"));//close the window right after the test when running a test
+      gnuplot_.reset(new Gnuplot("gnuplot"));  // close the window right after the test when running a test
     }
     else
     {
       gnuplot_.reset(new Gnuplot("gnuplot -persist"));
     }
 
-    //saving the plot to file if path provided
+    // saving the plot to file if path provided
     if (path != "")
     {
       *gnuplot_.get() << "set terminal png\n";
@@ -139,7 +140,7 @@ namespace shadow_robot
     *gnuplot_.get() << "set title '" + title + "'\n";
     *gnuplot_.get() << cmd;
 
-    //plotting the data
+    // plotting the data
     for (std::map<std::string, std::vector<double> >::const_iterator it = joints.begin(); it != joints.end(); ++it)
     {
       gnuplot_->send(it->second);
@@ -164,11 +165,12 @@ namespace shadow_robot
     manual_tests_.push_back(boost::shared_ptr<ManualTests>(new ManualTests(msg, 1)));
     add("Manual Tests: tactiles.", manual_tests_.back().get(), &ManualTests::run_manual_tests);
 
-    msg = "Please check that the positions of the joints in the 3d model\n of the hand (using rviz) match those in the real hand.";
+    msg = "Please check that the positions of the joints in the 3d model\n";
+    msg += "of the hand (using rviz) match those in the real hand.";
     manual_tests_.push_back(boost::shared_ptr<ManualTests>(new ManualTests(msg, 2)));
     add("Manual Tests: joint positions - rviz.", manual_tests_.back().get(), &ManualTests::run_manual_tests);
   }
-} //end namespace
+}  // namespace shadow_robot
 
 
 /* For the emacs weenies in the crowd.
