@@ -122,7 +122,7 @@ TEST(SrhJointPositionController, TestPID)
     }
   }
 
-//Test the position deadband as well:
+  // Test the position deadband as well:
   double target = 0.1;
   const double pos[5] = {0.0, 0.11, 0.099, 0.116, 0.115};
   const double expected_values[5] = {0.1, 0.0, 0.0, -0.016, 0.0};
@@ -132,18 +132,17 @@ TEST(SrhJointPositionController, TestPID)
 
     ctrl_output = test_jpc->compute_output(target, pos[i]);
     ROS_INFO_STREAM("Expected value: " << expected_values[i] << " Computed value: " << ctrl_output);
-    EXPECT_EQ(ctrl_output, expected_values[i]
-    );
+    EXPECT_EQ(ctrl_output, expected_values[i]);
   }
 
-//TESTING A PURE I CONTROLLER
+  // TESTING A PURE I CONTROLLER
   pid->reset();
 
   pid->setGains(0.0, 1.0, 0.0, 2.0, -2.0);
 
   ros::Duration one_sec_pause(1.0);
   ros::Duration half_sec_pause(0.5);
-//ros::Duration pause(0.01);
+  // ros::Duration pause(0.01);
 
   const double expected_values_one_sec[nb_values] = {-2.0, -1.0, -0.5, 0.0, 0.5, 1.0, 2.0};
   const double expected_values_half_sec[nb_values] = {-2.0, -0.5, -0.25, 0.0, 0.25, 0.5, 2.0};

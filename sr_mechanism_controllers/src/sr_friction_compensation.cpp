@@ -216,7 +216,7 @@ namespace sr_friction_compensation
 
     return friction_map;
   }
-}
+}  // namespace sr_friction_compensation
 
 
 

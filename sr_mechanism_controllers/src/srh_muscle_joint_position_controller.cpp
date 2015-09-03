@@ -402,7 +402,7 @@ namespace controller
       command_ = joint_state_->position_;
     }
   }
-}
+}  // namespace controller
 
 /* For the emacs weenies in the crowd.
 Local Variables:

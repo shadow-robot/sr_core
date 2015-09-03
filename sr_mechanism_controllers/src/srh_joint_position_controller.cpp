@@ -247,7 +247,7 @@ namespace controller
         commanded_effort += friction_compensator->friction_compensation(
                 joint_state_->position_ + joint_state_2->position_,
                 joint_state_->velocity_ + joint_state_2->velocity_,
-                int(commanded_effort),
+                static_cast<int>(commanded_effort),
                 friction_deadband);
       }
       else

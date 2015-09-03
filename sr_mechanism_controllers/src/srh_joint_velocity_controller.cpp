@@ -27,6 +27,7 @@
 #include "sr_mechanism_controllers/srh_joint_velocity_controller.hpp"
 #include "angles/angles.h"
 #include "pluginlib/class_list_macros.h"
+#include <algorithm>
 #include <sstream>
 #include <math.h>
 #include "sr_utilities/sr_math_utils.hpp"
@@ -35,7 +36,8 @@
 
 PLUGINLIB_EXPORT_CLASS(controller::SrhJointVelocityController, controller_interface::ControllerBase)
 
-using namespace std;
+using std::min;
+using std::max;
 
 namespace controller
 {
@@ -229,14 +231,14 @@ namespace controller
         commanded_effort += friction_compensator->friction_compensation(
                 (joint_state_->position_ + joint_state_2->position_),
                 (joint_state_->velocity_ + joint_state_2->velocity_),
-                int(commanded_effort),
+                static_cast<int>(commanded_effort),
                 friction_deadband);
       }
       else
       {
         commanded_effort += friction_compensator->friction_compensation(joint_state_->position_,
                                                                         joint_state_->velocity_,
-                                                                        int(commanded_effort),
+                                                                        static_cast<int>(commanded_effort),
                                                                         friction_deadband);
       }
     }
@@ -303,7 +305,7 @@ namespace controller
       command_ = joint_state_->velocity_;
     }
   }
-}
+}  // namespace controller
 
 /* For the emacs weenies in the crowd.
 Local Variables:

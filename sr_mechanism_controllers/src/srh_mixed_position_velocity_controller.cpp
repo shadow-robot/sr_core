@@ -342,7 +342,8 @@ namespace controller
       else
       {
         friction_offset = friction_compensator->friction_compensation(joint_state_->position_, joint_state_->velocity_,
-                                                                      static_cast<int>(commanded_effort), friction_deadband);
+                                                                      static_cast<int>(commanded_effort),
+                                                                      friction_deadband);
       }
 
       commanded_effort += friction_offset;

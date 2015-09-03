@@ -169,7 +169,6 @@ public:
   {
     return traj_client_->getState();
   }
-
 };
 
 int main(int argc, char **argv)

@@ -144,7 +144,7 @@ namespace controller
       ROS_ERROR("Max force factor must be between 0.0 and 1.0. Discarding received value: %f", msg->data);
     }
   }
-}
+}  // namespace controller
 
 /* For the emacs weenies in the crowd.
 Local Variables:
