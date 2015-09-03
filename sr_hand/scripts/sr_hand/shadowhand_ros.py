@@ -271,7 +271,8 @@ class ShadowHand_ROS(object):
 
     def sendupdate_from_dict(self, dicti):
         """
-        @param dicti: Dictionnary containing all the targets to send, mapping the name of the joint to the value of its target
+        @param dicti: Dictionnary containing all the targets to send, mapping
+        the name of the joint to the value of its target.
         Sends new targets to the hand from a dictionnary
         """
         self.sendupdate_lock.acquire()
@@ -323,7 +324,8 @@ class ShadowHand_ROS(object):
 
     def sendupdate_arm_from_dict(self, dicti):
         """
-        @param dicti: Dictionnary containing all the targets to send, mapping the name of the joint to the value of its target
+        @param dicti: Dictionnary containing all the targets to send, mapping
+        the name of the joint to the value of its target.
         Sends new targets to the hand from a dictionnary
         """
         message = []
@@ -460,7 +462,8 @@ class ShadowHand_ROS(object):
     def callVisualisationService(self, callList=0, reset=0):
         """
         @param callList: dictionnary mapping joint names to information that should be displayed
-        @param reset: flag used to tell if the parameters should be replaced by the new ones or just added to the previous ones
+        @param reset: flag used to tell if the parameters should be replaced by the new ones or
+        just added to the previous ones.
         Calls a ROS service to display various information in Rviz
         """
         if reset == 0:

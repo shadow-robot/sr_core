@@ -38,7 +38,6 @@ namespace controller
           public SrController
   {
   public:
-
     SrhSyntouchController();
 
     ~SrhSyntouchController();
@@ -54,11 +53,12 @@ namespace controller
 
   private:
     // publish our joint controller state
-    boost::scoped_ptr<realtime_tools::RealtimePublisher<sr_robot_msgs::JointControllerState> > controller_state_publisher_;
+    boost::scoped_ptr<realtime_tools::RealtimePublisher
+              <sr_robot_msgs::JointControllerState> > controller_state_publisher_;
 
     sr_actuator::SrMotorActuator *actuator_;
   };
-}  // namespace
+}  // namespace controller
 
 /* For the emacs weenies in the crowd.
 Local Variables:

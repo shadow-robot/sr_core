@@ -100,7 +100,7 @@ namespace shadowrobot
 
     bool getPosition(std::string joint_name, double &position);
   };
-}
+}  // namespace shadowrobot
 
 /* For the emacs weenies in the crowd.
 Local Variables:

@@ -33,6 +33,9 @@
 #include "sr_hand/hand/sr_articulated_robot.h"
 #include <sensor_msgs/JointState.h>
 
+#include <string>
+#include <vector>
+
 namespace shadowrobot
 {
 // THIS CLASS IS CONSIDERED DEPRECATED AND SHOULD NOT BE USED FOR ANY NEW PACKAGE.
@@ -121,7 +124,7 @@ namespace shadowrobot
     // a subscriber for the /joint_states topic.
     ros::Subscriber joint_state_subscriber;
   };  // end class
-}
+}  // namespace shadowrobot
 
 /* For the emacs weenies in the crowd.
 Local Variables:
@@ -130,4 +133,4 @@ End:
 */
 
 
-#endif 	    /* !_ETHERCAT_COMPATIBILITY_HAND_HPP_ */
+#endif  // _ETHERCAT_COMPATIBILITY_HAND_HPP_

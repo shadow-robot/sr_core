@@ -67,8 +67,8 @@ class Commander(object):
         # Shadow hand setup
         self.hand = ShadowHand_ROS()
 
-        # Period in seconds between interpolated commands (e.g. if we want an interpolation time of 1s and have a period of 0.1,
-        # the interpoler will use 10 steps
+        # Period in seconds between interpolated commands (e.g. if we want an interpolation
+        # time of 1s and have a period of 0.1, the interpoler will use 10 steps
         self.hand_interpolation_period = 0.01
         if self.hand.check_hand_type() == "gazebo":
             # Interpolation is slower under simulation compared to real hand
@@ -188,7 +188,8 @@ class Commander(object):
 
     def get_hand_effort(self):
         """
-        Returns a dictionary with the effort of each joint. Currently in ADC units, as no calibration is performed on the strain gauges.
+        Returns a dictionary with the effort of each joint. Currently in ADC units, as no calibration
+        is performed on the strain gauges.
         """
         return dict(self.hand.read_all_current_efforts())
 

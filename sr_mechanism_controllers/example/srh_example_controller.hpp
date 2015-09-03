@@ -29,6 +29,7 @@
 #define _SRH_EXAMPLE_CONTROLLER_HPP_
 
 #include <sr_mechanism_controllers/sr_controller.hpp>
+#include <string>
 
 namespace controller
 {
@@ -83,7 +84,7 @@ namespace controller
      */
     virtual void update(const ros::Time &time, const ros::Duration &period);
   };
-}  // namespace
+}  // namespace controller
 
 /* For the emacs weenies in the crowd.
 Local Variables:
