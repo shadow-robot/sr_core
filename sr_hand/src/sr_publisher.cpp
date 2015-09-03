@@ -27,23 +27,20 @@
  *
  */
 
-//ROS include
+// ROS include
 #include <ros/ros.h>
 
-//messages
+// messages
 #include <sr_robot_msgs/joints_data.h>
 #include <sr_robot_msgs/joint.h>
 #include <sensor_msgs/JointState.h>
 
-//generic C/C++ include
+// generic C/C++ include
 #include <vector>
 #include <string>
 #include <sstream>
 
 #include "sr_hand/sr_publisher.h"
-
-using namespace ros;
-using namespace shadowrobot;
 
 namespace shadowrobot
 {
@@ -158,6 +155,6 @@ namespace shadowrobot
     publish_rate.sleep();
   }
 
-}  // end namespace
+}  // namespace shadowrobot
 
 

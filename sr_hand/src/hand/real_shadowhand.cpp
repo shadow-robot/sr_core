@@ -28,6 +28,7 @@
 #include <utility>
 #include <string>
 #include <vector>
+#include <map>
 
 #include "sr_hand/hand/real_shadowhand.h"
 // our robot code
