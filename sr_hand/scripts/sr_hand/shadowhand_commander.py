@@ -50,7 +50,9 @@ Basic script will look like:
 See the examples directory in the package sr_examples.
 """
 
+
 class Commander(object):
+
     def __init__(self):
         rospy.logwarn("The class Commander in package sr_hand is deprecated. "
                       "Please use SrHandCommander from package sr_robot_commander")
@@ -58,7 +60,8 @@ class Commander(object):
         # Mutex to control thread access to certain operations
         self.mutex = threading.Lock()
 
-        # This is used to store the grasp interpolators for the different threads.
+        # This is used to store the grasp interpolators for the different
+        # threads.
         self.grasp_interpolators = {}
 
         # Shadow hand setup
@@ -70,7 +73,6 @@ class Commander(object):
         if self.hand.check_hand_type() == "gazebo":
             # Interpolation is slower under simulation compared to real hand
             self.hand_interpolation_period = 0.1
-
 
     def move_hand(self, command):
         """
@@ -94,7 +96,8 @@ class Commander(object):
         the movement will last.
         """
 
-        # Copy the dictionary, so that we will not affect the original user command
+        # Copy the dictionary, so that we will not affect the original user
+        # command
         joints = dict(command)
 
         interpolation_time = 0.0
@@ -110,7 +113,6 @@ class Commander(object):
         else:
             threading.Thread(target=self._move_hand_interpolation,
                              args=(joints, interpolation_time)).start()
-
 
     def _move_hand_interpolation(self, joints, interpolation_time=1.0):
         """
@@ -131,7 +133,8 @@ class Commander(object):
 
             rospy.logdebug("start interpolation")
             current_grasp = Grasp()
-            current_grasp.joints_and_positions = self.hand.read_all_current_positions()
+            current_grasp.joints_and_positions = self.hand.read_all_current_positions(
+            )
             target_grasp = Grasp()
             target_grasp.joints_and_positions = joints
 
@@ -140,19 +143,19 @@ class Commander(object):
 
             r = rospy.Rate(1.0 / self.hand_interpolation_period)
 
-            for interpolation in range (1, int(interpolation_time / self.hand_interpolation_period) + 1):
+            for interpolation in range(1, int(interpolation_time / self.hand_interpolation_period) + 1):
                 self.mutex.acquire()
-                targets_to_send = interpolator.interpolate(100.0 * interpolation * self.hand_interpolation_period / interpolation_time)
+                targets_to_send = interpolator.interpolate(
+                    100.0 * interpolation * self.hand_interpolation_period / interpolation_time)
                 self.mutex.release()
                 self.hand.sendupdate_from_dict(targets_to_send)
-                #rospy.loginfo("sent cmd n: %s" %(str(interpolation), ))
+                # rospy.loginfo("sent cmd n: %s" %(str(interpolation), ))
                 r.sleep()
         finally:
             self.mutex.acquire()
             self.grasp_interpolators.pop(thread_name, None)
             self.mutex.release()
             rospy.logdebug("end interpolation")
-
 
     def _prune_interpolators(self, joints):
         """
@@ -162,12 +165,14 @@ class Commander(object):
         @param joints - Dictionary of joint names in the keys and angles in
         degrees in the values.
         """
-        rospy.logdebug("Call prune from thread %s", threading.current_thread().name )
+        rospy.logdebug(
+            "Call prune from thread %s", threading.current_thread().name)
         for thread_id in self.grasp_interpolators.keys():
             for joint_name in joints.keys():
-                self.grasp_interpolators[thread_id].grasp_to.joints_and_positions.pop(joint_name, None)
-                rospy.logdebug("Prune joint %s thread %s", joint_name, thread_id )
-
+                self.grasp_interpolators[
+                    thread_id].grasp_to.joints_and_positions.pop(joint_name, None)
+                rospy.logdebug(
+                    "Prune joint %s thread %s", joint_name, thread_id)
 
     def get_hand_position(self):
         """
@@ -198,5 +203,3 @@ class Commander(object):
         Returns an object containing tactile data. The structure of the data is different for every tactile_type .
         """
         return self.hand.get_tactile_state()
-
-
