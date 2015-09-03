@@ -14,7 +14,7 @@ private:
   TrajClient *traj_client_;
 
 public:
-  //! Initialize the action client and wait for action server to come up
+ // ! Initialize the action client and wait for action server to come up
   ShadowTrajectory()
   {
     // tell the action client that we want to spin a thread by default
@@ -27,13 +27,13 @@ public:
     }
   }
 
-  //! Clean up the action client
+ // ! Clean up the action client
   ~ShadowTrajectory()
   {
     delete traj_client_;
   }
 
-  //! Sends the command to start a given trajectory
+ // ! Sends the command to start a given trajectory
   void startTrajectory(control_msgs::FollowJointTrajectoryGoal goal)
   {
     // When to start the trajectory: 1s from now
@@ -41,7 +41,7 @@ public:
     traj_client_->sendGoal(goal);
   }
 
-  //! Wait for currently running trajectory to finish
+ // ! Wait for currently running trajectory to finish
   void waitTrajectory()
   {
     while (!getState().isDone() && ros::ok())
@@ -50,7 +50,7 @@ public:
     }
   }
 
-  //! Generates a simple trajectory to move two fingers on the hand.
+ // ! Generates a simple trajectory to move two fingers on the hand.
   /*! Note that this trajectory contains three waypoints, joined together
       as a single trajectory. Alternatively, each of these waypoints could
       be in its own trajectory - a trajectory can have one or more waypoints
@@ -58,7 +58,7 @@ public:
   */
   control_msgs::FollowJointTrajectoryGoal arm_movement()
   {
-    //our goal variable
+   // our goal variable
     control_msgs::FollowJointTrajectoryGoal goal;
     // First, the joint names, which apply to all waypoints
     goal.trajectory.joint_names.push_back("ShoulderJRotate");
@@ -140,7 +140,7 @@ public:
     return goal;
   }
 
-  //! Returns the current state of the action
+ // ! Returns the current state of the action
   actionlib::SimpleClientGoalState getState()
   {
     return traj_client_->getState();

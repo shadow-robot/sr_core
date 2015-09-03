@@ -109,7 +109,7 @@ namespace shadowrobot
     parameters_map["shift"] = PARAM_shift;
     parameters_map["max"] = PARAM_output_max;
 
-    //! the parameters for the motors
+   // ! the parameters for the motors
     parameters_map["motor_maxforce"] = PARAM_motor_maxforce;
     parameters_map["motor_safeforce"] = PARAM_motor_safeforce;
 
@@ -138,7 +138,7 @@ namespace shadowrobot
   {
     joints_map_mutex.lock();
 
-    //search the sensor in the hash_map
+   // search the sensor in the hash_map
     JointsMap::iterator iter = joints_map.find(joint_name);
 
     if (iter != joints_map.end())
@@ -146,7 +146,7 @@ namespace shadowrobot
       JointData tmpData = joints_map.find(joint_name)->second;
       int index_hand_joints = tmpData.jointIndex;
 
-      //trim to the correct range
+     // trim to the correct range
       if (target < hand_joints[index_hand_joints].min_angle)
       {
         target = hand_joints[index_hand_joints].min_angle;
@@ -156,7 +156,7 @@ namespace shadowrobot
         target = hand_joints[index_hand_joints].max_angle;
       }
 
-      //here we update the actual hand angles
+     // here we update the actual hand angles
       robot_update_sensor(&hand_joints[index_hand_joints].joint_target, target);
       joints_map_mutex.unlock();
       return 0;
@@ -174,7 +174,7 @@ namespace shadowrobot
 
     JointsMap::iterator iter = joints_map.find(joint_name);
 
-    //joint not found
+   // joint not found
     if (iter == joints_map.end())
     {
       ROS_ERROR("Joint %s not found.", joint_name.c_str());
@@ -191,14 +191,14 @@ namespace shadowrobot
       return noData;
     }
 
-    //joint found
+   // joint found
     JointData tmpData = iter->second;
     int index = tmpData.jointIndex;
 
     tmpData.position = robot_read_sensor(&hand_joints[index].position);
     tmpData.target = robot_read_sensor(&hand_joints[index].joint_target);
 
-    //more information
+   // more information
     if (hand_joints[index].a.smartmotor.has_sensors)
     {
       tmpData.temperature = robot_read_sensor(&hand_joints[index].a.smartmotor.temperature);
@@ -215,14 +215,14 @@ namespace shadowrobot
 
   SRArticulatedRobot::JointsMap RealShadowhand::getAllJointsData()
   {
-    //update the map for each joints
+   // update the map for each joints
     for (JointsMap::const_iterator it = joints_map.begin(); it != joints_map.end(); ++it)
     {
       getJointData(it->first);
     }
 
-    //hack for C6M2 with 4 fingers with coupling J1+J2=J0
-    //copy J0/2 to J1 and J2 for FF MF RF LF
+   // hack for C6M2 with 4 fingers with coupling J1+J2=J0
+   // copy J0/2 to J1 and J2 for FF MF RF LF
     joints_map_mutex.lock();
 
     std::string fingername("FF");
@@ -258,7 +258,7 @@ namespace shadowrobot
 
     JointsMap tmp = JointsMap(joints_map);
 
-    //return the map
+   // return the map
     return tmp;
   }
 
@@ -269,7 +269,7 @@ namespace shadowrobot
     struct controller_config myConfig;
     memset(&myConfig, 0, sizeof(myConfig));
 
-    //set the nodename from contrlr_name
+   // set the nodename from contrlr_name
     myConfig.nodename = contrlr_name.c_str();
 
     controller_read_from_hardware(&myConfig);
@@ -280,14 +280,14 @@ namespace shadowrobot
       std::string name = ctrlr_data.data[i].name;
       ParametersMap::iterator iter = parameters_map.find(name);
 
-      //parameter not found
+     // parameter not found
       if (iter == parameters_map.end())
       {
         ROS_ERROR("Parameter %s not found.", name.c_str());
         continue;
       }
 
-      //parameter found
+     // parameter found
       controller_update_param(&myConfig, (controller_param) iter->second, ctrlr_data.data[i].value.c_str());
     }
 
@@ -308,7 +308,7 @@ namespace shadowrobot
     struct controller_config myConfig;
     memset(&myConfig, 0, sizeof(myConfig));
 
-    //set the nodename from contrlr_name
+   // set the nodename from contrlr_name
     myConfig.nodename = contrlr_name.c_str();
 
     controller_read_from_hardware(&myConfig);
@@ -329,11 +329,11 @@ namespace shadowrobot
       hand_protocol_config_t cfg;
       hand_protocol_get_config(cfg);
 
-      //set the transmit rate value
+     // set the transmit rate value
       int value = msg->rate_value;
       cfg->u.palm.tx_freq[num]=value;
 
-      //send the config to the palm.
+     // send the config to the palm.
       hand_protocol_set_config(cfg);
     */
 
@@ -347,7 +347,7 @@ namespace shadowrobot
 
   std::vector <DiagnosticData> RealShadowhand::getDiagnostics()
   {
-    //it's alright to do the tests when we're publishing the diagnostics
+   // it's alright to do the tests when we're publishing the diagnostics
     self_test->checkTest();
 
     std::vector <DiagnosticData> returnVector;
@@ -355,7 +355,7 @@ namespace shadowrobot
     DiagnosticData tmpData;
     std::stringstream ss;
 
-    //get the data from the hand
+   // get the data from the hand
     for (unsigned int index = 0; index < START_OF_ARM; ++index)
     {
       tmpData.joint_name = std::string(hand_joints[index].joint_name);
@@ -364,16 +364,16 @@ namespace shadowrobot
       tmpData.position = robot_read_sensor(&hand_joints[index].position);
       tmpData.target = robot_read_sensor(&hand_joints[index].joint_target);
 
-      //more information
+     // more information
       if (hand_joints[index].a.smartmotor.has_sensors)
       {
-        //reads the number of received sensor msgs from the debug node.
+       // reads the number of received sensor msgs from the debug node.
         int res;
         if (*(&hand_joints[index].a.smartmotor.debug_nodename) != NULL)
         {
           std::string debug_node_name = *(&hand_joints[index].a.smartmotor.debug_nodename);
 
-          //get all the debug values
+         // get all the debug values
           std::map<const std::string, const unsigned int>::const_iterator iter;
           for (iter = debug_values::names_and_offsets.begin();
                iter != debug_values::names_and_offsets.end(); ++iter)
@@ -384,14 +384,14 @@ namespace shadowrobot
             tmpData.debug_values[iter->first] = robot_read_incoming(&sensor_tmp);
           }
         }
-        //	else
+       // 	else
         //  ROS_ERROR_STREAM(tmpData.joint_name << ": no debug sensor" );
-        //reads temperature current and force.
+       // reads temperature current and force.
         tmpData.temperature = robot_read_sensor(&hand_joints[index].a.smartmotor.temperature);
         tmpData.current = robot_read_sensor(&hand_joints[index].a.smartmotor.current);
         tmpData.force = robot_read_sensor(&hand_joints[index].a.smartmotor.torque);
 
-        //check for error_flags
+       // check for error_flags
 
         struct hand_protocol_flags fl;
         uint64_t uuid = robot_node_id(hand_joints[index].a.smartmotor.nodename);
@@ -430,7 +430,7 @@ namespace shadowrobot
             ss << "DEAD ";
           }
 
-          //if a flag is up, then print a warning as well
+         // if a flag is up, then print a warning as well
           if (at_least_one_error_flag)
           {
             ROS_WARN("[%s]: %s", hand_joints[index].joint_name, (ss.str()).c_str());
@@ -453,12 +453,12 @@ namespace shadowrobot
   {
     ROS_INFO("Preparing the environment to run self tests.");
 
-    //lock all the mutexes to make sure we're not publishing other messages
+   // lock all the mutexes to make sure we're not publishing other messages
     joints_map_mutex.lock();
     parameters_map_mutex.lock();
     controllers_map_mutex.lock();
 
-    //TODO: set the palm transmit rate to max?
+   // TODO: set the palm transmit rate to max?
 
     sleep(1);
 
@@ -469,12 +469,12 @@ namespace shadowrobot
   {
     ROS_INFO("Restoring the environment after the self tests.");
 
-    //test finished, unlocking all the mutexes
+   // test finished, unlocking all the mutexes
     joints_map_mutex.unlock();
     parameters_map_mutex.unlock();
     controllers_map_mutex.unlock();
 
-    //TODO: reset the palm transmit rate to previous state?
+   // TODO: reset the palm transmit rate to previous state?
 
     status.summary(diagnostic_msgs::DiagnosticStatus::OK, "Postest completed successfully.");
   }
@@ -515,14 +515,14 @@ namespace shadowrobot
   {
     std::pair<unsigned char, std::string> test_result;
 
-    //id should be motor board number
+   // id should be motor board number
     std::string ID = "1";
     self_test->setID(ID.c_str());
 
     unsigned int nb_msgs_sent = 0;
     unsigned int nb_msgs_received = 0;
 
-    //sending lots of data to one joint
+   // sending lots of data to one joint
     JointsMap::iterator iter_joints_map = joints_map.find(joint_name);
 
     struct sensor sensor_msgs_received;
@@ -537,12 +537,12 @@ namespace shadowrobot
       return test_result;
     }
 
-    //OK joint found
+   // OK joint found
     JointData tmpData = joints_map.find(joint_name)->second;
     int index_hand_joints = tmpData.jointIndex;
     float target = hand_joints[index_hand_joints].min_angle;
 
-    //testing a joint which doesn't have a smartmotor
+   // testing a joint which doesn't have a smartmotor
     if (!hand_joints[index_hand_joints].a.smartmotor.has_sensors)
     {
       std::stringstream ss;
@@ -562,12 +562,12 @@ namespace shadowrobot
 
     res = robot_channel_to_sensor(debug_node_name.c_str(), iter_debug_values->second, &sensor_msgs_received);
 
-    //check the number of messages already received when starting the test
+   // check the number of messages already received when starting the test
     nb_msgs_received = robot_read_incoming(&sensor_msgs_received) - nb_msgs_received;
 
     sleep(1);
 
-    //check if no other messages have been received
+   // check if no other messages have been received
     if (nb_msgs_received != robot_read_incoming(&sensor_msgs_received))
     {
       std::stringstream ss;
@@ -577,24 +577,24 @@ namespace shadowrobot
 
       return test_result;
     }
-    //ok still the same number of messages
+   // ok still the same number of messages
 
     ROS_DEBUG("Sending lots of messages.");
 
     for (; nb_msgs_sent < repeat; ++nb_msgs_sent)
     {
-      //send values to the sensor
+     // send values to the sensor
       robot_update_sensor(&hand_joints[index_hand_joints].joint_target, target);
       rate.sleep();
       ROS_DEBUG_STREAM("msg " << nb_msgs_sent << "/" << sr_self_tests::nb_targets_to_send);
     }
 
     ROS_DEBUG("Done sending the messages.");
-    //wait for all the messages to be received?
+   // wait for all the messages to be received?
     sleep(0.5);
 
     ROS_DEBUG("Reading the number of received messages.");
-    //compute the number of messages received during the test
+   // compute the number of messages received during the test
     nb_msgs_received = robot_read_incoming(&sensor_msgs_received) - nb_msgs_received;
 
     if (nb_msgs_sent == nb_msgs_received)
@@ -614,7 +614,7 @@ namespace shadowrobot
       return test_result;
     }
   }
-} //end namespace
+}// end namespace
 
 /* For the emacs weenies in the crowd.
    Local Variables:

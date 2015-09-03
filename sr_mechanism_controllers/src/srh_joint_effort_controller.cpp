@@ -111,7 +111,7 @@ namespace controller
     max_force_demand = req.max_force;
     friction_deadband = req.friction_deadband;
 
-    //Setting the new parameters in the parameter server
+   // Setting the new parameters in the parameter server
     node_.setParam("max_force", max_force_demand);
     node_.setParam("friction_deadband", friction_deadband);
 
@@ -153,16 +153,16 @@ namespace controller
       command_ = 0.0;
     }
 
-    //The commanded effort is the error directly:
+   // The commanded effort is the error directly:
     // the PID loop for the force controller is running on the
     // motorboard.
     double commanded_effort = command_;
 
-    //Clamps the effort
+   // Clamps the effort
     commanded_effort = min(commanded_effort, (max_force_demand * max_force_factor_));
     commanded_effort = max(commanded_effort, -(max_force_demand * max_force_factor_));
 
-    //Friction compensation
+   // Friction compensation
     if (has_j2)
     {
       commanded_effort += friction_compensator->friction_compensation(
@@ -184,7 +184,7 @@ namespace controller
         controller_state_publisher_->msg_.header.stamp = time;
         controller_state_publisher_->msg_.set_point = command_;
         controller_state_publisher_->msg_.process_value = joint_state_->effort_;
-        //TODO: compute the derivative of the effort.
+       // TODO: compute the derivative of the effort.
         controller_state_publisher_->msg_.process_value_dot = -1.0;
         controller_state_publisher_->msg_.error = commanded_effort - joint_state_->effort_;
         controller_state_publisher_->msg_.time_step = period.toSec();

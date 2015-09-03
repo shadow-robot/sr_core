@@ -118,7 +118,7 @@ namespace controller
         initialize_pids();
         joint_->calibrated_ = true;
         calibration_state_ = CALIBRATED;
-        //We add the following line to delay for some time the first publish and allow the correct initialization of the subscribers in calibrate.py
+       // We add the following line to delay for some time the first publish and allow the correct initialization of the subscribers in calibrate.py
         last_publish_time_ = robot_->getTime();
         break;
       case CALIBRATED:
@@ -140,7 +140,7 @@ namespace controller
 
   void SrhFakeJointCalibrationController::initialize_pids()
   {
-    ///Reset the motor to make sure we have the proper 0 + correct PID settings
+    // Reset the motor to make sure we have the proper 0 + correct PID settings
     // trim any prefix in the actuator_name for low level driver to find it
     std::string lowlevel_actuator_name = actuator_name_.substr(actuator_name_.size() - 4, 4);
     string service_name = "realtime_loop/" + ns_ + "reset_motor_" + boost::to_upper_copy(lowlevel_actuator_name);

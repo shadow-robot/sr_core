@@ -114,10 +114,10 @@ namespace sr_friction_compensation
     /// An interpolator for the backward friction map: used to compute the offset from the map, given the current pos.
     boost::scoped_ptr<shadow_robot::JointCalibration> friction_interpoler_backward;
 
-    ///the joint name
+    // the joint name
     std::string joint_name_;
 
-    ///the threshold under which we use the static friction map
+    // the threshold under which we use the static friction map
     static const double velocity_for_static_friction;
   };
 }  // namespace sr_friction_compensation

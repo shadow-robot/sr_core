@@ -173,7 +173,7 @@ namespace shadowrobot
       joint_state_idx_map[joint_labels[i]] = i;
     }
 
-    //look for controllers and build controller name to joint map
+   // look for controllers and build controller name to joint map
     if (ros::service::waitForService("controller_manager/list_controllers", 20000))
     {
       use_sendupdate = false;
@@ -198,21 +198,21 @@ namespace shadowrobot
         }
       }
 
-      //build controller publisher to joint map
+     // build controller publisher to joint map
       for (unsigned int i = 0; i < joint_labels.size(); i++)
       {
         std::string controller_name = jointControllerMap[joint_labels[i]];
 
-        if (controller_name.compare("") != 0) //if exist, set idx to controller number + 1
+        if (controller_name.compare("") != 0)// if exist, set idx to controller number + 1
         {
           controller_publishers.push_back(
                   nh.advertise<std_msgs::Float64>("/" + jointControllerMap[joint_labels[i]] + "/command", 2));
-          jointPubIdxMap[joint_labels[i]] = controller_publishers.size(); //we want the index to be above zero all the time
+          jointPubIdxMap[joint_labels[i]] = controller_publishers.size();// we want the index to be above zero all the time
         }
         else // else put a zero in order to detect when this is empty
         {
           ROS_WARN("Could not find a controller for joint %s", joint_labels[i].c_str());
-          jointPubIdxMap[joint_labels[i]] = 0; //we want the index to be above zero all the time
+          jointPubIdxMap[joint_labels[i]] = 0;// we want the index to be above zero all the time
         }
       }
     }
@@ -261,7 +261,7 @@ namespace shadowrobot
       joint_state_msg = getState.response.joint_state;
       if (joint_state_msg.name.size() > 0)
       {
-        //fill up the lookup map with updated positions
+       // fill up the lookup map with updated positions
         for (unsigned int i = 0; i < joint_state_msg.name.size(); i++)
         {
           joint_state_map[joint_state_msg.name[i]] = joint_state_msg.position[i];
@@ -462,13 +462,13 @@ namespace shadowrobot
 
     std::vector<sr_robot_msgs::joint> joint_vector_traj;
     unsigned int controller_pub_idx = 0;
-    //only one of these 2 will be used
+   // only one of these 2 will be used
     std_msgs::Float64 target_msg;
     sr_robot_msgs::sendupdate sendupdate_msg_traj;
 
-    //initializes the joint names
-    //TODO check if traj only contains joint that we control
-    //joint_names_ = internal order. not goal->trajectory.joint_names;
+   // initializes the joint names
+   // TODO check if traj only contains joint that we control
+   // joint_names_ = internal order. not goal->trajectory.joint_names;
     joint_vector_traj.clear();
 
     for (unsigned int i = 0; i < joint_names_.size(); ++i)
@@ -490,7 +490,7 @@ namespace shadowrobot
 //  std::vector<trajectory_msgs::JointTrajectoryPoint> trajectory_points = goal->trajectory.points;
 //  trajectory_msgs::JointTrajectoryPoint trajectory_step;
 
-    //loop through the steps
+   // loop through the steps
     ros::Duration sleeping_time(0.0);
     ROS_DEBUG("Entering the execution loop");
 
@@ -540,7 +540,7 @@ namespace shadowrobot
                                    q[i], qd[i], qdd[i]);
       }
       ROS_DEBUG("Sampled the trajectory");
-      //check if preempted
+     // check if preempted
       if (action_server->isPreemptRequested() || !ros::ok())
       {
         ROS_INFO("Joint Trajectory Action Preempted");
@@ -550,7 +550,7 @@ namespace shadowrobot
         break;
       }
       ROS_DEBUG("Update the targets");
-      //update the targets and publish target joint_states
+     // update the targets and publish target joint_states
       sensor_msgs::JointState desired_joint_state_msg;
       for (unsigned int i = 0; i < joint_names_.size(); ++i)
       {
@@ -802,13 +802,13 @@ namespace shadowrobot
 
     std::vector<sr_robot_msgs::joint> joint_vector_traj;
     unsigned int controller_pub_idx = 0;
-    //only one of these 2 will be used
+   // only one of these 2 will be used
     std_msgs::Float64 target_msg;
     sr_robot_msgs::sendupdate sendupdate_msg_traj;
 
-    //initializes the joint names
-    //TODO check if traj only contains joint that we control
-    //joint_names_ = goal->trajectory.joint_names;
+   // initializes the joint names
+   // TODO check if traj only contains joint that we control
+   // joint_names_ = goal->trajectory.joint_names;
     joint_vector_traj.clear();
 
     for (unsigned int i = 0; i < joint_names_.size(); ++i)
@@ -830,7 +830,7 @@ namespace shadowrobot
 //  std::vector<trajectory_msgs::JointTrajectoryPoint> trajectory_points = goal->trajectory.points;
 //  trajectory_msgs::JointTrajectoryPoint trajectory_step;
 
-    //loop through the steps
+   // loop through the steps
     ros::Duration sleeping_time(0.0);
     ROS_DEBUG("Entering the execution loop");
 
@@ -878,17 +878,17 @@ namespace shadowrobot
                                    q[i], qd[i], qdd[i]);
       }
       ROS_DEBUG("Sampled the trajectory");
-      //check if preempted
+     // check if preempted
       if (!ros::ok())
       {
         ROS_INFO("Joint Trajectory Stopping");
         // set the action state to preempted
-        //action_server->setPreempted();
+       // action_server->setPreempted();
         success = false;
         break;
       }
       ROS_DEBUG("Update the targets");
-      //update the targets and publish target joint_states
+     // update the targets and publish target joint_states
       sensor_msgs::JointState desired_joint_state_msg;
       for (unsigned int i = 0; i < joint_names_.size(); ++i)
       {
@@ -938,11 +938,11 @@ int main(int argc, char **argv)
 {
   ros::init(argc, argv, "sr_joint_trajectory_action_controller");
 
-  ros::AsyncSpinner spinner(1); //Use 1 thread
+  ros::AsyncSpinner spinner(1);// Use 1 thread
   spinner.start();
   shadowrobot::JointTrajectoryActionController jac;
   ros::spin();
-  //ros::waitForShutdown();
+ // ros::waitForShutdown();
 
   return 0;
 }

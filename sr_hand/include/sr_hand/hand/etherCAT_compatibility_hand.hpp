@@ -53,7 +53,7 @@ namespace shadowrobot
 
     virtual ~EtherCATCompatibilityHand();
 
-    //virtual classes defined in Shadowhand
+   // virtual classes defined in Shadowhand
     /**
      * This function will send the targets to the correct controllers.
      *
@@ -115,12 +115,12 @@ namespace shadowrobot
      */
     std::string findControllerTopicName(std::string joint_name);
 
-    ///This vector stores publishers to each joint controller.
+    // This vector stores publishers to each joint controller.
     std::vector<ros::Publisher> etherCAT_publishers;
 
-    ///a subscriber for the /joint_states topic.
+    // a subscriber for the /joint_states topic.
     ros::Subscriber joint_state_subscriber;
-  }; //end class
+  };// end class
 }
 
 /* For the emacs weenies in the crowd.

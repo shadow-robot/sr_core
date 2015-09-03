@@ -61,10 +61,10 @@ namespace sr_friction_compensation
       compensation = friction_interpoler_backward->compute(position);
     }
 
-    //A value by which we'll multiply the compensation computed by the
+   // A value by which we'll multiply the compensation computed by the
     // friction map.
     double mult = 1.0;
-    //we're out of the "finger is stopped" zone ->
+   // we're out of the "finger is stopped" zone ->
     //   progressively decrease the amount of compensation
     if (fabs(velocity) > velocity_for_static_friction)
     {
@@ -78,18 +78,18 @@ namespace sr_friction_compensation
       }
     }
 
-    //decrease the compensation around the force sign change
+   // decrease the compensation around the force sign change
     // to have less discontinuity. Use the deadband for this.
     if (abs(force_demand) < deadband)
     {
-      //we want the multiplier to be 1 if force_demand = deadband
+     // we want the multiplier to be 1 if force_demand = deadband
       // and 0 if force_demand = 0
       mult *= sr_math_utils::linear_interpolate_(static_cast<double> (abs(force_demand)),
                                                  0.0, 0.0,
                                                  static_cast<double> (deadband), 1.0);
     }
 
-    //amend the compensation value
+   // amend the compensation value
     compensation *= mult;
 
     return compensation;
@@ -112,10 +112,10 @@ namespace sr_friction_compensation
       ROS_DEBUG_STREAM(" value: " << calib);
 
       ROS_ASSERT(calib.getType() == XmlRpc::XmlRpcValue::TypeArray);
-      //iterate on all the joints
+     // iterate on all the joints
       for (int32_t index_cal = 0; index_cal < calib.size(); ++index_cal)
       {
-        //check the calibration is well formatted:
+       // check the calibration is well formatted:
         // first joint name, then calibration table
         ROS_ASSERT(calib[index_cal][0].getType() == XmlRpc::XmlRpcValue::TypeString);
         ROS_ASSERT(calib[index_cal][1].getType() == XmlRpc::XmlRpcValue::TypeInt);
@@ -129,7 +129,7 @@ namespace sr_friction_compensation
           continue;
         }
 
-        //reading the forward map:
+       // reading the forward map:
         if (static_cast<int> (calib[index_cal][1]) == 1)
         {
           joint_not_found_forward = false;
@@ -173,17 +173,17 @@ namespace sr_friction_compensation
     both_maps.second = friction_map_backward;
 
     return both_maps;
-  } //end read_friction_map
+  }// end read_friction_map
 
   vector<joint_calibration::Point> SrFrictionCompensator::read_one_way_map(XmlRpc::XmlRpcValue &raw_map)
   {
     vector<joint_calibration::Point> friction_map;
 
-    //now iterates on the calibration table for the current joint
+   // now iterates on the calibration table for the current joint
     for (int32_t index_table = 0; index_table < raw_map.size(); ++index_table)
     {
       ROS_ASSERT(raw_map[index_table].getType() == XmlRpc::XmlRpcValue::TypeArray);
-      //only 2 values per calibration point: raw and calibrated (doubles)
+     // only 2 values per calibration point: raw and calibrated (doubles)
       ROS_ASSERT(raw_map[index_table].size() == 2);
       ROS_ASSERT(raw_map[index_table][0].getType() == XmlRpc::XmlRpcValue::TypeDouble);
       ROS_ASSERT(raw_map[index_table][1].getType() == XmlRpc::XmlRpcValue::TypeDouble);

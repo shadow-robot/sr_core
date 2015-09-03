@@ -90,14 +90,14 @@ namespace shadowrobot
 /////////////////////////////////
   void SRSubscriber::sendupdateCallback(const sr_robot_msgs::sendupdateConstPtr &msg)
   {
-    //loop on all the sendupdate messages received (if > 0)
+   // loop on all the sendupdate messages received (if > 0)
     int sendupdate_length = msg->sendupdate_length;
     if (sendupdate_length == 0)
     {
       ROS_DEBUG("Received empty sendupdate command.");
       return;
     }
-    //OK, not empty => loop to process all the sendupdate messages
+   // OK, not empty => loop to process all the sendupdate messages
     for (unsigned short index_msg = 0; index_msg < msg->sendupdate_length; ++index_msg)
     {
       float target = msg->sendupdate_list[index_msg].joint_target;
@@ -111,7 +111,7 @@ namespace shadowrobot
 
   void SRSubscriber::cmd_callback(const std_msgs::Float64ConstPtr &msg, std::string &joint_name)
   {
-    //converting to degrees as the old can interface was expecting degrees
+   // converting to degrees as the old can interface was expecting degrees
     sr_articulated_robot->sendupdate(joint_name, sr_math_utils::to_degrees(msg->data));
   }
 
@@ -122,10 +122,10 @@ namespace shadowrobot
 
     JointControllerData ctrl_data;
 
-    //parses all the parameters transmitted in the msg
+   // parses all the parameters transmitted in the msg
     for (unsigned int index_param = 0; index_param < msg->length_of_list; ++index_param)
     {
-      //split the string (around ":")
+     // split the string (around ":")
       vector<string> splitted_string;
       boost::split(splitted_string, msg->list_of_parameters[index_param], boost::is_any_of(":"));
 

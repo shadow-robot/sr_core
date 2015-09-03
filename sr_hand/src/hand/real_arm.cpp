@@ -89,7 +89,7 @@ namespace shadowrobot
   {
     joints_map_mutex.lock();
 
-    //search the sensor in the hash_map
+   // search the sensor in the hash_map
     JointsMap::iterator iter = joints_map.find(joint_name);
 
     if (iter != joints_map.end())
@@ -97,7 +97,7 @@ namespace shadowrobot
       JointData tmpData = joints_map.find(joint_name)->second;
       int index_arm_joints = tmpData.jointIndex;
 
-      //trim to the correct range
+     // trim to the correct range
       if (target < hand_joints[index_arm_joints].min_angle)
       {
         target = hand_joints[index_arm_joints].min_angle;
@@ -107,7 +107,7 @@ namespace shadowrobot
         target = hand_joints[index_arm_joints].max_angle;
       }
 
-      //here we update the actual hand angles
+     // here we update the actual hand angles
       robot_update_sensor(&hand_joints[index_arm_joints].joint_target, target);
       joints_map_mutex.unlock();
       return 0;
@@ -124,7 +124,7 @@ namespace shadowrobot
     joints_map_mutex.lock();
     JointsMap::iterator iter = joints_map.find(joint_name);
 
-    //joint not found
+   // joint not found
     if (iter == joints_map.end())
     {
       ROS_ERROR("Joint %s not found.", joint_name.c_str());
@@ -141,7 +141,7 @@ namespace shadowrobot
       return noData;
     }
 
-    //joint found
+   // joint found
     JointData tmpData = iter->second;
     int index = tmpData.jointIndex;
 
@@ -156,7 +156,7 @@ namespace shadowrobot
 
   SRArticulatedRobot::JointsMap RealArm::getAllJointsData()
   {
-    //update the map for each joints
+   // update the map for each joints
     for (JointsMap::const_iterator it = joints_map.begin(); it != joints_map.end(); ++it)
     {
       getJointData(it->first);
@@ -164,7 +164,7 @@ namespace shadowrobot
 
     JointsMap tmp = JointsMap(joints_map);
 
-    //return the map
+   // return the map
     return tmp;
   }
 
@@ -197,7 +197,7 @@ namespace shadowrobot
     joints_map_mutex.lock();
     std::vector <DiagnosticData> returnVect;
 
-    //TODO: read diagnostic data from the robot
+   // TODO: read diagnostic data from the robot
 
     for (JointsMap::const_iterator it = joints_map.begin(); it != joints_map.end(); ++it)
     {
@@ -217,4 +217,4 @@ namespace shadowrobot
     return returnVect;
   }
 
-} //end namespace
+}// end namespace

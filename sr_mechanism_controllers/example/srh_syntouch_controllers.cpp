@@ -76,7 +76,7 @@ namespace controller
       return false;
     }
 
-    //init the pointer to the biotacs data, updated at 1kHz
+   // init the pointer to the biotacs data, updated at 1kHz
     actuator_ = static_cast<sr_actuator::SrMotorActuator *>( robot->getActuator(joint_name_));
 
     after_init();
@@ -114,13 +114,13 @@ namespace controller
     ////////////
     // POSITION
     /////
-    //Compute position error:
+   // Compute position error:
     double error_position = command_ - joint_state_->position_;
 
     ////////////
     // TACTILES
     /////
-    //you have access here to the whole data coming from the 5 tactiles at full speed.
+   // you have access here to the whole data coming from the 5 tactiles at full speed.
     double my_first_finger_tactile_pac0 = actuator_->motor_state_.tactiles_->at(0).biotac.pac0;
     if (loop_count_ % 10 == 0)
     {
@@ -130,9 +130,9 @@ namespace controller
     ////////////
     // EFFORT
     /////
-    //Compute the commanded effort to send to the motor
+   // Compute the commanded effort to send to the motor
     double commanded_effort = 0.0;
-    //TODO: compute the force demand by combining the information you
+   // TODO: compute the force demand by combining the information you
     // want. You can have a look at the mixed controller to see a
     // working implementation of a controller using different pid loops.
 

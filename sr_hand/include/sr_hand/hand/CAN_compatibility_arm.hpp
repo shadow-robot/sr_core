@@ -52,7 +52,7 @@ namespace shadowrobot
 
     virtual ~CANCompatibilityArm();
 
-    //virtual classes defined in Shadowhand
+   // virtual classes defined in Shadowhand
     /**
      * This function will send the targets to the correct controllers.
      *
@@ -104,12 +104,12 @@ namespace shadowrobot
      */
     void initializeMap();
 
-    ///This vector stores publishers to each joint controller.
+    // This vector stores publishers to each joint controller.
     std::vector <ros::Publisher> CAN_publishers;
 
-    ///a subscriber for the /joint_states topic.
+    // a subscriber for the /joint_states topic.
     ros::Subscriber joint_state_subscriber;
-  }; //end class
+  };// end class
 }
 
 /* For the emacs weenies in the crowd.

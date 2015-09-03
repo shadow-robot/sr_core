@@ -105,7 +105,7 @@ namespace controller
         joint_state_->calibrated_ = true;
       }
     }
-    else //"normal" joints
+    else// "normal" joints
     {
       joint_state_ = robot_->getJointState(joint_name_);
       if (!joint_state_)
@@ -122,7 +122,7 @@ namespace controller
     }
     friction_compensator.reset(new sr_friction_compensation::SrFrictionCompensator(joint_name_));
 
-    //get the min and max value for the current joint:
+   // get the min and max value for the current joint:
     get_min_max(robot_->robot_model_, joint_name_);
 
     serve_set_gains_ = node_.advertiseService("set_gains", &SrhMixedPositionVelocityJointController::setGains, this);
@@ -180,11 +180,11 @@ namespace controller
     friction_deadband = req.friction_deadband;
     position_deadband = req.position_deadband;
 
-    //setting the position controller parameters
+   // setting the position controller parameters
     min_velocity_ = req.min_velocity;
     max_velocity_ = req.max_velocity;
 
-    //Setting the new parameters in the parameter server
+   // Setting the new parameters in the parameter server
     node_.setParam("position_pid/p", req.position_p);
     node_.setParam("position_pid/i", req.position_i);
     node_.setParam("position_pid/d", req.position_d);
@@ -271,7 +271,7 @@ namespace controller
     ////////////
     // POSITION
     /////
-    //Compute velocity demand from position error:
+   // Compute velocity demand from position error:
     double error_position = 0.0;
     if (has_j2)
     {
@@ -283,10 +283,10 @@ namespace controller
       error_position = command_ - joint_state_->position_;
     }
 
-    //are we in the deadband?
+   // are we in the deadband?
     bool in_deadband = hysteresis_deadband.is_in_deadband(command_, error_position, position_deadband);
 
-    if (in_deadband) //consider the error as 0 if we're in the deadband
+    if (in_deadband)// consider the error as 0 if we're in the deadband
     {
       error_position = 0.0;
       pid_controller_position_->reset();
@@ -296,9 +296,9 @@ namespace controller
     double error_velocity = 0.0;
     double commanded_effort = 0.0;
 
-    //compute the velocity demand using the position pid loop
+   // compute the velocity demand using the position pid loop
     commanded_velocity = pid_controller_position_->computeCommand(-error_position, period);
-    //saturate the velocity demand
+   // saturate the velocity demand
     commanded_velocity = max(commanded_velocity, min_velocity_);
     commanded_velocity = min(commanded_velocity, max_velocity_);
 
@@ -306,10 +306,10 @@ namespace controller
     // VELOCITY
     /////
 
-    //velocity loop:
-    if (!in_deadband) //don't compute the error if we're in the deadband
+   // velocity loop:
+    if (!in_deadband)// don't compute the error if we're in the deadband
     {
-      //we're not in the deadband, compute the error
+     // we're not in the deadband, compute the error
       if (has_j2)
       {
         error_velocity = commanded_velocity - (joint_state_->velocity_ + joint_state_2->velocity_);
@@ -321,11 +321,11 @@ namespace controller
     }
     commanded_effort = pid_controller_velocity_->computeCommand(-error_velocity, period);
 
-    //clamp the result to max force
+   // clamp the result to max force
     commanded_effort = min(commanded_effort, (max_force_demand * max_force_factor_));
     commanded_effort = max(commanded_effort, -(max_force_demand * max_force_factor_));
 
-    //Friction compensation, only if we're not in the deadband.
+   // Friction compensation, only if we're not in the deadband.
     int friction_offset = 0;
     if (!in_deadband)
     {
@@ -344,7 +344,7 @@ namespace controller
       commanded_effort += friction_offset;
     }
 
-    //if the demand is too small to be executed by the motor, then we ask for a force
+   // if the demand is too small to be executed by the motor, then we ask for a force
     // of 0
     if (fabs(commanded_effort) <= motor_min_force_threshold)
     {

@@ -137,4 +137,4 @@ namespace shadowrobot
     std::vector<DiagnosticData> tmp;
     return tmp;
   }
-}//end namespace
+// end namespace

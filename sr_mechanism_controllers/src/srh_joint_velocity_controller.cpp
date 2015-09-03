@@ -139,7 +139,7 @@ namespace controller
     friction_deadband = req.friction_deadband;
     velocity_deadband = req.deadband;
 
-    //Setting the new parameters in the parameter server
+   // Setting the new parameters in the parameter server
     node_.setParam("pid/p", req.p);
     node_.setParam("pid/i", req.i);
     node_.setParam("pid/d", req.d);
@@ -202,7 +202,7 @@ namespace controller
     }
     command_ = clamp_command(command_);
 
-    //Compute velocity demand from position error:
+   // Compute velocity demand from position error:
     double error_velocity = 0.0;
     if (has_j2)
     {
@@ -215,12 +215,12 @@ namespace controller
 
     double commanded_effort = 0.0;
 
-    //don't compute the error if we're in the deadband.
+   // don't compute the error if we're in the deadband.
     if (!hysteresis_deadband.is_in_deadband(command_, error_velocity, velocity_deadband))
     {
       commanded_effort = pid_controller_velocity_->computeCommand(-error_velocity, period);
 
-      //clamp the result to max force
+     // clamp the result to max force
       commanded_effort = min(commanded_effort, (max_force_demand * max_force_factor_));
       commanded_effort = max(commanded_effort, -(max_force_demand * max_force_factor_));
 

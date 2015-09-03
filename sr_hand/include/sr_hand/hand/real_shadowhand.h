@@ -45,7 +45,7 @@ namespace sr_self_tests
 
   /// the size of the joints_to_test array
   static const unsigned int joints_to_test_size = 1;
-  ///t he name of the joint on which we want to run the test.
+  // t he name of the joint on which we want to run the test.
   static const std::string joints_to_test[joints_to_test_size] = {"FFJ3"};
 }  // namespace sr_self_tests
 

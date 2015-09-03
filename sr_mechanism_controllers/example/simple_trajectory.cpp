@@ -14,7 +14,7 @@ private:
   TrajClient *traj_client_;
 
 public:
-  //! Initialize the action client and wait for action server to come up
+ // ! Initialize the action client and wait for action server to come up
   ShadowTrajectory()
   {
     // tell the action client that we want to spin a thread by default
@@ -27,13 +27,13 @@ public:
     }
   }
 
-  //! Clean up the action client
+ // ! Clean up the action client
   ~ShadowTrajectory()
   {
     delete traj_client_;
   }
 
-  //! Sends the command to start a given trajectory
+ // ! Sends the command to start a given trajectory
   void startTrajectory(control_msgs::FollowJointTrajectoryGoal goal)
   {
     // When to start the trajectory: 1s from now
@@ -41,7 +41,7 @@ public:
     traj_client_->sendGoal(goal);
   }
 
-  //! Wait for currently running trajectory to finish
+ // ! Wait for currently running trajectory to finish
   void waitTrajectory()
   {
     while (!getState().isDone() && ros::ok())
@@ -50,7 +50,7 @@ public:
     }
   }
 
-  //! Generates a simple trajectory to move two fingers on the hand.
+ // ! Generates a simple trajectory to move two fingers on the hand.
   /*! Note that this trajectory contains three waypoints, joined together
       as a single trajectory. Alternatively, each of these waypoints could
       be in its own trajectory - a trajectory can have one or more waypoints
@@ -58,7 +58,7 @@ public:
   */
   control_msgs::FollowJointTrajectoryGoal fingerWiggleTrajectory()
   {
-    //our goal variable
+   // our goal variable
     control_msgs::FollowJointTrajectoryGoal goal;
 
     // First, the joint names, which apply to all waypoints
@@ -75,9 +75,9 @@ public:
     goal.trajectory.points[ind].positions[0] = 0.0;
     goal.trajectory.points[ind].positions[1] = 0.0;
     // Points also have velocities, but the shadow action server doesn't use them
-    //goal.trajectory.points[ind].velocities.resize(2);
-    //goal.trajectory.points[ind].velocities[0] = 0.0;
-    //goal.trajectory.points[ind].velocities[0] = 0.0;
+   // goal.trajectory.points[ind].velocities.resize(2);
+   // goal.trajectory.points[ind].velocities[0] = 0.0;
+   // goal.trajectory.points[ind].velocities[0] = 0.0;
     // To be reached 1.0 second after starting along the trajectory
     goal.trajectory.points[ind].time_from_start = ros::Duration(1.0);
 
@@ -98,7 +98,7 @@ public:
     return goal;
   }
 
-  //! Generates a simple trajectory to move the arm
+ // ! Generates a simple trajectory to move the arm
   control_msgs::FollowJointTrajectoryGoal armWaveTrajectory()
   {
     control_msgs::FollowJointTrajectoryGoal goal;
@@ -129,7 +129,7 @@ public:
     return goal;
   }
 
-  //! Returns the current state of the action
+ // ! Returns the current state of the action
   actionlib::SimpleClientGoalState getState()
   {
     return traj_client_->getState();

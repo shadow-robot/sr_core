@@ -111,7 +111,7 @@ namespace controller
       }
     }
 
-    //get the min and max value for the current joint:
+   // get the min and max value for the current joint:
     get_min_max(robot_->robot_model_, joint_name_);
 
     friction_compensator.reset(new sr_friction_compensation::SrFrictionCompensator(joint_name_));
@@ -149,7 +149,7 @@ namespace controller
     friction_deadband = req.friction_deadband;
     position_deadband = req.deadband;
 
-    //Setting the new parameters in the parameter server
+   // Setting the new parameters in the parameter server
     node_.setParam("pid/p", req.p);
     node_.setParam("pid/i", req.i);
     node_.setParam("pid/d", req.d);
@@ -211,7 +211,7 @@ namespace controller
     }
     command_ = clamp_command(command_);
 
-    //Compute position demand from position error:
+   // Compute position demand from position error:
     double error_position = 0.0;
     double commanded_effort = 0.0;
 
@@ -226,7 +226,7 @@ namespace controller
 
     bool in_deadband = hysteresis_deadband.is_in_deadband(command_, error_position, position_deadband);
 
-    //don't compute the error if we're in the deadband.
+   // don't compute the error if we're in the deadband.
     if (in_deadband)
     {
       error_position = 0.0;
@@ -234,7 +234,7 @@ namespace controller
 
     commanded_effort = pid_controller_position_->computeCommand(-error_position, period);
 
-    //clamp the result to max force
+   // clamp the result to max force
     commanded_effort = min(commanded_effort, (max_force_demand * max_force_factor_));
     commanded_effort = max(commanded_effort, -(max_force_demand * max_force_factor_));
 

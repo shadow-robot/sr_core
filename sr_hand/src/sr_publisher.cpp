@@ -60,7 +60,7 @@ namespace shadowrobot
     n_tilde.param("publish_frequency", publish_freq, 50.0);
     publish_rate = Rate(publish_freq);
 
-    //publishes JointState messages for the robot_state_publisher
+   // publishes JointState messages for the robot_state_publisher
     std::string prefix;
     std::string searched_param;
     n_tilde.searchParam("shadowhand_prefix", searched_param);
@@ -70,14 +70,14 @@ namespace shadowrobot
     full_topic = prefix + "target/joint_states";
     sr_jointstate_target_pub = node.advertise<sensor_msgs::JointState>(full_topic, 2);
 
-    //publishes standard joints data (pos, targets, temp, current, ...)
+   // publishes standard joints data (pos, targets, temp, current, ...)
     full_topic = prefix + "shadowhand_data";
     sr_pub = node.advertise<sr_robot_msgs::joints_data>(full_topic, 2);
   }
 
   SRPublisher::~SRPublisher()
   {
-    //if( shadowhand != NULL )
+   // if( shadowhand != NULL )
     // delete shadowhand;
   }
 
@@ -103,7 +103,7 @@ namespace shadowrobot
       sr_robot_msgs::joint joint;
       JointData currentData = it->second;
 
-      //compute the angular velocity of the joint
+     // compute the angular velocity of the joint
       if (currentData.last_pos_time.toSec() != 0.0)
       {
         currentData.velocity = (currentData.position - currentData.last_pos);
@@ -130,7 +130,7 @@ namespace shadowrobot
       joint.joint_temperature = currentData.temperature;
       joint.joint_current = currentData.current;
 
-      //update data for the velocity
+     // update data for the velocity
       currentData.last_pos_time = now;
       currentData.last_pos = currentData.position;
 
@@ -147,11 +147,11 @@ namespace shadowrobot
     msg.joints_list_length = jointVector.size();
     msg.joints_list = jointVector;
 
-    //publish standard data (pos, target, current, temp, force, ...)
+   // publish standard data (pos, target, current, temp, force, ...)
     sr_pub.publish(msg);
-    //publish JointState position message
+   // publish JointState position message
     sr_jointstate_pos_pub.publish(jointstate_pos_msg);
-    //publish JointState target message
+   // publish JointState target message
     sr_jointstate_target_pub.publish(jointstate_target_msg);
 
     ros::spinOnce();
