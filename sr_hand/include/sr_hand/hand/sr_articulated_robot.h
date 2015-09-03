@@ -363,4 +363,4 @@ Local Variables:
 End:
 */
 
-#endif 	    /* SR_HAND_HAND_SR_ARTICULATED_ROBOT_H */
+#endif  // SR_HAND_HAND_SR_ARTICULATED_ROBOT_H

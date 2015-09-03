@@ -24,11 +24,13 @@
  */
 
 #include "sr_hand/hand/real_arm.h"
-//our robot code
+// our robot code
 #include <robot/robot.h>
 #include <robot/hand.h>
 #include <robot/hand_protocol.h>
 
+#include <string>
+#include <vector>
 #include <time.h>
 #include <ros/ros.h>
 
@@ -37,7 +39,6 @@ namespace shadowrobot
   RealArm::RealArm() :
           SRArticulatedRobot()
   {
-
     /* We need to attach the program to the robot, or fail if we cannot. */
     if (robot_init() < 0)
     {
@@ -85,7 +86,7 @@ namespace shadowrobot
     joints_map_mutex.unlock();
   }
 
-  short RealArm::sendupdate(std::string joint_name, double target)
+  int16_t RealArm::sendupdate(std::string joint_name, double target)
   {
     joints_map_mutex.lock();
 
@@ -168,7 +169,7 @@ namespace shadowrobot
     return tmp;
   }
 
-  short RealArm::setContrl(std::string contrlr_name, JointControllerData ctrlr_data)
+  int16_t RealArm::setContrl(std::string contrlr_name, JointControllerData ctrlr_data)
   {
     ROS_WARN("The setContrl method is not yet implemented");
     return 0;
@@ -181,7 +182,7 @@ namespace shadowrobot
     return no_result;
   }
 
-  short RealArm::setConfig(std::vector <std::string> myConfig)
+  int16_t RealArm::setConfig(std::vector <std::string> myConfig)
   {
     ROS_WARN("The set config function is not implemented in the virtual arm.");
     return 0;
@@ -197,7 +198,7 @@ namespace shadowrobot
     joints_map_mutex.lock();
     std::vector <DiagnosticData> returnVect;
 
-    // TODO: read diagnostic data from the robot
+    // @todo: read diagnostic data from the robot
 
     for (JointsMap::const_iterator it = joints_map.begin(); it != joints_map.end(); ++it)
     {
@@ -217,4 +218,4 @@ namespace shadowrobot
     return returnVect;
   }
 
-}  // end namespace
+}  // namespace shadowrobot

@@ -134,7 +134,7 @@ namespace shadowrobot
     joints_map_mutex.unlock();
   }
 
-  short RealShadowhand::sendupdate(std::string joint_name, double target)
+  int16_t RealShadowhand::sendupdate(std::string joint_name, double target)
   {
     joints_map_mutex.lock();
 
@@ -262,7 +262,7 @@ namespace shadowrobot
     return tmp;
   }
 
-  short RealShadowhand::setContrl(std::string contrlr_name, JointControllerData ctrlr_data)
+  int16_t RealShadowhand::setContrl(std::string contrlr_name, JointControllerData ctrlr_data)
   {
     parameters_map_mutex.lock();
 
@@ -321,7 +321,7 @@ namespace shadowrobot
 
   }
 
-  short RealShadowhand::setConfig(std::vector <std::string> myConfig)
+  int16_t RealShadowhand::setConfig(std::vector <std::string> myConfig)
   {
     ROS_WARN("The set config function is not implemented in the real shadowhand.");
 

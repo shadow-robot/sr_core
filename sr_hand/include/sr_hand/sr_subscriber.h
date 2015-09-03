@@ -128,4 +128,4 @@ namespace shadowrobot
 
 }  // namespace shadowrobot
 
-#endif 	    // SR_HAND_SR_SUBSCRIBER_H
+#endif  // SR_HAND_SR_SUBSCRIBER_H

@@ -102,4 +102,4 @@ namespace shadowrobot
 
 }  // namespace shadowrobot
 
-#endif 	    /* SR_HAND_SR_DIAGNOSTICER_H */
+#endif  // SR_HAND_SR_DIAGNOSTICER_H

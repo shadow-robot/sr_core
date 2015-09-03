@@ -35,13 +35,11 @@
 #include "sr_hand/sr_subscriber.h"
 #include "sr_hand/sr_publisher.h"
 #include "sr_hand/sr_diagnosticer.h"
-//#include "shadowhand/shadowhand_config_server.h"
 #include "sr_hand/hand/real_arm.h"
 
 using namespace std;
 using namespace ros;
 using namespace shadowrobot;
-//using namespace shadowhand_config_server;
 
 /////////////////////////////////
 //           MAIN              //

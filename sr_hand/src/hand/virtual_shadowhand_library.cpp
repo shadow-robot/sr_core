@@ -93,9 +93,9 @@ namespace shadowrobot
     joints_map_mutex.unlock();
   }
 
-  short VirtualShadowhandLibrary::sendupdate(std::string joint_name, double target)
+  int16_t VirtualShadowhandLibrary::sendupdate(std::string joint_name, double target)
   {
-    return (short) 0;
+    return (int16_t) 0;
   }
 
   JointData VirtualShadowhandLibrary::getJointData(std::string joint_name)
@@ -112,9 +112,9 @@ namespace shadowrobot
     return tmp_map;
   }
 
-  short VirtualShadowhandLibrary::setContrl(std::string contrlr_name, JointControllerData ctrlr_data)
+  int16_t VirtualShadowhandLibrary::setContrl(std::string contrlr_name, JointControllerData ctrlr_data)
   {
-    return (short) 0;
+    return (int16_t) 0;
   }
 
   JointControllerData VirtualShadowhandLibrary::getContrl(std::string ctrlr_name)
@@ -123,9 +123,9 @@ namespace shadowrobot
     return tmp;
   }
 
-  short VirtualShadowhandLibrary::setConfig(std::vector<std::string> myConfig)
+  int16_t VirtualShadowhandLibrary::setConfig(std::vector<std::string> myConfig)
   {
-    return (short) 0;
+    return (int16_t) 0;
   }
 
   void VirtualShadowhandLibrary::getConfig(std::string joint_name)
@@ -137,4 +137,4 @@ namespace shadowrobot
     std::vector<DiagnosticData> tmp;
     return tmp;
   }
-// end namespace
+}// end namespace

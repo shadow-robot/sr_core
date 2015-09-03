@@ -219,7 +219,7 @@ namespace shadowrobot
     joints_map_mutex.unlock();
   }
 
-  short VirtualShadowhand::sendupdate(std::string joint_name, double target)
+  int16_t VirtualShadowhand::sendupdate(std::string joint_name, double target)
   {
     joints_map_mutex.lock();
 
@@ -369,7 +369,7 @@ namespace shadowrobot
     return tmp_map;
   }
 
-  short VirtualShadowhand::setContrl(std::string contrlr_name, JointControllerData ctrlr_data)
+  int16_t VirtualShadowhand::setContrl(std::string contrlr_name, JointControllerData ctrlr_data)
   {
     controllers_map_mutex.lock();
 
@@ -408,7 +408,7 @@ namespace shadowrobot
     return no_result;
   }
 
-  short VirtualShadowhand::setConfig(std::vector<std::string> myConfig)
+  int16_t VirtualShadowhand::setConfig(std::vector<std::string> myConfig)
   {
     ROS_WARN("The set config function is not implemented in the virtual shadowhand.");
     return 0;

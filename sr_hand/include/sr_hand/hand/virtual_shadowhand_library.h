@@ -61,4 +61,4 @@ namespace shadowrobot
   };  // end class
 
 }  // namespace shadowrobot
-#endif /* SR_HAND_HAND_VIRTUAL_SHADOWHAND_LIBRARY_H */
+#endif  // SR_HAND_HAND_VIRTUAL_SHADOWHAND_LIBRARY_H

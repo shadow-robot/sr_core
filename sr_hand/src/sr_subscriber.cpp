@@ -98,7 +98,7 @@ namespace shadowrobot
       return;
     }
     // OK, not empty => loop to process all the sendupdate messages
-    for (unsigned short index_msg = 0; index_msg < msg->sendupdate_length; ++index_msg)
+    for (uint16_t index_msg = 0; index_msg < msg->sendupdate_length; ++index_msg)
     {
       float target = msg->sendupdate_list[index_msg].joint_target;
       string sensor_name = msg->sendupdate_list[index_msg].joint_name;

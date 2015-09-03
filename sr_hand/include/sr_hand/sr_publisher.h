@@ -98,4 +98,4 @@ namespace shadowrobot
 
 }  // namespace shadowrobot
 
-#endif 	    /* SR_HAND_SR_PUBLISHER_H */
+#endif  // SR_HAND_SR_PUBLISHER_H

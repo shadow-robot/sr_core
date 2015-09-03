@@ -37,9 +37,13 @@
 #include "sr_hand/sr_diagnosticer.h"
 #include "sr_hand/hand/etherCAT_compatibility_hand.hpp"
 
-using namespace std;
-using namespace ros;
-using namespace shadowrobot;
+using ros::NodeHandle;
+using ros::ok;
+using shadowrobot::SRDiagnosticer;
+using shadowrobot::SRPublisher;
+using shadowrobot::EtherCATCompatibilityHand;
+using shadowrobot::SRSubscriber;
+using shadowrobot::sr_hand_hardware;
 
 /////////////////////////////////
 //           MAIN              //

@@ -46,7 +46,6 @@ namespace shadowrobot
     initializeMap();
 
     joint_state_subscriber = node.subscribe("joint_states", 2, &CANCompatibilityArm::joint_states_callback, this);
-
   }
 
   CANCompatibilityArm::~CANCompatibilityArm()

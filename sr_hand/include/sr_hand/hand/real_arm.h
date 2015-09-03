@@ -91,4 +91,4 @@ namespace shadowrobot
 
 }  // namespace shadowrobot
 
-#endif /* SR_HAND_HAND_REAL_ARM_H */
+#endif  // SR_HAND_HAND_REAL_ARM_H

@@ -122,4 +122,4 @@ namespace shadowrobot
 
 }  // namespace shadowrobot
 
-#endif /* SR_HAND_HAND_VIRTUAL_ARM_H */
+#endif  // SR_HAND_HAND_VIRTUAL_ARM_H

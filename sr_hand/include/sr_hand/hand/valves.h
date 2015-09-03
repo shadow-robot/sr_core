@@ -67,7 +67,7 @@ namespace shadowrobot
 
 }  // namespace shadowrobot
 
-#endif /* SR_HAND_HAND_VALVES_H */
+#endif  // SR_HAND_HAND_VALVES_H"
 
 /* For the emacs weenies in the crowd.
 Local Variables:

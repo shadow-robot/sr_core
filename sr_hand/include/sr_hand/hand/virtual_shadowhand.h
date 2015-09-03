@@ -32,6 +32,7 @@
 #include "sr_hand/hand/sr_articulated_robot.h"
 #include <string>
 #include <vector>
+#include <map>
 
 namespace shadowrobot
 {
@@ -139,4 +140,4 @@ namespace shadowrobot
   };  // end class
 }  // namespace shadowrobot
 
-#endif     /* SR_HAND_HAND_VIRTUAL_SHADOWHAND_H */
+#endif  // SR_HAND_HAND_VIRTUAL_SHADOWHAND_H

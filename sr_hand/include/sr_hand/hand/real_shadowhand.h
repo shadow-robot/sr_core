@@ -74,17 +74,17 @@ namespace shadowrobot
      * @param target The target in degree
      * @return 0 if success ; -1 if error
      */
-    virtual short sendupdate(std::string joint_name, double target);
+    virtual int16_t sendupdate(std::string joint_name, double target);
 
     virtual JointData getJointData(std::string joint_name);
 
     virtual JointsMap getAllJointsData();
 
-    virtual short setContrl(std::string contrlr_name, JointControllerData ctrlr_data);
+    virtual int16_t setContrl(std::string contrlr_name, JointControllerData ctrlr_data);
 
     virtual JointControllerData getContrl(std::string contrlr_name);
 
-    virtual short setConfig(std::vector <std::string> myConfig);
+    virtual int16_t setConfig(std::vector <std::string> myConfig);
 
     virtual void getConfig(std::string joint_name);
 
@@ -151,4 +151,4 @@ Local Variables:
 End:
 */
 
-#endif 	    /* SR_HAND_HAND_REAL_SHADOWHAND_H */
+#endif  // SR_HAND_HAND_REAL_SHADOWHAND_H

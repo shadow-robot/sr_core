@@ -151,7 +151,7 @@ namespace shadowrobot
 #endif
   }
 
-  short VirtualArm::sendupdate(std::string joint_name, double target)
+  int16_t VirtualArm::sendupdate(std::string joint_name, double target)
   {
     joints_map_mutex.lock();
 
@@ -245,7 +245,7 @@ namespace shadowrobot
     return tmpMap;
   }
 
-  short VirtualArm::setContrl(std::string contrlr_name, JointControllerData ctrlr_data)
+  int16_t VirtualArm::setContrl(std::string contrlr_name, JointControllerData ctrlr_data)
   {
     ROS_WARN("The setContrl method is not yet implemented");
     return 0;
@@ -258,7 +258,7 @@ namespace shadowrobot
     return no_result;
   }
 
-  short VirtualArm::setConfig(std::vector<std::string> myConfig)
+  int16_t VirtualArm::setConfig(std::vector<std::string> myConfig)
   {
     ROS_WARN("The set config function is not implemented in the virtual arm.");
     return 0;
