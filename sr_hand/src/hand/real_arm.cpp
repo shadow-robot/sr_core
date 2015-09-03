@@ -217,4 +217,4 @@ namespace shadowrobot
     return returnVect;
   }
 
-}// end namespace
+}  // end namespace

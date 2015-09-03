@@ -614,7 +614,7 @@ namespace shadowrobot
       return test_result;
     }
   }
-}// end namespace
+}  // end namespace
 
 /* For the emacs weenies in the crowd.
    Local Variables:

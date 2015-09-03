@@ -203,16 +203,16 @@ namespace shadowrobot
       {
         std::string controller_name = jointControllerMap[joint_labels[i]];
 
-        if (controller_name.compare("") != 0)// if exist, set idx to controller number + 1
+        if (controller_name.compare("") != 0)  // if exist, set idx to controller number + 1
         {
           controller_publishers.push_back(
                   nh.advertise<std_msgs::Float64>("/" + jointControllerMap[joint_labels[i]] + "/command", 2));
-          jointPubIdxMap[joint_labels[i]] = controller_publishers.size();// we want the index to be above zero all the time
+          jointPubIdxMap[joint_labels[i]] = controller_publishers.size();  // we want the index to be above zero all the time
         }
         else // else put a zero in order to detect when this is empty
         {
           ROS_WARN("Could not find a controller for joint %s", joint_labels[i].c_str());
-          jointPubIdxMap[joint_labels[i]] = 0;// we want the index to be above zero all the time
+          jointPubIdxMap[joint_labels[i]] = 0;  // we want the index to be above zero all the time
         }
       }
     }
@@ -938,7 +938,7 @@ int main(int argc, char **argv)
 {
   ros::init(argc, argv, "sr_joint_trajectory_action_controller");
 
-  ros::AsyncSpinner spinner(1);// Use 1 thread
+  ros::AsyncSpinner spinner(1);  // Use 1 thread
   spinner.start();
   shadowrobot::JointTrajectoryActionController jac;
   ros::spin();

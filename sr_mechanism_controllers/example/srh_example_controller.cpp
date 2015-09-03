@@ -111,7 +111,7 @@ namespace controller
         return false;
       }
     }
-    else// "normal" joints: one controller controls one joint
+    else  // "normal" joints: one controller controls one joint
     {
       has_j2 = false;
 
@@ -135,7 +135,7 @@ namespace controller
   {
    // Here we set the command to be = to the current position
     if (has_j2)
-    {// if it's *J0, then pos = *J1->pos + *J2->pos
+    {  // if it's *J0, then pos = *J1->pos + *J2->pos
       command_ = joint_state_->position_ + joint_state_2->position_;
     }
     else
@@ -184,7 +184,7 @@ namespace controller
 
    // Update the commanded effort.
     if (has_j2)
-    {// The motor in *J0 is attached to the *J2
+    {  // The motor in *J0 is attached to the *J2
       joint_state_2->commanded_effort_ = commanded_effort;
     }
     else
@@ -192,7 +192,7 @@ namespace controller
       joint_state_->commanded_effort_ = commanded_effort;
     }
 
-    if (loop_count_ % 10 == 0)// publishes the joint state at 100Hz
+    if (loop_count_ % 10 == 0)  // publishes the joint state at 100Hz
     {
       if (controller_state_publisher_ && controller_state_publisher_->trylock())
       {

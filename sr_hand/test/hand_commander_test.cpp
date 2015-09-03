@@ -61,7 +61,7 @@ TEST(HandCommander, min_max)
   for (size_t i = 0; i < all_joints.size(); ++i)
   {
     min_max = handcmd.get_min_max(all_joints[i]);
-    EXPECT_TRUE(min_max.first != min_max.second);// min = max if joint not found
+    EXPECT_TRUE(min_max.first != min_max.second);  // min = max if joint not found
   }
 }
 

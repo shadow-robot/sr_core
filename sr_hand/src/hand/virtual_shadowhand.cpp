@@ -494,7 +494,7 @@ namespace shadowrobot
   }
 
 #endif
-}// end namespace
+}  // end namespace
 
 
 /* For the emacs weenies in the crowd.

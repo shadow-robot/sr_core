@@ -105,7 +105,7 @@ namespace controller
         joint_state_->calibrated_ = true;
       }
     }
-    else// "normal" joints
+    else  // "normal" joints
     {
       joint_state_ = robot_->getJointState(joint_name_);
       if (!joint_state_)
@@ -286,7 +286,7 @@ namespace controller
    // are we in the deadband?
     bool in_deadband = hysteresis_deadband.is_in_deadband(command_, error_position, position_deadband);
 
-    if (in_deadband)// consider the error as 0 if we're in the deadband
+    if (in_deadband)  // consider the error as 0 if we're in the deadband
     {
       error_position = 0.0;
       pid_controller_position_->reset();
@@ -307,7 +307,7 @@ namespace controller
     /////
 
    // velocity loop:
-    if (!in_deadband)// don't compute the error if we're in the deadband
+    if (!in_deadband)  // don't compute the error if we're in the deadband
     {
      // we're not in the deadband, compute the error
       if (has_j2)

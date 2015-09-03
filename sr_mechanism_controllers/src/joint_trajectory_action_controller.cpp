@@ -130,7 +130,7 @@ int main(int argc, char **argv)
 {
   ros::init(argc, argv, "sr_joint_trajectory_action_controller");
 
-  ros::AsyncSpinner spinner(1);// Use 1 thread
+  ros::AsyncSpinner spinner(1);  // Use 1 thread
   spinner.start();
   shadowrobot::JointTrajectoryActionController jac;
   ros::spin();

@@ -173,7 +173,7 @@ namespace sr_friction_compensation
     both_maps.second = friction_map_backward;
 
     return both_maps;
-  }// end read_friction_map
+  }  // end read_friction_map
 
   vector<joint_calibration::Point> SrFrictionCompensator::read_one_way_map(XmlRpc::XmlRpcValue &raw_map)
   {

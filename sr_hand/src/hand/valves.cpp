@@ -204,7 +204,7 @@ namespace shadowrobot
     publish_rate.sleep();
 
   }
-}// end namespace
+}  // end namespace
 
 
 /* For the emacs weenies in the crowd.

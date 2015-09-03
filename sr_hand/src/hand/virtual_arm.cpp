@@ -317,4 +317,4 @@ namespace shadowrobot
       joints_map_mutex.unlock();
   }
 #endif
-}// end namespace
+}  // end namespace

@@ -109,7 +109,7 @@ namespace shadowrobot
 
     // a subscriber for the /joint_states topic.
     ros::Subscriber joint_state_subscriber;
-  };// end class
+  };  // end class
 }
 
 /* For the emacs weenies in the crowd.
