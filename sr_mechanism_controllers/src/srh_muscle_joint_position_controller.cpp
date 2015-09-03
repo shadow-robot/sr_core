@@ -27,6 +27,7 @@
 #include "sr_mechanism_controllers/srh_muscle_joint_position_controller.hpp"
 #include "angles/angles.h"
 #include "pluginlib/class_list_macros.h"
+#include <algorithm>
 #include <sstream>
 #include <math.h>
 #include "sr_utilities/sr_math_utils.hpp"
@@ -35,7 +36,8 @@
 
 PLUGINLIB_EXPORT_CLASS(controller::SrhMuscleJointPositionController, controller_interface::ControllerBase)
 
-using namespace std;
+using std::min;
+using std::max;
 
 namespace controller
 {
@@ -195,9 +197,11 @@ namespace controller
     command_ = clamp_command(command_);
 
     // IGNORE the following  lines if we don't want to use the pressure sensors data
-    // We don't want to define a modified version of JointState, as that would imply using a modified version of robot_state.hpp, controller manager,
+    // We don't want to define a modified version of JointState, as that would imply using
+    // a modified version of robot_state.hpp, controller manager,
     // ethercat_hardware and ros_etherCAT main loop
-    // So we have encoded the two uint16 that contain the data from the muscle pressure sensors into the double effort_. (We don't
+    // So we have encoded the two uint16 that contain the data from the muscle pressure
+    // sensors into the double effort_. (We don't
     // have any measured effort in the muscle hand anyway).
     // Here we extract the pressure values from joint_state_->effort_ and decode that back into uint16.
     double pressure_0_tmp = fmod(joint_state_->effort_, 0x10000);
@@ -247,13 +251,15 @@ namespace controller
         {
           commanded_effort += friction_compensator->friction_compensation(
                   joint_state_->position_ + joint_state_2->position_,
-                  joint_state_->velocity_ + joint_state_2->velocity_, int(commanded_effort), friction_deadband);
+                  joint_state_->velocity_ + joint_state_2->velocity_, static_cast<int>(commanded_effort),
+                  friction_deadband);
         }
         else
         {
           commanded_effort += friction_compensator->friction_compensation(joint_state_->position_,
                                                                           joint_state_->velocity_,
-                                                                          int(commanded_effort), friction_deadband);
+                                                                          static_cast<int>(commanded_effort),
+                                                                          friction_deadband);
         }
       }
 
@@ -287,10 +293,13 @@ namespace controller
 
 
     // ************************************************
-    // After doing any computation we consider, we encode the obtained valve commands into joint_state_->commanded_effort_
-    // We don't want to define a modified version of JointState, as that would imply using a modified version of robot_state.hpp, controller manager,
+    // After doing any computation we consider, we encode the obtained valve
+    // commands into joint_state_->commanded_effort_
+    // We don't want to define a modified version of JointState, as that would
+    // imply using a modified version of robot_state.hpp, controller manager,
     // ethercat_hardware and ros_etherCAT main loop
-    // So the controller encodes the two int8 (that are in fact int4) that contain the valve commands into the double commanded_effort_. (We don't
+    // So the controller encodes the two int8 (that are in fact int4) that contain
+    // the valve commands into the double commanded_effort_. (We don't
     // have any real commanded_effort_ in the muscle hand anyway).
 
     uint16_t valve_tmp[2];
@@ -316,7 +325,8 @@ namespace controller
       }
     }
 
-    // We encode the valve 0 command in the lowest "half byte" i.e. the lowest 16 integer values in the double var (see decoding in simple_transmission_for_muscle.cpp)
+    // We encode the valve 0 command in the lowest "half byte" i.e. the lowest 16 integer
+    // values in the double var (see decoding in simple_transmission_for_muscle.cpp)
     // the valve 1 command is encoded in the next 4 bits
     joint_state_->commanded_effort_ = static_cast<double> (valve_tmp[0]) + static_cast<double> (valve_tmp[1] << 4);
 

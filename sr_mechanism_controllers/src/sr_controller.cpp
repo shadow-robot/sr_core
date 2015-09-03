@@ -28,14 +28,14 @@
 #include "pluginlib/class_list_macros.h"
 #include <sstream>
 #include <math.h>
+#include <string>
 #include "sr_utilities/sr_math_utils.hpp"
 
 #include <std_msgs/Float64.h>
 
-using namespace std;
-
 namespace controller
 {
+  using std::string;
 
   SrController::SrController()
           : joint_state_(NULL),

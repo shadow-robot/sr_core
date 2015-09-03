@@ -24,6 +24,7 @@
  *
  */
 #include "sr_mechanism_controllers/test/test_controllers.hpp"
+#include <string>
 
 TestControllers::TestControllers()
 {

@@ -37,8 +37,6 @@
 
 PLUGINLIB_EXPORT_CLASS(controller::SrhJointMuscleValveController, controller_interface::ControllerBase)
 
-using namespace std;
-
 namespace controller
 {
 
@@ -105,9 +103,10 @@ namespace controller
                      << " joint_state: " << joint_state_);
     // We do not call this function, as we want to listen to a different topic type
     // after_init();
-    sub_command_ = node_.subscribe<sr_robot_msgs::JointMuscleValveControllerCommand>("command", 1,
-                                                                                     &SrhJointMuscleValveController::setCommandCB,
-                                                                                     this);
+    sub_command_ = node_.subscribe<
+            sr_robot_msgs::JointMuscleValveControllerCommand>("command", 1,
+                                                              &SrhJointMuscleValveController::setCommandCB,
+                                                              this);
     return true;
   }
 
@@ -117,20 +116,6 @@ namespace controller
     read_parameters();
   }
 
-/*
-  bool SrhJointMuscleValveController::setGains(sr_robot_msgs::SetEffortControllerGains::Request &req,
-                                          sr_robot_msgs::SetEffortControllerGains::Response &resp)
-  {
-    max_force_demand = req.max_force;
-    friction_deadband = req.friction_deadband;
-
-   // Setting the new parameters in the parameter server
-    node_.setParam("max_force", max_force_demand);
-    node_.setParam("friction_deadband", friction_deadband);
-
-    return true;
-  }
- */
   bool SrhJointMuscleValveController::resetGains(std_srvs::Empty::Request &req, std_srvs::Empty::Response &resp)
   {
     command_ = 0.0;
@@ -172,9 +157,11 @@ namespace controller
 
 
     // IGNORE the following  lines if we don't want to use the pressure sensors data
-    // We don't want to define a modified version of JointState, as that would imply using a modified version of robot_state.hpp, controller manager,
+    // We don't want to define a modified version of JointState, as that would imply
+    // using a modified version of robot_state.hpp, controller manager,
     // ethercat_hardware and ros_etherCAT main loop
-    // So we heve encoded the two uint16 that contain the data from the muscle pressure sensors into the double effort_. (We don't
+    // So we heve encoded the two uint16 that contain the data from the muscle
+    // pressure sensors into the double effort_. (We don't
     // have any measured effort in the muscle hand anyway).
     // Here we extract the pressure values from joint_state_->effort_ and decode that back into uint16.
     double pressure_0_tmp = fmod(joint_state_->effort_, 0x10000);
@@ -191,12 +178,16 @@ namespace controller
     // ************************************************
     // Here goes the control algorithm
 
-    // This controller will allow the user to specify a separate command for each of the two muscles that control the joint.
-    // The user will also specify a duration in ms for that command. During this duration the command will be sent to the hand
+    // This controller will allow the user to specify a separate command for each
+    // of the two muscles that control the joint.
+    // The user will also specify a duration in ms for that command. During this
+    // duration the command will be sent to the hand
     // every ms (every cycle of this 1Khz control loop).
-    // Once this duration period has elapsed, a command of 0 will be sent to the muscle (meaning both the filling and emptying valves for that
+    // Once this duration period has elapsed, a command of 0 will be sent to
+    // the muscle (meaning both the filling and emptying valves for that
     // muscle remain closed)
-    // A duration of 0 means that there is no timeout, so the valve command will be sent to the muscle until a different valve command is received
+    // A duration of 0 means that there is no timeout, so the valve command
+    // will be sent to the muscle until a different valve command is received
     // BE CAREFUL WHEN USING A DURATION OF 0 AS THIS COULD EVENTUALLY DAMAGE THE MUSCLE
 
     for (i = 0; i < 2; ++i)
@@ -233,10 +224,13 @@ namespace controller
 
 
     // ************************************************
-    // After doing any computation we consider, we encode the obtained valve commands into joint_state_->commanded_effort_
-    // We don't want to define a modified version of JointState, as that would imply using a modified version of robot_state.hpp, controller manager,
+    // After doing any computation we consider, we encode the obtained valve
+    // commands into joint_state_->commanded_effort_
+    // We don't want to define a modified version of JointState, as that would
+    // imply using a modified version of robot_state.hpp, controller manager,
     // ethercat_hardware and ros_etherCAT main loop
-    // So the controller encodes the two int8 (that are in fact int4) that contain the valve commands into the double commanded_effort_. (We don't
+    // So the controller encodes the two int8 (that are in fact int4) that contain
+    // the valve commands into the double commanded_effort_. (We don't
     // have any real commanded_effort_ in the muscle hand anyway).
 
     uint16_t valve_tmp[2];
@@ -262,7 +256,8 @@ namespace controller
       }
     }
 
-    // We encode the valve 0 command in the lowest "half byte" i.e. the lowest 16 integer values in the double var (see decoding in simple_transmission_for_muscle.cpp)
+    // We encode the valve 0 command in the lowest "half byte" i.e. the lowest 16
+    // integer values in the double var (see decoding in simple_transmission_for_muscle.cpp)
     // the valve 1 command is envoded in the next 4 bits
     joint_state_->commanded_effort_ = static_cast<double> (valve_tmp[0]) + static_cast<double> (valve_tmp[1] << 4);
 
@@ -298,7 +293,6 @@ namespace controller
 
   void SrhJointMuscleValveController::read_parameters()
   {
-
   }
 
   void SrhJointMuscleValveController::setCommandCB(const sr_robot_msgs::JointMuscleValveControllerCommandConstPtr &msg)
@@ -329,7 +323,7 @@ namespace controller
 
     return cmd;
   }
-}
+}  // namespace controller
 
 /* For the emacs weenies in the crowd.
 Local Variables:

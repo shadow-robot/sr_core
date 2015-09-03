@@ -33,11 +33,10 @@
 
 PLUGINLIB_EXPORT_CLASS(controller::SrhFakeJointCalibrationController, controller_interface::ControllerBase)
 
-using namespace std;
+using std::string;
 
 namespace controller
 {
-
   SrhFakeJointCalibrationController::SrhFakeJointCalibrationController()
           : robot_(NULL),
             last_publish_time_(0),
@@ -118,7 +117,8 @@ namespace controller
         initialize_pids();
         joint_->calibrated_ = true;
         calibration_state_ = CALIBRATED;
-        // We add the following line to delay for some time the first publish and allow the correct initialization of the subscribers in calibrate.py
+        // We add the following line to delay for some time the first publish and allow the
+        // correct initialization of the subscribers in calibrate.py
         last_publish_time_ = robot_->getTime();
         break;
       case CALIBRATED:
@@ -158,7 +158,7 @@ namespace controller
     }
   }
 
-}  // namespace
+}  // namespace controller
 
 /* For the emacs weenies in the crowd.
 Local Variables:

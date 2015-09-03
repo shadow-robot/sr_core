@@ -29,6 +29,8 @@
 #include "sr_mechanism_controllers/srh_mixed_position_velocity_controller.hpp"
 #include "angles/angles.h"
 #include "pluginlib/class_list_macros.h"
+#include <string>
+#include <algorithm>
 #include <sstream>
 #include <math.h>
 #include "sr_utilities/sr_math_utils.hpp"
@@ -37,7 +39,9 @@
 
 PLUGINLIB_EXPORT_CLASS(controller::SrhMixedPositionVelocityJointController, controller_interface::ControllerBase)
 
-using namespace std;
+using std::string;
+using std::min;
+using std::max;
 
 namespace controller
 {
@@ -162,7 +166,8 @@ namespace controller
   }
 
   bool SrhMixedPositionVelocityJointController::setGains(sr_robot_msgs::SetMixedPositionVelocityPidGains::Request &req,
-                                                         sr_robot_msgs::SetMixedPositionVelocityPidGains::Response &resp)
+                                                         sr_robot_msgs::SetMixedPositionVelocityPidGains::Response
+                                                         &resp)
   {
     ROS_INFO_STREAM(
             "New parameters: " << "PID pos: [" << req.position_p << ", " << req.position_i << ", " << req.position_d <<
@@ -270,7 +275,7 @@ namespace controller
 
     ////////////
     // POSITION
-    /////
+
     // Compute velocity demand from position error:
     double error_position = 0.0;
     if (has_j2)
@@ -304,7 +309,6 @@ namespace controller
 
     ////////////
     // VELOCITY
-    /////
 
     // velocity loop:
     if (!in_deadband)  // don't compute the error if we're in the deadband
@@ -333,12 +337,12 @@ namespace controller
       {
         friction_offset = friction_compensator->friction_compensation(
                 joint_state_->position_ + joint_state_2->position_, joint_state_->velocity_ + joint_state_2->velocity_,
-                int(commanded_effort), friction_deadband);
+                static_cast<int>(commanded_effort), friction_deadband);
       }
       else
       {
         friction_offset = friction_compensator->friction_compensation(joint_state_->position_, joint_state_->velocity_,
-                                                                      int(commanded_effort), friction_deadband);
+                                                                      static_cast<int>(commanded_effort), friction_deadband);
       }
 
       commanded_effort += friction_offset;
@@ -432,7 +436,7 @@ namespace controller
       command_ = joint_state_->position_;
     }
   }
-}
+}  // namespace controller
 
 /* For the emacs weenies in the crowd.
 Local Variables:

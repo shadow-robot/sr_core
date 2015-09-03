@@ -24,10 +24,11 @@
  *
  */
 
-#ifndef _SRH_FAKE_JOINT_CALIBRATION_CONTROLLER_
-#define _SRH_FAKE_JOINT_CALIBRATION_CONTROLLER_
+#ifndef SR_MECHANISM_CONTROLLERS_SRH_FAKE_JOINT_CALIBRATION_CONTROLLER_H
+#define SR_MECHANISM_CONTROLLERS_SRH_FAKE_JOINT_CALIBRATION_CONTROLLER_H
 
 #include "ros/node_handle.h"
+#include <string>
 #include "ros_ethercat_model/robot_state.hpp"
 #include "velocity_controllers/joint_velocity_controller.h"
 #include "realtime_tools/realtime_publisher.h"
@@ -63,7 +64,6 @@ namespace controller
     }
 
   protected:
-
     ros_ethercat_model::RobotState *robot_;
     ros::NodeHandle node_;
     boost::scoped_ptr<realtime_tools::RealtimePublisher<std_msgs::Empty> > pub_calibrated_;
@@ -86,8 +86,7 @@ namespace controller
      */
     void initialize_pids();
   };
-
-}
+}  // namespace controller
 
 /* For the emacs weenies in the crowd.
 Local Variables:
@@ -96,4 +95,4 @@ End:
 */
 
 
-#endif
+#endif  // SR_MECHANISM_CONTROLLERS_SRH_FAKE_JOINT_CALIBRATION_CONTROLLER_H

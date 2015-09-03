@@ -31,17 +31,18 @@
 #include "pluginlib/class_list_macros.h"
 #include <sstream>
 #include <math.h>
+#include <algorithm>
 #include "sr_utilities/sr_math_utils.hpp"
 
 #include <std_msgs/Float64.h>
 
-PLUGINLIB_EXPORT_CLASS(controller::SrhEffortJointController, controller_interface::ControllerBase)
+using std::min;
+using std::max;
 
-using namespace std;
+PLUGINLIB_EXPORT_CLASS(controller::SrhEffortJointController, controller_interface::ControllerBase)
 
 namespace controller
 {
-
   bool SrhEffortJointController::init(ros_ethercat_model::RobotState *robot, ros::NodeHandle &n)
   {
     ROS_ASSERT(robot);
@@ -167,12 +168,13 @@ namespace controller
     {
       commanded_effort += friction_compensator->friction_compensation(
               joint_state_->position_ + joint_state_2->position_, joint_state_->velocity_ + joint_state_2->velocity_,
-              int(commanded_effort), friction_deadband);
+              static_cast<int>(commanded_effort), friction_deadband);
     }
     else
     {
       commanded_effort += friction_compensator->friction_compensation(joint_state_->position_, joint_state_->velocity_,
-                                                                      int(commanded_effort), friction_deadband);
+                                                                      static_cast<int>(commanded_effort),
+                                                                      friction_deadband);
     }
 
     joint_state_->commanded_effort_ = commanded_effort;
@@ -184,7 +186,7 @@ namespace controller
         controller_state_publisher_->msg_.header.stamp = time;
         controller_state_publisher_->msg_.set_point = command_;
         controller_state_publisher_->msg_.process_value = joint_state_->effort_;
-        // TODO: compute the derivative of the effort.
+        // @todo compute the derivative of the effort.
         controller_state_publisher_->msg_.process_value_dot = -1.0;
         controller_state_publisher_->msg_.error = commanded_effort - joint_state_->effort_;
         controller_state_publisher_->msg_.time_step = period.toSec();
@@ -212,7 +214,7 @@ namespace controller
   {
     command_ = msg->data;
   }
-}
+}  // namespace controller
 
 /* For the emacs weenies in the crowd.
 Local Variables:

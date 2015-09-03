@@ -27,14 +27,12 @@
 #include "../example/srh_example_controller.hpp"
 #include <angles/angles.h>
 #include <pluginlib/class_list_macros.h>
+#include <string>
 
 #include <std_msgs/Float64.h>
 
-//Register the controller to be able to load it with the controller manager.
-PLUGINLIB_EXPORT_CLASS( controller::SrhExampleController, controller_interface::ControllerBase
-)
-
-using namespace std;
+// Register the controller to be able to load it with the controller manager.
+PLUGINLIB_EXPORT_CLASS( controller::SrhExampleController, controller_interface::ControllerBase)
 
 namespace controller
 {
@@ -219,7 +217,7 @@ namespace controller
     }
     loop_count_++;
   }
-}
+}  // namespace controller
 
 /* For the emacs weenies in the crowd.
 Local Variables:

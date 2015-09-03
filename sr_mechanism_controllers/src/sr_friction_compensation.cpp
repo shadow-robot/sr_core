@@ -25,12 +25,17 @@
 
 #include "sr_mechanism_controllers/sr_friction_compensation.hpp"
 
+#include <utility>
+#include <vector>
+#include <string>
 #include <sstream>
 #include <math.h>
 #include "sr_utilities/sr_math_utils.hpp"
 #include "sr_utilities/sr_deadband.hpp"
 
-using namespace std;
+using std::string;
+using std::vector;
+using std::pair;
 
 namespace sr_friction_compensation
 {

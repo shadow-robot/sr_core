@@ -3,6 +3,21 @@
  * @author Ugo Cupcic <ugo@shadowrobot.com>
  * @date   Fri Mar  4 13:08:22 2011
  *
+* Copyright 2011 Shadow Robot Company Ltd.
+*
+* This program is free software: you can redistribute it and/or modify it
+* under the terms of the GNU General Public License as published by the Free
+* Software Foundation, either version 2 of the License, or (at your option)
+* any later version.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+* more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program.  If not, see <http://www.gnu.org/licenses/>.
+*
  * @brief  Implement an actionlib server to execute a
  * control_msgs::FollowJointTrajectoryAction. Follows the
  * given trajectory with the arm.
@@ -14,6 +29,7 @@
 #include <std_msgs/Float64.h>
 #include <boost/algorithm/string.hpp>
 #include <string>
+#include <vector>
 
 namespace shadowrobot
 {
@@ -22,12 +38,11 @@ namespace shadowrobot
     action_server = boost::shared_ptr<JTAS>(
             new JTAS("/r_arm_controller/joint_trajectory_action",
                      boost::bind(&JointTrajectoryActionController::execute_trajectory, this, _1),
-                     false)
-    );
+                     false));
 
     // Create a map of joint names to their command publishers
     // Hand joints
-    // TODO: this could be read from the controller manager
+    // @todo this could be read from the controller manager
     // rosservice call /controller_manager/list_controllers
     std::string hand_names[] = {
             "ffj0", "ffj3", "ffj4",
@@ -75,7 +90,7 @@ namespace shadowrobot
     JointTrajectoryPointVec trajectory_points = goal->trajectory.points;
     trajectory_msgs::JointTrajectoryPoint trajectory_step;
 
-    // TODO - We should probably be looking at goal->trajectory.header.stamp to
+    // @todo We should probably be looking at goal->trajectory.header.stamp to
     // work out what time to start the action.
     // std::cout << goal->trajectory.header.stamp << " - " << ros::Time::now() << std::endl;
 
@@ -105,7 +120,7 @@ namespace shadowrobot
         pub.publish(msg);
       }
       // Wait until this step is supposed to be completed.
-      // TODO: This assumes that the movement will be instant! We should really
+      // @todo This assumes that the movement will be instant! We should really
       // be working out how long the movement will take?
       sleeping_time = trajectory_step.time_from_start - last_time;
       sleeping_time.sleep();
@@ -123,7 +138,7 @@ namespace shadowrobot
       action_server->setAborted(joint_trajectory_result);
     }
   }
-}
+}  // namespace shadowrobot
 
 
 int main(int argc, char **argv)

@@ -3,6 +3,21 @@
  * @author Guillaume Walck (UPMC) & Ugo Cupcic <ugo@shadowrobot.com>
  * @date   Fri Mar  4 13:08:22 2011
  *
+* Copyright 2011 Shadow Robot Company Ltd.
+*
+* This program is free software: you can redistribute it and/or modify it
+* under the terms of the GNU General Public License as published by the Free
+* Software Foundation, either version 2 of the License, or (at your option)
+* any later version.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+* more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program.  If not, see <http://www.gnu.org/licenses/>.
+*
  * @brief  Implement an actionlib server to execute a
  * control_msgs::JointTrajectoryAction. Follows the
  * given trajectory with the arm.
@@ -16,13 +31,15 @@
 #include <std_msgs/Float64.h>
 #include <sr_robot_msgs/sendupdate.h>
 
+#include <map>
+#include <string>
+#include <vector>
+
 namespace shadowrobot
 {
 // These functions are pulled from the spline_smoother package.
 // They've been moved here to avoid depending on packages that aren't
 // mature yet.
-
-
   static inline void generatePowers(int n, double x, double *powers)
   {
     powers[0] = 1.0;
@@ -121,44 +138,12 @@ namespace shadowrobot
   JointTrajectoryActionController::JointTrajectoryActionController() :
           nh_tilde("~"), use_sendupdate(false)
   {
-    using namespace XmlRpc;
     action_server = boost::shared_ptr<JTAS>(new JTAS("/r_arm_controller/joint_trajectory_action",
                                                      boost::bind(&JointTrajectoryActionController::execute_trajectory,
                                                                  this, _1),
                                                      false));
-    //  boost::bind(&JointTrajectoryActionController::cancelCB, this, _1) ));
-
     std::vector<std::string> joint_labels;
 
-/*  // Gets all of the joints
-  XmlRpc::XmlRpcValue joint_names;
-
-  if (!nh.getParam("joints", joint_names))
-  {
-    ROS_ERROR("No joints given. (namespace: %s)", nh.getNamespace().c_str());
-    return;
-  }
-
-  if (joint_names.getType() != XmlRpc::XmlRpcValue::TypeArray)
-  {
-    ROS_ERROR("Malformed joint specification.  (namespace: %s)", nh.getNamespace().c_str());
-    return ;
-  }
-
-  for (int i = 0; i < joint_names.size(); ++i)
-  {
-    XmlRpcValue &name_value = joint_names[i];
-
-    if (name_value.getType() != XmlRpcValue::TypeString)
-    {
-      ROS_ERROR("Array of joint names should contain all strings.  (namespace: %s)",
-                nh.getNamespace().c_str());
-      return ;
-    }
-
-    joint_labels.push_back((std::string)name_value);
-  }
-*/
     // This the internal order of the joints
     joint_labels.push_back("ShoulderJRotate");
     joint_labels.push_back("ShoulderJSwing");
@@ -207,7 +192,8 @@ namespace shadowrobot
         {
           controller_publishers.push_back(
                   nh.advertise<std_msgs::Float64>("/" + jointControllerMap[joint_labels[i]] + "/command", 2));
-          jointPubIdxMap[joint_labels[i]] = controller_publishers.size();  // we want the index to be above zero all the time
+          // we want the index to be above zero all the time
+          jointPubIdxMap[joint_labels[i]] = controller_publishers.size();
         }
         else  // else put a zero in order to detect when this is empty
         {
@@ -364,21 +350,21 @@ namespace shadowrobot
       if (goal->trajectory.points[i].accelerations.size() != 0 &&
           goal->trajectory.points[i].accelerations.size() != joint_names_.size())
       {
-        ROS_ERROR("Command point %d has %d elements for the accelerations", (int) i,
-                  (int) goal->trajectory.points[i].accelerations.size());
+        ROS_ERROR("Command point %d has %d elements for the accelerations", static_cast<int>(i),
+                  static_cast<int>(goal->trajectory.points[i].accelerations.size()));
         return;
       }
       if (goal->trajectory.points[i].velocities.size() != 0 &&
           goal->trajectory.points[i].velocities.size() != joint_names_.size())
       {
-        ROS_ERROR("Command point %d has %d elements for the velocities", (int) i,
-                  (int) goal->trajectory.points[i].velocities.size());
+        ROS_ERROR("Command point %d has %d elements for the velocities", static_cast<int>(i),
+                  static_cast<int>(goal->trajectory.points[i].velocities.size()));
         return;
       }
       if (goal->trajectory.points[i].positions.size() != joint_names_.size())
       {
-        ROS_ERROR("Command point %d has %d elements for the positions", (int) i,
-                  (int) goal->trajectory.points[i].positions.size());
+        ROS_ERROR("Command point %d has %d elements for the positions", static_cast<int>(i),
+                  static_cast<int>(goal->trajectory.points[i].positions.size()));
         return;
       }
 
@@ -390,7 +376,8 @@ namespace shadowrobot
       {
         if (!accelerations.empty())
         {
-          accelerations[joint_state_idx_map[goal->trajectory.joint_names[j]]] = goal->trajectory.points[i].accelerations[j];
+          accelerations[joint_state_idx_map[goal->trajectory.joint_names[j]]] =
+                  goal->trajectory.points[i].accelerations[j];
         }
         if (!velocities.empty())
         {
@@ -458,7 +445,7 @@ namespace shadowrobot
       return;
     }
 
-    ROS_DEBUG("The new trajectory has %d segments", (int) traj.size());
+    ROS_DEBUG("The new trajectory has %d segments", static_cast<int>(traj.size()));
 
     std::vector<sr_robot_msgs::joint> joint_vector_traj;
     unsigned int controller_pub_idx = 0;
@@ -467,7 +454,7 @@ namespace shadowrobot
     sr_robot_msgs::sendupdate sendupdate_msg_traj;
 
     // initializes the joint names
-    // TODO check if traj only contains joint that we control
+    // @todo check if traj only contains joint that we control
     // joint_names_ = internal order. not goal->trajectory.joint_names;
     joint_vector_traj.clear();
 
@@ -481,7 +468,7 @@ namespace shadowrobot
     if (use_sendupdate)
     {
       sendupdate_msg_traj.sendupdate_length = joint_vector_traj.size();
-      ROS_DEBUG("Trajectory received: %d joints / %d msg length", (int) goal->trajectory.joint_names.size(),
+      ROS_DEBUG("Trajectory received: %d joints / %d msg length", static_cast<int>(goal->trajectory.joint_names.size()),
                 sendupdate_msg_traj.sendupdate_length);
     }
 
@@ -506,7 +493,7 @@ namespace shadowrobot
 
       // Determines which segment of the trajectory to use.  (Not particularly realtime friendly).
       int seg = -1;
-      while (seg + 1 < (int) traj.size() && traj[seg + 1].start_time < time.toSec())
+      while (seg + 1 < static_cast<int>(traj.size()) && traj[seg + 1].start_time < time.toSec())
       {
         ++seg;
       }
@@ -706,19 +693,20 @@ namespace shadowrobot
       // Checks that the incoming segment has the right number of elements.
       if (msg->points[i].accelerations.size() != 0 && msg->points[i].accelerations.size() != joint_names_.size())
       {
-        ROS_DEBUG("Command point %d has %d elements for the accelerations", (int) i,
-                  (int) msg->points[i].accelerations.size());
+        ROS_DEBUG("Command point %d has %d elements for the accelerations", static_cast<int>(i),
+                static_cast<int>(msg->points[i].accelerations.size()));
         return;
       }
       if (msg->points[i].velocities.size() != 0 && msg->points[i].velocities.size() != joint_names_.size())
       {
-        ROS_DEBUG("Command point %d has %d elements for the velocities", (int) i,
-                  (int) msg->points[i].velocities.size());
+        ROS_DEBUG("Command point %d has %d elements for the velocities", static_cast<int>(i),
+                  static_cast<int>(msg->points[i].velocities.size()));
         return;
       }
       if (msg->points[i].positions.size() != joint_names_.size())
       {
-        ROS_DEBUG("Command point %d has %d elements for the positions", (int) i, (int) msg->points[i].positions.size());
+        ROS_DEBUG("Command point %d has %d elements for the positions", static_cast<int>(i),
+                  static_cast<int>(msg->points[i].positions.size()));
         return;
       }
 
@@ -798,7 +786,7 @@ namespace shadowrobot
       return;
     }
 
-    ROS_DEBUG("The new trajectory has %d segments", (int) traj.size());
+    ROS_DEBUG("The new trajectory has %d segments", static_cast<int>(traj.size()));
 
     std::vector<sr_robot_msgs::joint> joint_vector_traj;
     unsigned int controller_pub_idx = 0;
@@ -807,7 +795,7 @@ namespace shadowrobot
     sr_robot_msgs::sendupdate sendupdate_msg_traj;
 
     // initializes the joint names
-    // TODO check if traj only contains joint that we control
+    // @todo check if traj only contains joint that we control
     // joint_names_ = goal->trajectory.joint_names;
     joint_vector_traj.clear();
 
@@ -821,14 +809,11 @@ namespace shadowrobot
     if (use_sendupdate)
     {
       sendupdate_msg_traj.sendupdate_length = joint_vector_traj.size();
-      ROS_DEBUG("Trajectory received: %d joints / %d msg length", (int) msg->joint_names.size(),
+      ROS_DEBUG("Trajectory received: %d joints / %d msg length", static_cast<int>(msg->joint_names.size()),
                 sendupdate_msg_traj.sendupdate_length);
     }
 
     ros::Rate tmp_rate(1.0);
-
-//  std::vector<trajectory_msgs::JointTrajectoryPoint> trajectory_points = goal->trajectory.points;
-//  trajectory_msgs::JointTrajectoryPoint trajectory_step;
 
     // loop through the steps
     ros::Duration sleeping_time(0.0);
@@ -845,7 +830,7 @@ namespace shadowrobot
 
       // Determines which segment of the trajectory to use.  (Not particularly realtime friendly).
       int seg = -1;
-      while (seg + 1 < (int) traj.size() && traj[seg + 1].start_time < time.toSec())
+      while (seg + 1 < static_cast<int>(traj.size()) && traj[seg + 1].start_time < time.toSec())
       {
         ++seg;
       }
@@ -930,8 +915,7 @@ namespace shadowrobot
 
     return;
   }
-
-}
+}  // namespace shadowrobot
 
 
 int main(int argc, char **argv)
