@@ -45,7 +45,7 @@ namespace shadow_robot
     {
       // Private handle for params but normal handle for the HandCommander
       nh_ = NodeHandle(ns);
-      nh_tilde_ = NodeHandle(nh_, this_node::getName());
+      nh_tilde_ = NodeHandle(nh_, ros::this_node::getName());
     }
     std::string home = getenv("HOME");
     if (home == "")
