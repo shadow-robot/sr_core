@@ -144,4 +144,4 @@ namespace shadowrobot
     ROS_ERROR("Configuration command callback not implemented yet");
   }
 
-} // end namespace
+}  // end namespace

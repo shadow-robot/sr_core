@@ -98,7 +98,7 @@ namespace shadowrobot
 
     /// store the hardware_type for this diagnosticer.
     hardware_types hardware_type;
-  }; // end class ShadowhandDiagnosticer
+  };  // end class ShadowhandDiagnosticer
 
 }  // namespace shadowrobot
 

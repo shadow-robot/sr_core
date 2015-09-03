@@ -201,21 +201,21 @@ namespace controller
 
     for (i = 0; i < 2; ++i)
     {
-      if (cmd_duration_ms_[i] == 0) // if the commanded duration is 0 it means that it will not timeout
+      if (cmd_duration_ms_[i] == 0)  // if the commanded duration is 0 it means that it will not timeout
       {
         // So we will use the last commanded valve command
         valve[i] = cmd_valve_muscle_[i];
       }
       else
       {
-        if (current_duration_ms_[i] > 0) // If the command has not timed out yet
+        if (current_duration_ms_[i] > 0)  // If the command has not timed out yet
         {
           // we will use the last commanded valve command
           valve[i] = cmd_valve_muscle_[i];
           // and decrement the counter. This is a milliseconds counter, and this loop is running once every millisecond
           current_duration_ms_[i]--;
         }
-        else // If the command has already timed out
+        else  // If the command has already timed out
         {
           // we will use 0 to close the valves
           valve[i] = 0;

@@ -83,7 +83,7 @@ namespace controller
      */
     virtual void update(const ros::Time &time, const ros::Duration &period);
   };
-} // namespace
+}  // namespace
 
 /* For the emacs weenies in the crowd.
 Local Variables:

@@ -43,7 +43,7 @@ public:
 };
 
 ///////////////////////
-// TWO POINTS TABLES //
+// TWO POINTS TABLES  //
 ///////////////////////
 
 /**
@@ -159,7 +159,7 @@ TEST(Calibration2Points, on)
 
 
 //////////////////////////
-// THREE POINTS TABLES //
+// THREE POINTS TABLES  //
 ////////////////////////
 
 /**

@@ -353,7 +353,7 @@ namespace shadowrobot
     std::vector<ros::Publisher> gazebo_publishers;
     ros::Subscriber gazebo_subscriber;
 #endif
-  }; // end class
+  };  // end class
 
 }  // namespace shadowrobot
 

@@ -130,7 +130,7 @@ namespace shadow_robot
 
     boost_fd fd(fileno(myfile), boost::iostreams::never_close_handle);
     boost_stream stream(fd);
-    // stream.set_auto_close(false); // https://svn.boost.org/trac/boost/ticket/3517
+    // stream.set_auto_close(false);  // https://svn.boost.org/trac/boost/ticket/3517
     std::string topic_type;
     if (!std::getline(stream, topic_type))
     {

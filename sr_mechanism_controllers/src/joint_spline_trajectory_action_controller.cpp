@@ -209,7 +209,7 @@ namespace shadowrobot
                   nh.advertise<std_msgs::Float64>("/" + jointControllerMap[joint_labels[i]] + "/command", 2));
           jointPubIdxMap[joint_labels[i]] = controller_publishers.size();  // we want the index to be above zero all the time
         }
-        else // else put a zero in order to detect when this is empty
+        else  // else put a zero in order to detect when this is empty
         {
           ROS_WARN("Could not find a controller for joint %s", joint_labels[i].c_str());
           jointPubIdxMap[joint_labels[i]] = 0;  // we want the index to be above zero all the time
@@ -560,7 +560,7 @@ namespace shadowrobot
         desired_joint_state_msg.effort.push_back(0.0);
         if (!use_sendupdate)
         {
-          if ((controller_pub_idx = jointPubIdxMap[joint_names_[i]]) > 0) // if a controller exist for this joint
+          if ((controller_pub_idx = jointPubIdxMap[joint_names_[i]]) > 0)  // if a controller exist for this joint
           {
             target_msg.data = q[i];
             controller_publishers.at(controller_pub_idx - 1).publish(target_msg);
@@ -898,7 +898,7 @@ namespace shadowrobot
         desired_joint_state_msg.effort.push_back(0.0);
         if (!use_sendupdate)
         {
-          if ((controller_pub_idx = jointPubIdxMap[joint_names_[i]]) > 0) // if a controller exist for this joint
+          if ((controller_pub_idx = jointPubIdxMap[joint_names_[i]]) > 0)  // if a controller exist for this joint
           {
             target_msg.data = q[i];
             controller_publishers.at(controller_pub_idx - 1).publish(target_msg);

@@ -58,7 +58,7 @@ namespace controller
 
     sr_actuator::SrMotorActuator *actuator_;
   };
-} // namespace
+}  // namespace
 
 /* For the emacs weenies in the crowd.
 Local Variables:
