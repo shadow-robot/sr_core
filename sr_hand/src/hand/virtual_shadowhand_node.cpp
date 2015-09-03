@@ -35,21 +35,25 @@
 #include "sr_hand/sr_subscriber.h"
 #include "sr_hand/sr_publisher.h"
 #include "sr_hand/sr_diagnosticer.h"
-//#include "shadowhand/shadowhand_config_server.h"
 #include "sr_hand/hand/virtual_shadowhand.h"
 
-using namespace std;
-using namespace ros;
-using namespace shadowrobot;
-//using namespace shadowhand_config_server;
 
-  /////////////////////////////////
-  //           MAIN              //
-  /////////////////////////////////
+using ros::NodeHandle;
+using ros::ok;
+using shadowrobot::VirtualShadowhand;
+using shadowrobot::SRDiagnosticer;
+using shadowrobot::SRSubscriber;
+using shadowrobot::SRPublisher;
+using shadowrobot::sr_hand_hardware;
+
+
+/////////////////////////////////
+//           MAIN              //
+/////////////////////////////////
 
 void run_diagnotics(boost::shared_ptr<SRDiagnosticer> shadowhand_diag)
 {
-  while( ok() )
+  while (ok())
   {
     shadowhand_diag->publish();
   }
@@ -57,7 +61,7 @@ void run_diagnotics(boost::shared_ptr<SRDiagnosticer> shadowhand_diag)
 
 void run_publisher(boost::shared_ptr<SRPublisher> shadowhand_pub)
 {
-  while( ok() )
+  while (ok())
   {
     shadowhand_pub->publish();
   }
@@ -75,7 +79,7 @@ void run_publisher(boost::shared_ptr<SRPublisher> shadowhand_pub)
  * 
  * @return 0 on success
  */
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
   ros::init(argc, argv, "shadowhand");
   NodeHandle n;
@@ -84,11 +88,11 @@ int main(int argc, char** argv)
   boost::shared_ptr<SRSubscriber> shadowhand_subscriber(new SRSubscriber(virt_sh));
 
 
-  boost::shared_ptr<SRPublisher> shadowhand_pub( new SRPublisher(virt_sh));
-  boost::shared_ptr<SRDiagnosticer> shadowhand_diag( new SRDiagnosticer(virt_sh, sr_hand_hardware));
-  
-  boost::thread thrd1( boost::bind( &run_diagnotics, shadowhand_diag ));
-  boost::thread thrd2( boost::bind( &run_publisher, shadowhand_pub ));
+  boost::shared_ptr<SRPublisher> shadowhand_pub(new SRPublisher(virt_sh));
+  boost::shared_ptr<SRDiagnosticer> shadowhand_diag(new SRDiagnosticer(virt_sh, sr_hand_hardware));
+
+  boost::thread thrd1(boost::bind(&run_diagnotics, shadowhand_diag));
+  boost::thread thrd2(boost::bind(&run_publisher, shadowhand_pub));
   thrd1.join();
   thrd2.join();
 

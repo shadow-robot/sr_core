@@ -26,13 +26,14 @@
  */
 
 #include "sr_self_test/sr_test_runner.hpp"
+#include <map>
+#include <string>
+#include <vector>
 
 namespace shadow_robot
 {
-//const double SrTestRunner::SERVICE_TIMEOUT_CONST_ = 1.0;
-
   SrTestRunner::SrTestRunner() :
-    self_test::TestRunner(), index_service_to_test_(0)
+          self_test::TestRunner(), index_service_to_test_(0)
   {
   };
 
@@ -47,11 +48,11 @@ namespace shadow_robot
   void SrTestRunner::addServicesTest(std::vector<std::string> services_to_test)
   {
     services_to_test_ = services_to_test;
-    index_service_to_test_=0;
+    index_service_to_test_ = 0;
 
-    for (size_t i=0; i < services_to_test_.size(); ++i)
+    for (size_t i = 0; i < services_to_test_.size(); ++i)
     {
-      add("Testing "+services_to_test_[i]+" is present.", this,  &SrTestRunner::service_test_cb_);
+      add("Testing " + services_to_test_[i] + " is present.", this, &SrTestRunner::service_test_cb_);
     }
   };
 
@@ -61,15 +62,23 @@ namespace shadow_robot
     add("Testing sensor noise.", sensor_noise_test_.get(), &SensorNoiseTest::test_sensor_noise);
   }
 
-  void SrTestRunner::service_test_cb_(diagnostic_updater::DiagnosticStatusWrapper& status)
+  void SrTestRunner::service_test_cb_(diagnostic_updater::DiagnosticStatusWrapper &status)
   {
-    if( ros::service::exists(services_to_test_[index_service_to_test_], false) )
-      status.summary(diagnostic_msgs::DiagnosticStatus::OK, "Service "+services_to_test_[index_service_to_test_]+" exists.");
+    if (ros::service::exists(services_to_test_[index_service_to_test_], false))
+    {
+      status.summary(diagnostic_msgs::DiagnosticStatus::OK,
+                     "Service " + services_to_test_[index_service_to_test_] + " exists.");
+    }
     else
-      status.summary(diagnostic_msgs::DiagnosticStatus::ERROR, "Service "+services_to_test_[index_service_to_test_]+" not available.");
+    {
+      status.summary(diagnostic_msgs::DiagnosticStatus::ERROR,
+                     "Service " + services_to_test_[index_service_to_test_] + " not available.");
+    }
 
-    if(index_service_to_test_ + 1 < services_to_test_.size())
-      index_service_to_test_ ++;
+    if (index_service_to_test_ + 1 < services_to_test_.size())
+    {
+      index_service_to_test_++;
+    }
   };
 
   void SrTestRunner::plot(std::map<std::string, std::vector<double> > joints)
@@ -89,39 +98,49 @@ namespace shadow_robot
 
   void SrTestRunner::plot(std::map<std::string, std::vector<double> > joints, std::string path, bool testing)
   {
-    if( testing )
-      gnuplot_.reset(new Gnuplot("gnuplot"));//close the window right after the test when running a test
-    else
-      gnuplot_.reset(new Gnuplot("gnuplot -persist"));
-
-    //saving the plot to file if path provided
-    if( path != "" )
+    if (testing)
     {
-      *gnuplot_.get() << "set terminal png\n";
-      *gnuplot_.get() << "set output '"+path+"'\n";
+      gnuplot_.reset(new Gnuplot("gnuplot"));  // close the window right after the test when running a test
+    }
+    else
+    {
+      gnuplot_.reset(new Gnuplot("gnuplot -persist"));
     }
 
-    //plot legend and style
+    // saving the plot to file if path provided
+    if (path != "")
+    {
+      *gnuplot_.get() << "set terminal png\n";
+      *gnuplot_.get() << "set output '" + path + "'\n";
+    }
+
+    // plot legend and style
     std::string cmd = "plot ";
     std::string title = "";
     std::map<std::string, std::vector<double> >::const_iterator last_it = joints.end();
-    if( !joints.empty())
+    if (!joints.empty())
+    {
       --last_it;
+    }
     for (std::map<std::string, std::vector<double> >::const_iterator it = joints.begin(); it != joints.end(); ++it)
     {
-      cmd += " '-' with lines title '"+it->first+"'";
-      if( it == last_it)
+      cmd += " '-' with lines title '" + it->first + "'";
+      if (it == last_it)
+      {
         cmd += "\n";
+      }
       else
+      {
         cmd += ",";
+      }
 
       title += it->first + " ";
     }
 
-    *gnuplot_.get() << "set title '"+title+"'\n";
+    *gnuplot_.get() << "set title '" + title + "'\n";
     *gnuplot_.get() << cmd;
 
-    //plotting the data
+    // plotting the data
     for (std::map<std::string, std::vector<double> >::const_iterator it = joints.begin(); it != joints.end(); ++it)
     {
       gnuplot_->send(it->second);
@@ -130,7 +149,7 @@ namespace shadow_robot
 
   void SrTestRunner::add_diagnostic_parser()
   {
-    diagnostic_parser_.reset( new DiagnosticParser(this) );
+    diagnostic_parser_.reset(new DiagnosticParser(this));
   }
 
   void SrTestRunner::addManualTests()
@@ -143,14 +162,15 @@ namespace shadow_robot
     msg += "\n";
     msg += "If you have a hand equipped with PSTs (cycle [0] to change the finger tip):\n";
     msg += "   > rxplot /tactile/pressure[0]\n";
-    manual_tests_.push_back( boost::shared_ptr<ManualTests>(new ManualTests(msg, 1) ) );
+    manual_tests_.push_back(boost::shared_ptr<ManualTests>(new ManualTests(msg, 1)));
     add("Manual Tests: tactiles.", manual_tests_.back().get(), &ManualTests::run_manual_tests);
 
-    msg = "Please check that the positions of the joints in the 3d model\n of the hand (using rviz) match those in the real hand.";
-    manual_tests_.push_back( boost::shared_ptr<ManualTests>(new ManualTests(msg, 2) ) );
+    msg = "Please check that the positions of the joints in the 3d model\n";
+    msg += "of the hand (using rviz) match those in the real hand.";
+    manual_tests_.push_back(boost::shared_ptr<ManualTests>(new ManualTests(msg, 2)));
     add("Manual Tests: joint positions - rviz.", manual_tests_.back().get(), &ManualTests::run_manual_tests);
   }
-} //end namespace
+}  // namespace shadow_robot
 
 
 /* For the emacs weenies in the crowd.

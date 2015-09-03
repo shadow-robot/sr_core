@@ -33,13 +33,15 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <utility>
 
 #include <boost/smart_ptr.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 #include <sr_robot_msgs/joint.h>
 #include <urdf/model.h>
 
-using namespace ros;
+using ros::Publisher;
+using ros::NodeHandle;
 
 namespace shadowhandRosLib
 {
@@ -49,7 +51,7 @@ namespace shadowhandRosLib
     CAN,
     ETHERCAT
   };
-}
+}  // namespace shadowhandRosLib
 
 namespace shadowrobot
 {
@@ -60,7 +62,7 @@ namespace shadowrobot
   class HandCommander
   {
   public:
-    HandCommander(const std::string& ns = "");
+    explicit HandCommander(const std::string &ns = "");
 
     /// Destructor
     ~HandCommander();
@@ -95,18 +97,18 @@ namespace shadowrobot
     std::vector<std::string> get_all_joints();
 
   private:
-    ///ros node handle
+    /// ros node handle
     NodeHandle node_;
 
-    ///stores data about the hand (read from urdf)
+    /// stores data about the hand (read from urdf)
     std::map<std::string, boost::shared_ptr<urdf::Joint> > all_joints;
 
-    ///Publisher for the CAN hand targets
+    /// Publisher for the CAN hand targets
     Publisher sr_hand_target_pub;
-    ///Publishers for the ethercat hand targets for every joint
-    boost::ptr_map<std::string,Publisher> sr_hand_target_pub_map;
+    /// Publishers for the ethercat hand targets for every joint
+    boost::ptr_map<std::string, Publisher> sr_hand_target_pub_map;
 
-    ///A map of topics for the controller states
+    /// A map of topics for the controller states
     std::map<std::string, std::string> sr_hand_sub_topics;
 
     shadowhandRosLib::HandType hand_type;
@@ -119,9 +121,9 @@ namespace shadowrobot
     void initializeEthercatHand();
 
     static const double TIMEOUT_TO_DETECT_CONTROLLER_MANAGER;
-  }; // end class ShadowhandSubscriber
+  };  // end class ShadowhandSubscriber
 
-} // end namespace
+}  // namespace shadowrobot
 
 /* For the emacs weenies in the crowd.
 Local Variables:

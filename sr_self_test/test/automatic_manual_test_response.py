@@ -3,6 +3,7 @@
 import rospy
 from sr_robot_msgs.srv import ManualSelfTest, ManualSelfTestResponse
 
+
 class AutomaticResponse(object):
     """
     """
@@ -21,5 +22,3 @@ if __name__ == '__main__':
     rospy.init_node("automatic_response")
     ar = AutomaticResponse()
     rospy.spin()
-
-

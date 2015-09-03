@@ -28,70 +28,74 @@
 
 
 #include "sr_mechanism_model/joint_0_transmission.hpp"
+#include <string>
 
-using namespace ros_ethercat_model;
-using namespace std;
-using namespace sr_actuator;
+using std::string;
+using sr_actuator::SrMotorActuator;
+using ros_ethercat_model::RobotState;
+using ros_ethercat_model::Transmission;
 
 PLUGINLIB_EXPORT_CLASS(sr_mechanism_model::J0Transmission, Transmission)
 
 namespace sr_mechanism_model
 {
 
-bool J0Transmission::initXml(TiXmlElement *elt, RobotState *robot)
-{
-  if (!SimpleTransmission::initXml(elt, robot))
-    return false;
-
-  string joint2_name = joint_->joint_->name;
-  joint2_name[joint2_name.size()-1] = '2';
-  joint2_ = robot->getJointState(joint2_name);
-
-  return true;
-}
-
-void J0Transmission::propagatePosition()
-{
-  //the size is either 2 or 0 when the joint hasn't been updated yet
-  // (joint 0 is composed of the 2 calibrated values: joint 1 and joint 2)
-
-  SrMotorActuator *act = static_cast<SrMotorActuator*>(actuator_);
-  size_t size = act->motor_state_.calibrated_sensor_values_.size();
-  if (size == 2)
+  bool J0Transmission::initXml(TiXmlElement *elt, RobotState *robot)
   {
-    ROS_DEBUG_STREAM("READING pos " << act->state_.position_
-                     << " J1 " << act->motor_state_.calibrated_sensor_values_[0]
-                     << " J2 " << act->motor_state_.calibrated_sensor_values_[1]);
+    if (!SimpleTransmission::initXml(elt, robot))
+    {
+      return false;
+    }
 
-    joint_->position_ = act->motor_state_.calibrated_sensor_values_[0];
-    joint2_->position_ = act->motor_state_.calibrated_sensor_values_[1];
+    string joint2_name = joint_->joint_->name;
+    joint2_name[joint2_name.size() - 1] = '2';
+    joint2_ = robot->getJointState(joint2_name);
 
-    joint_->velocity_ = act->state_.velocity_ / 2.0;
-    joint2_->velocity_ = act->state_.velocity_ / 2.0;
-
-    joint_->effort_ = act->state_.last_measured_effort_;
-    joint2_->effort_ = act->state_.last_measured_effort_;
+    return true;
   }
-  else if (size == 0)
+
+  void J0Transmission::propagatePosition()
   {
-    ROS_DEBUG_STREAM("READING pos from Gazebo " << act->state_.position_
-                     << " J1 " << act->state_.position_ / 2.0
-                     << " J2 " << act->state_.position_ / 2.0);
+    // the size is either 2 or 0 when the joint hasn't been updated yet
+    // (joint 0 is composed of the 2 calibrated values: joint 1 and joint 2)
 
-    //TODO: use a real formula for the coupling??
-    //GAZEBO
-    joint_->position_ = act->state_.position_ / 2.0;
-    joint2_->position_ = act->state_.position_ / 2.0;
+    SrMotorActuator *act = static_cast<SrMotorActuator *>(actuator_);
+    size_t size = act->motor_state_.calibrated_sensor_values_.size();
+    if (size == 2)
+    {
+      ROS_DEBUG_STREAM("READING pos " << act->state_.position_
+                       << " J1 " << act->motor_state_.calibrated_sensor_values_[0]
+                       << " J2 " << act->motor_state_.calibrated_sensor_values_[1]);
 
-    joint_->velocity_ = act->state_.velocity_ / 2.0;
-    joint2_->velocity_ = act->state_.velocity_ / 2.0;
+      joint_->position_ = act->motor_state_.calibrated_sensor_values_[0];
+      joint2_->position_ = act->motor_state_.calibrated_sensor_values_[1];
 
-    joint_->effort_ = act->state_.last_measured_effort_ / 2.0;
-    joint2_->effort_ = act->state_.last_measured_effort_ / 2.0;
+      joint_->velocity_ = act->state_.velocity_ / 2.0;
+      joint2_->velocity_ = act->state_.velocity_ / 2.0;
+
+      joint_->effort_ = act->state_.last_measured_effort_;
+      joint2_->effort_ = act->state_.last_measured_effort_;
+    }
+    else if (size == 0)
+    {
+      ROS_DEBUG_STREAM("READING pos from Gazebo " << act->state_.position_
+                       << " J1 " << act->state_.position_ / 2.0
+                       << " J2 " << act->state_.position_ / 2.0);
+
+      // use a real formula for the coupling??
+      // GAZEBO
+      joint_->position_ = act->state_.position_ / 2.0;
+      joint2_->position_ = act->state_.position_ / 2.0;
+
+      joint_->velocity_ = act->state_.velocity_ / 2.0;
+      joint2_->velocity_ = act->state_.velocity_ / 2.0;
+
+      joint_->effort_ = act->state_.last_measured_effort_ / 2.0;
+      joint2_->effort_ = act->state_.last_measured_effort_ / 2.0;
+    }
   }
-}
 
-} //end namespace sr_mechanism_model
+}  // namespace sr_mechanism_model
 
 /* For the emacs weenies in the crowd.
 Local Variables:

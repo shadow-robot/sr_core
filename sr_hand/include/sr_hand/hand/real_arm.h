@@ -23,64 +23,72 @@
  *
  */
 
-#ifndef REAL_ARM_H_
-#define REAL_ARM_H_
+#ifndef SR_HAND_HAND_REAL_ARM_H
+#define SR_HAND_HAND_REAL_ARM_H
 
 #include <robot/config.h>
+#include <string>
+#include <vector>
 
 #include "sr_hand/hand/sr_articulated_robot.h"
 
 namespace shadowrobot
 {
 
-class RealArm : public SRArticulatedRobot
-{
-public:
-  /**
-   * Initializes the necessary mappings with a static list of names.
-   */
-  RealArm();
-  virtual ~RealArm();
+  class RealArm :
+          public SRArticulatedRobot
+  {
+  public:
+    /**
+     * Initializes the necessary mappings with a static list of names.
+     */
+    RealArm();
 
-  //virtual classes defined in SRArticulatedRobot
-  /**
-   * This function will set the target of the object to the given angle and send it to
-   * the robot.
-   *
-   *
-   * @param joint_name The Joint in joints_map you wish to send the target to.
-   * @param target The target in degree
-   * @return 0 if success ; -1 if error
-   */
-  virtual short sendupdate(std::string joint_name, double target);
+    virtual ~RealArm();
 
-  /**
-   * Reads the data from the robot.
-   *
-   * @param joint_name The name of the joint, as specified in joints_map.
-   * @return The information regarding this joint.
-   */
-  virtual JointData getJointData(std::string joint_name);
-  virtual JointsMap getAllJointsData();
+    // virtual classes defined in SRArticulatedRobot
+    /**
+     * This function will set the target of the object to the given angle and send it to
+     * the robot.
+     *
+     *
+     * @param joint_name The Joint in joints_map you wish to send the target to.
+     * @param target The target in degree
+     * @return 0 if success ; -1 if error
+     */
+    virtual int16_t sendupdate(std::string joint_name, double target);
 
-  virtual short setContrl(std::string contrlr_name, JointControllerData ctrlr_data);
-  virtual JointControllerData getContrl(std::string ctrlr_name);
+    /**
+     * Reads the data from the robot.
+     *
+     * @param joint_name The name of the joint, as specified in joints_map.
+     * @return The information regarding this joint.
+     */
+    virtual JointData getJointData(std::string joint_name);
 
-  virtual short setConfig(std::vector<std::string> myConfig);
-  virtual void getConfig(std::string joint_name);
+    virtual JointsMap getAllJointsData();
 
-  /**
-   * Get diagnostic information from the robot.
-   * @return A vector containing all the diagnostics for the hand (motor information, etc...)
-   */
-  virtual std::vector<DiagnosticData> getDiagnostics();
-protected:
-  /**
-   * Initialise a mapping for the joints.
-   */
-  void initializeMap();
-};
+    virtual int16_t setContrl(std::string contrlr_name, JointControllerData ctrlr_data);
 
-}//end namespace
+    virtual JointControllerData getContrl(std::string ctrlr_name);
 
-#endif /* REAL_ARM_H_ */
+    virtual int16_t setConfig(std::vector <std::string> myConfig);
+
+    virtual void getConfig(std::string joint_name);
+
+    /**
+     * Get diagnostic information from the robot.
+     * @return A vector containing all the diagnostics for the hand (motor information, etc...)
+     */
+    virtual std::vector <DiagnosticData> getDiagnostics();
+
+  protected:
+    /**
+     * Initialise a mapping for the joints.
+     */
+    void initializeMap();
+  };
+
+}  // namespace shadowrobot
+
+#endif  // SR_HAND_HAND_REAL_ARM_H

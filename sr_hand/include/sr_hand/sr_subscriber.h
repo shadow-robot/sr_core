@@ -25,8 +25,8 @@
  *
  */
 
-#ifndef SHADOWHAND_SUBSCRIBER_H_
-#define SHADOWHAND_SUBSCRIBER_H_
+#ifndef SR_HAND_SR_SUBSCRIBER_H
+#define SR_HAND_SR_SUBSCRIBER_H
 
 #include <ros/ros.h>
 #include <vector>
@@ -35,7 +35,7 @@
 
 #include <boost/smart_ptr.hpp>
 
-//messages
+// messages
 #include <sr_robot_msgs/joints_data.h>
 #include <sr_robot_msgs/joint.h>
 #include <sr_robot_msgs/contrlr.h>
@@ -46,8 +46,9 @@
 
 #include "sr_hand/hand/sr_articulated_robot.h"
 
-using namespace ros;
-using namespace shadowrobot;
+using ros::NodeHandle;
+using ros::Subscriber;
+using shadowrobot::SRArticulatedRobot;
 
 namespace shadowrobot
 {
@@ -56,27 +57,27 @@ namespace shadowrobot
  * This ROS subscriber is used to issue commands to the hand / arm, from sending a set of targets, to changing the
  * controller parameters.
  */
-class SRSubscriber
-{
-public:
+  class SRSubscriber
+  {
+  public:
     /**
      * Constructor initializing the ROS node, and setting the topic to which it subscribes.
      *
      * @param sr_art_robot A Shadowhand object, where the information to be published comes from.
      */
-    SRSubscriber( boost::shared_ptr<SRArticulatedRobot> sr_art_robot );
+    explicit SRSubscriber(boost::shared_ptr<SRArticulatedRobot> sr_art_robot);
 
     /// Destructor
     ~SRSubscriber();
 
-private:
-    ///ros node handle
+  private:
+    /// ros node handle
     NodeHandle node, n_tilde;
 
-    ///The shadowhand / shadowarm object (can be either an object connected to the real robot or a virtual hand).
+    /// The shadowhand / shadowarm object (can be either an object connected to the real robot or a virtual hand).
     boost::shared_ptr<SRArticulatedRobot> sr_articulated_robot;
 
-    ///init function
+    /// init function
     void init();
 
     /////////////////
@@ -89,8 +90,9 @@ private:
      * @param msg the sendupdate message received. The sendupdate message, contains the number of
      * sendupdate commands and a vector of joints with names and targets.
      */
-    void sendupdateCallback( const sr_robot_msgs::sendupdateConstPtr& msg );
-    ///The subscriber to the sendupdate topic.
+    void sendupdateCallback(const sr_robot_msgs::sendupdateConstPtr &msg);
+
+    /// The subscriber to the sendupdate topic.
     Subscriber sendupdate_sub;
 
     /**
@@ -99,8 +101,9 @@ private:
      * @param msg the target in radians
      * @param joint_name name of the joint we're sending the command to
      */
-    void cmd_callback(const std_msgs::Float64ConstPtr& msg, std::string& joint_name);
-    ///The vector of subscribers to the different joint topics.
+    void cmd_callback(const std_msgs::Float64ConstPtr &msg, std::string &joint_name);
+
+    /// The vector of subscribers to the different joint topics.
     std::vector<Subscriber> controllers_sub;
 
     /**
@@ -108,19 +111,21 @@ private:
      * @param msg the contrlr message received. contrlr_name + list_of_parameters in a string array
      * e.g. [p:10] sets the p value of the specified controller to 10.
      */
-    void contrlrCallback( const sr_robot_msgs::contrlrConstPtr& msg );
-    ///The subscriber to the contrlr topic
+    void contrlrCallback(const sr_robot_msgs::contrlrConstPtr &msg);
+
+    /// The subscriber to the contrlr topic
     Subscriber contrlr_sub;
 
     /**
      * process the config command: send new parameters to the palm.
      * @param msg the config message received
      */
-    void configCallback( const sr_robot_msgs::configConstPtr& msg );
-    ///The subscriber to the config topic
+    void configCallback(const sr_robot_msgs::configConstPtr &msg);
+
+    /// The subscriber to the config topic
     Subscriber config_sub;
-}; // end class ShadowhandSubscriber
+  };  // end class ShadowhandSubscriber
 
-} // end namespace
+}  // namespace shadowrobot
 
-#endif 	    /* !SHADOWHAND_SUBSCRIBER_H_ */
+#endif  // SR_HAND_SR_SUBSCRIBER_H

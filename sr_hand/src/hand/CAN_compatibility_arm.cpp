@@ -31,18 +31,21 @@
 #include <time.h>
 #include <ros/ros.h>
 #include <std_msgs/Float64.h>
+#include <string>
+#include <vector>
 
 namespace shadowrobot
 {
   ROS_DEPRECATED CANCompatibilityArm::CANCompatibilityArm() :
-    SRArticulatedRobot(), n_tilde("~")
+
+  SRArticulatedRobot(), n_tilde("~")
   {
-    ROS_WARN("This interface is deprecated, you should probably use the interface provided by the CAN driver directly.");
+    ROS_WARN(
+            "This interface is deprecated, you should probably use the interface provided by the CAN driver directly.");
 
     initializeMap();
 
     joint_state_subscriber = node.subscribe("joint_states", 2, &CANCompatibilityArm::joint_states_callback, this);
-
   }
 
   CANCompatibilityArm::~CANCompatibilityArm()
@@ -59,7 +62,7 @@ namespace shadowrobot
     n_tilde.searchParam("controller_suffix", searched_param);
     n_tilde.param(searched_param, controller_suffix, std::string("position_controller"));
     std::string topic_prefix = "/sa_";
-    std::string topic_suffix = "_"+controller_suffix+"/command";
+    std::string topic_suffix = "_" + controller_suffix + "/command";
     std::string full_topic = "";
 
     tmpData.min = -45.0;
@@ -76,7 +79,7 @@ namespace shadowrobot
 
     full_topic = topic_prefix + "ss" + topic_suffix;
     CAN_publishers.push_back(node.advertise<std_msgs::Float64>(full_topic, 2));
-    tmp_index ++;
+    tmp_index++;
     tmpData.publisher_index = tmp_index;
     joints_map["ShoulderJSwing"] = tmpData;
 
@@ -84,7 +87,7 @@ namespace shadowrobot
     tmpData.max = 120.0;
     full_topic = topic_prefix + "es" + topic_suffix;
     CAN_publishers.push_back(node.advertise<std_msgs::Float64>(full_topic, 2));
-    tmp_index ++;
+    tmp_index++;
     tmpData.publisher_index = tmp_index;
     joints_map["ElbowJSwing"] = tmpData;
 
@@ -93,22 +96,24 @@ namespace shadowrobot
 
     full_topic = topic_prefix + "er" + topic_suffix;
     CAN_publishers.push_back(node.advertise<std_msgs::Float64>(full_topic, 2));
-    tmp_index ++;
+    tmp_index++;
     tmpData.publisher_index = tmp_index;
     joints_map["ElbowJRotate"] = tmpData;
 
     joints_map_mutex.unlock();
   }
 
-  short CANCompatibilityArm::sendupdate( std::string joint_name, double target )
+  int16_t CANCompatibilityArm::sendupdate(std::string joint_name, double target)
   {
-    if( !joints_map_mutex.try_lock() )
+    if (!joints_map_mutex.try_lock())
+    {
       return -1;
+    }
     JointsMap::iterator iter = joints_map.find(joint_name);
     std_msgs::Float64 target_msg;
 
-    //not found
-    if( iter == joints_map.end() )
+    // not found
+    if (iter == joints_map.end())
     {
       ROS_DEBUG("Joint %s not found", joint_name.c_str());
 
@@ -116,37 +121,44 @@ namespace shadowrobot
       return -1;
     }
 
-    //joint found
+    // joint found
     JointData tmpData(iter->second);
 
-    if( target < tmpData.min )
+    if (target < tmpData.min)
+    {
       target = tmpData.min;
-    if( target > tmpData.max )
+    }
+    if (target > tmpData.max)
+    {
       target = tmpData.max;
+    }
 
     tmpData.target = target;
 
     joints_map[joint_name] = tmpData;
-    //the targets are in radians
-    target_msg.data = sr_math_utils::to_rad( target );
+    // the targets are in radians
+    target_msg.data = sr_math_utils::to_rad(target);
 
-	//	ROS_ERROR("Joint %s ,pub index %d, pub name %s", joint_name.c_str(),tmpData.publisher_index,CAN_publishers[tmpData.publisher_index].getTopic().c_str());
+    // ROS_ERROR("Joint %s ,pub index %d, pub name %s", joint_name.c_str(),tmpData.publisher_index,
+    // CAN_publishers[tmpData.publisher_index].getTopic().c_str());
     CAN_publishers[tmpData.publisher_index].publish(target_msg);
 
     joints_map_mutex.unlock();
     return 0;
   }
 
-  JointData CANCompatibilityArm::getJointData( std::string joint_name )
+  JointData CANCompatibilityArm::getJointData(std::string joint_name)
   {
     JointData noData;
-    if( !joints_map_mutex.try_lock() )
+    if (!joints_map_mutex.try_lock())
+    {
       return noData;
+    }
 
     JointsMap::iterator iter = joints_map.find(joint_name);
 
-    //joint found
-    if( iter != joints_map.end() )
+    // joint found
+    if (iter != joints_map.end())
     {
       JointData tmp = JointData(iter->second);
 
@@ -164,64 +176,71 @@ namespace shadowrobot
     return joints_map;
   }
 
-  short CANCompatibilityArm::setContrl( std::string contrlr_name, JointControllerData ctrlr_data )
+  int16_t CANCompatibilityArm::setContrl(std::string contrlr_name, JointControllerData ctrlr_data)
   {
-    ROS_WARN("The set Controller function is not implemented in the CAN compatibility wrapper, please use the provided services directly.");
+    ROS_WARN(
+            "The set Controller function is not implemented in the CAN compatibility wrapper,"
+                    " please use the provided services directly.");
     return 0;
   }
 
-  JointControllerData CANCompatibilityArm::getContrl( std::string contrlr_name )
+  JointControllerData CANCompatibilityArm::getContrl(std::string contrlr_name)
   {
     JointControllerData no_result;
-    ROS_WARN("The get Controller function is not implemented in the CAN compatibility wrapper, please use the provided services directly.");
+    ROS_WARN(
+            "The get Controller function is not implemented in the CAN compatibility wrapper,"
+                    " please use the provided services directly.");
     return no_result;
   }
 
-  short CANCompatibilityArm::setConfig( std::vector<std::string> myConfig )
+  int16_t CANCompatibilityArm::setConfig(std::vector <std::string> myConfig)
   {
     ROS_WARN("The set config function is not implemented.");
     return 0;
   }
 
-  void CANCompatibilityArm::getConfig( std::string joint_name )
+  void CANCompatibilityArm::getConfig(std::string joint_name)
   {
     ROS_WARN("The get config function is not implemented.");
   }
 
-  std::vector<DiagnosticData> CANCompatibilityArm::getDiagnostics()
+  std::vector <DiagnosticData> CANCompatibilityArm::getDiagnostics()
   {
-    std::vector<DiagnosticData> returnVect;
+    std::vector <DiagnosticData> returnVect;
     return returnVect;
   }
 
-  void CANCompatibilityArm::joint_states_callback(const sensor_msgs::JointStateConstPtr& msg)
+  void CANCompatibilityArm::joint_states_callback(const sensor_msgs::JointStateConstPtr &msg)
   {
-    if( !joints_map_mutex.try_lock() )
+    if (!joints_map_mutex.try_lock())
+    {
       return;
-    //loop on all the names in the joint_states message
-    for(unsigned int index = 0; index < msg->name.size(); ++index)
+    }
+    // loop on all the names in the joint_states message
+    for (size_t index = 0; index < msg->name.size(); ++index)
     {
       std::string joint_name = msg->name[index];
       JointsMap::iterator iter = joints_map.find(joint_name);
 
-      //not found => can be a joint from the arm / hand
-      if(iter == joints_map.end())
+      // not found => can be a joint from the arm / hand
+      if (iter == joints_map.end())
+      {
         continue;
+      }
 
-      //joint found
+      // joint found
       JointData tmpData(iter->second);
 
-			tmpData.position = sr_math_utils::to_degrees(msg->position[index]);
-			tmpData.force = msg->effort[index];
-			tmpData.velocity = msg->velocity[index];
-			joints_map[joint_name] = tmpData;
-
+      tmpData.position = sr_math_utils::to_degrees(msg->position[index]);
+      tmpData.force = msg->effort[index];
+      tmpData.velocity = msg->velocity[index];
+      joints_map[joint_name] = tmpData;
     }
 
     joints_map_mutex.unlock();
   }
 
-} //end namespace
+}  // namespace shadowrobot
 
 
 /* For the emacs weenies in the crowd.

@@ -26,17 +26,21 @@
  */
 
 #include "sr_self_test/sensor_noise_test.hpp"
+#include <map>
+#include <string>
+#include <vector>
 
 namespace shadow_robot
 {
-  const double SensorNoiseTest::MAX_NOISE_CONST_ = 0.0087; //0.5 degrees
-  const double SensorNoiseTest::NOISE_EPSILON_CONST_ = 0.000000001; //So small that no real sensor can have smaller noise
+  const double SensorNoiseTest::MAX_NOISE_CONST_ = 0.0087;  // 0.5 degrees
+  const double SensorNoiseTest::NOISE_EPSILON_CONST_ = 0.000000001;  // So small that no real sensor can
+  // have smaller noise
 
   SensorNoiseTest::SensorNoiseTest()
   {
   }
 
-  void SensorNoiseTest::test_sensor_noise(diagnostic_updater::DiagnosticStatusWrapper& status)
+  void SensorNoiseTest::test_sensor_noise(diagnostic_updater::DiagnosticStatusWrapper &status)
   {
     // We subscribe to the joint_states topic when the test starts running.
     // This way we avoid the initial ramping up of the filtered position when the driver starts
@@ -55,34 +59,38 @@ namespace shadow_robot
     std::vector<double> failed_noises;
     double min, max;
     std::map<std::string, std::vector<double> >::iterator joint_states;
-    for(joint_states = all_joint_states_.begin(); joint_states != all_joint_states_.end(); ++joint_states)
+    for (joint_states = all_joint_states_.begin(); joint_states != all_joint_states_.end(); ++joint_states)
     {
-      if(joint_states->second.size() > 1 )
+      if (joint_states->second.size() > 1)
       {
         min = joint_states->second[0];
         max = joint_states->second[0];
 
-        //starting loop at 1, as we already assigned 0 to min/max
+        // starting loop at 1, as we already assigned 0 to min/max
         for (size_t i = 1; i < joint_states->second.size(); ++i)
         {
-          if(joint_states->second[i] < min)
+          if (joint_states->second[i] < min)
+          {
             min = joint_states->second[i];
-          if(joint_states->second[i] > max)
+          }
+          if (joint_states->second[i] > max)
+          {
             max = joint_states->second[i];
+          }
         }
 
         double noise = max - min;
-        ROS_DEBUG("Joint %s Pos min: %lf  max: %lf  noise: %lf", joint_states->first.c_str(),  min , max , noise );
-        
-        if( noise > MAX_NOISE_CONST_ || noise <= NOISE_EPSILON_CONST_ )
+        ROS_DEBUG("Joint %s Pos min: %lf  max: %lf  noise: %lf", joint_states->first.c_str(), min, max, noise);
+
+        if (noise > MAX_NOISE_CONST_ || noise <= NOISE_EPSILON_CONST_)
         {
           failed_joints.push_back(joint_states->first);
-          failed_noises.push_back( noise );
+          failed_noises.push_back(noise);
         }
       }
     }
 
-    if( failed_joints.size() > 0 )
+    if (failed_joints.size() > 0)
     {
       std::stringstream ss;
       ss << "Noises out of threshold: ";
@@ -93,19 +101,21 @@ namespace shadow_robot
       status.summary(diagnostic_msgs::DiagnosticStatus::ERROR, ss.str());
     }
     else
+    {
       status.summary(diagnostic_msgs::DiagnosticStatus::OK, "All the noises are below threshold.");
+    }
 
     joint_states_sub_.shutdown();
   }
 
-  void SensorNoiseTest::joint_states_cb_(const sensor_msgs::JointState::ConstPtr& msg)
+  void SensorNoiseTest::joint_states_cb_(const sensor_msgs::JointState::ConstPtr &msg)
   {
     for (size_t i = 0; i < msg->name.size(); ++i)
     {
-      all_joint_states_[ msg->name[i] ].push_back( msg->position[i] );
+      all_joint_states_[msg->name[i]].push_back(msg->position[i]);
     }
   }
-}
+}  // end namespace shadow_robot
 
 /* For the emacs weenies in the crowd.
    Local Variables:

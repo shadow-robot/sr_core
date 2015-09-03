@@ -18,6 +18,7 @@
 
 VERBOSE = 1
 
+
 class Grasp(object):
 
     def __init__(self):
@@ -29,8 +30,9 @@ class Grasp(object):
         print self.joints_and_positions
 
     def convert_to_xml(self):
-        grasp = '	<grasp name="'+self.grasp_name+'">'+'\n'
+        grasp = '	<grasp name="' + self.grasp_name + '">' + '\n'
         for key, value in self.joints_and_positions.items():
-            grasp = grasp + '		<joint name="'+str(key)+'">'+str(value)+'</joint>\n'
-        grasp = grasp + '	</grasp>'+'\n'
+            grasp = grasp + '		<joint name="' + \
+                str(key) + '">' + str(value) + '</joint>\n'
+        grasp = grasp + '	</grasp>' + '\n'
         return grasp

@@ -24,10 +24,11 @@
  *
  */
 
-#ifndef _SRH_FAKE_JOINT_CALIBRATION_CONTROLLER_
-#define _SRH_FAKE_JOINT_CALIBRATION_CONTROLLER_
+#ifndef SR_MECHANISM_CONTROLLERS_SRH_FAKE_JOINT_CALIBRATION_CONTROLLER_H
+#define SR_MECHANISM_CONTROLLERS_SRH_FAKE_JOINT_CALIBRATION_CONTROLLER_H
 
 #include "ros/node_handle.h"
+#include <string>
 #include "ros_ethercat_model/robot_state.hpp"
 #include "velocity_controllers/joint_velocity_controller.h"
 #include "realtime_tools/realtime_publisher.h"
@@ -39,30 +40,39 @@
 namespace controller
 {
 
-  class SrhFakeJointCalibrationController : public controller_interface::Controller<ros_ethercat_model::RobotState>
+  class SrhFakeJointCalibrationController :
+          public controller_interface::Controller<ros_ethercat_model::RobotState>
   {
   public:
     SrhFakeJointCalibrationController();
 
     virtual bool init(ros_ethercat_model::RobotState *robot, ros::NodeHandle &n);
 
-    virtual void update(const ros::Time& time, const ros::Duration& period);
+    virtual void update(const ros::Time &time, const ros::Duration &period);
 
-    bool calibrated() { return calibration_state_ == CALIBRATED; }
+    bool calibrated()
+    {
+      return calibration_state_ == CALIBRATED;
+    }
+
     void beginCalibration()
     {
       if (calibration_state_ == IS_INITIALIZED)
+      {
         calibration_state_ = BEGINNING;
+      }
     }
 
   protected:
-
-    ros_ethercat_model::RobotState* robot_;
+    ros_ethercat_model::RobotState *robot_;
     ros::NodeHandle node_;
     boost::scoped_ptr<realtime_tools::RealtimePublisher<std_msgs::Empty> > pub_calibrated_;
     ros::Time last_publish_time_;
 
-    enum { IS_INITIALIZED, BEGINNING, MOVING_TO_LOW, MOVING_TO_HIGH, CALIBRATED };
+    enum
+    {
+      IS_INITIALIZED, BEGINNING, MOVING_TO_LOW, MOVING_TO_HIGH, CALIBRATED
+    };
     int calibration_state_;
 
     ros_ethercat_model::Actuator *actuator_;
@@ -76,8 +86,7 @@ namespace controller
      */
     void initialize_pids();
   };
-
-}
+}  // namespace controller
 
 /* For the emacs weenies in the crowd.
 Local Variables:
@@ -86,4 +95,4 @@ End:
 */
 
 
-#endif
+#endif  // SR_MECHANISM_CONTROLLERS_SRH_FAKE_JOINT_CALIBRATION_CONTROLLER_H

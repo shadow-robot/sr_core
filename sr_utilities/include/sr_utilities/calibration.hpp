@@ -54,11 +54,11 @@ namespace joint_calibration
    *
    * @return true if p1.raw_value < p2.raw_value
    */
-  static bool sort_growing_raw_operator(const Point& p1, const Point& p2)
+  static bool sort_growing_raw_operator(const Point &p1, const Point &p2)
   {
     return p1.raw_value < p2.raw_value;
   }
-}
+}  // namespace joint_calibration
 
 namespace shadow_robot
 {
@@ -69,7 +69,7 @@ namespace shadow_robot
   class JointCalibration
   {
   public:
-    JointCalibration(std::vector<joint_calibration::Point> calibration_table);
+    explicit JointCalibration(std::vector<joint_calibration::Point> calibration_table);
 
     /**
      * Computes the calibrated joint position from the ADC raw reading.
@@ -83,14 +83,14 @@ namespace shadow_robot
     /**
      * Overload the << operator, for easier debugging.
      */
-    friend std::ostream& operator<<(std::ostream& out, const JointCalibration& calib )
+    friend std::ostream &operator<<(std::ostream &out, const JointCalibration &calib)
     {
       out << " calibration = {";
       out << "size: " << calib.calibration_table_size_;
-      for( unsigned int i=0; i< calib.calibration_table_.size(); ++i)
+      for (unsigned int i = 0; i < calib.calibration_table_.size(); ++i)
       {
         out << " [raw: " << calib.calibration_table_[i].raw_value;
-        out << ", cal: " << calib.calibration_table_[i].calibrated_value<<"]";
+        out << ", cal: " << calib.calibration_table_[i].calibrated_value << "]";
       }
       out << " }";
       return out;
@@ -107,7 +107,7 @@ namespace shadow_robot
      */
     unsigned int calibration_table_size_;
   };
-}
+}  // namespace shadow_robot
 
 /* For the emacs weenies in the crowd.
 Local Variables:
@@ -116,4 +116,3 @@ End:
 */
 
 #endif
-

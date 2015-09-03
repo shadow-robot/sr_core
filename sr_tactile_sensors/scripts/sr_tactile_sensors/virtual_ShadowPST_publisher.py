@@ -10,49 +10,49 @@ import thread
 class MergeMessages(object):
     def __init__(self):
         rospy.init_node('ShadowPST_publisher', anonymous=True)
-        self.ff_sub=rospy.Subscriber('/sr_tactile/touch/ff',Float64,self.ff_cb)
-        self.mf_sub=rospy.Subscriber('/sr_tactile/touch/mf',Float64,self.mf_cb)
-        self.rf_sub=rospy.Subscriber('/sr_tactile/touch/rf',Float64,self.rf_cb)
-        self.lf_sub=rospy.Subscriber('/sr_tactile/touch/lf',Float64,self.lf_cb)
-        self.th_sub=rospy.Subscriber('/sr_tactile/touch/th',Float64,self.th_cb)
+        self.ff_sub = rospy.Subscriber('/sr_tactile/touch/ff', Float64, self.ff_cb)
+        self.mf_sub = rospy.Subscriber('/sr_tactile/touch/mf', Float64, self.mf_cb)
+        self.rf_sub = rospy.Subscriber('/sr_tactile/touch/rf', Float64, self.rf_cb)
+        self.lf_sub = rospy.Subscriber('/sr_tactile/touch/lf', Float64, self.lf_cb)
+        self.th_sub = rospy.Subscriber('/sr_tactile/touch/th', Float64, self.th_cb)
         self.rate = rospy.Rate(25.0)
         self.pub = rospy.Publisher("/tactile", ShadowPST)
-        self.pst=[0.0,0.0,0.0,0.0,0.0]
+        self.pst = [0.0, 0.0, 0.0, 0.0, 0.0]
         self.mutex = thread.allocate_lock()
 
     def ff_cb(self, msg):
         self.mutex.acquire()
-        self.pst[0]=msg.data
+        self.pst[0] = msg.data
         self.mutex.release()
 
     def mf_cb(self, msg):
         self.mutex.acquire()
-        self.pst[1]=msg.data
+        self.pst[1] = msg.data
         self.mutex.release()
 
     def rf_cb(self, msg):
         self.mutex.acquire()
-        self.pst[2]=msg.data
+        self.pst[2] = msg.data
         self.mutex.release()
 
     def lf_cb(self, msg):
         self.mutex.acquire()
-        self.pst[3]=msg.data
+        self.pst[3] = msg.data
         self.mutex.release()
 
     def th_cb(self, msg):
         self.mutex.acquire()
-        self.pst[4]=msg.data
+        self.pst[4] = msg.data
         self.mutex.release()
 
     def shadowpst_publisher(self):
-        pst_state_msg=ShadowPST()
-        pst_state_msg.temperature=[0,0,0,0,0,0]
-        pressure=[]
+        pst_state_msg = ShadowPST()
+        pst_state_msg.temperature = [0, 0, 0, 0, 0, 0]
+        pressure = []
         self.mutex.acquire()
-        for i in range(0,5):
+        for i in range(0, 5):
             pressure.append(self.pst[i]*100)
-        pst_state_msg.pressure=pressure
+        pst_state_msg.pressure = pressure
         #print pst_state_msg.pressure
         self.mutex.release()
 
@@ -64,4 +64,3 @@ if __name__ == '__main__':
     while not rospy.is_shutdown():
         merger.shadowpst_publisher()
         merger.rate.sleep()
-

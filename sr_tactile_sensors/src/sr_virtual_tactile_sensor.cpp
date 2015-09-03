@@ -28,6 +28,7 @@
 #include "sr_tactile_sensors/sr_virtual_tactile_sensor.hpp"
 #include <boost/algorithm/string.hpp>
 #include <string>
+#include <vector>
 
 namespace shadowrobot
 {
@@ -35,51 +36,52 @@ namespace shadowrobot
  *         TACTILE SENSOR         *
  **********************************/
   SrVirtualTactileSensor::SrVirtualTactileSensor(std::string name,
-                                                 std::string touch_name ) :
-    SrGenericTactileSensor(name, touch_name),
-    touch_value(0.0)
+                                                 std::string touch_name) :
+          SrGenericTactileSensor(name, touch_name),
+          touch_value(0.0)
   {
-	if(name.find("th")!=std::string::npos )
-	{
-		//fills the vector of joint names: we're taking J2 and J1 for TH
-		std::string tmp = boost::to_upper_copy(name);
-		tmp += "J2";
-		names_joints_linked.push_back(tmp);
-		tmp = boost::to_upper_copy(name);
-		tmp += "J1";
-		names_joints_linked.push_back(tmp);
-	}
-	else
-	{
-		//fills the vector of joint names: we're taking J3 and J0
-		std::string tmp = boost::to_upper_copy(name);
-		tmp += "J3";
-		names_joints_linked.push_back(tmp);
-		tmp = boost::to_upper_copy(name);
-		tmp += "J0";
-		names_joints_linked.push_back(tmp);
-	}
+    if (name.find("th") != std::string::npos)
+    {
+      // fills the vector of joint names: we're taking J2 and J1 for TH
+      std::string tmp = boost::to_upper_copy(name);
+      tmp += "J2";
+      names_joints_linked.push_back(tmp);
+      tmp = boost::to_upper_copy(name);
+      tmp += "J1";
+      names_joints_linked.push_back(tmp);
+    }
+    else
+    {
+      // fills the vector of joint names: we're taking J3 and J0
+      std::string tmp = boost::to_upper_copy(name);
+      tmp += "J3";
+      names_joints_linked.push_back(tmp);
+      tmp = boost::to_upper_copy(name);
+      tmp += "J0";
+      names_joints_linked.push_back(tmp);
+    }
 
     sub = nh.subscribe("/srh/shadowhand_data", 2, &SrVirtualTactileSensor::callback, this);
   }
 
   SrVirtualTactileSensor::~SrVirtualTactileSensor()
-  {}
+  {
+  }
 
-  void SrVirtualTactileSensor::callback(const sr_robot_msgs::joints_dataConstPtr& msg)
+  void SrVirtualTactileSensor::callback(const sr_robot_msgs::joints_dataConstPtr &msg)
   {
     double tmp_value = 0.0;
     int msg_length = msg->joints_list_length;
-    for(unsigned short index_msg=0; index_msg < msg_length; ++index_msg)
+    for (size_t index_msg = 0; index_msg < msg_length; ++index_msg)
     {
-      //get the sensor name
+      // get the sensor name
       std::string sensor_name = msg->joints_list[index_msg].joint_name;
 
-      for(unsigned short index_name=0; index_name < names_joints_linked.size() ; ++index_name )
+      for (size_t index_name = 0; index_name < names_joints_linked.size(); ++index_name)
       {
-        if(sensor_name.compare(names_joints_linked[index_name]) == 0)
+        if (sensor_name.compare(names_joints_linked[index_name]) == 0)
         {
-          //pressure value = sum(positions)
+          // ressure value = sum(positions)
           tmp_value += msg->joints_list[index_msg].joint_position;
           break;
         }
@@ -105,22 +107,23 @@ namespace shadowrobot
  *     TACTILE SENSOR MANAGER     *
  **********************************/
   SrVirtualTactileSensorManager::SrVirtualTactileSensorManager() :
-    SrTactileSensorManager()
+          SrTactileSensorManager()
   {
     std::vector<std::vector<std::string> > all_names = get_all_names();
 
-    for( unsigned int i=0; i< all_names[0].size() ; ++i)
+    for (unsigned int i = 0; i < all_names[0].size(); ++i)
     {
       tactile_sensors.push_back(
-        boost::shared_ptr<SrVirtualTactileSensor>(
-          new SrVirtualTactileSensor(all_names[0][i],
-                                     all_names[1][i]) ));
+              boost::shared_ptr<SrVirtualTactileSensor>(
+                      new SrVirtualTactileSensor(all_names[0][i],
+                                                 all_names[1][i])));
     }
   }
 
   SrVirtualTactileSensorManager::~SrVirtualTactileSensorManager()
-  {}
-}
+  {
+  }
+}  // namespace shadowrobot
 
 /**
  * Initializes a set of virtual tactile sensors and publish.
@@ -130,15 +133,17 @@ namespace shadowrobot
  *
  * @return -1 if error linking with the robot (i.e. robot code not started)
  */
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
   ros::init(argc, argv, "sr_tactile_sensor");
   ros::NodeHandle n;
 
   shadowrobot::SrVirtualTactileSensorManager tact_sens_mgr;
 
-  while( ros::ok() )
+  while (ros::ok())
+  {
     tact_sens_mgr.publish_all();
+  }
 
   return 0;
 }

@@ -31,8 +31,8 @@
 #include <boost/scoped_ptr.hpp>
 
 #include <utility>
-
-
+#include <string>
+#include <vector>
 
 #include <control_toolbox/pid.h>
 #include <boost/thread/condition.hpp>
@@ -46,12 +46,11 @@
 
 namespace sr_friction_compensation
 {
-
   class SrFrictionCompensator
   {
   public:
+    explicit SrFrictionCompensator(const std::string &joint_name);
 
-    SrFrictionCompensator(const std::string &joint_name);
     ~SrFrictionCompensator();
 
     /**
@@ -76,10 +75,10 @@ namespace sr_friction_compensation
      *
      * @return the force necessary to have the joint ready to move.
      */
-    double friction_compensation( double position, double velocity, int force_demand, int deadband );
+    double friction_compensation(double position, double velocity, int force_demand, int deadband);
 
   private:
-    ///node handle for reading the map from the parameters server.
+    /// node handle for reading the map from the parameters server.
     ros::NodeHandle node_;
 
     /**
@@ -110,18 +109,18 @@ namespace sr_friction_compensation
      */
     std::vector<joint_calibration::Point> generate_flat_map();
 
-    /// An interpolator for the forward friction map: used to compute the offset from the map, given the current position.
+    /// An interpolator for the forward friction map: used to compute the offset from the map, given the current pos.
     boost::scoped_ptr<shadow_robot::JointCalibration> friction_interpoler_forward;
-    /// An interpolator for the backward friction map: used to compute the offset from the map, given the current position.
+    /// An interpolator for the backward friction map: used to compute the offset from the map, given the current pos.
     boost::scoped_ptr<shadow_robot::JointCalibration> friction_interpoler_backward;
 
-    ///the joint name
+    // the joint name
     std::string joint_name_;
 
-    ///the threshold under which we use the static friction map
+    // the threshold under which we use the static friction map
     static const double velocity_for_static_friction;
   };
-} // namespace
+}  // namespace sr_friction_compensation
 
 /* For the emacs weenies in the crowd.
 Local Variables:

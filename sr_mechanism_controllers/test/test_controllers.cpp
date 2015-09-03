@@ -24,6 +24,7 @@
  *
  */
 #include "sr_mechanism_controllers/test/test_controllers.hpp"
+#include <string>
 
 TestControllers::TestControllers()
 {
@@ -35,33 +36,35 @@ TestControllers::~TestControllers()
 
 void TestControllers::init()
 {
-  hw = boost::shared_ptr<pr2_hardware_interface::HardwareInterface>( new pr2_hardware_interface::HardwareInterface() );
+  hw = boost::shared_ptr<pr2_hardware_interface::HardwareInterface>(new pr2_hardware_interface::HardwareInterface());
 
-  //add a fake FFJ3 actuator
-  actuator = boost::shared_ptr<sr_actuator::SrMotorActuator>( new sr_actuator::SrMotorActuator("FFJ3") );
+  // add a fake FFJ3 actuator
+  actuator = boost::shared_ptr<sr_actuator::SrMotorActuator>(new sr_actuator::SrMotorActuator("FFJ3"));
   actuator->state_.is_enabled_ = true;
-  hw->addActuator( actuator.get() );
+  hw->addActuator(actuator.get());
 
-  robot = boost::shared_ptr<pr2_mechanism_model::Robot>( new pr2_mechanism_model::Robot( hw.get()) );
+  robot = boost::shared_ptr<pr2_mechanism_model::Robot>(new pr2_mechanism_model::Robot(hw.get()));
 
-  model = boost::shared_ptr<TiXmlDocument>( new TiXmlDocument() );
+  model = boost::shared_ptr<TiXmlDocument>(new TiXmlDocument());
 
   ros::NodeHandle rosnode;
   std::string urdf_param_name;
   std::string urdf_string;
   // search and wait for robot_description on param server
-  while(urdf_string.empty())
+  while (urdf_string.empty())
   {
     ROS_DEBUG("Waiting for urdf: %s on the param server.", "sh_description");
-    if (rosnode.searchParam("sh_description",urdf_param_name))
+    if (rosnode.searchParam("sh_description", urdf_param_name))
     {
-      rosnode.getParam(urdf_param_name,urdf_string);
-      ROS_DEBUG("found upstream\n%s\n------\n%s\n------\n%s","sh_description",urdf_param_name.c_str(),urdf_string.c_str());
+      rosnode.getParam(urdf_param_name, urdf_string);
+      ROS_DEBUG("found upstream\n%s\n------\n%s\n------\n%s", "sh_description", urdf_param_name.c_str(),
+                urdf_string.c_str());
     }
     else
     {
-      rosnode.getParam("sh_description",urdf_string);
-      ROS_DEBUG("found in node namespace\n%s\n------\n%s\n------\n%s","sh_description",urdf_param_name.c_str(),urdf_string.c_str());
+      rosnode.getParam("sh_description", urdf_string);
+      ROS_DEBUG("found in node namespace\n%s\n------\n%s\n------\n%s", "sh_description", urdf_param_name.c_str(),
+                urdf_string.c_str());
     }
     usleep(100000);
   }
@@ -71,13 +74,13 @@ void TestControllers::init()
   if (!model->Parse(urdf_string.c_str()) && model->Error())
   {
     ROS_ERROR("Failed to parse urdf: %s\n",
-            urdf_string.c_str());
+              urdf_string.c_str());
   }
   else
   {
-    robot->initXml( model->RootElement() );
+    robot->initXml(model->RootElement());
 
-    robot_state = boost::shared_ptr<pr2_mechanism_model::RobotState>( new pr2_mechanism_model::RobotState(robot.get()) );
+    robot_state = boost::shared_ptr<pr2_mechanism_model::RobotState>(new pr2_mechanism_model::RobotState(robot.get()));
 
     joint_state = robot_state->getJointState("FFJ3");
     joint_state->calibrated_ = true;
@@ -85,7 +88,7 @@ void TestControllers::init()
     init_controller();
     controller->starting();
 
-    //initialize the controller:
+    // initialize the controller:
     joint_state->position_ = 0.0;
     controller->update();
   }

@@ -33,7 +33,7 @@
 
 #include "sr_hand/hand/valves.h"
 
-using namespace shadowrobot;
+using shadowrobot::Valves;
 
 /////////////////////////////////
 //           MAIN              //
@@ -49,15 +49,17 @@ using namespace shadowrobot;
 *
 * @return 0 on success
 */
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
   ros::init(argc, argv, "shadowarm");
   ros::NodeHandle n;
 
-  boost::shared_ptr<Valves> valves( new Valves() );
+  boost::shared_ptr <Valves> valves(new Valves());
 
-  while( ros::ok() )
+  while (ros::ok())
+  {
     valves->publish();
+  }
 
   return 0;
 }

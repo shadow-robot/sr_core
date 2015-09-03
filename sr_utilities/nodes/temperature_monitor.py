@@ -33,6 +33,7 @@ JOINT_NAMES = ["FFJ0", "FFJ3", "FFJ4",
 COOL = 50
 WARM = 55
 
+
 class Joint(object):
     def __init__(self, screen, joint_name, x, y):
         self.screen = screen
@@ -41,9 +42,8 @@ class Joint(object):
         self.joint_name = joint_name
         self.temperature = -1
 
-        #self.window = self.screen.subwin(1, 15, self.y+1, self.x + 1)
+        # self.window = self.screen.subwin(1, 15, self.y+1, self.x + 1)
         self.refresh()
-
 
     def set_temperature(self, temperature):
         self.temperature = temperature
@@ -52,27 +52,28 @@ class Joint(object):
     def refresh(self):
         self.screen.addstr(self.y+1, self.x+1, self.joint_name)
 
-        if self.temperature == -1: #joint not found
-            self.screen.addstr(self.y + 1, self.x + 6, "X", curses.color_pair(4) )
+        if self.temperature == -1:  # joint not found
+            self.screen.addstr(self.y + 1, self.x + 6, "X", curses.color_pair(4))
         elif self.temperature < COOL:
-            self.screen.addstr(self.y + 1, self.x+6, str(self.temperature), curses.color_pair(1) )
+            self.screen.addstr(self.y + 1, self.x+6, str(self.temperature), curses.color_pair(1))
         elif self.temperature < WARM:
-            self.screen.addstr(self.y + 1, self.x + 6, str(self.temperature), curses.color_pair(2) )
+            self.screen.addstr(self.y + 1, self.x + 6, str(self.temperature), curses.color_pair(2))
         else:
-            self.screen.addstr(self.y + 1, self.x + 6, str(self.temperature), curses.color_pair(3) )
-        #self.window.refresh()#0,0,0,0,1,15)
+            self.screen.addstr(self.y + 1, self.x + 6, str(self.temperature), curses.color_pair(3))
+        # self.window.refresh()#0,0,0,0,1,15)
+
 
 class TemperatureMonitor(object):
     MAX_X = 17
     MAX_Y = 21
 
-    def __init__(self, screen = None):
+    def __init__(self, screen=None):
         try:
             curses.curs_set(0)
         except:
             pass
         self.screen = screen
-        self.pad = curses.newpad(self.MAX_Y,self.MAX_X)
+        self.pad = curses.newpad(self.MAX_Y, self.MAX_X)
         self.pad_pos_x_ = 0
         self.pad_pos_y_ = 0
         self.pad.border(0)
@@ -83,7 +84,7 @@ class TemperatureMonitor(object):
         curses.init_pair(2, curses.COLOR_BLACK, curses.COLOR_YELLOW)
         curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_RED)
 
-        for index,joint_name in enumerate(JOINT_NAMES):
+        for index, joint_name in enumerate(JOINT_NAMES):
             begin_x = 0
             begin_y = CASE_HEIGHT*index
 
@@ -94,7 +95,8 @@ class TemperatureMonitor(object):
 
         while True:
             event = self.pad.getch()
-            if event == ord("q"): break
+            if event == ord("q"):
+                break
             elif event == curses.KEY_RESIZE:
                 self.resize_()
 
@@ -128,10 +130,10 @@ class TemperatureMonitor(object):
         self.refresh_()
 
     def refresh_(self):
-        y,x = self.screen.getmaxyx()
+        y, x = self.screen.getmaxyx()
         self.pad_pos_x_ = min(max(self.pad_pos_x_, 0), self.MAX_X - 1)
         self.pad_pos_y_ = min(max(self.pad_pos_y_, 0), self.MAX_Y - 1)
-        self.pad.refresh(self.pad_pos_y_, self.pad_pos_x_, 0,0, y - 1, x -1)
+        self.pad.refresh(self.pad_pos_y_, self.pad_pos_x_, 0, 0, y - 1, x - 1)
         self.pad.border(0)
         for monitor in self.joint_monitors.values():
             monitor.refresh()

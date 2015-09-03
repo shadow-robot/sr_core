@@ -23,13 +23,13 @@ class MergeMessages:
 
     def callback1(self, data):
         self.mutex.acquire()
-        if self.msg_1_received == True:
+        if self.msg_1_received:
             self.mutex.release()
             return
 
         self.msg_1_received = True
 
-	self.joint_state_msg.header.stamp = rospy.Time.now()
+        self.joint_state_msg.header.stamp = rospy.Time.now()
 
         tmp = data.name
         self.joint_state_msg.name = tmp
@@ -43,14 +43,14 @@ class MergeMessages:
         tmp = data.effort
         self.joint_state_msg.effort = tmp
 
-	self.mutex.release()
+        self.mutex.release()
 
     def callback2(self, data):
         self.mutex.acquire()
 
         self.msg_2_received = True
 
-	self.joint_state_msg.header.stamp = rospy.Time.now()
+        self.joint_state_msg.header.stamp = rospy.Time.now()
 
         tmp = self.joint_state_msg.name
         tmp += data.name
@@ -64,11 +64,11 @@ class MergeMessages:
         tmp += data.velocity
         self.joint_state_msg.velocity = tmp
 
-        tmp =  self.joint_state_msg.effort
+        tmp = self.joint_state_msg.effort
         tmp += data.effort
         self.joint_state_msg.effort = tmp
 
-        if self.msg_1_received == True:
+        if self.msg_1_received:
             self.pub.publish(self.joint_state_msg)
             self.msg_1_received = False
             self.msg_2_received = False

@@ -26,6 +26,9 @@
 
 #include "sr_self_test/sr_self_test.hpp"
 #include <ros/ros.h>
+#include <map>
+#include <string>
+#include <vector>
 
 #include <diagnostic_msgs/SelfTest.h>
 #include <sr_robot_msgs/ManualSelfTest.h>
@@ -33,7 +36,6 @@
 class MyNode
 {
 public:
-
   // self_test::TestRunner is the handles sequencing driver self-tests.
   shadow_robot::SrTestRunner self_test_;
 
@@ -46,7 +48,7 @@ public:
   {
     self_test_.setID("12345");
 
-    std::vector<std::string> services_to_test;
+    std::vector <std::string> services_to_test;
     services_to_test.push_back("sr_self_test_test/self_test");
     services_to_test.push_back("/rosout/get_loggers");
 
@@ -59,14 +61,14 @@ public:
     self_test_.addSensorNoiseTest();
   }
 
-  void test_plot(diagnostic_updater::DiagnosticStatusWrapper& status)
+  void test_plot(diagnostic_updater::DiagnosticStatusWrapper &status)
   {
     self_test_.plot(get_fake_joints(), true);
 
     status.summary(diagnostic_msgs::DiagnosticStatus::OK, "A plot should be displayed in a gnuplot window.");
   }
 
-  void test_plot_save(diagnostic_updater::DiagnosticStatusWrapper& status)
+  void test_plot_save(diagnostic_updater::DiagnosticStatusWrapper &status)
   {
     std::string path = "/tmp/plot.png";
     self_test_.plot(get_fake_joints(), path, true);
@@ -74,23 +76,28 @@ public:
     ros::Duration(0.5).sleep();
 
     std::ifstream test_file(path.c_str());
-    if( test_file.good() )
+    if (test_file.good())
+    {
       status.summary(diagnostic_msgs::DiagnosticStatus::OK, "The plot seems to have been saved in " + path);
+    }
     else
-      status.summary(diagnostic_msgs::DiagnosticStatus::ERROR, "No file found at " + path + " the plot was probably not saved correctly.");
+    {
+      status.summary(diagnostic_msgs::DiagnosticStatus::ERROR,
+                     "No file found at " + path + " the plot was probably not saved correctly.");
+    }
   }
 
-  std::map<std::string, std::vector<double> > get_fake_joints()
+  std::map <std::string, std::vector<double>> get_fake_joints()
   {
-    std::map<std::string, std::vector<double> > joints;
+    std::map <std::string, std::vector<double>> joints;
 
     std::vector<double> ffj0_pos, ffj0_tar, ffj3_pos, ffj3_tar;
     for (int i = 0; i < 20; ++i)
     {
-      ffj0_pos.push_back(1.0/float(i));
-      ffj0_tar.push_back(1.0/float(i+1));
-      ffj3_pos.push_back(1.0/float(i*2));
-      ffj3_tar.push_back(2.0/float(i));
+      ffj0_pos.push_back(1.0 / static_cast<float>(i));
+      ffj0_tar.push_back(1.0 / static_cast<float>(i + 1));
+      ffj3_pos.push_back(1.0 / static_cast<float>(i * 2));
+      ffj3_tar.push_back(2.0 / static_cast<float>(i));
     }
 
     joints["FFJ0 positions"] = ffj0_pos;
@@ -122,7 +129,7 @@ int main(int argc, char **argv)
   MyNode n;
   n.spin();
 
-  return(0);
+  return (0);
 }
 
 /* For the emacs weenies in the crowd.

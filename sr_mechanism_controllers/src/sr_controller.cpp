@@ -28,28 +28,29 @@
 #include "pluginlib/class_list_macros.h"
 #include <sstream>
 #include <math.h>
+#include <string>
 #include "sr_utilities/sr_math_utils.hpp"
 
 #include <std_msgs/Float64.h>
 
-using namespace std;
-
-namespace controller {
+namespace controller
+{
+  using std::string;
 
   SrController::SrController()
-    : joint_state_(NULL),
-      joint_state_2(NULL),
-      has_j2(false),
-      command_(0),
-      min_(0.0),
-      max_(sr_math_utils::pi),
-      loop_count_(0),
-      initialized_(false),
-      robot_(NULL),
-      n_tilde_("~"),
-      max_force_demand(1023.),
-      friction_deadband(5),
-      max_force_factor_(1.0)
+          : joint_state_(NULL),
+            joint_state_2(NULL),
+            has_j2(false),
+            command_(0),
+            min_(0.0),
+            max_(sr_math_utils::pi),
+            loop_count_(0),
+            initialized_(false),
+            robot_(NULL),
+            n_tilde_("~"),
+            max_force_demand(1023.),
+            friction_deadband(5),
+            max_force_factor_(1.0)
   {
   }
 
@@ -62,16 +63,18 @@ namespace controller {
   {
     // joint_name_ has unknown length
     // it is assumed that last char is the joint number
-    if (joint_name_[joint_name_.size()-1] == '0')
+    if (joint_name_[joint_name_.size() - 1] == '0')
+    {
       return true;
+    }
     return false;
   }
 
   void SrController::get_joints_states_1_2()
   {
     string j1 = joint_name_, j2 = joint_name_;
-    j1[j1.size()-1] = '1';
-    j2[j2.size()-1] = '2';
+    j1[j1.size() - 1] = '1';
+    j2[j2.size() - 1] = '2';
 
     ROS_DEBUG_STREAM("Joint 0: " << j1 << " " << j2);
 
@@ -82,7 +85,8 @@ namespace controller {
   void SrController::after_init()
   {
     sub_command_ = node_.subscribe<std_msgs::Float64>("command", 1, &SrController::setCommandCB, this);
-    sub_max_force_factor_ = node_.subscribe<std_msgs::Float64>("max_force_factor", 1, &SrController::maxForceFactorCB, this);
+    sub_max_force_factor_ = node_.subscribe<std_msgs::Float64>("max_force_factor", 1, &SrController::maxForceFactorCB,
+                                                               this);
   }
 
   std::string SrController::getJointName()
@@ -90,44 +94,48 @@ namespace controller {
     return joint_state_->joint_->name;
   }
 
-  void SrController::get_min_max( urdf::Model model, std::string joint_name )
+  void SrController::get_min_max(urdf::Model model, std::string joint_name)
   {
-    if (joint_name_[joint_name.size() - 1]  ==  '0')
+    if (joint_name_[joint_name.size() - 1] == '0')
     {
       joint_name[joint_name.size() - 1] = '1';
       std::string j1 = joint_name;
       joint_name[joint_name.size() - 1] = '2';
       std::string j2 = joint_name;
 
-      boost::shared_ptr<const urdf::Joint> joint1 = model.getJoint( j1 );
-      boost::shared_ptr<const urdf::Joint> joint2 = model.getJoint( j2 );
+      boost::shared_ptr<const urdf::Joint> joint1 = model.getJoint(j1);
+      boost::shared_ptr<const urdf::Joint> joint2 = model.getJoint(j2);
 
       min_ = joint1->limits->lower + joint2->limits->lower;
       max_ = joint1->limits->upper + joint2->limits->upper;
     }
     else
     {
-      boost::shared_ptr<const urdf::Joint> joint = model.getJoint( joint_name );
+      boost::shared_ptr<const urdf::Joint> joint = model.getJoint(joint_name);
 
       min_ = joint->limits->lower;
       max_ = joint->limits->upper;
     }
   }
 
-  double SrController::clamp_command( double cmd )
+  double SrController::clamp_command(double cmd)
   {
-    if(cmd < min_)
+    if (cmd < min_)
+    {
       return min_;
+    }
 
-    if(cmd > max_)
+    if (cmd > max_)
+    {
       return max_;
+    }
 
     return cmd;
   }
 
-  void SrController::maxForceFactorCB(const std_msgs::Float64ConstPtr& msg)
+  void SrController::maxForceFactorCB(const std_msgs::Float64ConstPtr &msg)
   {
-    if((msg->data >= 0.0) && (msg->data <= 1.0))
+    if ((msg->data >= 0.0) && (msg->data <= 1.0))
     {
       max_force_factor_ = msg->data;
     }
@@ -136,7 +144,7 @@ namespace controller {
       ROS_ERROR("Max force factor must be between 0.0 and 1.0. Discarding received value: %f", msg->data);
     }
   }
-}
+}  // namespace controller
 
 /* For the emacs weenies in the crowd.
 Local Variables:

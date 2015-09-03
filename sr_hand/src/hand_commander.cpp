@@ -31,19 +31,25 @@
 #include <controller_manager_msgs/ListControllers.h>
 #include <sr_robot_msgs/sendupdate.h>
 #include <std_msgs/Float64.h>
+
 #include <boost/algorithm/string.hpp>
+#include <utility>
+#include <map>
+#include <string>
+#include <vector>
+
 
 namespace shadowrobot
 {
 
   const double HandCommander::TIMEOUT_TO_DETECT_CONTROLLER_MANAGER = 3.0;
 
-  HandCommander::HandCommander(const std::string& ns):
-    node_(ns),
-    hand_type(shadowhandRosLib::UNKNOWN),
-    ethercat_controllers_found(false)
+  HandCommander::HandCommander(const std::string &ns) :
+          node_(ns),
+          hand_type(shadowhandRosLib::UNKNOWN),
+          ethercat_controllers_found(false)
   {
-    //Get the urdf model from the parameter server
+    // Get the urdf model from the parameter server
     // this is used for returning min and max for joints for example.
     std::string robot_desc_string;
     node_.param("sh_description", robot_desc_string, std::string());
@@ -55,16 +61,18 @@ namespace shadowrobot
       node_.param("robot_description", robot_desc_string, std::string());
       if (!robot_model.initString(robot_desc_string))
       {
-        ROS_ERROR_STREAM("Couldn't parse the urdf file on sh_description or on robot_description (namespace=" << node_.getNamespace() << ")");
+        ROS_ERROR_STREAM("Couldn't parse the urdf file on sh_description or on robot_description (namespace=" <<
+                         node_.getNamespace() << ")");
         return;
       }
     }
 
     all_joints = robot_model.joints_;
 
-    //We use the presence of the controller_manager/list_controllers service to detect that the hand is ethercat
-    //We look for the manager in the robots namespace (that of node_ not the process).
-    if(ros::service::waitForService(node_.getNamespace() + "/controller_manager/list_controllers", ros::Duration(TIMEOUT_TO_DETECT_CONTROLLER_MANAGER)))
+    // We use the presence of the controller_manager/list_controllers service to detect that the hand is ethercat
+    // We look for the manager in the robots namespace (that of node_ not the process).
+    if (ros::service::waitForService(node_.getNamespace() + "/controller_manager/list_controllers",
+                                     ros::Duration(TIMEOUT_TO_DETECT_CONTROLLER_MANAGER)))
     {
       hand_type = shadowhandRosLib::ETHERCAT;
       initializeEthercatHand();
@@ -86,25 +94,26 @@ namespace shadowrobot
   {
     sr_hand_target_pub_map.clear();
 
-    ros::ServiceClient controller_list_client = node_.serviceClient<controller_manager_msgs::ListControllers>("controller_manager/list_controllers");
+    ros::ServiceClient controller_list_client = node_.serviceClient<controller_manager_msgs::ListControllers>(
+            "controller_manager/list_controllers");
 
     controller_manager_msgs::ListControllers controller_list;
     std::string controlled_joint_name;
 
     controller_list_client.call(controller_list);
-    for (size_t i=0;i<controller_list.response.controller.size() ;i++ )
+    for (size_t i = 0; i < controller_list.response.controller.size(); i++)
     {
-      if(controller_list.response.controller[i].state=="running")
+      if (controller_list.response.controller[i].state == "running")
       {
         std::string controller = node_.resolveName(controller_list.response.controller[i].name);
-        if (node_.getParam(controller+"/joint", controlled_joint_name))
+        if (node_.getParam(controller + "/joint", controlled_joint_name))
         {
           ROS_DEBUG("controller %d:%s controls joint %s\n",
-                    (int)i,controller.c_str(),controlled_joint_name.c_str());
+                    static_cast<int>(i), controller.c_str(), controlled_joint_name.c_str());
           sr_hand_target_pub_map[controlled_joint_name]
-            = node_.advertise<std_msgs::Float64>(controller+"/command", 2);
+                  = node_.advertise<std_msgs::Float64>(controller + "/command", 2);
           ethercat_controllers_found = true;
-          sr_hand_sub_topics[controlled_joint_name] = controller+"/state";
+          sr_hand_sub_topics[controlled_joint_name] = controller + "/state";
         }
       }
     }
@@ -112,20 +121,22 @@ namespace shadowrobot
 
   void HandCommander::sendCommands(std::vector<sr_robot_msgs::joint> joint_vector)
   {
-    if(hand_type == shadowhandRosLib::ETHERCAT)
+    if (hand_type == shadowhandRosLib::ETHERCAT)
     {
-      if(!ethercat_controllers_found)
+      if (!ethercat_controllers_found)
       {
         initializeEthercatHand();
         // No controllers we found so bail out
         if (!ethercat_controllers_found)
+        {
           return;
+        }
       }
-      for(size_t i = 0; i < joint_vector.size(); ++i)
+      for (size_t i = 0; i < joint_vector.size(); ++i)
       {
         boost::algorithm::to_upper(joint_vector.at(i).joint_name);
         std_msgs::Float64 target;
-        target.data = joint_vector.at(i).joint_target * M_PI/180.0;
+        target.data = joint_vector.at(i).joint_target * M_PI / 180.0;
         sr_hand_target_pub_map[joint_vector.at(i).joint_name].publish(target);
       }
     }
@@ -141,32 +152,32 @@ namespace shadowrobot
 
   std::pair<double, double> HandCommander::get_min_max(std::string joint_name)
   {
-    //needs to get min max for J1 and J2 if J0
+    // needs to get min max for J1 and J2 if J0
     std::vector<std::string> joint_names, split_name;
-    boost::split( split_name, joint_name, boost::is_any_of("0") );
-    if( split_name.size() == 1)
+    boost::split(split_name, joint_name, boost::is_any_of("0"));
+    if (split_name.size() == 1)
     {
-      //not a J0
+      // not a J0
       joint_names.push_back(joint_name);
     }
     else
     {
-      //this is a J0, push J1 and J2
+      // this is a J0, push J1 and J2
       joint_names.push_back(split_name[0] + "1");
       joint_names.push_back(split_name[0] + "2");
     }
 
 
     std::pair<double, double> min_max;
-    for( size_t i = 0; i < joint_names.size(); ++i)
+    for (size_t i = 0; i < joint_names.size(); ++i)
     {
       std::string jn = joint_names[i];
 
-      //urdf names are upper case
+      // urdf names are upper case
       boost::algorithm::to_upper(jn);
       std::map<std::string, boost::shared_ptr<urdf::Joint> >::iterator it = all_joints.find(jn);
 
-      if( it != all_joints.end() )
+      if (it != all_joints.end())
       {
         min_max.first += it->second->limits->lower;
         min_max.second += it->second->limits->upper;
@@ -185,13 +196,15 @@ namespace shadowrobot
     std::vector<std::string> all_joints_names;
     std::map<std::string, std::string>::iterator it;
 
-    for( it = sr_hand_sub_topics.begin(); it != sr_hand_sub_topics.end(); ++it )
+    for (it = sr_hand_sub_topics.begin(); it != sr_hand_sub_topics.end(); ++it)
     {
       // all Hand joint names have a length of 4...
-      //The other way would be to check if the name is in a list
+      // The other way would be to check if the name is in a list
       // of possible names. Not sure what's best.
-      if(it->first.size() == 4)
+      if (it->first.size() == 4)
+      {
         all_joints_names.push_back(it->first);
+      }
     }
 
     return all_joints_names;
@@ -201,12 +214,12 @@ namespace shadowrobot
   {
     std::string topic;
 
-    if(hand_type == shadowhandRosLib::ETHERCAT)
+    if (hand_type == shadowhandRosLib::ETHERCAT)
     {
-      //urdf names are upper case
+      // urdf names are upper case
       boost::algorithm::to_upper(joint_name);
       std::map<std::string, std::string>::iterator it = sr_hand_sub_topics.find(joint_name);
-      if( it != sr_hand_sub_topics.end() )
+      if (it != sr_hand_sub_topics.end())
       {
         topic = it->second;
       }
@@ -222,7 +235,7 @@ namespace shadowrobot
 
     return topic;
   }
-}
+}  // namespace shadowrobot
 
 /* For the emacs weenies in the crowd.
 Local Variables:

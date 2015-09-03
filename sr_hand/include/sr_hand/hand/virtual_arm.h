@@ -23,24 +23,27 @@
  *
  */
 
-#ifndef VIRTUAL_ARM_H_
-#define VIRTUAL_ARM_H_
+#ifndef SR_HAND_HAND_VIRTUAL_ARM_H
+#define SR_HAND_HAND_VIRTUAL_ARM_H
 
 #include "sr_hand/hand/sr_articulated_robot.h"
+#include <string>
+#include <vector>
 
 namespace shadowrobot
 {
-
-class VirtualArm : public SRArticulatedRobot
-{
-public:
+  class VirtualArm :
+          public SRArticulatedRobot
+  {
+  public:
     /**
      * Initializes the necessary mappings with a static list of names.
      */
     VirtualArm();
+
     virtual ~VirtualArm();
 
-    //virtual classes defined in SRArticulatedRobot
+    // virtual classes defined in SRArticulatedRobot
     /**
      * This function will set the target of the object to the given angle. It will also set the position to this
      * target.
@@ -51,7 +54,7 @@ public:
      * @param target The target in degree
      * @return 0 if success ; -1 if error
      */
-    virtual short sendupdate( std::string joint_name, double target );
+    virtual int16_t sendupdate(std::string joint_name, double target);
 
     /**
      * In the virtual arm, getJointData() simply fetches the data from a given joint in the joints_map. As the targets
@@ -61,14 +64,17 @@ public:
      * @param joint_name The name of the joint, as specified in joints_map.
      * @return The information regarding this joint.
      */
-    virtual JointData getJointData( std::string joint_name );
+    virtual JointData getJointData(std::string joint_name);
+
     virtual JointsMap getAllJointsData();
 
-    virtual short setContrl( std::string contrlr_name, JointControllerData ctrlr_data );
-    virtual JointControllerData getContrl( std::string ctrlr_name );
+    virtual int16_t setContrl(std::string contrlr_name, JointControllerData ctrlr_data);
 
-    virtual short setConfig( std::vector<std::string> myConfig );
-    virtual void getConfig( std::string joint_name );
+    virtual JointControllerData getContrl(std::string ctrlr_name);
+
+    virtual int16_t setConfig(std::vector<std::string> myConfig);
+
+    virtual void getConfig(std::string joint_name);
 
     /**
      * Generates a set of random data to be published by the diagnostic publisher, but keep the position and target as
@@ -76,7 +82,8 @@ public:
      * @return A vector containing all the diagnostics for the hand (motor information, etc...)
      */
     virtual std::vector<DiagnosticData> getDiagnostics();
-protected:
+
+  protected:
 #ifdef GAZEBO
     /**
      * If we're building the Gazebo interface, we need a ROS node to
@@ -86,6 +93,7 @@ protected:
 
     void gazeboCallback(const sensor_msgs::JointStateConstPtr& msg);
 #endif
+
     /**
      * Initialise a mapping for the joints.
      */
@@ -96,9 +104,9 @@ protected:
      * @param deg the angle in degrees
      * @return the value in rads.
      */
-    inline double toRad( double deg )
+    inline double toRad(double deg)
     {
-        return deg * 3.14159265 / 180.0;
+      return deg * 3.14159265 / 180.0;
     }
 
     /**
@@ -106,12 +114,12 @@ protected:
      * @param rad the angle in rads
      * @return the value in degrees.
      */
-    inline double toDegrees( double rad )
+    inline double toDegrees(double rad)
     {
-        return rad * 180.0 / 3.14159265;
+      return rad * 180.0 / 3.14159265;
     }
-};
+  };
 
-}//end namespace
+}  // namespace shadowrobot
 
-#endif /* VIRTUAL_ARM_H_ */
+#endif  // SR_HAND_HAND_VIRTUAL_ARM_H

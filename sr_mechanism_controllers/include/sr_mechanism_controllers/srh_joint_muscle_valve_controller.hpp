@@ -36,45 +36,50 @@
 
 namespace controller
 {
-  class SrhJointMuscleValveController : public SrController
+  class SrhJointMuscleValveController :
+          public SrController
   {
   public:
     SrhJointMuscleValveController();
 
     bool init(ros_ethercat_model::RobotState *robot, ros::NodeHandle &n);
 
-    virtual void starting(const ros::Time& time);
+    virtual void starting(const ros::Time &time);
 
     /*!
      * \brief Issues commands to the joint. Should be called at regular intervals
      */
-    virtual void update(const ros::Time& time, const ros::Duration& period);
+    virtual void update(const ros::Time &time, const ros::Duration &period);
 
     virtual void getGains(double &p, double &i, double &d, double &i_max, double &i_min);
-    virtual bool resetGains(std_srvs::Empty::Request& req, std_srvs::Empty::Response& resp);
-    //bool setGains(sr_robot_msgs::SetEffortControllerGains::Request &req, sr_robot_msgs::SetEffortControllerGains::Response &resp);
 
-    int8_t cmd_valve_muscle_[2];                            /**< Last commanded valve values for each muscle. */
-    unsigned int cmd_duration_ms_[2];                      /**< Last duration commanded for the valve command for each muscle. */
-    unsigned int current_duration_ms_[2];                  // These are the actual counters used to maintain the commanded value for the valve during the commanded time
+    virtual bool resetGains(std_srvs::Empty::Request &req, std_srvs::Empty::Response &resp);
+
+    int8_t cmd_valve_muscle_[2];
+    /**< Last commanded valve values for each muscle. */
+    unsigned int cmd_duration_ms_[2];
+    /**< Last duration commanded for the valve command for each muscle. */
+    unsigned int current_duration_ms_[2];
 
     int8_t cmd_valve_muscle_min_;
     int8_t cmd_valve_muscle_max_;
 
   private:
-    //publish our joint controller state
-    boost::shared_ptr<realtime_tools::RealtimePublisher<sr_robot_msgs::JointMuscleValveControllerState> > controller_state_publisher_;
+    // publish our joint controller state
+    boost::shared_ptr<realtime_tools::RealtimePublisher
+            <sr_robot_msgs::JointMuscleValveControllerState> > controller_state_publisher_;
 
     ros::Subscriber sub_command_;
-    void setCommandCB(const sr_robot_msgs::JointMuscleValveControllerCommandConstPtr& msg);
 
-    ///read all the controller settings from the parameter server
+    void setCommandCB(const sr_robot_msgs::JointMuscleValveControllerCommandConstPtr &msg);
+
+    /// read all the controller settings from the parameter server
     void read_parameters();
 
     /// enforce that the value of the received command is in the allowed range
-    int8_t clamp_command( int8_t cmd );
+    int8_t clamp_command(int8_t cmd);
   };
-} // namespace
+}  // namespace controller
 
 /* For the emacs weenies in the crowd.
 Local Variables:

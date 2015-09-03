@@ -38,44 +38,45 @@
 namespace sr_gazebo_sim
 {
 
-class SrGazeboHWSim : public gazebo_ros_control::DefaultRobotHWSim
-{
-public:
-  SrGazeboHWSim();
+  class SrGazeboHWSim :
+          public gazebo_ros_control::DefaultRobotHWSim
+  {
+  public:
+    SrGazeboHWSim();
 
-  bool initSim(
-      const std::string &robot_namespace,
-      ros::NodeHandle model_nh,
-      gazebo::physics::ModelPtr parent_model,
-      const urdf::Model *const urdf_model,
-      std::vector <transmission_interface::TransmissionInfo> transmissions);
+    bool initSim(
+            const std::string &robot_namespace,
+            ros::NodeHandle model_nh,
+            gazebo::physics::ModelPtr parent_model,
+            const urdf::Model *const urdf_model,
+            std::vector<transmission_interface::TransmissionInfo> transmissions);
 
-  void readSim(ros::Time time, ros::Duration period);
+    void readSim(ros::Time time, ros::Duration period);
 
-  void writeSim(ros::Time time, ros::Duration period);
+    void writeSim(ros::Time time, ros::Duration period);
 
-protected:
-  template <class T>
-  void fixJointName(std::vector<T> *items, const std::string old_joint_name, const std::string new_joint_name) const;
+  protected:
+    template<class T>
+    void fixJointName(std::vector<T> *items, const std::string old_joint_name, const std::string new_joint_name) const;
 
-  void addFakeTransmissionsForJ0(std::vector<transmission_interface::TransmissionInfo> *transmissions);
+    void addFakeTransmissionsForJ0(std::vector<transmission_interface::TransmissionInfo> *transmissions);
 
-  void initializeFakeRobotState(const urdf::Model*const urdf_model,
-                                const std::vector<transmission_interface::TransmissionInfo> &transmissions);
+    void initializeFakeRobotState(const urdf::Model *const urdf_model,
+                                  const std::vector<transmission_interface::TransmissionInfo> &transmissions);
 
-  bool isHandJoint(const std::vector<transmission_interface::TransmissionInfo> &transmissions,
+    bool isHandJoint(const std::vector<transmission_interface::TransmissionInfo> &transmissions,
                      const std::string &joint_name) const;
 
-  void registerSecondHardwareInterface(std::vector<transmission_interface::TransmissionInfo> transmissions);
+    void registerSecondHardwareInterface(std::vector<transmission_interface::TransmissionInfo> transmissions);
 
-  static const std::string j0_transmission_name;
-  static const std::string simple_transmission_name;
+    static const std::string j0_transmission_name;
+    static const std::string simple_transmission_name;
 
-  ros_ethercat_model::RobotState fake_state_;
-  boost::unordered_map<std::string, std::string> j2_j1_joints_;
-};
+    ros_ethercat_model::RobotState fake_state_;
+    boost::unordered_map<std::string, std::string> j2_j1_joints_;
+  };
 
-typedef boost::shared_ptr <SrGazeboHWSim> SrGazeboHWSimPtr;
+  typedef boost::shared_ptr<SrGazeboHWSim> SrGazeboHWSimPtr;
 
 }  // namespace sr_gazebo_sim
 

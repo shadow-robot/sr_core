@@ -29,10 +29,12 @@
 #define _SRH_EXAMPLE_CONTROLLER_HPP_
 
 #include <sr_mechanism_controllers/sr_controller.hpp>
+#include <string>
 
 namespace controller
 {
-  class SrhExampleController : public SrController
+  class SrhExampleController :
+          public SrController
   {
   public:
     /**
@@ -66,7 +68,7 @@ namespace controller
      *
      * @return true if initialized.
      */
-    bool init( ros_ethercat_model::RobotState *robot, const std::string &joint_name);
+    bool init(ros_ethercat_model::RobotState *robot, const std::string &joint_name);
 
     /**
      * This method is called when the controller is started. The command is then
@@ -74,15 +76,15 @@ namespace controller
      * you're controlling), so that the first command won't move the joint.
      *
      */
-    virtual void starting(const ros::Time& time);
+    virtual void starting(const ros::Time &time);
 
     /**
      * Issues commands to the joint. This method is called at the specified rate by the
      * main loop.
      */
-    virtual void update(const ros::Time& time, const ros::Duration& period);
+    virtual void update(const ros::Time &time, const ros::Duration &period);
   };
-} // namespace
+}  // namespace controller
 
 /* For the emacs weenies in the crowd.
 Local Variables:

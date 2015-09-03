@@ -25,33 +25,37 @@
  *
  */
 
-#ifndef   	REAL_SHADOWHAND_H_
-# define   	REAL_SHADOWHAND_H_
+#ifndef    SR_HAND_HAND_REAL_SHADOWHAND_H
+#define    SR_HAND_HAND_REAL_SHADOWHAND_H
 
 #include "sr_hand/hand/sr_articulated_robot.h"
+#include <utility>
+#include <string>
+#include <vector>
 
 namespace sr_self_tests
 {
-  ///The number of targets to send during the test.
+  /// The number of targets to send during the test.
   static const unsigned int nb_targets_to_send = 100;
 
-  ///the size of the msgs_frequency array
+  /// the size of the msgs_frequency array
   static const unsigned int msgs_frequency_size = 5;
-  //the rate at which we'll publish the data
+  /// the rate at which we'll publish the data
   static const int msgs_frequency[msgs_frequency_size] = {1, 5, 10, 20, 100};
 
-  ///the size of the joints_to_test array
+  /// the size of the joints_to_test array
   static const unsigned int joints_to_test_size = 1;
-  ///the name of the joint on which we want to run the test.
+  // t he name of the joint on which we want to run the test.
   static const std::string joints_to_test[joints_to_test_size] = {"FFJ3"};
-}
+}  // namespace sr_self_tests
 
 namespace shadowrobot
 {
 /**
  * The real shadowhand class is a class used to access the C code of the Dextrous Hand.
  */
-  class RealShadowhand : public SRArticulatedRobot
+  class RealShadowhand :
+          public SRArticulatedRobot
   {
   public:
     /**
@@ -70,16 +74,22 @@ namespace shadowrobot
      * @param target The target in degree
      * @return 0 if success ; -1 if error
      */
-    virtual short sendupdate( std::string joint_name, double target );
+    virtual int16_t sendupdate(std::string joint_name, double target);
 
-    virtual JointData getJointData( std::string joint_name );
+    virtual JointData getJointData(std::string joint_name);
+
     virtual JointsMap getAllJointsData();
 
-    virtual short setContrl( std::string contrlr_name, JointControllerData ctrlr_data );
-    virtual JointControllerData getContrl( std::string contrlr_name );
-    virtual short setConfig( std::vector<std::string> myConfig );
-    virtual void getConfig( std::string joint_name );
-    virtual std::vector<DiagnosticData> getDiagnostics();
+    virtual int16_t setContrl(std::string contrlr_name, JointControllerData ctrlr_data);
+
+    virtual JointControllerData getContrl(std::string contrlr_name);
+
+    virtual int16_t setConfig(std::vector <std::string> myConfig);
+
+    virtual void getConfig(std::string joint_name);
+
+    virtual std::vector <DiagnosticData> getDiagnostics();
+
   protected:
     /***
      * Initializes the mapping between the joint_names and their data. This function fetches the joint_names from
@@ -87,8 +97,8 @@ namespace shadowrobot
      */
     void initializeMap();
 
-      /////////////////
-     //    TESTS    //
+    /////////////////
+    //    TESTS    //
     /////////////////
 
     /**
@@ -99,7 +109,7 @@ namespace shadowrobot
      *
      * @param status the status of the pretest
      */
-    void pretest(diagnostic_updater::DiagnosticStatusWrapper& status);
+    void pretest(diagnostic_updater::DiagnosticStatusWrapper &status);
 
     /**
      * A set of tasks to run after the tests:
@@ -108,7 +118,7 @@ namespace shadowrobot
      *
      * @param status the status of the posttest
      */
-    void posttest(diagnostic_updater::DiagnosticStatusWrapper& status);
+    void posttest(diagnostic_updater::DiagnosticStatusWrapper &status);
 
     /**
      * A test to check the number of messages received is the same as the
@@ -117,7 +127,7 @@ namespace shadowrobot
      *
      * @param status the test result.
      */
-    void test_messages(diagnostic_updater::DiagnosticStatusWrapper& status);
+    void test_messages(diagnostic_updater::DiagnosticStatusWrapper &status);
 
     /**
      * The routine called during the test: test the number of received messages
@@ -130,10 +140,10 @@ namespace shadowrobot
      * @return a pair containing the status of the test (error or ok), and a message
      *         to display.
      */
-    std::pair<unsigned char, std::string> test_messages_routine(std::string joint_name, unsigned int repeat, ros::Rate rate);
-
-  }; //end class
-}
+    std::pair<unsigned char, std::string> test_messages_routine(std::string joint_name, unsigned int repeat,
+                                                                ros::Rate rate);
+  };  // end class
+}  // namespace shadowrobot
 
 /* For the emacs weenies in the crowd.
 Local Variables:
@@ -141,4 +151,4 @@ Local Variables:
 End:
 */
 
-#endif 	    /* !REAL_SHADOWHAND_H_ */
+#endif  // SR_HAND_HAND_REAL_SHADOWHAND_H

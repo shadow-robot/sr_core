@@ -21,6 +21,7 @@ import rospy
 from controller_manager_msgs.srv import ListControllers, ListControllersResponse
 from controller_manager_msgs.msg import ControllerState
 
+
 class MockHand(object):
     """
     A ros node to look enough like a shadowhand for these tests.
@@ -33,7 +34,7 @@ class MockHand(object):
         @brief Construct a new MockHand, setting up ros connections.
         """
         self.list_srv = rospy.Service('controller_manager/list_controllers',
-                ListControllers, self.list_controllers_cb)
+                                      ListControllers, self.list_controllers_cb)
         rospy.loginfo("Started MockHand")
 
     def list_controllers_cb(self, req):
@@ -66,7 +67,6 @@ if __name__ == "__main__":
     try:
         rospy.init_node("mock_hand")
         node = MockHand()
-        rospy.spin();
+        rospy.spin()
     except rospy.ROSInterruptException:
         pass
-

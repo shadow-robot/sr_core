@@ -33,16 +33,18 @@
 namespace sr_mechanism_model
 {
 
-class J0TransmissionForMuscle : public SimpleTransmissionForMuscle
-{
-public:
-  bool initXml(TiXmlElement *config, ros_ethercat_model::RobotState *robot);
-  void propagatePosition();
+  class J0TransmissionForMuscle :
+          public SimpleTransmissionForMuscle
+  {
+  public:
+    bool initXml(TiXmlElement *config, ros_ethercat_model::RobotState *robot);
 
-  ros_ethercat_model::JointState* joint2_;
-};
+    void propagatePosition();
 
-} //end namespace sr_mechanism_model
+    ros_ethercat_model::JointState *joint2_;
+  };
+
+}  // namespace sr_mechanism_model
 
 /* For the emacs weenies in the crowd.
 Local Variables:

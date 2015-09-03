@@ -31,7 +31,9 @@
 
 #include <ros/ros.h>
 
-//our robot code
+#include <string>
+
+// our robot code
 #include <robot/robot.h>
 #include <robot/hand.h>
 #include <robot/hand_protocol.h>
@@ -40,10 +42,12 @@
 
 namespace shadowrobot
 {
-  class SrRealTactileSensor : public SrGenericTactileSensor
+  class SrRealTactileSensor :
+          public SrGenericTactileSensor
   {
   public:
     SrRealTactileSensor(std::string name, std::string touch_name);
+
     virtual ~SrRealTactileSensor();
 
     /**
@@ -58,13 +62,15 @@ namespace shadowrobot
     int res_touch;
   };
 
-  class SrRealTactileSensorManager : public SrTactileSensorManager
+  class SrRealTactileSensorManager :
+          public SrTactileSensorManager
   {
   public:
     SrRealTactileSensorManager();
+
     ~SrRealTactileSensorManager();
   };
-}
+}  // namespace shadowrobot
 
 /* For the emacs weenies in the crowd.
 Local Variables:

@@ -28,13 +28,14 @@
 
 #include "sr_self_test/manual_test.hpp"
 #include <diagnostic_msgs/DiagnosticStatus.h>
+#include <string>
 
 #include <sr_robot_msgs/ManualSelfTest.h>
 
 namespace shadow_robot
 {
-  ManualTests::ManualTests( std::string message, int id )
-    : nh_("~")
+  ManualTests::ManualTests(std::string message, int id)
+          : nh_("~")
   {
     message_ = message;
     id_ = id;
@@ -42,7 +43,7 @@ namespace shadow_robot
     user_input_client_ = nh_.serviceClient<sr_robot_msgs::ManualSelfTest>("manual_self_tests");
   }
 
-  void ManualTests::run_manual_tests(diagnostic_updater::DiagnosticStatusWrapper& status)
+  void ManualTests::run_manual_tests(diagnostic_updater::DiagnosticStatusWrapper &status)
   {
     user_input_client_.waitForExistence();
 
@@ -51,7 +52,7 @@ namespace shadow_robot
 
     user_input_client_.call(srv);
 
-    if( srv.response.ok )
+    if (srv.response.ok)
     {
       status.summary(diagnostic_msgs::DiagnosticStatus::OK, "OK");
     }
@@ -60,7 +61,7 @@ namespace shadow_robot
       status.summary(diagnostic_msgs::DiagnosticStatus::ERROR, "Test failed: " + srv.response.message);
     }
   }
-} //end namespace
+}  // namespace shadow_robot
 
 /* For the emacs weenies in the crowd.
    Local Variables:

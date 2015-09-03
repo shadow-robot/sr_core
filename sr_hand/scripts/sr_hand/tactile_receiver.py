@@ -21,6 +21,7 @@ from sr_robot_msgs.msg import BiotacAll, ShadowPST, UBI0All
 
 
 class TactileReceiver(object):
+
     """
     Module that receives the tactile values.
     """
@@ -40,30 +41,37 @@ class TactileReceiver(object):
         self.tactile_state = None
 
         if self.tactile_type == "PST":
-            self.tactile_listener = rospy.Subscriber(prefix+"tactile", ShadowPST, self.tactile_callback, queue_size=1)
+            self.tactile_listener = rospy.Subscriber(
+                prefix + "tactile", ShadowPST, self.tactile_callback, queue_size=1)
         elif self.tactile_type == "biotac":
-            self.tactile_listener = rospy.Subscriber(prefix+"tactile", BiotacAll, self.tactile_callback, queue_size=1)
+            self.tactile_listener = rospy.Subscriber(
+                prefix + "tactile", BiotacAll, self.tactile_callback, queue_size=1)
         elif self.tactile_type == "UBI0":
-            self.tactile_listener = rospy.Subscriber(prefix+"tactile", UBI0All, self.tactile_callback, queue_size=1)
+            self.tactile_listener = rospy.Subscriber(
+                prefix + "tactile", UBI0All, self.tactile_callback, queue_size=1)
 
     def find_tactile_type(self):
         try:
-            rospy.wait_for_message(self._prefix+"tactile", ShadowPST, timeout=0.2)
+            rospy.wait_for_message(
+                self._prefix + "tactile", ShadowPST, timeout=0.2)
             return "PST"
         except (rospy.ROSException, rospy.ROSInterruptException):
             pass
 
         try:
-            rospy.wait_for_message(self._prefix+"tactile", BiotacAll, timeout=0.2)
+            rospy.wait_for_message(
+                self._prefix + "tactile", BiotacAll, timeout=0.2)
             return "biotac"
         except (rospy.ROSException, rospy.ROSInterruptException):
             pass
 
         try:
-            rospy.wait_for_message(self._prefix+"tactile", UBI0All, timeout=0.2)
+            rospy.wait_for_message(
+                self._prefix + "tactile", UBI0All, timeout=0.2)
             return "UBI0"
         except (rospy.ROSException, rospy.ROSInterruptException):
-            rospy.logwarn("No tactile topic found. This is normal for a simulated hand")
+            rospy.logwarn(
+                "No tactile topic found. This is normal for a simulated hand")
 
         return None
 

@@ -20,12 +20,15 @@ from sr_hand.Grasp import Grasp
 
 DEBUG = 0
 
+
 class GraspParser():
+
     """
     Parses a XML file describing a grasp.
     """
+
     def __init__(self):
-        #initialize stuff
+        # initialize stuff
         self.xml_tree = ""
         self.grasps = {}
         self.xml_path = ""
@@ -39,7 +42,7 @@ class GraspParser():
                         if no filename is provided, then the default
                         value is "grasps.xml"
         """
-        #parse the xml tree
+        # parse the xml tree
         try:
             self.xml_tree = ET.parse(xml_filename)
         except Exception, inst:
@@ -55,29 +58,30 @@ class GraspParser():
             grasp_tmp = Grasp()
             grasp_tmp.grasp_name = grasp.attrib.get("name")
             if DEBUG >= 2:
-                print "Grasp "+ grasp_tmp.grasp_name
+                print "Grasp " + grasp_tmp.grasp_name
 
             joints = grasp.findall("joint")
             for j in joints:
                 joint_name = j.attrib.get("name")
                 joint_position = float(j.text)
                 if DEBUG >= 2:
-                    print "  "+ joint_name + ": "+ str(joint_position)
+                    print "  " + joint_name + ": " + str(joint_position)
 
-                grasp_tmp.joints_and_positions.update({joint_name:joint_position})
+                grasp_tmp.joints_and_positions.update(
+                    {joint_name: joint_position})
 
             self.grasps.update({grasp_tmp.grasp_name: grasp_tmp})
 
-    def write_grasp_to_file(self, grasp, xml_filename = ""):
+    def write_grasp_to_file(self, grasp, xml_filename=""):
         if xml_filename == "":
             xml_filename = self.xml_path
 
         toWrite = grasp.convert_to_xml()
-        objFileRead = open(xml_filename,'r')
+        objFileRead = open(xml_filename, 'r')
         previous = objFileRead.readlines()
         objFileRead.close()
-        objFileWrite = open(xml_filename,'w')
-        for index in range (0,len(previous)-1):
+        objFileWrite = open(xml_filename, 'w')
+        for index in range(0, len(previous) - 1):
             objFileWrite.write(previous[index])
         objFileWrite.write(toWrite)
         objFileWrite.write('</root>')
@@ -88,9 +92,11 @@ class GraspParser():
     def refresh(self):
         self.parse_tree(self.xml_path)
 
-############################
-#    MAIN - simple test    #
-############################
+#
+# MAIN - simple test    #
+#
+
+
 def main():
     parser = GraspParser()
     parser.parse_tree()

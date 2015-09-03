@@ -24,20 +24,20 @@
  *
  */
 
-#ifndef VALVES_H_
-#define VALVES_H_
+#ifndef SR_HAND_HAND_VALVES_H
+#define SR_HAND_HAND_VALVES_H
 
 #include <robot/config.h>
 #include <robot/robot.h>
 #include <robot/hand.h>
 #include <robot/hand_protocol.h>
 #include <ros/ros.h>
+#include <vector>
 
 #include <std_msgs/Float64.h>
 
 namespace shadowrobot
 {
-
   class Valves
   {
   public:
@@ -45,18 +45,19 @@ namespace shadowrobot
      * Initializes the necessary mappings with a static list of names.
      */
     Valves();
-    ///destructor
+
+    /// destructor
     ~Valves();
 
     void publish();
 
   private:
-    void valve_command(const std_msgs::Float64ConstPtr& msg, int index_valve);
+    void valve_command(const std_msgs::Float64ConstPtr &msg, int index_valve);
 
     std::vector<struct sensor> valves_sensors;
 
-    std::vector<ros::Publisher> valves_publishers;
-    std::vector<ros::Subscriber> valves_subscribers;
+    std::vector <ros::Publisher> valves_publishers;
+    std::vector <ros::Subscriber> valves_subscribers;
 
     ros::NodeHandle n_tilde;
     ros::Rate publish_rate;
@@ -64,9 +65,9 @@ namespace shadowrobot
     void init_subs_and_pubs(int index_joint);
   };
 
-}//end namespace
+}  // namespace shadowrobot
 
-#endif /* VALVES_H_ */
+#endif  // SR_HAND_HAND_VALVES_H
 
 /* For the emacs weenies in the crowd.
 Local Variables:

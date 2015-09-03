@@ -18,6 +18,7 @@
 
 
 class GraspInterpoler(object):
+
     def __init__(self, grasp_from, grasp_to="current"):
         """
         interpolate from one grasp to another
@@ -63,5 +64,6 @@ class GraspInterpoler(object):
             if name in self.grasp_from.joints_and_positions.keys():
                 pos_from = self.grasp_from.joints_and_positions[name]
                 pos_to = position
-                position_to_send[name] = pos_from + (pos_to - pos_from) * (percentage / 100.0)
+                position_to_send[name] = pos_from + (
+                    pos_to - pos_from) * (percentage / 100.0)
         return position_to_send

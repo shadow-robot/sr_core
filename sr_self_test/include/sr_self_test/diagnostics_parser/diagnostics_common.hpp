@@ -36,6 +36,10 @@
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/variant.hpp>
 #include <sstream>
+#include <vector>
+#include <string>
+#include <utility>
+#include <map>
 #include <ros/ros.h>
 #include <self_test/self_test.h>
 
@@ -48,9 +52,12 @@ namespace shadow_robot
   {
   public:
     DiagnosticTest()
-    {};
+    {
+    };
+
     ~DiagnosticTest()
-    {};
+    {
+    };
 
     std::vector<DiagValues> received_values;
     std::pair<DiagValues, DiagValues> min_max;
@@ -63,17 +70,18 @@ namespace shadow_robot
    * test.
    */
   class VariantParser
-    : public boost::static_visitor<void>
+          :
+                  public boost::static_visitor<void>
   {
   public:
     void operator()(int int_val) const
     {
-      values_it->second.received_values.push_back( ::atoi( new_value.c_str() ) );
+      values_it->second.received_values.push_back(::atoi(new_value.c_str()));
     }
 
     void operator()(double double_val) const
     {
-      values_it->second.received_values.push_back( ::atof(new_value.c_str() ) );
+      values_it->second.received_values.push_back(::atof(new_value.c_str()));
     }
 
     DiagMap::iterator values_it;
@@ -84,7 +92,8 @@ namespace shadow_robot
    * Compare to Diagnostic Values
    */
   class VariantGreaterThan
-    : public boost::static_visitor<bool>
+          :
+                  public boost::static_visitor<bool>
   {
   public:
     bool operator()(const int value1, const int value2) const
@@ -111,28 +120,34 @@ namespace shadow_robot
   class BaseDiagnostics
   {
   public:
-    BaseDiagnostics(std::string name, self_test::TestRunner* test_runner)
-      : name(name), test_runner_(test_runner)
-    {}
+    BaseDiagnostics(std::string name, self_test::TestRunner *test_runner)
+            : name(name), test_runner_(test_runner)
+    {
+    }
 
     virtual ~BaseDiagnostics()
-    {}
+    {
+    }
 
     virtual void parse_diagnostics(std::vector<diagnostic_msgs::KeyValue> values,
-                                   short level, std::string full_name) = 0;
+                                   int16_t level, std::string full_name) = 0;
 
     virtual void add_test()
     {
       test_runner_->add(full_name, this, &BaseDiagnostics::run_test);
     }
 
-    virtual void run_test(diagnostic_updater::DiagnosticStatusWrapper& status)
+    virtual void run_test(diagnostic_updater::DiagnosticStatusWrapper &status)
     {
       std::pair<bool, std::string> res = to_string_();
-      if( res.first )
-        status.summary( diagnostic_msgs::DiagnosticStatus::OK, res.second );
+      if (res.first)
+      {
+        status.summary(diagnostic_msgs::DiagnosticStatus::OK, res.second);
+      }
       else
-        status.summary( diagnostic_msgs::DiagnosticStatus::ERROR, res.second );
+      {
+        status.summary(diagnostic_msgs::DiagnosticStatus::ERROR, res.second);
+      }
     };
 
     virtual std::auto_ptr<BaseDiagnostics> shallow_clone(std::string name) = 0;
@@ -141,38 +156,41 @@ namespace shadow_robot
     std::string full_name;
 
   protected:
-    self_test::TestRunner* test_runner_;
+    self_test::TestRunner *test_runner_;
 
     virtual std::pair<bool, std::string> to_string_() = 0;
   };
 
   class MinMaxDiagnostics
-    : public BaseDiagnostics
+          :
+                  public BaseDiagnostics
   {
   public:
-    MinMaxDiagnostics(std::string name, self_test::TestRunner* test_runner)
-      : BaseDiagnostics(name, test_runner)
-    {};
+    MinMaxDiagnostics(std::string name, self_test::TestRunner *test_runner)
+            : BaseDiagnostics(name, test_runner)
+    {
+    };
 
     ~MinMaxDiagnostics()
-    {};
+    {
+    };
 
     virtual void parse_diagnostics(std::vector<diagnostic_msgs::KeyValue> values,
-                                   short level, std::string full_name)
+                                   int16_t level, std::string full_name)
     {
       this->full_name = full_name;
 
-      for( size_t values_i = 0; values_i < values.size(); ++values_i )
+      for (size_t values_i = 0; values_i < values.size(); ++values_i)
       {
         DiagMap::iterator values_it;
-        for(values_it = values_->begin(); values_it != values_->end(); ++values_it)
+        for (values_it = values_->begin(); values_it != values_->end(); ++values_it)
         {
-          if( values[values_i].key.compare(values_it->first) == 0 )
+          if (values[values_i].key.compare(values_it->first) == 0)
           {
             VariantParser parser;
             parser.new_value = values[values_i].value;
             parser.values_it = values_it;
-            boost::apply_visitor( parser, values_it->second.min_max.first);
+            boost::apply_visitor(parser, values_it->second.min_max.first);
           }
         }
       }
@@ -180,12 +198,12 @@ namespace shadow_robot
 
     virtual std::auto_ptr<BaseDiagnostics> shallow_clone(std::string name)
     {
-      std::auto_ptr<BaseDiagnostics> tmp( new MinMaxDiagnostics(name, test_runner_) );
+      std::auto_ptr<BaseDiagnostics> tmp(new MinMaxDiagnostics(name, test_runner_));
       return tmp;
     };
 
   protected:
-    boost::shared_ptr< DiagMap > values_;
+    boost::shared_ptr<DiagMap> values_;
 
     virtual std::pair<bool, std::string> to_string_()
     {
@@ -197,37 +215,40 @@ namespace shadow_robot
 
       DiagMap::iterator values_it;
       VariantGreaterThan greater_than;
-      for(values_it = values_->begin(); values_it != values_->end(); ++values_it)
+      for (values_it = values_->begin(); values_it != values_->end(); ++values_it)
       {
-        //We're checking all values. If one is out of the specified range -> test fails
-        for(size_t i = 0; i<values_it->second.received_values.size(); ++i)
+        // We're checking all values. If one is out of the specified range -> test fails
+        for (size_t i = 0; i < values_it->second.received_values.size(); ++i)
         {
-          //is value > min?
-          bool min_comp = boost::apply_visitor(greater_than, values_it->second.received_values[i], values_it->second.min_max.first);
-          //is value > max?
-          bool max_comp = boost::apply_visitor(greater_than, values_it->second.received_values[i], values_it->second.min_max.second);
+          // is value > min?
+          bool min_comp = boost::apply_visitor(greater_than, values_it->second.received_values[i],
+                                               values_it->second.min_max.first);
+          // is value > max?
+          bool max_comp = boost::apply_visitor(greater_than, values_it->second.received_values[i],
+                                               values_it->second.min_max.second);
 
           // value is in the [min;max] interval
-          if( min_comp && (!max_comp) )
-          { }
+          if (min_comp && (!max_comp))
+          {
+          }
           else
           {
             ok = false;
             out_of_range_value = values_it->second.received_values[i];
-            break; //test fails no need to go further
+            break;  // test fails no need to go further
           }
         }
         if (ok)
         {
-          ss <<" OK(";
+          ss << " OK(";
         }
         else
         {
-          ss <<" ERROR(";
+          ss << " ERROR(";
         }
 
-        //we're returning the first value that was out of the range
-        ss << values_it->first << "=" << out_of_range_value <<")";
+        // we're returning the first value that was out of the range
+        ss << values_it->first << "=" << out_of_range_value << ")";
       }
 
       return std::pair<bool, std::string>(ok, ss.str());
@@ -235,18 +256,21 @@ namespace shadow_robot
   };
 
   class IsOKDiagnostics
-    : public BaseDiagnostics
+          :
+                  public BaseDiagnostics
   {
   public:
-    IsOKDiagnostics(std::string name, self_test::TestRunner* test_runner)
-      : BaseDiagnostics(name, test_runner)
-    {};
+    IsOKDiagnostics(std::string name, self_test::TestRunner *test_runner)
+            : BaseDiagnostics(name, test_runner)
+    {
+    };
 
     ~IsOKDiagnostics()
-    {};
+    {
+    };
 
     virtual void parse_diagnostics(std::vector<diagnostic_msgs::KeyValue> values,
-                                   short level, std::string full_name)
+                                   int16_t level, std::string full_name)
     {
       this->full_name = full_name;
       level_ = level;
@@ -254,12 +278,12 @@ namespace shadow_robot
 
     virtual std::auto_ptr<BaseDiagnostics> shallow_clone(std::string name)
     {
-      std::auto_ptr<BaseDiagnostics> tmp( new IsOKDiagnostics(name, test_runner_) );
+      std::auto_ptr<BaseDiagnostics> tmp(new IsOKDiagnostics(name, test_runner_));
       return tmp;
     };
 
   protected:
-    short level_;
+    int16_t level_;
 
     virtual std::pair<bool, std::string> to_string_()
     {
@@ -268,12 +292,12 @@ namespace shadow_robot
 
       ss << "Diagnostics[" << full_name << "]:";
 
-      if( level_ == diagnostic_msgs::DiagnosticStatus::ERROR )
+      if (level_ == diagnostic_msgs::DiagnosticStatus::ERROR)
       {
         ok = false;
         ss << " status = ERROR";
       }
-      else if( level_ == diagnostic_msgs::DiagnosticStatus::WARN )
+      else if (level_ == diagnostic_msgs::DiagnosticStatus::WARN)
       {
         ss << " status = WARN";
       }
@@ -285,12 +309,12 @@ namespace shadow_robot
       return std::pair<bool, std::string>(ok, ss.str());
     };
   };
-}
+}  // namespace shadow_robot
 
-  /* For the emacs weenies in the crowd.
-     Local Variables:
-     c-basic-offset: 2
-     End:
-  */
+/* For the emacs weenies in the crowd.
+   Local Variables:
+   c-basic-offset: 2
+   End:
+*/
 
 #endif /* _DIAGNOSTIC_COMMON_HPP_ */

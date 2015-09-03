@@ -27,6 +27,9 @@
 #ifndef _TEST_JOINT_MOVEMENT_HPP_
 #define _TEST_JOINT_MOVEMENT_HPP_
 
+#include <map>
+#include <string>
+#include <vector>
 #include <sr_movements/movement_from_image.hpp>
 #include <sr_movements/movement_publisher.hpp>
 #include <sr_robot_msgs/JointControllerState.h>
@@ -40,8 +43,11 @@ namespace shadow_robot
   class TestJointMovement
   {
   public:
-    TestJointMovement(std::string joint_name, shadowrobot::HandCommander* hand_commander);
-    ~TestJointMovement() {};
+    TestJointMovement(std::string joint_name, shadowrobot::HandCommander *hand_commander);
+
+    ~TestJointMovement()
+    {
+    };
 
     double mse;
     std::map<std::string, std::vector<double> > values;
@@ -52,11 +58,15 @@ namespace shadow_robot
 
     ros::Subscriber sr_sub_state_;
     ros::Subscriber sub_state_;
-    void sr_state_cb_(const sr_robot_msgs::JointControllerState::ConstPtr& msg);
-    void state_cb_(const control_msgs::JointControllerState::ConstPtr& msg);
+
+    void sr_state_cb_(const sr_robot_msgs::JointControllerState::ConstPtr &msg);
+
+    void state_cb_(const control_msgs::JointControllerState::ConstPtr &msg);
 
     ros::Subscriber mse_sub_;
-    void mse_cb_(const std_msgs::Float64::ConstPtr& msg);
+
+    void mse_cb_(const std_msgs::Float64::ConstPtr &msg);
+
     std::string get_ROS_topic_type(std::string topic_name);
 
     boost::shared_ptr<shadowrobot::MovementFromImage> mvt_from_img_;
@@ -67,11 +77,11 @@ namespace shadow_robot
     boost::shared_ptr<boost::thread> thread_;
 
     std::string joint_name_;
-    
+
     /// used with the sole purpose of knowing the name of the topic we want to subscribe to
     boost::shared_ptr<shadowrobot::HandCommander> hand_commander_;
   };
-}
+}  // namespace shadow_robot
 
 /* For the emacs weenies in the crowd.
    Local Variables:

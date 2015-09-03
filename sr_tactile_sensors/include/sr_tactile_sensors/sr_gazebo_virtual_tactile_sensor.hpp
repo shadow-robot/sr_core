@@ -32,6 +32,7 @@
 #include <ros/ros.h>
 
 #include <boost/thread.hpp>
+#include <string>
 
 #include "sr_tactile_sensors/sr_generic_tactile_sensor.hpp"
 
@@ -39,10 +40,12 @@
 
 namespace shadowrobot
 {
-  class SrGazeboVirtualTactileSensor : public SrGenericTactileSensor
+  class SrGazeboVirtualTactileSensor :
+          public SrGenericTactileSensor
   {
   public:
     SrGazeboVirtualTactileSensor(std::string name, std::string gazebo_topic);
+
     virtual ~SrGazeboVirtualTactileSensor();
 
   protected:
@@ -60,22 +63,25 @@ namespace shadowrobot
     bool touch_freshdata;
 
     ros::Subscriber sub;
+
     /**
      * Callback function called when a msg is received on the
      * gazebo bumper topic.
      *
      * @param msg the message containing the contact data
      */
-    void callback(const gazebo_msgs::ContactsState& msg);
+    void callback(const gazebo_msgs::ContactsState &msg);
   };
 
-  class SrGazeboVirtualTactileSensorManager : public SrTactileSensorManager
+  class SrGazeboVirtualTactileSensorManager :
+          public SrTactileSensorManager
   {
   public:
     SrGazeboVirtualTactileSensorManager();
+
     ~SrGazeboVirtualTactileSensorManager();
   };
-}
+}  // namespace shadowrobot
 
 /* For the emacs weenies in the crowd.
 Local Variables:

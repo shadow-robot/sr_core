@@ -28,6 +28,10 @@
 #ifndef SR_TEST_RUNNER_HPP_
 #define SR_TEST_RUNNER_HPP_
 
+#include <map>
+#include <string>
+#include <vector>
+
 #include <self_test/self_test.h>
 #include "sr_self_test/gnuplot-iostream.h"
 #include "sr_self_test/diagnostic_parser.hpp"
@@ -37,51 +41,58 @@
 
 namespace shadow_robot
 {
-class SrTestRunner : public self_test::TestRunner
-{
-public:
-  SrTestRunner();
+  class SrTestRunner :
+          public self_test::TestRunner
+  {
+  public:
+    SrTestRunner();
 
-  virtual ~SrTestRunner();
+    virtual ~SrTestRunner();
 
-  using DiagnosticTaskVector::add;
-  using TestRunner::setID;
+    using DiagnosticTaskVector::add;
+    using TestRunner::setID;
 
-  void addTopicTest(std::string topic_name, double frequency);
-  void addServicesTest(std::vector<std::string> services_to_test);
-  ///Those tests require the user input
-  void addManualTests();
+    void addTopicTest(std::string topic_name, double frequency);
 
-  ///Tests the noise of the pose sensor
-  void addSensorNoiseTest();
+    void addServicesTest(std::vector<std::string> services_to_test);
 
-  void plot(std::map<std::string, std::vector<double> > joints);
-  void plot(std::map<std::string, std::vector<double> > joints, bool testing);
-  void plot(std::map<std::string, std::vector<double> > joints, std::string path);
-  void plot(std::map<std::string, std::vector<double> > joints, std::string path, bool testing);
+    /// Those tests require the user input
+    void addManualTests();
 
-  ///Adding a test which parses diagnostics for jitter, dropped messages, etc...
-  void add_diagnostic_parser();
+    /// Tests the noise of the pose sensor
+    void addSensorNoiseTest();
 
-private:
-  static const double SERVICE_TIMEOUT_CONST_;
+    void plot(std::map<std::string, std::vector<double> > joints);
 
-  std::vector<std::string> services_to_test_;
-  void service_test_cb_(diagnostic_updater::DiagnosticStatusWrapper& status);
-  size_t index_service_to_test_;
+    void plot(std::map<std::string, std::vector<double> > joints, bool testing);
 
-  boost::shared_ptr<Gnuplot> gnuplot_;
+    void plot(std::map<std::string, std::vector<double> > joints, std::string path);
 
-  ///Class used for parsing the diagnostics
-  boost::shared_ptr<DiagnosticParser> diagnostic_parser_;
+    void plot(std::map<std::string, std::vector<double> > joints, std::string path, bool testing);
 
-  ///runs manual test (visual calibration check, tactiles...)
-  std::vector<boost::shared_ptr<ManualTests> > manual_tests_;
+    /// Adding a test which parses diagnostics for jitter, dropped messages, etc...
+    void add_diagnostic_parser();
 
-  boost::shared_ptr<SensorNoiseTest> sensor_noise_test_;
-};
+  private:
+    static const double SERVICE_TIMEOUT_CONST_;
 
-}
+    std::vector<std::string> services_to_test_;
+
+    void service_test_cb_(diagnostic_updater::DiagnosticStatusWrapper &status);
+
+    size_t index_service_to_test_;
+
+    boost::shared_ptr<Gnuplot> gnuplot_;
+
+    /// Class used for parsing the diagnostics
+    boost::shared_ptr<DiagnosticParser> diagnostic_parser_;
+
+    /// runs manual test (visual calibration check, tactiles...)
+    std::vector<boost::shared_ptr<ManualTests> > manual_tests_;
+
+    boost::shared_ptr<SensorNoiseTest> sensor_noise_test_;
+  };
+}  // namespace shadow_robot
 
 /* For the emacs weenies in the crowd.
    Local Variables:
