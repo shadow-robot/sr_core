@@ -53,7 +53,7 @@ namespace shadowrobot
 
     virtual ~EtherCATCompatibilityHand();
 
-   // virtual classes defined in Shadowhand
+    // virtual classes defined in Shadowhand
     /**
      * This function will send the targets to the correct controllers.
      *

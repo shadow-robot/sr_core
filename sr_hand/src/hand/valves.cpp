@@ -85,10 +85,10 @@ namespace shadowrobot
     std::string name = hand_joints[index_joint].joint_name;
     for (unsigned int j = 0; j < hand_joints[index_joint].num_actuators; ++j)
     {
-     // ! for the old hand the phalange 4 only used the spring and the Ext only
+      // ! for the old hand the phalange 4 only used the spring and the Ext only
       subname_index = (hand_joints[index_joint].num_actuators == 1) ? 1 : j;
 
-     // Pressure
+      // Pressure
       struct sensor s = hand_joints[index_joint].a.muscle.pressure[j];
       valves_sensors.push_back(s);
       std::stringstream ss_valve_name;
@@ -103,7 +103,7 @@ namespace shadowrobot
                                                                         boost::bind(&Valves::valve_command, this, _1,
                                                                                     valves_sensors.size() - 1)));
 
-     // Pressure_Target
+      // Pressure_Target
       ss_valve_name.str(std::string());
       s = hand_joints[index_joint].a.muscle.pressure_target[j];
       valves_sensors.push_back(s);
@@ -118,7 +118,7 @@ namespace shadowrobot
                                                                         boost::bind(&Valves::valve_command, this, _1,
                                                                                     valves_sensors.size() - 1)));
 
-     // Muscles
+      // Muscles
       ss_valve_name.str(std::string());
       s = hand_joints[index_joint].a.muscle.muscles[j];
       valves_sensors.push_back(s);
@@ -133,7 +133,7 @@ namespace shadowrobot
                                                                         boost::bind(&Valves::valve_command, this, _1,
                                                                                     valves_sensors.size() - 1)));
 
-     // Fill
+      // Fill
       ss_valve_name.str(std::string());
       s = hand_joints[index_joint].a.muscle.valves[j][FILL_VALVE];
       valves_sensors.push_back(s);
@@ -148,7 +148,7 @@ namespace shadowrobot
                                                                         boost::bind(&Valves::valve_command, this, _1,
                                                                                     valves_sensors.size() - 1)));
 
-     // Empty
+      // Empty
       ss_valve_name.str(std::string());
       s = hand_joints[index_joint].a.muscle.valves[j][EMPTY_VALVE];
       valves_sensors.push_back(s);
@@ -181,7 +181,7 @@ namespace shadowrobot
  */
   void Valves::valve_command(const std_msgs::Float64ConstPtr &msg, int index_valve)
   {
-   // @fixme: do some clipping on the value first?
+    // @fixme: do some clipping on the value first?
     robot_update_sensor(&(valves_sensors[index_valve]), msg->data);
   }
 

@@ -52,7 +52,7 @@ namespace shadowrobot
 
     virtual ~CANCompatibilityArm();
 
-   // virtual classes defined in Shadowhand
+    // virtual classes defined in Shadowhand
     /**
      * This function will send the targets to the correct controllers.
      *

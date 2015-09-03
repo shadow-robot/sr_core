@@ -119,35 +119,35 @@ namespace shadowrobot
 
 
 #ifdef GAZEBO
-   // if we're using Gazebo, we want to start with the elbow bent to 120
-   // first we stop the physics
-    ros::ServiceClient gazebo_phys_client = node.serviceClient<std_srvs::Empty>("/gazebo/pause_physics");
-    std_srvs::Empty empty_srv;
-    gazebo_phys_client.waitForExistence();
-    gazebo_phys_client.call(empty_srv);
+    // if we're using Gazebo, we want to start with the elbow bent to 120
+    // first we stop the physics
+     ros::ServiceClient gazebo_phys_client = node.serviceClient<std_srvs::Empty>("/gazebo/pause_physics");
+     std_srvs::Empty empty_srv;
+     gazebo_phys_client.waitForExistence();
+     gazebo_phys_client.call(empty_srv);
 
-   // then we set the ElbowJSwing in the model pose (the model is called arm_and_hand)
-    ros::ServiceClient set_pos_client = node.serviceClient<gazebo_msgs::SetModelConfiguration>("/gazebo/set_model_configuration");
-    gazebo_msgs::SetModelConfiguration model_srv;
-    model_srv.request.model_name = "shadow_model";
-    model_srv.request.urdf_param_name = "robot_description";
-    model_srv.request.joint_names.push_back("ElbowJSwing");
-    model_srv.request.joint_positions.push_back(2.0);
+    // then we set the ElbowJSwing in the model pose (the model is called arm_and_hand)
+     ros::ServiceClient set_pos_client = node.serviceClient<gazebo_msgs::SetModelConfiguration>("/gazebo/set_model_configuration");
+     gazebo_msgs::SetModelConfiguration model_srv;
+     model_srv.request.model_name = "shadow_model";
+     model_srv.request.urdf_param_name = "robot_description";
+     model_srv.request.joint_names.push_back("ElbowJSwing");
+     model_srv.request.joint_positions.push_back(2.0);
 
-    set_pos_client.waitForExistence();
-    set_pos_client.call(model_srv);
+     set_pos_client.waitForExistence();
+     set_pos_client.call(model_srv);
 
-   // sends the correct target to the controller
-    for (int i = 0; i < 500; ++i)
-    {
-      sendupdate("ElbowJSwing", 120.0);
-      sleep(.01);
-    }
+    // sends the correct target to the controller
+     for (int i = 0; i < 500; ++i)
+     {
+       sendupdate("ElbowJSwing", 120.0);
+       sleep(.01);
+     }
 
-   // and now we restart the physics
-    gazebo_phys_client = node.serviceClient<std_srvs::Empty>("/gazebo/unpause_physics");
-    gazebo_phys_client.waitForExistence();
-    gazebo_phys_client.call(empty_srv);
+    // and now we restart the physics
+     gazebo_phys_client = node.serviceClient<std_srvs::Empty>("/gazebo/unpause_physics");
+     gazebo_phys_client.waitForExistence();
+     gazebo_phys_client.call(empty_srv);
 #endif
   }
 
@@ -161,7 +161,7 @@ namespace shadowrobot
     std_msgs::Float64 target_msg;
 #endif
 
-   // not found
+    // not found
     if (iter == joints_map.end())
     {
       ROS_DEBUG("Joint %s not found.", joint_name.c_str());
@@ -169,7 +169,7 @@ namespace shadowrobot
       return -1;
     }
 
-   // joint found
+    // joint found
     JointData tmpData(iter->second);
     if (target < tmpData.min)
     {
@@ -181,9 +181,9 @@ namespace shadowrobot
     }
 
 #ifdef GAZEBO
-   // gazebo targets are in radians
-    target_msg.data = toRad(target);
-    gazebo_publishers[tmpData.publisher_index].publish(target_msg);
+    // gazebo targets are in radians
+     target_msg.data = toRad(target);
+     gazebo_publishers[tmpData.publisher_index].publish(target_msg);
 #else
     tmpData.position = target;
 #endif
@@ -200,10 +200,10 @@ namespace shadowrobot
     joints_map_mutex.lock();
     JointsMap::iterator iter = joints_map.find(joint_name);
 
-   // joint found
+    // joint found
     if (iter != joints_map.end())
     {
-     // return the position
+      // return the position
       iter->second.temperature = ((double) (rand() % 100) / 100.0);
       iter->second.current = ((double) (rand() % 100) / 100.0);
 #ifndef GAZEBO

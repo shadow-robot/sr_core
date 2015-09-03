@@ -68,7 +68,7 @@ namespace shadowrobot
     n_tilde.param("publish_frequency_diagnostics", publish_freq, 1.0);
     publish_rate = Rate(publish_freq);
 
-   // publishes /diagnostics messages
+    // publishes /diagnostics messages
     sr_diagnostics_pub = node.advertise<diagnostic_msgs::DiagnosticArray>("diagnostics", 2);
 
     hardware_type = hw_type;
@@ -76,7 +76,7 @@ namespace shadowrobot
 
   SRDiagnosticer::~SRDiagnosticer()
   {
-   // if( shadowhand != NULL )
+    // if( shadowhand != NULL )
     // delete shadowhand;
   }
 
@@ -134,7 +134,7 @@ namespace shadowrobot
       keyval.value = ss.str();
       keyvalues.push_back(keyval);
 
-     // get all the debug values
+      // get all the debug values
       std::map<const std::string, const unsigned int>::const_iterator iter;
       for (iter = debug_values::names_and_offsets.begin();
            iter != debug_values::names_and_offsets.end(); ++iter)
@@ -154,9 +154,9 @@ namespace shadowrobot
       vec_diag_msg.push_back(diag);
     }
 
-   // set the standard message
+    // set the standard message
     diag_msg.status = vec_diag_msg;
-   // publish the diagnostic data
+    // publish the diagnostic data
 
     diag_msg.header.stamp = ros::Time::now();
     sr_diagnostics_pub.publish(diag_msg);

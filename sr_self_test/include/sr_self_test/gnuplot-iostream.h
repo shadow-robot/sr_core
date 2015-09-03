@@ -260,52 +260,52 @@ private:
     return stm.str();
   }
 
-  std::string formatCode(float* value)
+  std::string formatCode(float *value)
   {
     return to_string(value);
   }
 
-  std::string formatCode(double* value)
+  std::string formatCode(double *value)
   {
     return to_string(value);
   }
 
-  std::string formatCode(int8_t* value)
+  std::string formatCode(int8_t *value)
   {
     return to_string(value);
   }
 
-  std::string formatCode(uint8_t* value)
+  std::string formatCode(uint8_t *value)
   {
     return to_string(value);
   }
 
-  std::string formatCode(int16_t* value)
+  std::string formatCode(int16_t *value)
   {
     return to_string(value);
   }
 
-  std::string formatCode(uint16_t* value)
+  std::string formatCode(uint16_t *value)
   {
     return to_string(value);
   }
 
-  std::string formatCode(int32_t* value)
+  std::string formatCode(int32_t *value)
   {
     return to_string(value);
   }
 
-  std::string formatCode(uint32_t* value)
+  std::string formatCode(uint32_t *value)
   {
     return to_string(value);
   }
 
-  std::string formatCode(int64_t* value)
+  std::string formatCode(int64_t *value)
   {
     return to_string(value);
   }
 
-  std::string formatCode(uint64_t* value)
+  std::string formatCode(uint64_t *value)
   {
     return to_string(value);
   }

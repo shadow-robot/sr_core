@@ -98,7 +98,7 @@ namespace controller
       }
     }
 
-   // get the min and max value for the current joint:
+    // get the min and max value for the current joint:
     get_min_max(robot_->robot_model_, joint_name_);
 
     friction_compensator.reset(new sr_friction_compensation::SrFrictionCompensator(joint_name_));
@@ -134,7 +134,7 @@ namespace controller
     friction_deadband = req.friction_deadband;
     position_deadband = req.deadband;
 
-   // Setting the new parameters in the parameter server
+    // Setting the new parameters in the parameter server
     node_.setParam("pid/p", req.p);
     node_.setParam("pid/i", req.i);
     node_.setParam("pid/d", req.d);
@@ -173,7 +173,7 @@ namespace controller
 
   void SrhMuscleJointPositionController::update(const ros::Time &time, const ros::Duration &period)
   {
-   // The valve commands can have values between -4 and 4
+    // The valve commands can have values between -4 and 4
     int8_t valve[2];
 
     ROS_ASSERT(robot_ != NULL);
@@ -194,9 +194,9 @@ namespace controller
     }
     command_ = clamp_command(command_);
 
-   // IGNORE the following  lines if we don't want to use the pressure sensors data
-   // We don't want to define a modified version of JointState, as that would imply using a modified version of robot_state.hpp, controller manager,
-   // ethercat_hardware and ros_etherCAT main loop
+    // IGNORE the following  lines if we don't want to use the pressure sensors data
+    // We don't want to define a modified version of JointState, as that would imply using a modified version of robot_state.hpp, controller manager,
+    // ethercat_hardware and ros_etherCAT main loop
     // So we have encoded the two uint16 that contain the data from the muscle pressure sensors into the double effort_. (We don't
     // have any measured effort in the muscle hand anyway).
     // Here we extract the pressure values from joint_state_->effort_ and decode that back into uint16.
@@ -205,11 +205,11 @@ namespace controller
     uint16_t pressure_0 = static_cast<uint16_t> (pressure_0_tmp + 0.5);
     uint16_t pressure_1 = static_cast<uint16_t> (pressure_1_tmp + 0.5);
 
-   // ****************************************
+    // ****************************************
 
     command_ = clamp_command(command_);
 
-   // Compute position demand from position error:
+    // Compute position demand from position error:
     double error_position = 0.0;
 
     if (has_j2)
@@ -223,21 +223,21 @@ namespace controller
 
     bool in_deadband = hysteresis_deadband.is_in_deadband(command_, error_position, position_deadband);
 
-   // don't compute the error if we're in the deadband.
+    // don't compute the error if we're in the deadband.
     if (in_deadband)
     {
       error_position = 0.0;
     }
 
-   // Run the PID loop to get a new command, we don't do this at the full rate
-   // as that will drive the valves too hard with switch changes. Instead we
-   // store a longer time in the command accumulator to keep using at the full
-   // loop rate.
+    // Run the PID loop to get a new command, we don't do this at the full rate
+    // as that will drive the valves too hard with switch changes. Instead we
+    // store a longer time in the command accumulator to keep using at the full
+    // loop rate.
     if (loop_count_ % 50 == 0)
     {
       double commanded_effort = pid_controller_position_->computeCommand(-error_position, period);
 
-     // clamp the result to max force
+      // clamp the result to max force
       commanded_effort = min(commanded_effort, max_force_demand);
       commanded_effort = max(commanded_effort, -max_force_demand);
 
@@ -286,17 +286,17 @@ namespace controller
     }
 
 
-   // ************************************************
+    // ************************************************
     // After doing any computation we consider, we encode the obtained valve commands into joint_state_->commanded_effort_
-   // We don't want to define a modified version of JointState, as that would imply using a modified version of robot_state.hpp, controller manager,
-   // ethercat_hardware and ros_etherCAT main loop
+    // We don't want to define a modified version of JointState, as that would imply using a modified version of robot_state.hpp, controller manager,
+    // ethercat_hardware and ros_etherCAT main loop
     // So the controller encodes the two int8 (that are in fact int4) that contain the valve commands into the double commanded_effort_. (We don't
     // have any real commanded_effort_ in the muscle hand anyway).
 
     uint16_t valve_tmp[2];
     for (int i = 0; i < 2; ++i)
     {
-     // Check that the limits of the valve command are not exceded
+      // Check that the limits of the valve command are not exceded
       if (valve[i] > 4)
       {
         valve[i] = 4;
@@ -305,7 +305,7 @@ namespace controller
       {
         valve[i] = -4;
       }
-     // encode
+      // encode
       if (valve[i] < 0)
       {
         valve_tmp[i] = -valve[i] + 8;
@@ -316,11 +316,11 @@ namespace controller
       }
     }
 
-   // We encode the valve 0 command in the lowest "half byte" i.e. the lowest 16 integer values in the double var (see decoding in simple_transmission_for_muscle.cpp)
-   // the valve 1 command is encoded in the next 4 bits
+    // We encode the valve 0 command in the lowest "half byte" i.e. the lowest 16 integer values in the double var (see decoding in simple_transmission_for_muscle.cpp)
+    // the valve 1 command is encoded in the next 4 bits
     joint_state_->commanded_effort_ = static_cast<double> (valve_tmp[0]) + static_cast<double> (valve_tmp[1] << 4);
 
-   // *******************************************************************************
+    // *******************************************************************************
 
     // Send status msg
     if (loop_count_ % 10 == 0)

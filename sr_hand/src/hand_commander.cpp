@@ -43,7 +43,7 @@ namespace shadowrobot
           hand_type(shadowhandRosLib::UNKNOWN),
           ethercat_controllers_found(false)
   {
-   // Get the urdf model from the parameter server
+    // Get the urdf model from the parameter server
     // this is used for returning min and max for joints for example.
     std::string robot_desc_string;
     node_.param("sh_description", robot_desc_string, std::string());
@@ -63,8 +63,8 @@ namespace shadowrobot
 
     all_joints = robot_model.joints_;
 
-   // We use the presence of the controller_manager/list_controllers service to detect that the hand is ethercat
-   // We look for the manager in the robots namespace (that of node_ not the process).
+    // We use the presence of the controller_manager/list_controllers service to detect that the hand is ethercat
+    // We look for the manager in the robots namespace (that of node_ not the process).
     if (ros::service::waitForService(node_.getNamespace() + "/controller_manager/list_controllers",
                                      ros::Duration(TIMEOUT_TO_DETECT_CONTROLLER_MANAGER)))
     {
@@ -146,17 +146,17 @@ namespace shadowrobot
 
   std::pair<double, double> HandCommander::get_min_max(std::string joint_name)
   {
-   // needs to get min max for J1 and J2 if J0
+    // needs to get min max for J1 and J2 if J0
     std::vector<std::string> joint_names, split_name;
     boost::split(split_name, joint_name, boost::is_any_of("0"));
     if (split_name.size() == 1)
     {
-     // not a J0
+      // not a J0
       joint_names.push_back(joint_name);
     }
     else
     {
-     // this is a J0, push J1 and J2
+      // this is a J0, push J1 and J2
       joint_names.push_back(split_name[0] + "1");
       joint_names.push_back(split_name[0] + "2");
     }
@@ -167,7 +167,7 @@ namespace shadowrobot
     {
       std::string jn = joint_names[i];
 
-     // urdf names are upper case
+      // urdf names are upper case
       boost::algorithm::to_upper(jn);
       std::map<std::string, boost::shared_ptr<urdf::Joint> >::iterator it = all_joints.find(jn);
 
@@ -193,7 +193,7 @@ namespace shadowrobot
     for (it = sr_hand_sub_topics.begin(); it != sr_hand_sub_topics.end(); ++it)
     {
       // all Hand joint names have a length of 4...
-     // The other way would be to check if the name is in a list
+      // The other way would be to check if the name is in a list
       // of possible names. Not sure what's best.
       if (it->first.size() == 4)
       {
@@ -210,7 +210,7 @@ namespace shadowrobot
 
     if (hand_type == shadowhandRosLib::ETHERCAT)
     {
-     // urdf names are upper case
+      // urdf names are upper case
       boost::algorithm::to_upper(joint_name);
       std::map<std::string, std::string>::iterator it = sr_hand_sub_topics.find(joint_name);
       if (it != sr_hand_sub_topics.end())

@@ -222,7 +222,7 @@ namespace shadow_robot
       return;
     }
 
-    // there was an error during the test
+      // there was an error during the test
     else
     {
       ss << "Test failed: ";

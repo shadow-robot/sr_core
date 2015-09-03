@@ -97,14 +97,14 @@ namespace controller
 
     friction_compensator.reset(new sr_friction_compensation::SrFrictionCompensator(joint_name_));
 
-   // serve_set_gains_ = node_.advertiseService("set_gains", &SrhJointMuscleValveController::setGains, this);
+    // serve_set_gains_ = node_.advertiseService("set_gains", &SrhJointMuscleValveController::setGains, this);
     serve_reset_gains_ = node_.advertiseService("reset_gains", &SrhJointMuscleValveController::resetGains, this);
 
     ROS_DEBUG_STREAM(" joint_state name: " << joint_state_->joint_->name);
     ROS_DEBUG_STREAM(" In Init: " << getJointName() << " This: " << this
                      << " joint_state: " << joint_state_);
-   // We do not call this function, as we want to listen to a different topic type
-   // after_init();
+    // We do not call this function, as we want to listen to a different topic type
+    // after_init();
     sub_command_ = node_.subscribe<sr_robot_msgs::JointMuscleValveControllerCommand>("command", 1,
                                                                                      &SrhJointMuscleValveController::setCommandCB,
                                                                                      this);
@@ -152,7 +152,7 @@ namespace controller
 
   void SrhJointMuscleValveController::update(const ros::Time &time, const ros::Duration &period)
   {
-   // The valve commands can have values between -4 and 4
+    // The valve commands can have values between -4 and 4
     int8_t valve[2];
     unsigned int i;
 
@@ -171,9 +171,9 @@ namespace controller
     }
 
 
-   // IGNORE the following  lines if we don't want to use the pressure sensors data
-   // We don't want to define a modified version of JointState, as that would imply using a modified version of robot_state.hpp, controller manager,
-   // ethercat_hardware and ros_etherCAT main loop
+    // IGNORE the following  lines if we don't want to use the pressure sensors data
+    // We don't want to define a modified version of JointState, as that would imply using a modified version of robot_state.hpp, controller manager,
+    // ethercat_hardware and ros_etherCAT main loop
     // So we heve encoded the two uint16 that contain the data from the muscle pressure sensors into the double effort_. (We don't
     // have any measured effort in the muscle hand anyway).
     // Here we extract the pressure values from joint_state_->effort_ and decode that back into uint16.
@@ -182,19 +182,19 @@ namespace controller
     uint16_t pressure_0 = static_cast<uint16_t> (pressure_0_tmp + 0.5);
     uint16_t pressure_1 = static_cast<uint16_t> (pressure_1_tmp + 0.5);
 
-   // ****************************************
+    // ****************************************
 
 
 
 
 
-   // ************************************************
+    // ************************************************
     // Here goes the control algorithm
 
     // This controller will allow the user to specify a separate command for each of the two muscles that control the joint.
     // The user will also specify a duration in ms for that command. During this duration the command will be sent to the hand
     // every ms (every cycle of this 1Khz control loop).
-   // Once this duration period has elapsed, a command of 0 will be sent to the muscle (meaning both the filling and emptying valves for that
+    // Once this duration period has elapsed, a command of 0 will be sent to the muscle (meaning both the filling and emptying valves for that
     // muscle remain closed)
     // A duration of 0 means that there is no timeout, so the valve command will be sent to the muscle until a different valve command is received
     // BE CAREFUL WHEN USING A DURATION OF 0 AS THIS COULD EVENTUALLY DAMAGE THE MUSCLE
@@ -224,7 +224,7 @@ namespace controller
     }
 
 
-   // ************************************************
+    // ************************************************
 
 
 
@@ -232,17 +232,17 @@ namespace controller
 
 
 
-   // ************************************************
+    // ************************************************
     // After doing any computation we consider, we encode the obtained valve commands into joint_state_->commanded_effort_
-   // We don't want to define a modified version of JointState, as that would imply using a modified version of robot_state.hpp, controller manager,
-   // ethercat_hardware and ros_etherCAT main loop
+    // We don't want to define a modified version of JointState, as that would imply using a modified version of robot_state.hpp, controller manager,
+    // ethercat_hardware and ros_etherCAT main loop
     // So the controller encodes the two int8 (that are in fact int4) that contain the valve commands into the double commanded_effort_. (We don't
     // have any real commanded_effort_ in the muscle hand anyway).
 
     uint16_t valve_tmp[2];
     for (i = 0; i < 2; ++i)
     {
-     // Check that the limits of the valve command are not exceded
+      // Check that the limits of the valve command are not exceded
       if (valve[i] > 4)
       {
         valve[i] = 4;
@@ -251,7 +251,7 @@ namespace controller
       {
         valve[i] = -4;
       }
-     // encode
+      // encode
       if (valve[i] < 0)
       {
         valve_tmp[i] = -valve[i] + 8;
@@ -262,11 +262,11 @@ namespace controller
       }
     }
 
-   // We encode the valve 0 command in the lowest "half byte" i.e. the lowest 16 integer values in the double var (see decoding in simple_transmission_for_muscle.cpp)
-   // the valve 1 command is envoded in the next 4 bits
+    // We encode the valve 0 command in the lowest "half byte" i.e. the lowest 16 integer values in the double var (see decoding in simple_transmission_for_muscle.cpp)
+    // the valve 1 command is envoded in the next 4 bits
     joint_state_->commanded_effort_ = static_cast<double> (valve_tmp[0]) + static_cast<double> (valve_tmp[1] << 4);
 
-   // *******************************************************************************
+    // *******************************************************************************
 
 
 
@@ -305,10 +305,10 @@ namespace controller
   {
     cmd_valve_muscle_[0] = clamp_command(msg->cmd_valve_muscle[0]);
     cmd_valve_muscle_[1] = clamp_command(msg->cmd_valve_muscle[1]);
-   // These variables hold the commanded duration
+    // These variables hold the commanded duration
     cmd_duration_ms_[0] = static_cast<unsigned int> (msg->cmd_duration_ms[0]);
     cmd_duration_ms_[1] = static_cast<unsigned int> (msg->cmd_duration_ms[1]);
-   // These are the actual counters that we will decrement
+    // These are the actual counters that we will decrement
     current_duration_ms_[0] = cmd_duration_ms_[0];
     current_duration_ms_[1] = cmd_duration_ms_[1];
   }

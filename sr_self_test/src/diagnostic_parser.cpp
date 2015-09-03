@@ -54,10 +54,11 @@ namespace shadow_robot
       ros::spinOnce();
     }
 
-    BOOST_FOREACH(DiagnosticsMap::value_type diag, all_diagnostics_)
-    {
-      diag.second->add_test();
-    }
+    BOOST_FOREACH(DiagnosticsMap::value_type
+                          diag, all_diagnostics_)
+          {
+            diag.second->add_test();
+          }
 
     diag_sub_.shutdown();
   }

@@ -84,7 +84,7 @@ namespace shadowrobot
     std::string full_topic = "";
 #endif
 
-   // Get the urdf model from the parameter server
+    // Get the urdf model from the parameter server
     std::string robot_desc_string;
     node.param("hand_description", robot_desc_string, std::string());
     urdf::Model robot_model;
@@ -99,8 +99,8 @@ namespace shadowrobot
     ROS_DEBUG("All the Hand joints: ");
 
 #ifdef GAZEBO
-   // index of the publisher to the Gazebo controller
-    int tmp_index = 0;
+    // index of the publisher to the Gazebo controller
+     int tmp_index = 0;
 #endif
 
     for (; iter != all_joints.end(); ++iter)
@@ -111,13 +111,13 @@ namespace shadowrobot
 
         ROS_DEBUG_STREAM(" joint: " << current_joint_name << '\t' << iter->second);
 
-       // check if we need to create a joint 0
+        // check if we need to create a joint 0
         // create them when we have the joint 2
 
 #ifdef GAZEBO
-       // The joint 1 is not controlled directly in Gazebo (the controller
-        // controls joint 0)
-        bool no_controller = false;
+        // The joint 1 is not controlled directly in Gazebo (the controller
+         // controls joint 0)
+         bool no_controller = false;
 #endif
 
         bool create_joint_zero = false;
@@ -193,7 +193,7 @@ namespace shadowrobot
     parameters_map["shift"] = PARAM_shift;
     parameters_map["max"] = PARAM_output_max;
 
-   // ! the parameters for the motors
+    // ! the parameters for the motors
     parameters_map["motor_maxforce"] = PARAM_motor_maxforce;
     parameters_map["motor_safeforce"] = PARAM_motor_safeforce;
 
@@ -228,7 +228,7 @@ namespace shadowrobot
     std_msgs::Float64 target_msg;
 #endif
 
-   // not found
+    // not found
     if (iter == joints_map.end())
     {
       ROS_DEBUG("Joint %s not found", joint_name.c_str());
@@ -238,14 +238,14 @@ namespace shadowrobot
     }
     JointData joint_0_data = JointData(iter->second);
 
-   // in total simulation:
-   // if joint 0, send 1/2 of the target to joint 1 and other half to
-   // 2;
+    // in total simulation:
+    // if joint 0, send 1/2 of the target to joint 1 and other half to
+    // 2;
     // if using gazebo, we just send the target to the joint 0 controller
     // which is then controlling both joints.
     if (iter->second.isJointZero == 1)
     {
-     // push target and position to the given target for Joint 0
+      // push target and position to the given target for Joint 0
       JointData tmpData0 = JointData(iter->second);
       if (target < tmpData0.min)
       {
@@ -266,9 +266,9 @@ namespace shadowrobot
       ++iter;
       JointData tmpData1 = JointData(iter->second);
 #ifdef GAZEBO
-     // gazebo targets are in radians
-      target_msg.data = toRad( target );
-      gazebo_publishers[joint_0_data.publisher_index].publish(target_msg);
+      // gazebo targets are in radians
+       target_msg.data = toRad( target );
+       gazebo_publishers[joint_0_data.publisher_index].publish(target_msg);
 #else
       tmpData1.position = target / 2.0;
 #endif
@@ -279,7 +279,7 @@ namespace shadowrobot
       ++iter;
       JointData tmpData2 = JointData(iter->second);
 #ifdef GAZEBO
-     // we've already send the data to the joint 0 controller
+      // we've already send the data to the joint 0 controller
 #else
       tmpData2.position = target / 2.0;
 #endif
@@ -291,7 +291,7 @@ namespace shadowrobot
       return 0;
     }
 
-   // joint found
+    // joint found
     JointData tmpData(iter->second);
 
     if (target < tmpData.min)
@@ -304,9 +304,9 @@ namespace shadowrobot
     }
 
 #ifdef GAZEBO
-   // gazebo targets are in radians
-    target_msg.data = toRad(target);
-    gazebo_publishers[tmpData.publisher_index].publish(target_msg);
+    // gazebo targets are in radians
+     target_msg.data = toRad(target);
+     gazebo_publishers[tmpData.publisher_index].publish(target_msg);
 #else
     tmpData.position = target;
 #endif
@@ -324,10 +324,10 @@ namespace shadowrobot
 
     JointsMap::iterator iter = joints_map.find(joint_name);
 
-   // joint found
+    // joint found
     if (iter != joints_map.end())
     {
-     // return the position
+      // return the position
       iter->second.temperature = ((double) (rand() % 100) / 100.0);
       iter->second.current = ((double) (rand() % 100) / 100.0);
 #ifndef GAZEBO
@@ -375,7 +375,7 @@ namespace shadowrobot
 
     ControllersMap::iterator iter = controllers_map.find(contrlr_name);
 
-   // joint found
+    // joint found
     if (iter != controllers_map.end())
     {
       controllers_map[iter->first] = ctrlr_data;
@@ -394,7 +394,7 @@ namespace shadowrobot
     controllers_map_mutex.lock();
     ControllersMap::iterator iter = controllers_map.find(contrlr_name);
 
-   // joint found
+    // joint found
     if (iter != controllers_map.end())
     {
       JointControllerData tmp = JointControllerData(iter->second);
