@@ -1,6 +1,6 @@
 /**
  * @file   real_shadowhand_node.cpp
- * @author Ugo Cupcic <ugo@ugo-kubuntu.local>
+ * @author Ugo Cupcic <ugo@shadowrobot.com>
  * @date   Wed Apr  7 15:37:06 2010
  *
 *
@@ -35,13 +35,15 @@
 #include "sr_hand/sr_subscriber.h"
 #include "sr_hand/sr_publisher.h"
 #include "sr_hand/sr_diagnosticer.h"
-//#include "shadowhand/shadowhand_config_server.h"
 #include "sr_hand/hand/real_shadowhand.h"
 
-using namespace std;
-using namespace ros;
-using namespace shadowrobot;
-//using namespace shadowhand_config_server;
+using ros::NodeHandle;
+using ros::ok;
+using shadowrobot::RealShadowhand;
+using shadowrobot::SRDiagnosticer;
+using shadowrobot::SRSubscriber;
+using shadowrobot::SRPublisher;
+using shadowrobot::sr_hand_hardware;
 
 /////////////////////////////////
 //           MAIN              //

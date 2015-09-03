@@ -25,10 +25,12 @@
  */
 
 #include "sr_hand/hand/valves.h"
-//our robot code
+// our robot code
 
 #include <sstream>
-//messages
+#include <string>
+#include <vector>
+// messages
 
 
 namespace shadowrobot
@@ -36,7 +38,6 @@ namespace shadowrobot
   Valves::Valves() :
           n_tilde("~"), publish_rate(0.0)
   {
-
     /* We need to attach the program to the robot, or fail if we cannot. */
     if (robot_init() < 0)
     {
@@ -163,7 +164,6 @@ namespace shadowrobot
                                                                         boost::bind(&Valves::valve_command, this, _1,
                                                                                     valves_sensors.size() - 1)));
     }
-
   }
 
 
@@ -202,9 +202,8 @@ namespace shadowrobot
 
     ros::spinOnce();
     publish_rate.sleep();
-
   }
-}  // end namespace
+}  // namespace shadowrobot
 
 
 /* For the emacs weenies in the crowd.

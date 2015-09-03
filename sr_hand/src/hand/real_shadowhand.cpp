@@ -25,9 +25,12 @@
  */
 
 #include <ros/ros.h>
+#include <utility>
+#include <string>
+#include <vector>
 
 #include "sr_hand/hand/real_shadowhand.h"
-//our robot code
+// our robot code
 #include <robot/config.h>
 #include <robot/robot.h>
 #include <robot/hand_protocol.h>
@@ -318,7 +321,6 @@ namespace shadowrobot
     ROS_WARN("The get contrlr function is not implemented in the real shadowhand.");
 
     return tmp_data;
-
   }
 
   int16_t RealShadowhand::setConfig(std::vector <std::string> myConfig)
@@ -384,8 +386,8 @@ namespace shadowrobot
             tmpData.debug_values[iter->first] = robot_read_incoming(&sensor_tmp);
           }
         }
-        // 	else
-        //  ROS_ERROR_STREAM(tmpData.joint_name << ": no debug sensor" );
+        // else
+        // ROS_ERROR_STREAM(tmpData.joint_name << ": no debug sensor" );
         // reads temperature current and force.
         tmpData.temperature = robot_read_sensor(&hand_joints[index].a.smartmotor.temperature);
         tmpData.current = robot_read_sensor(&hand_joints[index].a.smartmotor.current);
@@ -458,7 +460,7 @@ namespace shadowrobot
     parameters_map_mutex.lock();
     controllers_map_mutex.lock();
 
-    // TODO: set the palm transmit rate to max?
+    // @todo set the palm transmit rate to max?
 
     sleep(1);
 
@@ -474,7 +476,7 @@ namespace shadowrobot
     parameters_map_mutex.unlock();
     controllers_map_mutex.unlock();
 
-    // TODO: reset the palm transmit rate to previous state?
+    // @todo reset the palm transmit rate to previous state?
 
     status.summary(diagnostic_msgs::DiagnosticStatus::OK, "Postest completed successfully.");
   }
@@ -557,8 +559,8 @@ namespace shadowrobot
 
     int res;
     std::string debug_node_name = *(&hand_joints[index_hand_joints].a.smartmotor.debug_nodename);
-    std::map<const std::string, const unsigned int>::const_iterator iter_debug_values = debug_values::names_and_offsets.find(
-            "Num sensor Msgs received");
+    std::map<const std::string, const unsigned int>::const_iterator
+            iter_debug_values = debug_values::names_and_offsets.find("Num sensor Msgs received");
 
     res = robot_channel_to_sensor(debug_node_name.c_str(), iter_debug_values->second, &sensor_msgs_received);
 
@@ -614,7 +616,7 @@ namespace shadowrobot
       return test_result;
     }
   }
-}  // end namespace
+}  // namespace shadowrobot
 
 /* For the emacs weenies in the crowd.
    Local Variables:

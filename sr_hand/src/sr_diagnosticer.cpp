@@ -27,24 +27,26 @@
  *
  */
 
-//ROS include
+// ROS include
 #include <ros/ros.h>
 
-//messages
+// messages
 #include <diagnostic_msgs/DiagnosticStatus.h>
 #include <diagnostic_msgs/DiagnosticArray.h>
 
-//generic C/C++ include
+// generic C/C++ include
 #include <vector>
 #include <string>
+#include <map>
 #include <sstream>
 
 #include <boost/smart_ptr.hpp>
 
 #include "sr_hand/sr_diagnosticer.h"
 
-using namespace ros;
-using namespace shadowrobot;
+using ros::Rate;
+using shadowrobot::SRDiagnosticer;
+using shadowrobot::SRArticulatedRobot;
 
 namespace shadowrobot
 {
@@ -165,7 +167,7 @@ namespace shadowrobot
     publish_rate.sleep();
   }
 
-}  // end namespace
+}  // namespace shadowrobot
 
 
 /* For the emacs weenies in the crowd.

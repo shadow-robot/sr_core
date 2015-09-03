@@ -33,7 +33,7 @@
 
 #include "sr_hand/hand/valves.h"
 
-using namespace shadowrobot;
+using shadowrobot::Valves;
 
 /////////////////////////////////
 //           MAIN              //

@@ -25,6 +25,8 @@
 
 #include "sr_hand/hand/virtual_arm.h"
 
+#include <string>
+#include <vector>
 #include <time.h>
 #include <ros/ros.h>
 
@@ -42,7 +44,7 @@ namespace shadowrobot
   {
 #ifdef GAZEBO
     ROS_INFO("This ROS interface is built for Gazebo.");
-   // initialises the subscriber to the Gazebo joint_states messages
+    // initialises the subscriber to the Gazebo joint_states messages
     std::string prefix;
     std::string searched_param;
     n_tilde = ros::NodeHandle("~");
@@ -88,7 +90,7 @@ namespace shadowrobot
 #ifdef GAZEBO
     full_topic = topic_prefix + "sa_ss_position_controller" + topic_suffix;
     gazebo_publishers.push_back(node.advertise<std_msgs::Float64>(full_topic, 2));
-    tmp_index ++;
+    ++tmp_index;
     tmpData.publisher_index = tmp_index;
 #endif
     joints_map["ShoulderJSwing"] = tmpData;
@@ -97,7 +99,7 @@ namespace shadowrobot
 #ifdef GAZEBO
     full_topic = topic_prefix + "sa_es_position_controller" + topic_suffix;
     gazebo_publishers.push_back(node.advertise<std_msgs::Float64>(full_topic, 2));
-    tmp_index ++;
+    ++tmp_index;
     tmpData.publisher_index = tmp_index;
 #endif
     joints_map["ElbowJSwing"] = tmpData;
@@ -106,7 +108,7 @@ namespace shadowrobot
 #ifdef GAZEBO
     full_topic = topic_prefix + "sa_er_position_controller" + topic_suffix;
     gazebo_publishers.push_back(node.advertise<std_msgs::Float64>(full_topic, 2));
-    tmp_index ++;
+    ++tmp_index;
     tmpData.publisher_index = tmp_index;
 #endif
     joints_map["ElbowJRotate"] = tmpData;
@@ -121,33 +123,34 @@ namespace shadowrobot
 #ifdef GAZEBO
     // if we're using Gazebo, we want to start with the elbow bent to 120
     // first we stop the physics
-     ros::ServiceClient gazebo_phys_client = node.serviceClient<std_srvs::Empty>("/gazebo/pause_physics");
-     std_srvs::Empty empty_srv;
-     gazebo_phys_client.waitForExistence();
-     gazebo_phys_client.call(empty_srv);
+    ros::ServiceClient gazebo_phys_client = node.serviceClient<std_srvs::Empty>("/gazebo/pause_physics");
+    std_srvs::Empty empty_srv;
+    gazebo_phys_client.waitForExistence();
+    gazebo_phys_client.call(empty_srv);
 
     // then we set the ElbowJSwing in the model pose (the model is called arm_and_hand)
-     ros::ServiceClient set_pos_client = node.serviceClient<gazebo_msgs::SetModelConfiguration>("/gazebo/set_model_configuration");
-     gazebo_msgs::SetModelConfiguration model_srv;
-     model_srv.request.model_name = "shadow_model";
-     model_srv.request.urdf_param_name = "robot_description";
-     model_srv.request.joint_names.push_back("ElbowJSwing");
-     model_srv.request.joint_positions.push_back(2.0);
+    ros::ServiceClient set_pos_client = node.serviceClient<gazebo_msgs::SetModelConfiguration>(
+            "/gazebo/set_model_configuration");
+    gazebo_msgs::SetModelConfiguration model_srv;
+    model_srv.request.model_name = "shadow_model";
+    model_srv.request.urdf_param_name = "robot_description";
+    model_srv.request.joint_names.push_back("ElbowJSwing");
+    model_srv.request.joint_positions.push_back(2.0);
 
-     set_pos_client.waitForExistence();
-     set_pos_client.call(model_srv);
+    set_pos_client.waitForExistence();
+    set_pos_client.call(model_srv);
 
     // sends the correct target to the controller
-     for (int i = 0; i < 500; ++i)
-     {
-       sendupdate("ElbowJSwing", 120.0);
-       sleep(.01);
-     }
+    for (int i = 0; i < 500; ++i)
+    {
+      sendupdate("ElbowJSwing", 120.0);
+      sleep(.01);
+    }
 
     // and now we restart the physics
-     gazebo_phys_client = node.serviceClient<std_srvs::Empty>("/gazebo/unpause_physics");
-     gazebo_phys_client.waitForExistence();
-     gazebo_phys_client.call(empty_srv);
+    gazebo_phys_client = node.serviceClient<std_srvs::Empty>("/gazebo/unpause_physics");
+    gazebo_phys_client.waitForExistence();
+    gazebo_phys_client.call(empty_srv);
 #endif
   }
 
@@ -203,11 +206,11 @@ namespace shadowrobot
     // joint found
     if (iter != joints_map.end())
     {
-      // return the position
-      iter->second.temperature = ((double) (rand() % 100) / 100.0);
-      iter->second.current = ((double) (rand() % 100) / 100.0);
+      // return 0s for absent sensors
+      iter->second.temperature = 0.0;
+      iter->second.current = 0.0;
 #ifndef GAZEBO
-      iter->second.force = ((double) (rand() % 100) / 100.0);
+      iter->second.force = 0.0;
 #endif
 
       JointData tmpData = JointData(iter->second);
@@ -229,10 +232,10 @@ namespace shadowrobot
     for (JointsMap::const_iterator it = joints_map.begin(); it != joints_map.end(); ++it)
     {
       JointData tmpData = it->second;
-      tmpData.temperature = ((double) (rand() % 100) / 100.0);
-      tmpData.current = ((double) (rand() % 100) / 100.0);
+      tmpData.temperature = 0.0;
+      tmpData.current = 0.0;
 #ifndef GAZEBO
-      tmpData.force = ((double) (rand() % 100) / 100.0);
+      tmpData.force = 0.0;
 #endif
       tmpData.jointIndex = 0;
       tmpData.flags = "";
@@ -293,28 +296,31 @@ namespace shadowrobot
   }
 
 #ifdef GAZEBO
-  void VirtualArm::gazeboCallback(const sensor_msgs::JointStateConstPtr& msg)
+  void VirtualArm::gazeboCallback(const sensor_msgs::JointStateConstPtr &msg)
   {
-      joints_map_mutex.lock();
-     // loop on all the names in the joint_states message
-      for(unsigned int index = 0; index < msg->name.size(); ++index)
+    joints_map_mutex.lock();
+    // loop on all the names in the joint_states message
+    for (unsigned int index = 0; index < msg->name.size(); ++index)
+    {
+      std::string joint_name = msg->name[index];
+      JointsMap::iterator iter = joints_map.find(joint_name);
+
+      // not found => can be a joint from the arm / hand
+      if (iter == joints_map.end())
       {
-          std::string joint_name = msg->name[index];
-          JointsMap::iterator iter = joints_map.find(joint_name);
-
-         // not found => can be a joint from the arm / hand
-          if(iter == joints_map.end())
-          continue;
-
-         // joint found
-          JointData tmpData(iter->second);
-
-          tmpData.position = toDegrees(msg->position[index]);
-          tmpData.force = msg->effort[index];
-
-          joints_map[joint_name] = tmpData;
+        continue;
       }
-      joints_map_mutex.unlock();
+
+      // joint found
+      JointData tmpData(iter->second);
+
+      tmpData.position = toDegrees(msg->position[index]);
+      tmpData.force = msg->effort[index];
+
+      joints_map[joint_name] = tmpData;
+    }
+    joints_map_mutex.unlock();
   }
+
 #endif
-}  // end namespace
+}  // namespace shadowrobot

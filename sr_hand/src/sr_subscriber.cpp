@@ -27,13 +27,15 @@
  */
 
 #include <iostream>
+#include <string>
+#include <vector>
 
 #include "sr_hand/sr_subscriber.h"
 #include <boost/algorithm/string.hpp>
 #include <sr_utilities/sr_math_utils.hpp>
-#include <boost/algorithm/string.hpp>
 
-using namespace std;
+using std::vector;
+using std::string;
 
 namespace shadowrobot
 {
@@ -104,9 +106,8 @@ namespace shadowrobot
       string sensor_name = msg->sendupdate_list[index_msg].joint_name;
 
       ROS_DEBUG("Received sendupdate Command [%s : %f]", sensor_name.c_str(), target);
-      sr_articulated_robot->sendupdate(sensor_name, (double) target);
+      sr_articulated_robot->sendupdate(sensor_name, static_cast<double>(target));
     }
-
   }
 
   void SRSubscriber::cmd_callback(const std_msgs::Float64ConstPtr &msg, std::string &joint_name)
@@ -117,7 +118,6 @@ namespace shadowrobot
 
   void SRSubscriber::contrlrCallback(const sr_robot_msgs::contrlrConstPtr &msg)
   {
-
     vector<string> list_of_parameters = msg->list_of_parameters;
 
     JointControllerData ctrl_data;
@@ -144,4 +144,4 @@ namespace shadowrobot
     ROS_ERROR("Configuration command callback not implemented yet");
   }
 
-}  // end namespace
+}  // namespace shadowrobot

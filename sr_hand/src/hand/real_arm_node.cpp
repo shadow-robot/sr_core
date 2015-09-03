@@ -37,9 +37,13 @@
 #include "sr_hand/sr_diagnosticer.h"
 #include "sr_hand/hand/real_arm.h"
 
-using namespace std;
-using namespace ros;
-using namespace shadowrobot;
+using ros::NodeHandle;
+using ros::ok;
+using shadowrobot::RealArm;
+using shadowrobot::SRDiagnosticer;
+using shadowrobot::SRSubscriber;
+using shadowrobot::SRPublisher;
+using shadowrobot::sr_arm_hardware;
 
 /////////////////////////////////
 //           MAIN              //

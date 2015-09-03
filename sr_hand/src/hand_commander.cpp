@@ -31,7 +31,13 @@
 #include <controller_manager_msgs/ListControllers.h>
 #include <sr_robot_msgs/sendupdate.h>
 #include <std_msgs/Float64.h>
+
 #include <boost/algorithm/string.hpp>
+#include <utility>
+#include <map>
+#include <string>
+#include <vector>
+
 
 namespace shadowrobot
 {
@@ -103,7 +109,7 @@ namespace shadowrobot
         if (node_.getParam(controller + "/joint", controlled_joint_name))
         {
           ROS_DEBUG("controller %d:%s controls joint %s\n",
-                    (int) i, controller.c_str(), controlled_joint_name.c_str());
+                    static_cast<int>(i), controller.c_str(), controlled_joint_name.c_str());
           sr_hand_target_pub_map[controlled_joint_name]
                   = node_.advertise<std_msgs::Float64>(controller + "/command", 2);
           ethercat_controllers_found = true;
@@ -229,7 +235,7 @@ namespace shadowrobot
 
     return topic;
   }
-}
+}  // namespace shadowrobot
 
 /* For the emacs weenies in the crowd.
 Local Variables:
