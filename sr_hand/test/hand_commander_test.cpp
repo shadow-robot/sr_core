@@ -49,11 +49,11 @@ TEST(HandCommander, topic_state)
   // get_controller_state_topic returns fully resolved topics
   ros::NodeHandle nh;
 
-  std::string topic = handcmd.get_controller_state_topic("ffj3");
-  EXPECT_EQ(nh.resolveName("sh_ffj3_position_controller/state"), topic);
+  std::string topic = handcmd.get_controller_state_topic("rh_ffj3");
+  EXPECT_EQ(nh.resolveName("sh_rh_ffj3_position_controller/state"), topic);
 
-  topic = handcmd.get_controller_state_topic("ffj0");
-  EXPECT_EQ(nh.resolveName("sh_ffj0_position_controller/state"), topic);
+  topic = handcmd.get_controller_state_topic("rh_ffj0");
+  EXPECT_EQ(nh.resolveName("sh_rh_ffj0_position_controller/state"), topic);
 
   topic = handcmd.get_controller_state_topic("unknown joint");
   EXPECT_EQ("", topic);
@@ -63,17 +63,17 @@ TEST(HandCommander, min_max)
 {
   HandCommander handcmd = HandCommander();
 
-  std::pair<double, double> min_max = handcmd.get_min_max("FFJ3");
+  std::pair<double, double> min_max = handcmd.get_min_max("rh_FFJ3");
   EXPECT_DOUBLE_EQ(min_max.first, 0.0);
   EXPECT_DOUBLE_EQ(min_max.second, 1.57079632679);
 
   // also works for lower case
-  min_max = handcmd.get_min_max("ffj3");
+  min_max = handcmd.get_min_max("rh_ffj3");
   EXPECT_DOUBLE_EQ(min_max.first, 0.0);
   EXPECT_DOUBLE_EQ(min_max.second, 1.57079632679);
 
   // j0 should be 0, 180
-  min_max = handcmd.get_min_max("ffj0");
+  min_max = handcmd.get_min_max("rh_ffj0");
   EXPECT_DOUBLE_EQ(min_max.first, 0.0);
   EXPECT_DOUBLE_EQ(min_max.second, 3.14159265358);
 
