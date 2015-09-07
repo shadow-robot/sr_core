@@ -100,8 +100,8 @@ TEST(ThreadSafeMapOneThread, initialization)
 
   EXPECT_EQ(map.keys().size(), 2);
 
-  EXPECT_STREQ("a", map.keys()[0]);
-  EXPECT_STREQ("b", map.keys()[1]);
+  EXPECT_STREQ(std::string("a").c_str(), std::string(map.keys()[0]).c_str());
+  EXPECT_STREQ(std::string("b").c_str(), std::string(map.keys()[1]).c_str());
 }
 
 TEST(ThreadSafeMapOneThread, update)
