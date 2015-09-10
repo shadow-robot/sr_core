@@ -325,9 +325,9 @@ namespace tactiles
     };
 
 
-    boost::array<unsigned int16_t, 12ul> distal;
-    boost::array<unsigned int16_t, 4ul> middle;
-    boost::array<unsigned int16_t, 4ul> proximal;
+    boost::array<uint16_t, 12ul> distal;
+    boost::array<uint16_t, 4ul> middle;
+    boost::array<uint16_t, 4ul> proximal;
   };
 
   class UBI0PalmData
@@ -349,7 +349,7 @@ namespace tactiles
     {
     };
 
-    boost::array<unsigned int16_t, 16ul> palm;
+    boost::array<uint16_t, 16ul> palm;
   };
 
   struct AllTactileData
