@@ -17,7 +17,7 @@
 #
 import rospy
 import rospkg
-
+from urdf_parser_py.urdf import URDF
 
 class HandControllerTuning(object):
     def __init__(self, mapping):
@@ -80,17 +80,33 @@ class HandJoints(object):
         """
 
         """
-        joints = ['FFJ1', 'FFJ2', 'FFJ3', 'FFJ4', 'MFJ1', 'MFJ2', 'MFJ3',
-                  'MFJ4', 'RFJ1', 'RFJ2', 'RFJ3', 'RFJ4', 'LFJ1', 'LFJ2',
-                  'LFJ3', 'LFJ4', 'LFJ5', 'THJ1', 'THJ2', 'THJ3', 'THJ4',
-                  'THJ5', 'WRJ1', 'WRJ2']
         self.joints = {}
         hand_joints = []
-        for hand in mapping:
-            for joint in joints:
-                hand_joints.append(mapping[hand] + '_' + joint)
-            self.joints[mapping[hand]] = hand_joints
 
+        if rospy.has_param('robot_description'):
+            robot_description = rospy.get_param('robot_description')
+            hand_urdf = URDF.from_xml_string(robot_description)
+            for hand in mapping:
+                self.joints[mapping[hand]] = []
+            for joint in hand_urdf.joints:
+                if joint.type != 'fixed':
+                    joint_prefix = joint.name[:2]
+                    if joint_prefix not in mapping.values():
+                        rospy.logerr("joint " + joint.name + "has invalid "
+                                     "prefix")
+                    else:
+                        self.joints[joint_prefix].append(joint.name)
+        else:
+            rospy.logwarn("No robot_description found on parameter server."
+                          "Joint names are loaded for 5 finger hand")
+            joints = ['FFJ1', 'FFJ2', 'FFJ3', 'FFJ4', 'MFJ1', 'MFJ2', 'MFJ3',
+                      'MFJ4', 'RFJ1', 'RFJ2', 'RFJ3', 'RFJ4', 'LFJ1', 'LFJ2',
+                      'LFJ3', 'LFJ4', 'LFJ5', 'THJ1', 'THJ2', 'THJ3', 'THJ4',
+                      'THJ5', 'WRJ1', 'WRJ2']
+            for hand in mapping:
+                for joint in joints:
+                    hand_joints.append(mapping[hand] + '_' + joint)
+                self.joints[mapping[hand]] = hand_joints
 
 class HandFinder(object):
     """
