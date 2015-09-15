@@ -93,8 +93,8 @@ class HandJoints(object):
                 if joint.type != 'fixed':
                     joint_prefix = joint.name[:2]
                     if joint_prefix not in mapping.values():
-                        rospy.logerr("joint " + joint.name + "has invalid "
-                                     "prefix")
+                        rospy.logdebug("joint " + joint.name + "has invalid "
+                                       "prefix")
                     else:
                         self.joints[joint_prefix].append(joint.name)
         else:
