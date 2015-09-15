@@ -20,8 +20,6 @@ import yaml
 import rospkg
 from controller_manager_msgs.srv import ListControllers
 from controller_manager_msgs.srv import SwitchController, LoadController
-from sr_robot_msgs.srv import ChangeControlType
-from sr_robot_msgs.msg import ControlType
 from sr_utilities.hand_finder import HandFinder
 
 
