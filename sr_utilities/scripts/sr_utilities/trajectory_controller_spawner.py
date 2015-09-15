@@ -20,6 +20,7 @@ import yaml
 import rospkg
 from sr_utilities.hand_finder import HandFinder
 
+
 class TrajectoryControllerSpawner(object):
     def __init__(self):
         self.hand_finder = HandFinder()
