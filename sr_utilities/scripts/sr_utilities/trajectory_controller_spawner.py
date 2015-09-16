@@ -133,7 +133,7 @@ class TrajectoryControllerSpawner(object):
 if __name__ == "__main__":
     rospy.init_node("generate_trajectory_controller_parameters")
 
-    if sys.argv[1] != 'true':
+    if len(sys.argv) >= 2 and sys.argv[1] != 'true':
         rospy.logfatal("bad stuff, very bad stuff")
         trajectory_spawner = TrajectoryControllerSpawner(trajectory=False)
     else:
