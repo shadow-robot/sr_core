@@ -18,6 +18,8 @@
 import rospy
 import yaml
 import rospkg
+from controller_manager_msgs.srv import ListControllers
+from controller_manager_msgs.srv import SwitchController, LoadController
 from sr_utilities.hand_finder import HandFinder
 
 
@@ -27,11 +29,11 @@ class TrajectoryControllerSpawner(object):
         self.joints = self.hand_finder.get_hand_joints()
         ros_pack = rospkg.RosPack()
         sr_robot_launch_path = ros_pack.get_path('sr_robot_launch')
-        hand_mapping = self.hand_finder.get_hand_parameters().mapping
+        self.hand_mapping = self.hand_finder.get_hand_parameters().mapping
         self.yaml_file_path = {}
-        for hand in hand_mapping:
-            self.yaml_file_path[hand_mapping[hand]] = (
-                sr_robot_launch_path + "/config/" + hand_mapping[hand] + "_trajectory_controller.yaml")
+        for hand in self.hand_mapping:
+            self.yaml_file_path[self.hand_mapping[hand]] = (
+                sr_robot_launch_path + "/config/" + self.hand_mapping[hand] + "_trajectory_controller.yaml")
 
     def generate_parameters(self):
         for hand in self.yaml_file_path:
@@ -63,8 +65,71 @@ class TrajectoryControllerSpawner(object):
                         rospy.set_param(constrain_prefix + constraint + '/trajectory',
                                         hand_trajectory['constraints'][constraint]['trajectory'])
 
+    @staticmethod
+    def check_joint(joint, controllers_to_start, controller_names):
+        if joint[3:5].lower() == 'th' or (joint[6] != '1' and joint[6] != '2'):
+            if 'sh_' + joint.lower() + "_position_controller" not in controller_names:
+                controllers_to_start.append('sh_' + joint.lower() + "_position_controller")
+        else:
+            joint = joint[:6] + '0'
+            joint_controller = 'sh_' + joint.lower() + "_position_controller"
+            if joint_controller not in controller_names and joint_controller not in controllers_to_start:
+                controllers_to_start.append(joint_controller)
+
+    def set_controller(self):
+        for hand_serial in self.hand_mapping:
+            hand_prefix = self.hand_mapping[hand_serial]
+            success = True
+            list_controllers = rospy.ServiceProxy(
+                'controller_manager/list_controllers', ListControllers)
+            try:
+                running_controllers = list_controllers()
+            except rospy.ServiceException:
+                success = False
+                rospy.logerr("Failed to load trajectory controller")
+            if success:
+                controllers_to_start = []
+                already_running = False
+                controller_names = []
+                for controller_state in running_controllers.controller:
+                    controller_names.append(controller_state.name)
+                    if controller_state.name == hand_prefix + '_trajectory_controller':
+                        already_running = True
+                if not already_running:
+                    controllers_to_start.append(hand_prefix + '_trajectory_controller')
+                for joint in self.joints[hand_prefix]:
+                    TrajectoryControllerSpawner.check_joint(joint, controllers_to_start, controller_names)
+
+        for load_control in controllers_to_start:
+            try:
+                load_controllers = rospy.ServiceProxy(
+                    'controller_manager/load_controller',
+                    LoadController)
+                loaded_controllers = load_controllers(load_control)
+            except rospy.ServiceException:
+                success = False
+            if not loaded_controllers.ok:
+                success = False
+
+        switch_controllers = rospy.ServiceProxy(
+            'controller_manager/switch_controller', SwitchController)
+        try:
+            switched_controllers = switch_controllers(
+                controllers_to_start, None,
+                SwitchController._request_class.BEST_EFFORT)
+        except rospy.ServiceException:
+            success = False
+
+        if not switched_controllers.ok:
+            success = False
+
+        if not success:
+            rospy.logerr(
+                "Failed to launch trajectory controller!")
+
 
 if __name__ == "__main__":
     rospy.init_node("generate_trajectory_controller_parameters")
     trajectory_spawner = TrajectoryControllerSpawner()
     trajectory_spawner.generate_parameters()
+    trajectory_spawner.set_controller()
