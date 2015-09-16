@@ -65,6 +65,18 @@ class TrajectoryControllerSpawner(object):
                         rospy.set_param(constrain_prefix + constraint + '/trajectory',
                                         hand_trajectory['constraints'][constraint]['trajectory'])
 
+    @staticmethod
+    def check_joint(joint, controllers_to_start, controller_names):
+        if joint[3:5].lower() == 'th' or (joint[6] != '1' and joint[6] != '2'):
+            if 'sh_' + joint.lower() + "_position_controller" not in controller_names:
+                controllers_to_start.append('sh_' + joint.lower() + "_position_controller")
+        else:
+            joint = joint[:6] + '0'
+            joint_controller = 'sh_' + joint.lower() + "_position_controller"
+            if joint_controller not in controller_names and joint_controller not in controllers_to_start:
+                controllers_to_start.append('sh_' + joint.lower() + "_position_controller")
+
+
     def set_controller(self):
         for hand_serial in self.hand_mapping:
             hand_prefix = self.hand_mapping[hand_serial]
@@ -79,11 +91,16 @@ class TrajectoryControllerSpawner(object):
             if success:
                 controllers_to_start = []
                 already_running = False
+                controller_names = []
                 for controller_state in running_controllers.controller:
+                    controller_names.append(controller_state.name)
                     if controller_state.name == hand_prefix + '_trajectory_controller':
                         already_running = True
                 if not already_running:
                     controllers_to_start.append(hand_prefix + '_trajectory_controller')
+                for joint in self.joints[hand_prefix]:
+                    TrajectoryControllerSpawner.check_joint(joint, controllers_to_start, controller_names)
+
 
         for load_control in controllers_to_start:
             try:
