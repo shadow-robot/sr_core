@@ -74,8 +74,7 @@ class TrajectoryControllerSpawner(object):
             joint = joint[:6] + '0'
             joint_controller = 'sh_' + joint.lower() + "_position_controller"
             if joint_controller not in controller_names and joint_controller not in controllers_to_start:
-                controllers_to_start.append('sh_' + joint.lower() + "_position_controller")
-
+                controllers_to_start.append(joint_controller)
 
     def set_controller(self):
         for hand_serial in self.hand_mapping:
@@ -100,7 +99,6 @@ class TrajectoryControllerSpawner(object):
                     controllers_to_start.append(hand_prefix + '_trajectory_controller')
                 for joint in self.joints[hand_prefix]:
                     TrajectoryControllerSpawner.check_joint(joint, controllers_to_start, controller_names)
-
 
         for load_control in controllers_to_start:
             try:
