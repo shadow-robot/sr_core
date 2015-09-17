@@ -275,7 +275,7 @@ namespace tactiles
 
     int tac;  // int16u in word[2]
     int tdc;  // int16u in word[2]
-    boost::array<int16_t, 19ul> electrodes;  // int16u in word[2]
+    std::vector<int16_t> electrodes;  // int16u in word[2]
   };
 
   class UBI0Data
