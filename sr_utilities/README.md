@@ -9,11 +9,9 @@ If only the position controllers are required, node can be run without the *hand
 *Examples:*  
 For trajectory and position controllers  
 ```bash
-rosparam set hand_trajectory true
-rosrun sr_utilities trajectory_controller_spawner.py
+rosrun sr_utilities trajectory_controller_spawner.py hand_trajectory:=true
 ``` 
 Spawns only the position controllers  
 ```bash
-rosparam set hand_trajectory false
-rosrun sr_utilities trajectory_controller_spawner.py
+rosrun sr_utilities trajectory_controller_spawner.py hand_trajectory:=false
 ```

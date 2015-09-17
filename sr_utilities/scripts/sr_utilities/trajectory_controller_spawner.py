@@ -131,6 +131,7 @@ class TrajectoryControllerSpawner(object):
 
 
 if __name__ == "__main__":
+    rospy.init_node("generate_trajectory_controller_parameters")
     if rospy.has_param("hand_trajectory") and rospy.get_param("hand_trajectory"):
         trajectory_spawner = TrajectoryControllerSpawner(trajectory=True)
     else:
