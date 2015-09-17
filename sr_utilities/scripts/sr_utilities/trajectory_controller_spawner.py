@@ -24,6 +24,7 @@ from controller_manager_msgs.srv import SwitchController, LoadController
 from sr_utilities.hand_finder import HandFinder
 WAIT_TIME = 60
 
+
 class TrajectoryControllerSpawner(object):
     def __init__(self, trajectory):
         self.trajectory = trajectory
