@@ -15,10 +15,10 @@
 # You should have received a copy of the GNU General Public License along
 # with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-import sys
 import rospy
 import yaml
 import rospkg
+import argparse
 from controller_manager_msgs.srv import ListControllers
 from controller_manager_msgs.srv import SwitchController, LoadController
 from sr_utilities.hand_finder import HandFinder
@@ -131,13 +131,15 @@ class TrajectoryControllerSpawner(object):
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("trajectory", nargs='?', default="true")
+    args = parser.parse_args()
     rospy.init_node("generate_trajectory_controller_parameters")
 
-    if len(sys.argv) >= 2 and sys.argv[1] != 'true':
-        rospy.logfatal("bad stuff, very bad stuff")
-        trajectory_spawner = TrajectoryControllerSpawner(trajectory=False)
-    else:
+    if args.trajectory == 'true':
         trajectory_spawner = TrajectoryControllerSpawner(trajectory=True)
+    else:
+        trajectory_spawner = TrajectoryControllerSpawner(trajectory=False)
 
     trajectory_spawner.generate_parameters()
     trajectory_spawner.set_controller()
