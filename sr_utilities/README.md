@@ -11,7 +11,7 @@ For trajectory and position controllers
 ```bash
 rosrun sr_utilities trajectory_controller_spawner.py
 ``` 
-To just spawn the position controllers  
+Spawns only the position controllers  
 ```bash
 rosrun sr_utilities trajectory_controller_spawner.py trajectory:=false
 ```
