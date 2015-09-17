@@ -18,7 +18,6 @@
 import rospy
 import yaml
 import rospkg
-import argparse
 from controller_manager_msgs.srv import ListControllers
 from controller_manager_msgs.srv import SwitchController, LoadController
 from sr_utilities.hand_finder import HandFinder
@@ -132,15 +131,10 @@ class TrajectoryControllerSpawner(object):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("trajectory", nargs='?', default="true")
-    args = parser.parse_args()
-    rospy.init_node("generate_trajectory_controller_parameters")
-
-    if args.trajectory == 'true':
-        trajectory_spawner = TrajectoryControllerSpawner(trajectory=True)
-    else:
+    if rospy.has_param("no_trajectory") and rospy.get_param("no_trajectory"):
         trajectory_spawner = TrajectoryControllerSpawner(trajectory=False)
+    else:
+        trajectory_spawner = TrajectoryControllerSpawner(trajectory=True)
 
     trajectory_spawner.generate_parameters()
     trajectory_spawner.set_controller()
