@@ -29,6 +29,7 @@ xmlr.add_type('element_xyz', xmlr.SimpleElementType('xyz', 'vector3'))
 
 verbose = True
 
+
 class Pose(xmlr.Object):
     def __init__(self, xyz=None, rpy=None):
         self.xyz = xyz
@@ -39,26 +40,32 @@ class Pose(xmlr.Object):
 
     # Aliases for backwards compatibility
     @property
-    def rotation(self): return self.rpy
+    def rotation(self):
+        return self.rpy
 
     @rotation.setter
-    def rotation(self, value): self.rpy = value
+    def rotation(self, value):
+        self.rpy = value
 
     @property
-    def position(self): return self.xyz
+    def position(self):
+        return self.xyz
 
     @position.setter
-    def position(self, value): self.xyz = value
+    def position(self, value):
+        self.xyz = value
+
 
 xmlr.reflect(Pose, params=[
     xmlr.Attribute('xyz', 'vector3', False),
     xmlr.Attribute('rpy', 'vector3', False)
-    ])
+])
 
 
 # Common stuff
 name_attribute = xmlr.Attribute('name', str)
 origin_element = xmlr.Element('origin', Pose, False)
+
 
 class Color(xmlr.Object):
     def __init__(self, *args):
@@ -76,9 +83,10 @@ class Color(xmlr.Object):
             if len(self.rgba) != 4:
                 raise Exception('Invalid color argument count')
 
+
 xmlr.reflect(Color, params=[
     xmlr.Attribute('rgba', 'vector4')
-    ])
+])
 
 
 class JointDynamics(xmlr.Object):
@@ -86,50 +94,55 @@ class JointDynamics(xmlr.Object):
         self.damping = damping
         self.friction = friction
 
-xmlr.reflect(JointDynamics, params = [
+
+xmlr.reflect(JointDynamics, params=[
     xmlr.Attribute('damping', float, False),
     xmlr.Attribute('friction', float, False)
-    ])
+])
 
 
 class Box(xmlr.Object):
-    def __init__(self, size = None):
+    def __init__(self, size=None):
         self.size = size
+
 
 xmlr.reflect(Box, params=[
     xmlr.Attribute('size', 'vector3')
-    ])
+])
 
 
 class Cylinder(xmlr.Object):
-    def __init__(self, radius = 0.0, length = 0.0):
+    def __init__(self, radius=0.0, length=0.0):
         self.radius = radius
         self.length = length
+
 
 xmlr.reflect(Cylinder, params=[
     xmlr.Attribute('radius', float),
     xmlr.Attribute('length', float)
-    ])
+])
 
 
 class Sphere(xmlr.Object):
     def __init__(self, radius=0.0):
         self.radius = radius
 
+
 xmlr.reflect(Sphere, params=[
     xmlr.Attribute('radius', float)
-    ])
+])
 
 
 class Mesh(xmlr.Object):
-    def __init__(self, filename = None, scale = None):
+    def __init__(self, filename=None, scale=None):
         self.filename = filename
         self.scale = scale
+
 
 xmlr.reflect(Mesh, params=[
     xmlr.Attribute('filename', str),
     xmlr.Attribute('scale', 'vector3', required=False)
-    ])
+])
 
 
 class GeometricType(xmlr.ValueType):
@@ -139,7 +152,7 @@ class GeometricType(xmlr.ValueType):
             'cylinder': Cylinder,
             'sphere': Sphere,
             'mesh': Mesh
-            })
+        })
 
     def from_xml(self, node):
         children = xml_children(node)
@@ -151,26 +164,30 @@ class GeometricType(xmlr.ValueType):
         child = node_add(node, name)
         obj.write_xml(child)
 
+
 xmlr.add_type('geometric', GeometricType())
 
+
 class Collision(xmlr.Object):
-    def __init__(self, geometry = None, origin = None):
+    def __init__(self, geometry=None, origin=None):
         self.geometry = geometry
         self.origin = origin
 
-xmlr.reflect(Collision, params = [
+
+xmlr.reflect(Collision, params=[
     origin_element,
     xmlr.Element('geometry', 'geometric')
-    ])
+])
 
 
 class Texture(xmlr.Object):
-    def __init__(self, filename = None):
+    def __init__(self, filename=None):
         self.filename = filename
 
-xmlr.reflect(Texture, params = [
+
+xmlr.reflect(Texture, params=[
     xmlr.Attribute('filename', str)
-    ])
+])
 
 
 class Material(xmlr.Object):
@@ -183,24 +200,26 @@ class Material(xmlr.Object):
         if self.color is None and self.texture is None:
             xmlr.on_error("Material has neither a color nor texture")
 
-xmlr.reflect(Material, params = [
+
+xmlr.reflect(Material, params=[
     name_attribute,
     xmlr.Element('color', Color, False),
     xmlr.Element('texture', Texture, False)
-    ])
+])
 
 
 class Visual(xmlr.Object):
-    def __init__(self, geometry = None, material = None, origin = None):
+    def __init__(self, geometry=None, material=None, origin=None):
         self.geometry = geometry
         self.material = material
         self.origin = origin
 
-xmlr.reflect(Visual, params = [
+
+xmlr.reflect(Visual, params=[
     origin_element,
     xmlr.Element('geometry', 'geometric'),
     xmlr.Element('material', Material, False)
-    ])
+])
 
 
 class Inertia(xmlr.Object):
@@ -220,33 +239,36 @@ class Inertia(xmlr.Object):
             [self.ixy, self.iyy, self.iyz],
             [self.ixz, self.iyz, self.izz]]
 
-xmlr.reflect(Inertia, params = [xmlr.Attribute(key, float) for key in Inertia.KEYS])
+
+xmlr.reflect(Inertia, params=[xmlr.Attribute(key, float) for key in Inertia.KEYS])
 
 
 class Inertial(xmlr.Object):
-    def __init__(self, mass = 0.0, inertia = None, origin=None):
+    def __init__(self, mass=0.0, inertia=None, origin=None):
         self.mass = mass
         self.inertia = inertia
         self.origin = origin
 
-xmlr.reflect(Inertial, params = [
+
+xmlr.reflect(Inertial, params=[
     origin_element,
     xmlr.Element('mass', 'element_value'),
     xmlr.Element('inertia', Inertia, False)
-    ])
+])
 
 
-
-#FIXME: we are missing the reference position here.
+# FIXME: we are missing the reference position here.
 class JointCalibration(xmlr.Object):
     def __init__(self, rising=None, falling=None):
         self.rising = rising
         self.falling = falling
 
-xmlr.reflect(JointCalibration, params = [
+
+xmlr.reflect(JointCalibration, params=[
     xmlr.Attribute('rising', float),
     xmlr.Attribute('falling', float)
-    ])
+])
+
 
 class JointLimit(xmlr.Object):
     def __init__(self, effort=None, velocity=None, lower=None, upper=None):
@@ -255,25 +277,29 @@ class JointLimit(xmlr.Object):
         self.lower = lower
         self.upper = upper
 
-xmlr.reflect(JointLimit, params = [
+
+xmlr.reflect(JointLimit, params=[
     xmlr.Attribute('effort', float),
     xmlr.Attribute('lower', float, False, 0),
     xmlr.Attribute('upper', float, False, 0),
     xmlr.Attribute('velocity', float)
-    ])
+])
 
-#FIXME: we are missing __str__ here.
+
+# FIXME: we are missing __str__ here.
 class JointMimic(xmlr.Object):
     def __init__(self, joint_name=None, multiplier=None, offset=None):
         self.joint = joint_name
         self.multiplier = multiplier
         self.offset = offset
 
-xmlr.reflect(JointMimic, params = [
+
+xmlr.reflect(JointMimic, params=[
     xmlr.Attribute('joint', str),
     xmlr.Attribute('multiplier', float, False),
     xmlr.Attribute('offset', float, False)
-    ])
+])
+
 
 class SafetyController(xmlr.Object):
     def __init__(self, velocity=None, position=None, lower=None, upper=None):
@@ -282,20 +308,22 @@ class SafetyController(xmlr.Object):
         self.soft_lower_limit = lower
         self.soft_upper_limit = upper
 
-xmlr.reflect(SafetyController, params = [
+
+xmlr.reflect(SafetyController, params=[
     xmlr.Attribute('k_velocity', float),
     xmlr.Attribute('k_position', float, False, 0),
     xmlr.Attribute('soft_lower_limit', float, False, 0),
     xmlr.Attribute('soft_upper_limit', float, False, 0)
-    ])
+])
+
 
 class Joint(xmlr.Object):
     TYPES = ['unknown', 'revolute', 'continuous', 'prismatic', 'floating', 'planar', 'fixed']
 
     def __init__(self, name=None, parent=None, child=None, joint_type=None,
-            axis=None, origin=None,
-            limit=None, dynamics=None, safety_controller=None, calibration=None,
-            mimic=None, hardwareInterface = None):
+                 axis=None, origin=None,
+                 limit=None, dynamics=None, safety_controller=None, calibration=None,
+                 mimic=None, hardwareInterface=None):
         self.name = name
         self.parent = parent
         self.child = child
@@ -315,10 +343,12 @@ class Joint(xmlr.Object):
     # Aliases
     @property
     def joint_type(self): return self.type
+
     @joint_type.setter
     def joint_type(self, value): self.type = value
 
-xmlr.reflect(Joint, params = [
+
+xmlr.reflect(Joint, params=[
     name_attribute,
     xmlr.Attribute('type', str),
     origin_element,
@@ -330,74 +360,81 @@ xmlr.reflect(Joint, params = [
     xmlr.Element('safety_controller', SafetyController, False),
     xmlr.Element('calibration', JointCalibration, False),
     xmlr.Element('mimic', JointMimic, False),
-    xmlr.Element('hardwareInterface', str, required= False)
-    ])
+    xmlr.Element('hardwareInterface', str, required=False)
+])
 
 
 class Link(xmlr.Object):
-    def __init__(self, name=None, visual=None, inertial=None, collision=None, origin = None):
+    def __init__(self, name=None, visual=None, inertial=None, collision=None, origin=None):
         self.name = name
         self.visual = visual
         self.inertial = inertial
         self.collision = collision
         self.origin = origin
 
-xmlr.reflect(Link, params = [
+
+xmlr.reflect(Link, params=[
     name_attribute,
     origin_element,
     xmlr.Element('inertial', Inertial, False),
     xmlr.Element('visual', Visual, False),
     xmlr.Element('collision', Collision, False)
-    ])
+])
 
 
 class PR2Transmission(xmlr.Object):
-    def __init__(self, name = None, joint = None, actuator = None, type = None, mechanicalReduction = 1):
+    def __init__(self, name=None, joint=None, actuator=None, type=None, mechanicalReduction=1):
         self.name = name
         self.type = type
         self.joint = joint
         self.actuator = actuator
         self.mechanicalReduction = mechanicalReduction
 
-xmlr.reflect(PR2Transmission, tag = 'pr2_transmission', params = [
+
+xmlr.reflect(PR2Transmission, tag='pr2_transmission', params=[
     name_attribute,
     xmlr.Attribute('type', str),
     xmlr.Element('joint', 'element_name'),
     xmlr.Element('actuator', 'element_name'),
     xmlr.Element('mechanicalReduction', float)
-    ])
+])
 
 
 class Actuator(xmlr.Object):
-    def __init__(self, name = None, hardwareInterface = None, mechanicalReduction = 1):
+    def __init__(self, name=None, hardwareInterface=None, mechanicalReduction=1):
         self.name = name
         self.hardwareInterface = None
         self.mechanicalReduction = None
 
-xmlr.reflect(Actuator, tag = 'actuator', params = [
-        name_attribute,
-        xmlr.Element('hardwareInterface', str, required = False),
-        xmlr.Element('mechanicalReduction', float, required = False)
-        ])
+
+xmlr.reflect(Actuator, tag='actuator', params=[
+    name_attribute,
+    xmlr.Element('hardwareInterface', str, required=False),
+    xmlr.Element('mechanicalReduction', float, required=False)
+])
+
 
 class Transmission(xmlr.Object):
     """ New format: http://wiki.ros.org/urdf/XML/Transmission """
-    def __init__(self, name = None, joint = None, actuator = None):
+
+    def __init__(self, name=None, joint=None, actuator=None):
         self.name = name
         self.joint = joint
         self.actuator = actuator
 
-xmlr.reflect(Transmission, tag = 'new_transmission', params = [
-        name_attribute,
-        xmlr.Element('type', str),
-        xmlr.Element('joint', 'element_name'),
-        xmlr.Element('actuator', Actuator)
-        ])
+
+xmlr.reflect(Transmission, tag='new_transmission', params=[
+    name_attribute,
+    xmlr.Element('type', str),
+    xmlr.Element('joint', 'element_name'),
+    xmlr.Element('actuator', Actuator)
+])
 
 xmlr.add_type('transmission', xmlr.DuckTypedFactory('transmission', [Transmission, PR2Transmission]))
 
+
 class Robot(xmlr.Object):
-    def __init__(self, name = None):
+    def __init__(self, name=None):
         self.aggregate_init()
 
         self.name = name
@@ -419,11 +456,11 @@ class Robot(xmlr.Object):
         if typeName == 'joint':
             joint = elem
             self.joint_map[joint.name] = joint
-            self.parent_map[ joint.child ] = (joint.name, joint.parent)
+            self.parent_map[joint.child] = (joint.name, joint.parent)
             if joint.parent in self.child_map:
-                self.child_map[joint.parent].append( (joint.name, joint.child) )
+                self.child_map[joint.parent].append((joint.name, joint.child))
             else:
-                self.child_map[joint.parent] = [ (joint.name, joint.child) ]
+                self.child_map[joint.parent] = [(joint.name, joint.child)]
         elif typeName == 'link':
             link = elem
             self.link_map[link.name] = link
@@ -460,7 +497,7 @@ class Robot(xmlr.Object):
         return root
 
     @classmethod
-    def from_parameter_server(cls, key = 'robot_description'):
+    def from_parameter_server(cls, key='robot_description'):
         """
         Retrieve the robot model on the parameter server
         and parse it to create a URDF robot structure.
@@ -469,17 +506,19 @@ class Robot(xmlr.Object):
         """
         # Could move this into xml_reflection
         import rospy
+
         return cls.from_xml_string(rospy.get_param(key))
 
-xmlr.reflect(Robot, tag = 'robot', params = [
-#     name_attribute,
-    xmlr.Attribute('name', str, False), # Is 'name' a required attribute?
+
+xmlr.reflect(Robot, tag='robot', params=[
+    #  name_attribute,
+    xmlr.Attribute('name', str, False),  # Is 'name' a required attribute?
     xmlr.AggregateElement('link', Link),
     xmlr.AggregateElement('joint', Joint),
     xmlr.AggregateElement('gazebo', xmlr.RawType()),
-     xmlr.AggregateElement('transmission', 'transmission'),
+    xmlr.AggregateElement('transmission', 'transmission'),
     xmlr.AggregateElement('material', Material)
-    ])
+])
 
 # Make an alias
 URDF = Robot
