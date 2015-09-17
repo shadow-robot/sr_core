@@ -22,7 +22,7 @@ import argparse
 from controller_manager_msgs.srv import ListControllers
 from controller_manager_msgs.srv import SwitchController, LoadController
 from sr_utilities.hand_finder import HandFinder
-
+WAIT_TIME = 60
 
 class TrajectoryControllerSpawner(object):
     def __init__(self, trajectory):
@@ -85,7 +85,7 @@ class TrajectoryControllerSpawner(object):
             hand_prefix = self.hand_mapping[hand_serial]
             success = True
             try:
-                rospy.wait_for_service('controller_manager/list_controllers', 60)
+                rospy.wait_for_service('controller_manager/list_controllers', WAIT_TIME)
                 list_controllers = rospy.ServiceProxy(
                     'controller_manager/list_controllers', ListControllers)
 
@@ -107,7 +107,7 @@ class TrajectoryControllerSpawner(object):
 
         for load_control in controllers_to_start:
             try:
-                rospy.wait_for_service('controller_manager/load_controller', 60)
+                rospy.wait_for_service('controller_manager/load_controller', WAIT_TIME)
                 load_controllers = rospy.ServiceProxy('controller_manager/load_controller', LoadController)
                 loaded_controllers = load_controllers(load_control)
             except rospy.ServiceException:
@@ -116,7 +116,7 @@ class TrajectoryControllerSpawner(object):
                 success = False
 
         try:
-            rospy.wait_for_service('controller_manager/switch_controller', 60)
+            rospy.wait_for_service('controller_manager/switch_controller', WAIT_TIME)
             switch_controllers = rospy.ServiceProxy('controller_manager/switch_controller', SwitchController)
             switched_controllers = switch_controllers(controllers_to_start, None,
                                                       SwitchController._request_class.BEST_EFFORT)
