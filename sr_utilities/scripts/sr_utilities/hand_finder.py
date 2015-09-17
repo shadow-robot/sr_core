@@ -17,7 +17,7 @@
 #
 import rospy
 import rospkg
-from urdf_parser_py.urdf import URDF
+from local_urdf_parser_py import URDF
 
 
 class HandControllerTuning(object):
