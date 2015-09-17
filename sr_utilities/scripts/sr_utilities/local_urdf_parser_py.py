@@ -342,10 +342,12 @@ class Joint(xmlr.Object):
 
     # Aliases
     @property
-    def joint_type(self): return self.type
+    def joint_type(self):
+        return self.type
 
     @joint_type.setter
-    def joint_type(self, value): self.type = value
+    def joint_type(self, value):
+        self.type = value
 
 
 xmlr.reflect(Joint, params=[
