@@ -59,7 +59,6 @@ def main():
         imustatus = True
 
     controllers = calibrate_class.generate_controllers()
-    rospy.logfatal(controllers)
 
     if not calibrate_class.calibrate(controllers):
         sys.exit(3)
