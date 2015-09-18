@@ -19,6 +19,8 @@ import sys
 import rospy
 from ros_ethercat_model.calibrate_class import Calibrate
 from sr_utilities.hand_finder import HandFinder
+
+
 class CalibrateWithHand(Calibrate):
 
     @staticmethod
@@ -39,13 +41,14 @@ class CalibrateWithHand(Calibrate):
                     controllers.append(joint_controller)
         return controllers
 
+
 def main():
     if rospy.is_shutdown():
         return
 
     rospy.init_node('calibration', anonymous=True)
 
-    calibrate_class = Calibrate()
+    calibrate_class = CalibrateWithHand()
     calibrate_class.pub_calibrated.publish(False)
     # Don't calibrate the IMU unless ordered to by user
     cal_imu = rospy.get_param('calibrate_imu', False)
@@ -55,7 +58,8 @@ def main():
     else:
         imustatus = True
 
-    controllers = rospy.myargv()[1:]
+    controllers = calibrate_class.generate_controllers()
+    rospy.logfatal(controllers)
 
     if not calibrate_class.calibrate(controllers):
         sys.exit(3)
