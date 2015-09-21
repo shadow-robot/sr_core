@@ -81,8 +81,18 @@ class HandJoints(object):
         """
 
         """
+        joints_tmp = []
         self.joints = {}
         hand_joints = []
+
+        joints = ['FFJ1', 'FFJ2', 'FFJ3', 'FFJ4', 'MFJ1', 'MFJ2', 'MFJ3',
+                  'MFJ4', 'RFJ1', 'RFJ2', 'RFJ3', 'RFJ4', 'LFJ1', 'LFJ2',
+                  'LFJ3', 'LFJ4', 'LFJ5', 'THJ1', 'THJ2', 'THJ3', 'THJ4',
+                  'THJ5', 'WRJ1', 'WRJ2']
+
+        for hand in mapping:
+            for joint in joints:
+                hand_joints.append(mapping[hand] + '_' + joint)
 
         if rospy.has_param('robot_description'):
             robot_description = rospy.get_param('robot_description')
@@ -96,18 +106,16 @@ class HandJoints(object):
                         rospy.logdebug("joint " + joint.name + "has invalid "
                                        "prefix")
                     else:
-                        self.joints[joint_prefix].append(joint.name)
+                        joints_tmp.append(joint.name)
+            for joint_unordered in hand_joints:
+                if joint_unordered in joints_tmp:
+                    self.joints[joint_prefix].append(joint_unordered)
+
         else:
             rospy.logwarn("No robot_description found on parameter server."
                           "Joint names are loaded for 5 finger hand")
-            joints = ['FFJ1', 'FFJ2', 'FFJ3', 'FFJ4', 'MFJ1', 'MFJ2', 'MFJ3',
-                      'MFJ4', 'RFJ1', 'RFJ2', 'RFJ3', 'RFJ4', 'LFJ1', 'LFJ2',
-                      'LFJ3', 'LFJ4', 'LFJ5', 'THJ1', 'THJ2', 'THJ3', 'THJ4',
-                      'THJ5', 'WRJ1', 'WRJ2']
-            for hand in mapping:
-                for joint in joints:
-                    hand_joints.append(mapping[hand] + '_' + joint)
-                self.joints[mapping[hand]] = hand_joints
+
+            self.joints[mapping[hand]] = hand_joints
 
 
 class HandFinder(object):
