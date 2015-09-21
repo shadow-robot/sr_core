@@ -354,6 +354,7 @@ namespace tactiles
 
   struct AllTactileData
   {
+    std::string type;
     BiotacData biotac;
     PST3Data pst;
     UBI0Data ubi0;
