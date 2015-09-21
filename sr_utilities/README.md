@@ -15,3 +15,7 @@ Spawns only the position controllers
 ```bash
 rosrun sr_utilities trajectory_controller_spawner.py _hand_trajectory:=false
 ```
+In some cases it may be better to control the wrist joints with the arm trajectory. 
+To remove the joints from the hand trajectory set a private parameter *~exclude_wrist* to true.
+```bash
+rosrun sr_utilities trajectory_controller_spawner.py _exclude_wrist:=true
