@@ -108,6 +108,7 @@ class TrajectoryControllerSpawner(object):
                     no_wrist = True
                 for joint in self.joints[hand_prefix]:
                     TrajectoryControllerSpawner.check_joint(joint, controllers_to_start, controller_names, no_wrist)
+
         for load_control in controllers_to_start:
             try:
                 rospy.wait_for_service('controller_manager/load_controller', WAIT_TIME)
