@@ -81,7 +81,6 @@ class HandJoints(object):
         """
 
         """
-        joints_tmp = []
         self.joints = {}
         hand_joints = []
 
@@ -98,18 +97,19 @@ class HandJoints(object):
             robot_description = rospy.get_param('robot_description')
             hand_urdf = URDF.from_xml_string(robot_description)
             for hand in mapping:
+                joints_tmp = []
                 self.joints[mapping[hand]] = []
-            for joint in hand_urdf.joints:
-                if joint.type != 'fixed':
-                    joint_prefix = joint.name[:2]
-                    if joint_prefix not in mapping.values():
-                        rospy.logdebug("joint " + joint.name + "has invalid "
-                                       "prefix")
-                    else:
-                        joints_tmp.append(joint.name)
-            for joint_unordered in hand_joints:
-                if joint_unordered in joints_tmp:
-                    self.joints[joint_prefix].append(joint_unordered)
+                for joint in hand_urdf.joints:
+                    if joint.type != 'fixed':
+                        joint_prefix = joint.name[:2]
+                        if joint_prefix not in mapping.values():
+                            rospy.logdebug("joint " + joint.name + "has invalid "
+                                           "prefix")
+                        elif joint_prefix == mapping[hand]:
+                            joints_tmp.append(joint.name)
+                for joint_unordered in hand_joints:
+                    if joint_unordered in joints_tmp:
+                        self.joints[mapping[hand]].append(joint_unordered)
 
         else:
             rospy.logwarn("No robot_description found on parameter server."
