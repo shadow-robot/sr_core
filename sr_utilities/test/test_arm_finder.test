@@ -1,0 +1,4 @@
+<launch>
+  <test test-name="test_arm_finder_cpp" pkg="sr_utilities" type="test_arm_finder"/>
+  <test test-name="test_arm_finder_py" pkg="sr_utilities" type="test_arm_finder.py" />
+</launch>

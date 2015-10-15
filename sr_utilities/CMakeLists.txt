@@ -21,6 +21,7 @@ catkin_package(
 add_library(sr_calibration src/calibration.cpp)
 add_dependencies(sr_calibration sr_utilities_gencpp ${catkin_EXPORTED_TARGETS})
 add_library(sr_hand_finder src/sr_hand_finder.cpp)
+add_library(sr_arm_finder src/sr_arm_finder.cpp)
 
 catkin_add_gtest(test_calibration test/test_calibration.cpp src/calibration.cpp)
 target_link_libraries(test_calibration ${catkin_LIBRARIES})
@@ -37,6 +38,10 @@ if (CATKIN_ENABLE_TESTING)
     add_rostest_gtest(test_hand_finder test/test_hand_finder.test test/test_hand_finder.cpp)
     add_dependencies(test_hand_finder sr_utilities_gencpp ${catkin_EXPORTED_TARGETS})
     target_link_libraries(test_hand_finder sr_hand_finder ${catkin_LIBRARIES})
+
+    add_rostest_gtest(test_arm_finder test/test_arm_finder.test test/test_arm_finder.cpp)
+    add_dependencies(test_arm_finder sr_utilities_gencpp ${catkin_EXPORTED_TARGETS})
+    target_link_libraries(test_arm_finder sr_arm_finder ${catkin_LIBRARIES})
 endif ()
 install(DIRECTORY include/${PROJECT_NAME}/
         DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
