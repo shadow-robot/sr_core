@@ -58,8 +58,6 @@ def main():
     else:
         imustatus = True
 
-
-
     if not calibrate_class.calibrate(controllers):
         sys.exit(3)
 
