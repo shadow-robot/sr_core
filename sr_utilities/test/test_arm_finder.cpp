@@ -11,7 +11,7 @@
 
 TEST(SrArmFinder, failure_test)
 {
-  ASSERT_TRUE(false)
+  ASSERT_TRUE(false);
 }
 
 int main(int argc, char **argv)
