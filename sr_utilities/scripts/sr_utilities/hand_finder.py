@@ -77,6 +77,15 @@ class HandConfig(object):
 
 
 class HandJoints(object):
+
+    @classmethod
+    def get_default_joints(cls):
+        joints = ['FFJ1', 'FFJ2', 'FFJ3', 'FFJ4', 'MFJ1', 'MFJ2', 'MFJ3',
+                  'MFJ4', 'RFJ1', 'RFJ2', 'RFJ3', 'RFJ4', 'LFJ1', 'LFJ2',
+                  'LFJ3', 'LFJ4', 'LFJ5', 'THJ1', 'THJ2', 'THJ3', 'THJ4',
+                  'THJ5', 'WRJ1', 'WRJ2']
+        return joints
+
     def __init__(self, mapping):
         """
 
@@ -84,10 +93,7 @@ class HandJoints(object):
         self.joints = {}
         hand_joints = []
 
-        joints = ['FFJ1', 'FFJ2', 'FFJ3', 'FFJ4', 'MFJ1', 'MFJ2', 'MFJ3',
-                  'MFJ4', 'RFJ1', 'RFJ2', 'RFJ3', 'RFJ4', 'LFJ1', 'LFJ2',
-                  'LFJ3', 'LFJ4', 'LFJ5', 'THJ1', 'THJ2', 'THJ3', 'THJ4',
-                  'THJ5', 'WRJ1', 'WRJ2']
+        joints = self.get_default_joints()
 
         for hand in mapping:
             for joint in joints:
