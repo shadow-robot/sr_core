@@ -30,6 +30,12 @@
 namespace shadow_robot
 {
 
+  struct ArmConfig
+  {
+    std::map<std::string, std::string> mapping_;
+    std::map<std::string, std::string> joint_prefix_;
+  };
+
   class SrArmFinder
   {
   public:

@@ -7,7 +7,7 @@
  */
 #include <gtest/gtest.h>
 #include "ros/ros.h"
-#include "sr_utilities/sr_arm_finder.h"
+#include "sr_utilities/sr_arm_finder.hpp"
 
 TEST(SrArmFinder, failure_test)
 {

@@ -19,7 +19,7 @@
 * @brief see README.md
 */
 
-#include "sr_utilities/sr_arm_finder.h"
+#include "sr_utilities/sr_arm_finder.hpp"
 #include "ros/ros.h"
 #include <vector>
 #include <string>
