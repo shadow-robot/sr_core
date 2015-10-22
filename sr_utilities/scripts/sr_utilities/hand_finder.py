@@ -72,7 +72,13 @@ class HandConfig(object):
         """
 
         """
-        self.mapping = mapping
+        # handle possibly empty mapping
+        self.mapping = {}
+        for serial_id in mapping:
+            if mapping[serial_id] == '':
+                self.mapping[serial_id] = str(serial_id)
+            else:
+                self.mapping[serial_id] = mapping[serial_id]
         self.joint_prefix = joint_prefix
 
 

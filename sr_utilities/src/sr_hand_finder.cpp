@@ -93,7 +93,7 @@ void SrHandFinder::generate_joints_with_prefix()
         hand_joints.insert(hand.second + default_joint_name);
       }
     }
-std::string robot_description;
+    std::string robot_description;
     ros::param::get("robot_description", robot_description);
     const boost::shared_ptr<ModelInterface> hand_urdf = urdf::parseURDF(robot_description);
     BOOST_FOREACH(hand, hand_config_.joint_prefix_)
