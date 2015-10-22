@@ -31,119 +31,119 @@
 
 namespace sr_deadband
 {
+/**
+ * A simple deadband : returns true if the demand is
+ * in the deadband.
+ *
+ * @param value is this value in the deadband?
+ * @param deadband the width of the deadband (the deadband is symetric)
+ *
+ * @return true if the demand is in the deadband
+ */
+
+template<class T>
+static inline bool simple_deadband(T value, T deadband)
+{
+  return (fabs(value) > deadband);
+}
+
+template<class T>
+class HysteresisDeadband
+{
+public:
   /**
-   * A simple deadband : returns true if the demand is
-   * in the deadband.
-   *
-   * @param value is this value in the deadband?
-   * @param deadband the width of the deadband (the deadband is symetric)
-   *
-   * @return true if the demand is in the deadband
+   * Hysteresis deadband: we average the last N errors. If this average is less
+   * than a small deadband, we "enter the deadband zone" and send only a command
+   * of zero to the motor. We leave the deadband zone if the average of the error
+   * is getting bigger than x*deadband, or if we receive a new command.
    */
-
-  template<class T>
-  static inline bool simple_deadband(T value, T deadband)
+  HysteresisDeadband() :
+          last_demand(static_cast<T>(0.0)), entered_small_deadband(false)
   {
-    return (fabs(value) > deadband);
-  }
+  };
 
-  template<class T>
-  class HysteresisDeadband
+  ~HysteresisDeadband()
   {
-  public:
-    /**
-     * Hysteresis deadband: we average the last N errors. If this average is less
-     * than a small deadband, we "enter the deadband zone" and send only a command
-     * of zero to the motor. We leave the deadband zone if the average of the error
-     * is getting bigger than x*deadband, or if we receive a new command.
-     */
-    HysteresisDeadband() :
-            last_demand(static_cast<T>(0.0)), entered_small_deadband(false)
-    {
-    };
+  };
 
-    ~HysteresisDeadband()
-    {
-    };
+  /**
+   * Are we in the hysteresis deadband? If we are in it, then we're just
+   * sending a force demand of 0.
+   *
+   * @param demand The demand
+   * @param error The error (demand - actual value)
+   * @param deadband the deadband value
+   * @param deadband_multiplicator the value by which we multiply the deadband
+   *                               to have the bigger deadband against which we
+   *                               check for leaving the deadband zone
+   * @param nb_errors_for_avg the nb of errors we keep for averaging
+   *
+   * @return true if the demand is in the deadband.
+   */
+  bool is_in_deadband(T demand, T error, T deadband,
+                      double deadband_multiplicator = 5.0,
+                      unsigned int nb_errors_for_avg = 50)
+  {
+    bool is_in_deadband = false;
 
-    /**
-     * Are we in the hysteresis deadband? If we are in it, then we're just
-     * sending a force demand of 0.
-     *
-     * @param demand The demand
-     * @param error The error (demand - actual value)
-     * @param deadband the deadband value
-     * @param deadband_multiplicator the value by which we multiply the deadband
-     *                               to have the bigger deadband against which we
-     *                               check for leaving the deadband zone
-     * @param nb_errors_for_avg the nb of errors we keep for averaging
-     *
-     * @return true if the demand is in the deadband.
-     */
-    bool is_in_deadband(T demand, T error, T deadband,
-                        double deadband_multiplicator = 5.0,
-                        unsigned int nb_errors_for_avg = 50)
+    last_errors.push_back(error);
+    double avg_error = 0.0;
+    for (unsigned int i = 0; i < last_errors.size(); ++i)
     {
-      bool is_in_deadband = false;
+      avg_error += last_errors[i];
+    }
+    avg_error /= last_errors.size();
 
-      last_errors.push_back(error);
-      double avg_error = 0.0;
-      for (unsigned int i = 0; i < last_errors.size(); ++i)
+    // Received a new command:
+    if (last_demand != demand)
+    {
+      entered_small_deadband = false;
+      last_demand = demand;
+    }
+    else
+    {
+      // check if we entered the small deadband
+      if (!entered_small_deadband)
       {
-        avg_error += last_errors[i];
+        entered_small_deadband = fabs(avg_error) < deadband;
       }
-      avg_error /= last_errors.size();
 
-      // Received a new command:
-      if (last_demand != demand)
+      // we always compute the error if we haven't entered the small deadband
+      if (!entered_small_deadband)
       {
-        entered_small_deadband = false;
-        last_demand = demand;
+        is_in_deadband = false;
       }
       else
       {
-        // check if we entered the small deadband
-        if (!entered_small_deadband)
+        if (fabs(avg_error) > deadband_multiplicator * deadband)
         {
-          entered_small_deadband = fabs(avg_error) < deadband;
-        }
-
-        // we always compute the error if we haven't entered the small deadband
-        if (!entered_small_deadband)
-        {
+          // we're outside of the big deadband -> compute the error
           is_in_deadband = false;
+          // when we leave the big deadband we wait until we're back in the small deadband before stopping the motor
+          entered_small_deadband = false;
         }
         else
         {
-          if (fabs(avg_error) > deadband_multiplicator * deadband)
-          {
-            // we're outside of the big deadband -> compute the error
-            is_in_deadband = false;
-            // when we leave the big deadband we wait until we're back in the small deadband before stopping the motor
-            entered_small_deadband = false;
-          }
-          else
-          {
-            // we're in the big deadband -> send a force demand of 0.0
-            is_in_deadband = true;
-          }
+          // we're in the big deadband -> send a force demand of 0.0
+          is_in_deadband = true;
         }
       }
+    }
 
-      if (last_errors.size() > nb_errors_for_avg)
-      {
-        last_errors.pop_front();
-      }
+    if (last_errors.size() > nb_errors_for_avg)
+    {
+      last_errors.pop_front();
+    }
 
-      return is_in_deadband;
-    };
-
-  private:
-    T deadband;
-    T last_demand;
-    std::deque<T> last_errors;
-    bool entered_small_deadband;
+    return is_in_deadband;
   };
+
+private:
+  T deadband;
+  T last_demand;
+  std::deque<T> last_errors;
+  bool entered_small_deadband;
+};
 
 }  // namespace sr_deadband
 

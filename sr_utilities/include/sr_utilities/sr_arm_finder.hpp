@@ -30,25 +30,24 @@
 namespace shadow_robot
 {
 
-  struct ArmConfig
+struct ArmConfig
+{
+  std::map<std::string, std::string> mapping_;
+  std::map<std::string, std::string> joint_prefix_;
+};
+
+class SrArmFinder
+{
+public:
+  SrArmFinder();
+
+  virtual ~SrArmFinder()
   {
-    std::map<std::string, std::string> mapping_;
-    std::map<std::string, std::string> joint_prefix_;
-  };
+  }
 
-  class SrArmFinder
-  {
-  public:
+  std::map<std::string, std::vector<std::string> > get_joints();
 
-    SrArmFinder();
-
-    virtual ~SrArmFinder()
-    {
-    }
-
-    std::map<std::string, std::vector<std::string> > get_joints();
-
-  };
+};
 
 } /* namespace shadow_robot */
 

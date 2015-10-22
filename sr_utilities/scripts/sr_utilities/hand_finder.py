@@ -125,6 +125,7 @@ class HandJoints(object):
                 for joint in joints:
                     self.joints[hand_mapping].append(hand_mapping + '_' + joint)
 
+
 class HandFinder(object):
     """
     The HandFinder is a utility library for detecting Shadow Hands running on
