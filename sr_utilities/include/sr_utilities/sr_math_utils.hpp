@@ -218,7 +218,7 @@ private:
 class AlphaBetaFilter
 {
 public:
-  AlphaBetaFilter(double alpha = 0.85, double beta = 0.05)
+  explicit AlphaBetaFilter(double alpha = 0.85, double beta = 0.05)
           : a(alpha), b(beta),
             xk_1(0.0), vk_1(0.0), xk(0.0), vk(0.0), rk(0.0),
             dt(0.0), timestamp_1(0.0)
