@@ -92,14 +92,13 @@ class HandJoints(object):
         """
         self.joints = {}
         hand_joints = []
-
         joints = self.get_default_joints()
 
-        for hand in mapping:
-            for joint in joints:
-                hand_joints.append(mapping[hand] + '_' + joint)
-
         if rospy.has_param('robot_description'):
+            for hand in mapping:
+                for joint in joints:
+                    hand_joints.append(mapping[hand] + '_' + joint)
+
             robot_description = rospy.get_param('robot_description')
             hand_urdf = URDF.from_xml_string(robot_description)
             for hand in mapping:
@@ -120,9 +119,11 @@ class HandJoints(object):
         else:
             rospy.logwarn("No robot_description found on parameter server."
                           "Joint names are loaded for 5 finger hand")
-
-            self.joints[mapping[hand]] = hand_joints
-
+            for hand in mapping:
+                hand_mapping = mapping[hand]
+                self.joints[hand_mapping] = []
+                for joint in joints:
+                    self.joints[hand_mapping].append(hand_mapping + '_' + joint)
 
 class HandFinder(object):
     """

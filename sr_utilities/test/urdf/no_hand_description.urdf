@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<robot name="no_hand_robot">
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <cylinder length="1.0" radius="0.1"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <link name="first_link">
+    <visual>
+      <geometry>
+        <cylinder length="1.0" radius="0.1"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <joint name="base_to_first_link" type="continuous">
+    <parent link="base_link"/>
+    <child link="first_link"/>
+  </joint>
+
+</robot>
