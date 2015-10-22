@@ -95,11 +95,14 @@ class HandJoints(object):
         joints = self.get_default_joints()
 
         if rospy.has_param('robot_description'):
+            robot_description = rospy.get_param('robot_description')
+            
+            # concatenate all the joints with prefixes
             for hand in mapping:
                 for joint in joints:
                     hand_joints.append(mapping[hand] + '_' + joint)
-
-            robot_description = rospy.get_param('robot_description')
+                    
+            # add the prefixed joints to each hand but remove fixed joints
             hand_urdf = URDF.from_xml_string(robot_description)
             for hand in mapping:
                 joints_tmp = []
@@ -119,11 +122,14 @@ class HandJoints(object):
         else:
             rospy.logwarn("No robot_description found on parameter server."
                           "Joint names are loaded for 5 finger hand")
+                          
+            # concatenate all the joints with prefixes
             for hand in mapping:
-                hand_mapping = mapping[hand]
-                self.joints[hand_mapping] = []
+                hand_joints = []
                 for joint in joints:
-                    self.joints[hand_mapping].append(hand_mapping + '_' + joint)
+                    hand_joints.append(mapping[hand] + '_' + joint)
+
+                self.joints[mapping[hand]] = hand_joints
 
 
 class HandFinder(object):
