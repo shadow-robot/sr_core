@@ -95,7 +95,7 @@ TEST(SrHandFinder, one_hand_no_robot_description_finder_test)
   {
     ROS_DEBUG_STREAM(rh_joints[i]);
     ASSERT_STREQ(rh_joints[i].c_str(), ("rh_" + joint_names[i]).c_str());
-  }
+    }
 
   // calibration
   ASSERT_GT(hand_finder.get_calibration_path().size(), 0);
@@ -177,7 +177,7 @@ TEST(SrHandFinder, one_hand_no_mapping_no_robot_description_finder_test)
   {
     ROS_DEBUG_STREAM(rh_joints[i]);
     ASSERT_STREQ(rh_joints[i].c_str(), ("rh_" + joint_names[i]).c_str());
-  }
+    }
 
   // calibration
   ASSERT_GT(hand_finder.get_calibration_path().size(), 0);
@@ -499,7 +499,7 @@ TEST(SrHandFinder, two_hand_robot_description_exists_finder_test)
   const string dir[] =  {"right", "left"};
   
   shadow_robot::SrHandFinder hand_finder;
-
+  
   ASSERT_EQ(hand_finder.get_hand_parameters().mapping_.size(), 2);
   ASSERT_EQ(hand_finder.get_hand_parameters().joint_prefix_.size(), 2);
   ASSERT_EQ(hand_finder.get_joints().size(), 2);

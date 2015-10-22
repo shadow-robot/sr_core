@@ -33,6 +33,7 @@
 #include <set>
 #include <vector>
 #include <string>
+#include <iostream>
 
 using boost::assign::list_of;
 using urdf::ModelInterface;
@@ -58,6 +59,7 @@ SrHandFinder::SrHandFinder()
 {
   if (ros::param::has("hand"))
   {
+    std::map<std::string, std::string> mapping_map;
     ros::param::get("hand/mapping", hand_config_.mapping_);
     ros::param::get("hand/joint_prefix", hand_config_.joint_prefix_);
 
@@ -91,8 +93,7 @@ void SrHandFinder::generate_joints_with_prefix()
         hand_joints.insert(hand.second + default_joint_name);
       }
     }
-
-    std::string robot_description;
+std::string robot_description;
     ros::param::get("robot_description", robot_description);
     const boost::shared_ptr<ModelInterface> hand_urdf = urdf::parseURDF(robot_description);
     BOOST_FOREACH(hand, hand_config_.joint_prefix_)
