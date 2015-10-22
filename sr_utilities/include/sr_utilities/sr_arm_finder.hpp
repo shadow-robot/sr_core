@@ -46,7 +46,6 @@ public:
   }
 
   std::map<std::string, std::vector<std::string> > get_joints();
-
 };
 
 } /* namespace shadow_robot */
