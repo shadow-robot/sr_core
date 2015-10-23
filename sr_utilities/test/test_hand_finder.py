@@ -6,23 +6,23 @@ import rostest
 import unittest
 from sr_utilities.hand_finder import HandFinder
 joint_names = ["FFJ1", "FFJ2", "FFJ3", "FFJ4", "MFJ1", "MFJ2", "MFJ3", "MFJ4",
-               "RFJ1", "RFJ2", "RFJ3", "RFJ4", "LFJ1", "LFJ2", "LFJ3", "LFJ4", "LFJ5",
-               "THJ1", "THJ2", "THJ3", "THJ4", "THJ5", "WRJ1", "WRJ2"]
+                                "RFJ1", "RFJ2", "RFJ3", "RFJ4", "LFJ1", "LFJ2", "LFJ3", "LFJ4", "LFJ5",
+                                "THJ1", "THJ2", "THJ3", "THJ4", "THJ5", "WRJ1", "WRJ2"]
 controller_params = ["sr_edc_calibration_controllers.yaml",
-                     "sr_edc_joint_velocity_controllers_PWM.yaml",
-                     "sr_edc_effort_controllers_PWM.yaml",
-                     "sr_edc_joint_velocity_controllers.yaml",
-                     "sr_edc_effort_controllers.yaml",
-                     "sr_edc_mixed_position_velocity_joint_controllers_PWM.yaml",
-                     "sr_edc_joint_position_controllers_PWM.yaml",
-                     "sr_edc_mixed_position_velocity_joint_controllers.yaml",
-                     "sr_edc_joint_position_controllers.yaml"]
+                           "sr_edc_joint_velocity_controllers_PWM.yaml",
+                           "sr_edc_effort_controllers_PWM.yaml",
+                           "sr_edc_joint_velocity_controllers.yaml",
+                           "sr_edc_effort_controllers.yaml",
+                           "sr_edc_mixed_position_velocity_joint_controllers_PWM.yaml",
+                           "sr_edc_joint_position_controllers_PWM.yaml",
+                           "sr_edc_mixed_position_velocity_joint_controllers.yaml",
+                           "sr_edc_joint_position_controllers.yaml"]
 
 
 class TestHandFinder(unittest.TestCase):
     rospack = rospkg.RosPack()
     ethercat_path = rospack.get_path('sr_ethercat_hand_config')
-  
+    
     def test_no_hand_no_robot_description_finder(self):
         if rospy.has_param("hand"):
             rospy.delete_param("hand")
@@ -41,7 +41,7 @@ class TestHandFinder(unittest.TestCase):
         self.assertEqual(len(hand_finder.get_hand_control_tuning(). host_control), 0, "correct tuning without a hands")
         self.assertEqual(len(hand_finder.get_hand_control_tuning(). motor_control), 0,
                          "correct tuning without a hands")
-
+                         
     def test_one_hand_no_robot_description_finder(self):
         if rospy.has_param("hand"):
             rospy.delete_param("hand")
@@ -90,10 +90,10 @@ class TestHandFinder(unittest.TestCase):
     def test_one_hand_no_mapping_no_robot_description_finder(self):
         if rospy.has_param("hand"):
             rospy.delete_param("hand")
-
+        
         if rospy.has_param("robot_description"):
             rospy.delete_param("robot_description")
-
+    
         rospy.set_param("hand/joint_prefix/1", "rh_")
         rospy.set_param("hand/mapping/1", "")
 
@@ -132,7 +132,7 @@ class TestHandFinder(unittest.TestCase):
         for controller_path, controller_param in zip(ctrl_tun_host_control_paths, controller_params):
             self.assertEqual(controller_path, self.ethercat_path + "/controls/host/1/" + controller_param,
                              "incorrect controller config file")
-
+            
     def test_one_hand_no_prefix_no_robot_description_finder(self):
         if rospy.has_param("hand"):
             rospy.delete_param("hand")
@@ -177,14 +177,14 @@ class TestHandFinder(unittest.TestCase):
         for controller_path, controller_param in zip(ctrl_tun_host_control_paths, controller_params):
             self.assertEqual(controller_path, self.ethercat_path + "/controls/host/rh/" + controller_param,
                              "incorrect controller config file")
-        
+            
     def test_one_hand_no_prefix_no_mapping_no_robot_description_finder(self):
         if rospy.has_param("hand"):
             rospy.delete_param("hand")
-
+        
         if rospy.has_param("robot_description"):
             rospy.delete_param("robot_description")
-
+            
         rospy.set_param("hand/joint_prefix/1", "")
         rospy.set_param("hand/mapping/1", "")
 
