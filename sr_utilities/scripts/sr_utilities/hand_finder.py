@@ -119,11 +119,11 @@ class HandJoints(object):
                 self.joints[mapping[hand]] = []
                 for joint in hand_urdf.joints:
                     if joint.type != 'fixed':
-                        joint_prefix = joint.name[:2]
-                        if joint_prefix not in joint_prefix.values():
+                        prefix = joint.name[:3]
+                        if prefix not in joint_prefix.values():
                             rospy.logdebug("joint " + joint.name + "has invalid "
                                            "prefix")
-                        elif joint_prefix == joint_prefix[hand]:
+                        elif prefix == joint_prefix[hand]:
                             joints_tmp.append(joint.name)
                 for joint_unordered in hand_joints:
                     if joint_unordered in joints_tmp:
@@ -155,11 +155,11 @@ class HandFinder(object):
         """
         Parses the parameter server to extract the necessary information.
         """
-        if not rospy.has_param("hand"):
+        if not rospy.has_param("/hand"):
             rospy.logerr("No hand is detected")
             hand_parameters = {'joint_prefix': {}, 'mapping': {}}
         else:
-            hand_parameters = rospy.get_param("hand")
+            hand_parameters = rospy.get_param("/hand")
         self.hand_config = HandConfig(hand_parameters["mapping"],
                                       hand_parameters["joint_prefix"])
         self.hand_joints = HandJoints(self.hand_config.mapping, self.hand_config.joint_prefix).joints
