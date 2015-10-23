@@ -38,22 +38,29 @@ struct HandConfig
 struct HandControllerTuning
 {
   std::map<std::string, std::string> friction_compensation_;
-  std::map<std::string, std::vector<std::string> > host_control_;
+  std::map<std::string, std::vector<std::string>> host_control_;
   std::map<std::string, std::string> motor_control_;
 };
 
 class SrHandFinder
 {
 public:
-  std::map<std::string, std::vector<std::string> > get_joints();
+  static const std::vector<std::string> get_default_joints();
+
+  std::map<std::string, std::vector<std::string>> get_joints();
 
   std::map<std::string, std::string> get_calibration_path();
 
   HandControllerTuning get_hand_controller_tuning();
 
+  SrHandFinder();
+
+  virtual ~SrHandFinder()
+  {
+  }
+
 private:
-  static const size_t number_of_joints_;
-  static const char *joint_names_[];
+  static const std::vector<std::string> joint_names_;
   ros::NodeHandle node_handle_;
   HandConfig hand_config_;
   HandControllerTuning hand_controller_tuning_;
@@ -65,14 +72,6 @@ private:
   void generate_calibration_path();
 
   void generate_hand_controller_tuning_path();
-
-
-public:
-  SrHandFinder();
-
-  virtual ~SrHandFinder()
-  {
-  }
 };
 
 } /* namespace shadow_robot */
