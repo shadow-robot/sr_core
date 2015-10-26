@@ -45,7 +45,13 @@ public:
   {
   }
 
-  std::map<std::string, std::vector<std::string> > get_joints();
+  ArmConfig get_arm_parameters();
+
+  std::map<std::string, std::vector<std::string>> get_joints();
+
+private:
+  ArmConfig arm_config_;
+  std::map<std::string, std::vector<std::string>> joints_;
 };
 
 } /* namespace shadow_robot */

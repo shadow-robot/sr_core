@@ -49,6 +49,8 @@ public:
 
   std::map<std::string, std::vector<std::string>> get_joints();
 
+  HandConfig get_hand_parameters();
+
   std::map<std::string, std::string> get_calibration_path();
 
   HandControllerTuning get_hand_controller_tuning();

@@ -34,6 +34,11 @@ namespace shadow_robot
     return SrHandFinder::joint_names_;
   }
 
+  HandConfig SrHandFinder::get_hand_parameters()
+  {
+    return hand_config_;
+  }
+
   SrHandFinder::SrHandFinder()
   {
     if (ros::param::has("hand"))

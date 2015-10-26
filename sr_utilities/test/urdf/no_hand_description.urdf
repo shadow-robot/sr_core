@@ -8,7 +8,7 @@
     </visual>
   </link>
 
-  <link name="first_link">
+  <link name="la_first_link">
     <visual>
       <geometry>
         <cylinder length="1.0" radius="0.1"/>
@@ -16,9 +16,9 @@
     </visual>
   </link>
 
-  <joint name="base_to_first_link" type="continuous">
+  <joint name="la_first_joint" type="continuous">
     <parent link="base_link"/>
-    <child link="first_link"/>
+    <child link="la_first_link"/>
   </joint>
 
 </robot>
