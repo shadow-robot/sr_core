@@ -45,7 +45,10 @@ class TrajectoryControllerSpawner(object):
                 rospy.logerr("there are errors openning trajectory controller yaml file")
             else:
                 hand_trajectory = yaml_content[hand + "_trajectory_controller"]
-                hand_trajectory['joints'] = self.joints[hand]
+                if rospy.has_param('~exclude_wrist') and rospy.get_param('~exclude_wrist'):
+                    hand_trajectory['joints'] = [s for s in self.joints[hand] if "WR" not in s]
+                else:
+                    hand_trajectory['joints'] = self.joints[hand]
                 for joint_name in hand_trajectory['constraints'].keys():
                     if (joint_name not in hand_trajectory['joints'] and
                             joint_name != 'goal_time' and joint_name != 'stopped_velocity_tolerance'):
