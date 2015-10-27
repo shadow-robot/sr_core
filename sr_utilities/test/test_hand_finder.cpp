@@ -8,6 +8,10 @@
 #include <gtest/gtest.h>
 #include "ros/ros.h"
 #include <ros/package.h>
+#include <utility>
+#include <map>
+#include <vector>
+#include <string>
 #include "sr_utilities/sr_hand_finder.hpp"
 
 using std::vector;
@@ -16,11 +20,13 @@ using std::string;
 
 TEST(SrHandFinder, hand_absent_test)
 {
-  if (ros::param::has("hand")) {
+  if (ros::param::has("hand"))
+  {
     ros::param::del("hand");
   }
 
-  if (ros::param::has("robot_description")) {
+  if (ros::param::has("robot_description"))
+  {
     ros::param::del("robot_description");
   }
 
@@ -37,11 +43,13 @@ TEST(SrHandFinder, hand_absent_test)
 
 TEST(SrHandFinder, one_hand_no_robot_description_finder_test)
 {
-  if (ros::param::has("hand")) {
+  if (ros::param::has("hand"))
+  {
     ros::param::del("hand");
   }
 
-  if (ros::param::has("robot_description")) {
+  if (ros::param::has("robot_description"))
+  {
     ros::param::del("robot_description");
   }
 
@@ -67,11 +75,13 @@ TEST(SrHandFinder, one_hand_no_robot_description_finder_test)
 
 TEST(SrHandFinder, two_hand_robot_description_exists_finder_test)
 {
-  if (ros::param::has("hand")) {
+  if (ros::param::has("hand"))
+  {
     ros::param::del("hand");
   }
 
-  if (ros::param::has("robot_description")) {
+  if (ros::param::has("robot_description"))
+  {
     ros::param::del("robot_description");
   }
 
@@ -92,17 +102,27 @@ TEST(SrHandFinder, two_hand_robot_description_exists_finder_test)
   ASSERT_GT(hand_finder.get_calibration_path().size(), 0);
 
   auto mapping = hand_finder.get_hand_parameters().mapping_;
-  ASSERT_NE(mapping.end(), std::find_if(mapping.begin(),mapping.end(),
-                                        [](const std::pair<string, string> &item){ return item.second == "rh"; }));
-  ASSERT_NE(mapping.end(), std::find_if(mapping.begin(),mapping.end(),
-                                        [](const std::pair<string, string> &item){ return item.second == "lh"; }));
+  ASSERT_NE(mapping.end(), std::find_if(mapping.begin(), mapping.end(),
+                                        [](const std::pair<string, string> &item)
+                                        {
+                                          return item.second == "rh";
+                                        }));  // NOLINT(whitespace/braces)
+  ASSERT_NE(mapping.end(), std::find_if(mapping.begin(), mapping.end(),
+                                        [](const std::pair<string, string> &item)
+                                        {
+                                          return item.second == "lh";
+                                        }));  // NOLINT(whitespace/braces)
   auto joint_prefixes = hand_finder.get_hand_parameters().joint_prefix_;
-  ASSERT_NE(joint_prefixes.end(), std::find_if(joint_prefixes.begin(),joint_prefixes.end(),
-                                               [](const std::pair<string, string> &item){
-                                                 return item.second == "rh_"; }));
-  ASSERT_NE(joint_prefixes.end(), std::find_if(joint_prefixes.begin(),joint_prefixes.end(),
-                                               [](const std::pair<string, string> &item){
-                                                 return item.second == "lh_"; }));
+  ASSERT_NE(joint_prefixes.end(), std::find_if(joint_prefixes.begin(), joint_prefixes.end(),
+                                               [](const std::pair<string, string> &item)
+                                               {
+                                                 return item.second == "rh_";
+                                               }));  // NOLINT(whitespace/braces)
+  ASSERT_NE(joint_prefixes.end(), std::find_if(joint_prefixes.begin(), joint_prefixes.end(),
+                                               [](const std::pair<string, string> &item)
+                                               {
+                                                 return item.second == "lh_";
+                                               }));  // NOLINT(whitespace/braces)
 
   ASSERT_GT(hand_finder.get_joints().count("rh"), 0);
   auto rh_joints = hand_finder.get_joints().at("rh");
@@ -117,11 +137,13 @@ TEST(SrHandFinder, two_hand_robot_description_exists_finder_test)
 
 TEST(SrHandFinder, hand_present_test)
 {
-  if (ros::param::has("hand")) {
+  if (ros::param::has("hand"))
+  {
     ros::param::del("hand");
   }
 
-  if (ros::param::has("robot_description")) {
+  if (ros::param::has("robot_description"))
+  {
     ros::param::del("robot_description");
   }
 

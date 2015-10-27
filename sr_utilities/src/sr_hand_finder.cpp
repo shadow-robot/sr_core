@@ -22,12 +22,18 @@
 #include "sr_utilities/sr_hand_finder.hpp"
 #include "urdf_parser/urdf_parser.h"
 #include <ros/package.h>
+#include <utility>
+#include <map>
+#include <set>
+#include <vector>
+#include <string>
 
 namespace shadow_robot
 {
-  const std::vector<std::string> SrHandFinder::joint_names_ = {"FFJ1", "FFJ2", "FFJ3", "FFJ4", "MFJ1", "MFJ2", "MFJ3", "MFJ4",
-                                              "RFJ1", "RFJ2", "RFJ3", "RFJ4", "LFJ1", "LFJ2", "LFJ3", "LFJ4",
-                                              "LFJ5", "THJ1", "THJ2", "THJ3", "THJ4", "THJ5", "WRJ1", "WRJ2"};
+  const std::vector<std::string> SrHandFinder::joint_names_ = {"FFJ1", "FFJ2", "FFJ3", "FFJ4", "MFJ1", "MFJ2", "MFJ3",
+                                                               "MFJ4", "RFJ1", "RFJ2", "RFJ3", "RFJ4", "LFJ1", "LFJ2",
+                                                               "LFJ3", "LFJ4", "LFJ5", "THJ1", "THJ2", "THJ3", "THJ4",
+                                                               "THJ5", "WRJ1", "WRJ2"};
 
   const std::vector<std::string> SrHandFinder::get_default_joints()
   {
@@ -54,7 +60,9 @@ namespace shadow_robot
       generate_joints_with_prefix();
       generate_calibration_path();
       generate_hand_controller_tuning_path();
-    } else {
+    }
+    else
+    {
       ROS_ERROR_STREAM("No hand found");
     }
   }
@@ -64,8 +72,10 @@ namespace shadow_robot
     if (ros::param::has("robot_description"))
     {
       std::set<std::string> hand_joints;
-      for (const auto &hand : hand_config_.joint_prefix_) {
-        for (const auto &default_joint_name : joint_names_) {
+      for (const auto &hand : hand_config_.joint_prefix_)
+      {
+        for (const auto &default_joint_name : joint_names_)
+        {
           hand_joints.insert(hand.second + default_joint_name);
         }
       }
@@ -73,16 +83,22 @@ namespace shadow_robot
       std::string robot_description;
       ros::param::get("robot_description", robot_description);
       const auto hand_urdf = urdf::parseURDF(robot_description);
-      for (const auto &hand : hand_config_.joint_prefix_) {
+      for (const auto &hand : hand_config_.joint_prefix_)
+      {
         std::set<std::string> joints_tmp;
-        for (const auto &joint : hand_urdf->joints_) {
-          if (urdf::Joint::FIXED != joint.second->type) {
+        for (const auto &joint : hand_urdf->joints_)
+        {
+          if (urdf::Joint::FIXED != joint.second->type)
+          {
             const std::string joint_name = joint.first;
             if (std::none_of(hand_config_.joint_prefix_.begin(), hand_config_.joint_prefix_.end(),
-                             [&joint_name](const std::pair<std::string, std::string> &item) {
-                               return 0 == joint_name.find(item.second); })) {
+                             [&joint_name](const std::pair<std::string, std::string> &item)
+                             { return 0 == joint_name.find(item.second); }))  // NOLINT(whitespace/braces)
+            {
               ROS_DEBUG_STREAM("Joint " + joint_name + "has invalid prefix");
-            } else if (0 == joint_name.find(hand.second)) {
+            }
+            else if (0 == joint_name.find(hand.second))
+            {
               joints_tmp.insert(joint_name);
             }
           }
@@ -90,12 +106,16 @@ namespace shadow_robot
         std::set_intersection(joints_tmp.begin(), joints_tmp.end(), hand_joints.begin(), hand_joints.end(),
                               std::back_inserter(joints_[hand_config_.mapping_[hand.first]]));
       }
-    } else {
+    }
+    else
+    {
       ROS_WARN_STREAM("No robot_description found on parameter server. Joint names are loaded for 5 finger hand");
 
-      for (const auto &hand : hand_config_.mapping_) {
+      for (const auto &hand : hand_config_.mapping_)
+      {
         const std::string hand_mapping = hand.second;
-        for (const auto &default_joint_name : joint_names_) {
+        for (const auto &default_joint_name : joint_names_)
+        {
           joints_[hand_mapping].push_back(hand_config_.joint_prefix_[hand.first] + default_joint_name);
         }
       }
