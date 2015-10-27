@@ -42,7 +42,7 @@ class TrajectoryControllerSpawner(object):
             with open(self.yaml_file_path[hand], 'r') as yaml_file:
                 yaml_content = yaml.load(yaml_file)
             if hand + "_trajectory_controller" not in yaml_content.keys():
-                rospy.logerr("there are errors openning trajectory controller yaml file")
+                rospy.logerr("there are errors opening trajectory controller yaml file")
             else:
                 hand_trajectory = yaml_content[hand + "_trajectory_controller"]
                 if rospy.has_param('~exclude_wrist') and rospy.get_param('~exclude_wrist'):
@@ -71,9 +71,7 @@ class TrajectoryControllerSpawner(object):
                                         hand_trajectory['constraints'][constraint]['trajectory'])
 
     @staticmethod
-    def check_joint(joint, controllers_to_start, controller_names, no_wrist=False):
-        if joint[3:5].lower() == 'wr' and no_wrist:
-            return
+    def check_joint(joint, controllers_to_start, controller_names):
         if joint[3:5].lower() == 'th' or joint[3:5].lower() == 'wr' or (joint[6] != '1' and joint[6] != '2'):
             joint_controller = 'sh_' + joint.lower() + "_position_controller"
         else:
@@ -106,11 +104,8 @@ class TrajectoryControllerSpawner(object):
                         already_running = True
                 if self.trajectory and not already_running:
                     controllers_to_start.append(hand_prefix + '_trajectory_controller')
-                no_wrist = False
-                if rospy.has_param('~exclude_wrist') and rospy.get_param('~exclude_wrist'):
-                    no_wrist = True
                 for joint in self.joints[hand_prefix]:
-                    TrajectoryControllerSpawner.check_joint(joint, controllers_to_start, controller_names, no_wrist)
+                    TrajectoryControllerSpawner.check_joint(joint, controllers_to_start, controller_names)
 
         for load_control in controllers_to_start:
             try:
