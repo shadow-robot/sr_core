@@ -48,18 +48,16 @@
 
 namespace sr_mechanism_model
 {
+class NullTransmission :
+        public ros_ethercat_model::Transmission
+{
+public:
+  bool initXml(TiXmlElement *config, ros_ethercat_model::RobotState *robot);
 
-  class NullTransmission :
-          public ros_ethercat_model::Transmission
-  {
-  public:
-    bool initXml(TiXmlElement *config, ros_ethercat_model::RobotState *robot);
+  void propagatePosition();
 
-    void propagatePosition();
-
-    void propagateEffort();
-  };
-
+  void propagateEffort();
+};
 }  // namespace sr_mechanism_model
 
 #endif

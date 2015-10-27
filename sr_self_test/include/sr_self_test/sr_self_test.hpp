@@ -46,97 +46,97 @@
 
 namespace shadow_robot
 {
-  class SrSelfTest
+class SrSelfTest
+{
+public:
+  explicit SrSelfTest(bool simulated, const std::string &ns = "");
+
+  ~SrSelfTest()
   {
-  public:
-    SrSelfTest(bool simulated, const std::string &ns = "");
-
-    ~SrSelfTest()
-    {
-    };
-
-    void checkTest()
-    {
-      test_runner_.checkTest();
-    }
-
-    void checkTestAsync()
-    {
-      test_thread_.reset(new boost::thread(boost::bind(&SrSelfTest::checkTest, this)));
-    }
-
-  private:
-    ros::NodeHandle nh_tilde_;
-    ros::NodeHandle nh_;
-    // self_test::TestRunner is the handles sequencing driver self-tests.
-    shadow_robot::SrTestRunner test_runner_;
-    /// The hand commander is used for getting a list of all controlled joints
-    boost::shared_ptr<shadowrobot::HandCommander> hand_commander_;
-    /// True if testing gazebo, false if testing etherCAT hand
-    bool simulated_;
-
-    /// Add some services to be checked for existence
-    void test_services_();
-
-    /// a vector containing all the joints to be tested
-    std::vector<std::string> joints_to_test_;
-
-    /// a vector containing the test to be run on the motors.
-    boost::ptr_vector<MotorTest> motor_tests_;
-
-    ///////
-    // TESTING MOVEMENTS
-
-    /// The index of the current joint being tested (movement)
-    size_t index_joints_to_test_;
-
-    /**
-     * A method which adds a movement test for each of the fingers.
-     * @param event called from a timer for non-blocking initialisation
-     *              of the HandCommander.
-     */
-    void add_all_movements_tests_(const ros::TimerEvent &event);
-
-    /// Timer used to start add_all_movements_tests_ asynchronously
-    ros::Timer test_movement_timer_;
-
-    /**
-     * Tests the movement of one finger and update the test result.
-     * @param status contains the test result
-     */
-    void test_movement_(diagnostic_updater::DiagnosticStatusWrapper &status);
-
-    /**
-     * Sends a "safe target" to all the joints: we want to avoid the collisions
-     *  when running the movement tests.
-     * @param joint_name the joint we're going to move.
-     */
-    void send_safe_target_(std::string joint_name);
-
-    /// A map storing the safe targets for the joints (only those different than min)
-    boost::shared_ptr<std::map<std::string, sr_robot_msgs::joint> > safe_targets_;
-
-    /// Initialises the map safe_targets_
-    void init_safe_targets_();
-
-    /**
-     * Updates the map safe_targets_ based on the joint we're going to move.
-     *  For example ??J4 safe values are different depending on which joint
-     *   4 has been moved already.
-     * @param joint_name The name of the joint we're going to move.
-     */
-    void update_safe_targets_(std::string joint_name);
-
-    /// mapping the joint name to a TestJointMovement
-    std::map<std::string, boost::shared_ptr<TestJointMovement> > test_mvts_;
-    /// The maximum MSE we can accept for the test to succeed
-    static const double MAX_MSE_CONST_;
-    /// Where the plots of the movements are stored
-    std::string path_to_plots_;
-
-    /// Thread for running the tests in parallel when doing the tests on real hand
-    boost::shared_ptr<boost::thread> test_thread_;
   };
+
+  void checkTest()
+  {
+    test_runner_.checkTest();
+  }
+
+  void checkTestAsync()
+  {
+    test_thread_.reset(new boost::thread(boost::bind(&SrSelfTest::checkTest, this)));
+  }
+
+private:
+  ros::NodeHandle nh_tilde_;
+  ros::NodeHandle nh_;
+  // self_test::TestRunner is the handles sequencing driver self-tests.
+  shadow_robot::SrTestRunner test_runner_;
+  /// The hand commander is used for getting a list of all controlled joints
+  boost::shared_ptr<shadowrobot::HandCommander> hand_commander_;
+  /// True if testing gazebo, false if testing etherCAT hand
+  bool simulated_;
+
+  /// Add some services to be checked for existence
+  void test_services_();
+
+  /// a vector containing all the joints to be tested
+  std::vector<std::string> joints_to_test_;
+
+  /// a vector containing the test to be run on the motors.
+  boost::ptr_vector<MotorTest> motor_tests_;
+
+  ///////
+  // TESTING MOVEMENTS
+
+  /// The index of the current joint being tested (movement)
+  size_t index_joints_to_test_;
+
+  /**
+   * A method which adds a movement test for each of the fingers.
+   * @param event called from a timer for non-blocking initialisation
+   *              of the HandCommander.
+   */
+  void add_all_movements_tests_(const ros::TimerEvent &event);
+
+  /// Timer used to start add_all_movements_tests_ asynchronously
+  ros::Timer test_movement_timer_;
+
+  /**
+   * Tests the movement of one finger and update the test result.
+   * @param status contains the test result
+   */
+  void test_movement_(diagnostic_updater::DiagnosticStatusWrapper &status);
+
+  /**
+   * Sends a "safe target" to all the joints: we want to avoid the collisions
+   *  when running the movement tests.
+   * @param joint_name the joint we're going to move.
+   */
+  void send_safe_target_(std::string joint_name);
+
+  /// A map storing the safe targets for the joints (only those different than min)
+  boost::shared_ptr<std::map<std::string, sr_robot_msgs::joint> > safe_targets_;
+
+  /// Initialises the map safe_targets_
+  void init_safe_targets_();
+
+  /**
+   * Updates the map safe_targets_ based on the joint we're going to move.
+   *  For example ??J4 safe values are different depending on which joint
+   *   4 has been moved already.
+   * @param joint_name The name of the joint we're going to move.
+   */
+  void update_safe_targets_(std::string joint_name);
+
+  /// mapping the joint name to a TestJointMovement
+  std::map<std::string, boost::shared_ptr<TestJointMovement> > test_mvts_;
+  /// The maximum MSE we can accept for the test to succeed
+  static const double MAX_MSE_CONST_;
+  /// Where the plots of the movements are stored
+  std::string path_to_plots_;
+
+  /// Thread for running the tests in parallel when doing the tests on real hand
+  boost::shared_ptr<boost::thread> test_thread_;
+};
 }  // namespace shadow_robot
 
 /* For the emacs weenies in the crowd.

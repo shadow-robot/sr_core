@@ -41,57 +41,57 @@
 
 namespace shadow_robot
 {
-  class SrTestRunner :
-          public self_test::TestRunner
-  {
-  public:
-    SrTestRunner();
+class SrTestRunner :
+        public self_test::TestRunner
+{
+public:
+  SrTestRunner();
 
-    virtual ~SrTestRunner();
+  virtual ~SrTestRunner();
 
-    using DiagnosticTaskVector::add;
-    using TestRunner::setID;
+  using DiagnosticTaskVector::add;
+  using TestRunner::setID;
 
-    void addTopicTest(std::string topic_name, double frequency);
+  void addTopicTest(std::string topic_name, double frequency);
 
-    void addServicesTest(std::vector<std::string> services_to_test);
+  void addServicesTest(std::vector<std::string> services_to_test);
 
-    /// Those tests require the user input
-    void addManualTests();
+  /// Those tests require the user input
+  void addManualTests();
 
-    /// Tests the noise of the pose sensor
-    void addSensorNoiseTest();
+  /// Tests the noise of the pose sensor
+  void addSensorNoiseTest();
 
-    void plot(std::map<std::string, std::vector<double> > joints);
+  void plot(std::map<std::string, std::vector<double> > joints);
 
-    void plot(std::map<std::string, std::vector<double> > joints, bool testing);
+  void plot(std::map<std::string, std::vector<double> > joints, bool testing);
 
-    void plot(std::map<std::string, std::vector<double> > joints, std::string path);
+  void plot(std::map<std::string, std::vector<double> > joints, std::string path);
 
-    void plot(std::map<std::string, std::vector<double> > joints, std::string path, bool testing);
+  void plot(std::map<std::string, std::vector<double> > joints, std::string path, bool testing);
 
-    /// Adding a test which parses diagnostics for jitter, dropped messages, etc...
-    void add_diagnostic_parser();
+  /// Adding a test which parses diagnostics for jitter, dropped messages, etc...
+  void add_diagnostic_parser();
 
-  private:
-    static const double SERVICE_TIMEOUT_CONST_;
+private:
+  static const double SERVICE_TIMEOUT_CONST_;
 
-    std::vector<std::string> services_to_test_;
+  std::vector<std::string> services_to_test_;
 
-    void service_test_cb_(diagnostic_updater::DiagnosticStatusWrapper &status);
+  void service_test_cb_(diagnostic_updater::DiagnosticStatusWrapper &status);
 
-    size_t index_service_to_test_;
+  size_t index_service_to_test_;
 
-    boost::shared_ptr<Gnuplot> gnuplot_;
+  boost::shared_ptr<Gnuplot> gnuplot_;
 
-    /// Class used for parsing the diagnostics
-    boost::shared_ptr<DiagnosticParser> diagnostic_parser_;
+  /// Class used for parsing the diagnostics
+  boost::shared_ptr<DiagnosticParser> diagnostic_parser_;
 
-    /// runs manual test (visual calibration check, tactiles...)
-    std::vector<boost::shared_ptr<ManualTests> > manual_tests_;
+  /// runs manual test (visual calibration check, tactiles...)
+  std::vector<boost::shared_ptr<ManualTests> > manual_tests_;
 
-    boost::shared_ptr<SensorNoiseTest> sensor_noise_test_;
-  };
+  boost::shared_ptr<SensorNoiseTest> sensor_noise_test_;
+};
 }  // namespace shadow_robot
 
 /* For the emacs weenies in the crowd.

@@ -40,47 +40,47 @@
 
 namespace shadowrobot
 {
-  class SrGazeboVirtualTactileSensor :
-          public SrGenericTactileSensor
-  {
-  public:
-    SrGazeboVirtualTactileSensor(std::string name, std::string gazebo_topic);
+class SrGazeboVirtualTactileSensor :
+        public SrGenericTactileSensor
+{
+public:
+  SrGazeboVirtualTactileSensor(std::string name, std::string gazebo_topic);
 
-    virtual ~SrGazeboVirtualTactileSensor();
+  virtual ~SrGazeboVirtualTactileSensor();
 
-  protected:
-    /**
-     * Generates a value for the sensor
-     *
-     * @return the pressure value
-     */
-    virtual double get_touch_data();
+protected:
+  /**
+   * Generates a value for the sensor
+   *
+   * @return the pressure value
+   */
+  virtual double get_touch_data();
 
-  private:
-    ros::NodeHandle nh;
-    boost::mutex touch_mutex;
-    double touch_value;
-    bool touch_freshdata;
+private:
+  ros::NodeHandle nh;
+  boost::mutex touch_mutex;
+  double touch_value;
+  bool touch_freshdata;
 
-    ros::Subscriber sub;
+  ros::Subscriber sub;
 
-    /**
-     * Callback function called when a msg is received on the
-     * gazebo bumper topic.
-     *
-     * @param msg the message containing the contact data
-     */
-    void callback(const gazebo_msgs::ContactsState &msg);
-  };
+  /**
+   * Callback function called when a msg is received on the
+   * gazebo bumper topic.
+   *
+   * @param msg the message containing the contact data
+   */
+  void callback(const gazebo_msgs::ContactsState &msg);
+};
 
-  class SrGazeboVirtualTactileSensorManager :
-          public SrTactileSensorManager
-  {
-  public:
-    SrGazeboVirtualTactileSensorManager();
+class SrGazeboVirtualTactileSensorManager :
+        public SrTactileSensorManager
+{
+public:
+  SrGazeboVirtualTactileSensorManager();
 
-    ~SrGazeboVirtualTactileSensorManager();
-  };
+  ~SrGazeboVirtualTactileSensorManager();
+};
 }  // namespace shadowrobot
 
 /* For the emacs weenies in the crowd.

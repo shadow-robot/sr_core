@@ -51,54 +51,54 @@ namespace shadowrobot
  */
 
 /// An enum containing the different types of hardware the diagnosticer is publishing data about
-  enum hardware_types
-  {
-    /// the Dexterous Hand
-            sr_hand_hardware,
-    /// the Shadow Arm
-            sr_arm_hardware
-  };
+enum hardware_types
+{
+  /// the Dexterous Hand
+          sr_hand_hardware,
+  /// the Shadow Arm
+          sr_arm_hardware
+};
 
-  class SRDiagnosticer
-  {
-  public:
-    /**
-     * Constructor initializing the ROS node, and setting the topic to which it publishes.
-     * The frequency at which this node will publish data is set by a parameter, read from ROS parameter server.
-     *
-     * @param sr_art_robot A SRArticulatedRobot object, where the information to be published comes from.
-     * @param hw_type The type of hardware we are publishing diagnostics about.
-     */
-    SRDiagnosticer(boost::shared_ptr<SRArticulatedRobot> sr_art_robot, hardware_types hw_type);
+class SRDiagnosticer
+{
+public:
+  /**
+   * Constructor initializing the ROS node, and setting the topic to which it publishes.
+   * The frequency at which this node will publish data is set by a parameter, read from ROS parameter server.
+   *
+   * @param sr_art_robot A SRArticulatedRobot object, where the information to be published comes from.
+   * @param hw_type The type of hardware we are publishing diagnostics about.
+   */
+  SRDiagnosticer(boost::shared_ptr<SRArticulatedRobot> sr_art_robot, hardware_types hw_type);
 
-    /// Destructor
-    ~SRDiagnosticer();
+  /// Destructor
+  ~SRDiagnosticer();
 
-    /**
-     * The callback method which is called at a given frequency. Gets the data from the shadowhand / shadowarm object.
-     */
-    void publish();
+  /**
+   * The callback method which is called at a given frequency. Gets the data from the shadowhand / shadowarm object.
+   */
+  void publish();
 
-  private:
-    /// const to convert the rate data to Hz
-    static const double palm_numb_msg_const;
-    /// const to convert the rate data to Hz
-    static const double palm_msg_rate_const;
+private:
+  /// const to convert the rate data to Hz
+  static const double palm_numb_msg_const;
+  /// const to convert the rate data to Hz
+  static const double palm_msg_rate_const;
 
-    /// The shadowhand object (can be either an object connected to the real robot or a virtual hand).
-    boost::shared_ptr<SRArticulatedRobot> sr_articulated_robot;
+  /// The shadowhand object (can be either an object connected to the real robot or a virtual hand).
+  boost::shared_ptr<SRArticulatedRobot> sr_articulated_robot;
 
-    /// ros node handle
-    NodeHandle node, n_tilde;
-    /// the rate at which the data will be published. This can be set by a parameter in the launch file.
-    Rate publish_rate;
+  /// ros node handle
+  NodeHandle node, n_tilde;
+  /// the rate at which the data will be published. This can be set by a parameter in the launch file.
+  Rate publish_rate;
 
-    /// The publisher which publishes the data to the \/diagnostics topic.
-    Publisher sr_diagnostics_pub;
+  /// The publisher which publishes the data to the \/diagnostics topic.
+  Publisher sr_diagnostics_pub;
 
-    /// store the hardware_type for this diagnosticer.
-    hardware_types hardware_type;
-  };  // end class ShadowhandDiagnosticer
+  /// store the hardware_type for this diagnosticer.
+  hardware_types hardware_type;
+};  // end class ShadowhandDiagnosticer
 
 }  // namespace shadowrobot
 

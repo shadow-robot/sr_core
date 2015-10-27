@@ -54,95 +54,95 @@ namespace shadowrobot
 /**
  * The real shadowhand class is a class used to access the C code of the Dextrous Hand.
  */
-  class RealShadowhand :
-          public SRArticulatedRobot
-  {
-  public:
-    /**
-     * Constructor for the real Shadowhand: initialize the connection to the robot and also initialize the
-     * joint_map containing the mapping between joint_names and their data.
-     */
-    RealShadowhand();
+class RealShadowhand :
+        public SRArticulatedRobot
+{
+public:
+  /**
+   * Constructor for the real Shadowhand: initialize the connection to the robot and also initialize the
+   * joint_map containing the mapping between joint_names and their data.
+   */
+  RealShadowhand();
 
-    virtual ~RealShadowhand();
+  virtual ~RealShadowhand();
 
-    /**
-     * Send a new target to a given joint on the robot. The command will be issued to the robot which will move if
-     * the controllers are started and tuned. The target is truncated to the correct range.
-     *
-     * @param joint_name The Joint in joints_map you wish to send the target to.
-     * @param target The target in degree
-     * @return 0 if success ; -1 if error
-     */
-    virtual int16_t sendupdate(std::string joint_name, double target);
+  /**
+   * Send a new target to a given joint on the robot. The command will be issued to the robot which will move if
+   * the controllers are started and tuned. The target is truncated to the correct range.
+   *
+   * @param joint_name The Joint in joints_map you wish to send the target to.
+   * @param target The target in degree
+   * @return 0 if success ; -1 if error
+   */
+  virtual int16_t sendupdate(std::string joint_name, double target);
 
-    virtual JointData getJointData(std::string joint_name);
+  virtual JointData getJointData(std::string joint_name);
 
-    virtual JointsMap getAllJointsData();
+  virtual JointsMap getAllJointsData();
 
-    virtual int16_t setContrl(std::string contrlr_name, JointControllerData ctrlr_data);
+  virtual int16_t setContrl(std::string contrlr_name, JointControllerData ctrlr_data);
 
-    virtual JointControllerData getContrl(std::string contrlr_name);
+  virtual JointControllerData getContrl(std::string contrlr_name);
 
-    virtual int16_t setConfig(std::vector <std::string> myConfig);
+  virtual int16_t setConfig(std::vector <std::string> myConfig);
 
-    virtual void getConfig(std::string joint_name);
+  virtual void getConfig(std::string joint_name);
 
-    virtual std::vector <DiagnosticData> getDiagnostics();
+  virtual std::vector <DiagnosticData> getDiagnostics();
 
-  protected:
-    /***
-     * Initializes the mapping between the joint_names and their data. This function fetches the joint_names from
-     * the robot code.
-     */
-    void initializeMap();
+protected:
+  /***
+   * Initializes the mapping between the joint_names and their data. This function fetches the joint_names from
+   * the robot code.
+   */
+  void initializeMap();
 
-    /////////////////
-    //    TESTS    //
-    /////////////////
+  /////////////////
+  //    TESTS    //
+  /////////////////
 
-    /**
-     * A set of tasks to run before the tests:
-     *  - Ensure we don't use the ROS interface during the tests (lock
-     *    the mutexes).
-     *
-     *
-     * @param status the status of the pretest
-     */
-    void pretest(diagnostic_updater::DiagnosticStatusWrapper &status);
+  /**
+   * A set of tasks to run before the tests:
+   *  - Ensure we don't use the ROS interface during the tests (lock
+   *    the mutexes).
+   *
+   *
+   * @param status the status of the pretest
+   */
+  void pretest(diagnostic_updater::DiagnosticStatusWrapper &status);
 
-    /**
-     * A set of tasks to run after the tests:
-     *  - release the mutexes
-     *
-     *
-     * @param status the status of the posttest
-     */
-    void posttest(diagnostic_updater::DiagnosticStatusWrapper &status);
+  /**
+   * A set of tasks to run after the tests:
+   *  - release the mutexes
+   *
+   *
+   * @param status the status of the posttest
+   */
+  void posttest(diagnostic_updater::DiagnosticStatusWrapper &status);
 
-    /**
-     * A test to check the number of messages received is the same as the
-     * number of messages sent. Calls the test_messages_routine for each
-     * joint / frequency we're testing.
-     *
-     * @param status the test result.
-     */
-    void test_messages(diagnostic_updater::DiagnosticStatusWrapper &status);
+  /**
+   * A test to check the number of messages received is the same as the
+   * number of messages sent. Calls the test_messages_routine for each
+   * joint / frequency we're testing.
+   *
+   * @param status the test result.
+   */
+  void test_messages(diagnostic_updater::DiagnosticStatusWrapper &status);
 
-    /**
-     * The routine called during the test: test the number of received messages
-     * for a given joint, a given number of times and at a given frequency.
-     *
-     * @param joint_name the name of the joint to test
-     * @param repeat the number of messages to send
-     * @param rate the rate at which we send the messages
-     *
-     * @return a pair containing the status of the test (error or ok), and a message
-     *         to display.
-     */
-    std::pair<unsigned char, std::string> test_messages_routine(std::string joint_name, unsigned int repeat,
-                                                                ros::Rate rate);
-  };  // end class
+  /**
+   * The routine called during the test: test the number of received messages
+   * for a given joint, a given number of times and at a given frequency.
+   *
+   * @param joint_name the name of the joint to test
+   * @param repeat the number of messages to send
+   * @param rate the rate at which we send the messages
+   *
+   * @return a pair containing the status of the test (error or ok), and a message
+   *         to display.
+   */
+  std::pair<unsigned char, std::string> test_messages_routine(std::string joint_name, unsigned int repeat,
+                                                              ros::Rate rate);
+};  // end class
 }  // namespace shadowrobot
 
 /* For the emacs weenies in the crowd.

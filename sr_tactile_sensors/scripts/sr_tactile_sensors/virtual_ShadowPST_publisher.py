@@ -53,7 +53,7 @@ class MergeMessages(object):
         for i in range(0, 5):
             pressure.append(self.pst[i]*100)
         pst_state_msg.pressure = pressure
-        #print pst_state_msg.pressure
+        # print pst_state_msg.pressure
         self.mutex.release()
 
         pst_state_msg.header.stamp = rospy.Time.now()
