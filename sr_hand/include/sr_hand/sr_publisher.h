@@ -50,51 +50,51 @@ namespace shadowrobot
  * (a ROS package). This is useful to visualize the data in rviz (part of ROS). A third topic is
  * \/prefix\/shadowhand_data. The messages published on this last topic are better formatted for our hardware.
  */
-  class SRPublisher
+class SRPublisher
+{
+public:
+  /**
+   * Constructor initializing the ROS node, and setting the topic to which it publishes.
+   * The frequency at which this node will publish data is set by a parameter, read from ROS parameter server.
+   *
+   * @param sr_art_robot A Shadowhand or Shadowarm object, where the information to be published comes from.
+   */
+  explicit SRPublisher(boost::shared_ptr<SRArticulatedRobot> sr_art_robot);
+
+  /// Destructor
+  ~SRPublisher();
+
+  /**
+   * The callback method which is called at a given frequency. Gets the data from the shadowhand/shadowarm object.
+   */
+  void publish();
+
+private:
+  /// ros node handle
+  NodeHandle node, n_tilde;
+  /// the rate at which the data will be published. This can be set by a parameter in the launch file.
+  Rate publish_rate;
+
+  /// The shadowhand object (can be either an object connected to the real robot or a virtual hand).
+  boost::shared_ptr<SRArticulatedRobot> sr_articulated_robot;
+
+  /// The publisher which publishes the data to the \/{prefix}\/position\/joint_states topic.
+  Publisher sr_jointstate_pos_pub;
+  /// The publisher which publishes the data to the \/{prefix}\/target\/joint_states topic.
+  Publisher sr_jointstate_target_pub;
+  /// The publisher which publishes the data to the \/{prefix}\/shadowhand_data topic.
+  Publisher sr_pub;
+
+  /**
+   * Convert an angle in degree to an angle in radians.
+   * @param deg the angle in degrees
+   * @return the value in rads.
+   */
+  inline double toRad(double deg)
   {
-  public:
-    /**
-     * Constructor initializing the ROS node, and setting the topic to which it publishes.
-     * The frequency at which this node will publish data is set by a parameter, read from ROS parameter server.
-     *
-     * @param sr_art_robot A Shadowhand or Shadowarm object, where the information to be published comes from.
-     */
-    explicit SRPublisher(boost::shared_ptr<SRArticulatedRobot> sr_art_robot);
-
-    /// Destructor
-    ~SRPublisher();
-
-    /**
-     * The callback method which is called at a given frequency. Gets the data from the shadowhand/shadowarm object.
-     */
-    void publish();
-
-  private:
-    /// ros node handle
-    NodeHandle node, n_tilde;
-    /// the rate at which the data will be published. This can be set by a parameter in the launch file.
-    Rate publish_rate;
-
-    /// The shadowhand object (can be either an object connected to the real robot or a virtual hand).
-    boost::shared_ptr<SRArticulatedRobot> sr_articulated_robot;
-
-    /// The publisher which publishes the data to the \/{prefix}\/position\/joint_states topic.
-    Publisher sr_jointstate_pos_pub;
-    /// The publisher which publishes the data to the \/{prefix}\/target\/joint_states topic.
-    Publisher sr_jointstate_target_pub;
-    /// The publisher which publishes the data to the \/{prefix}\/shadowhand_data topic.
-    Publisher sr_pub;
-
-    /**
-     * Convert an angle in degree to an angle in radians.
-     * @param deg the angle in degrees
-     * @return the value in rads.
-     */
-    inline double toRad(double deg)
-    {
-      return deg * 3.14159265 / 180.0;
-    }
-  };  // end class ShadowhandPublisher
+    return deg * 3.14159265 / 180.0;
+  }
+};  // end class ShadowhandPublisher
 
 }  // namespace shadowrobot
 

@@ -38,32 +38,32 @@
 
 namespace shadowrobot
 {
-  class Valves
-  {
-  public:
-    /**
-     * Initializes the necessary mappings with a static list of names.
-     */
-    Valves();
+class Valves
+{
+public:
+  /**
+   * Initializes the necessary mappings with a static list of names.
+   */
+  Valves();
 
-    /// destructor
-    ~Valves();
+  /// destructor
+  ~Valves();
 
-    void publish();
+  void publish();
 
-  private:
-    void valve_command(const std_msgs::Float64ConstPtr &msg, int index_valve);
+private:
+  void valve_command(const std_msgs::Float64ConstPtr &msg, int index_valve);
 
-    std::vector<struct sensor> valves_sensors;
+  std::vector<struct sensor> valves_sensors;
 
-    std::vector <ros::Publisher> valves_publishers;
-    std::vector <ros::Subscriber> valves_subscribers;
+  std::vector <ros::Publisher> valves_publishers;
+  std::vector <ros::Subscriber> valves_subscribers;
 
-    ros::NodeHandle n_tilde;
-    ros::Rate publish_rate;
+  ros::NodeHandle n_tilde;
+  ros::Rate publish_rate;
 
-    void init_subs_and_pubs(int index_joint);
-  };
+  void init_subs_and_pubs(int index_joint);
+};
 
 }  // namespace shadowrobot
 
