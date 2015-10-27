@@ -33,52 +33,52 @@
 
 namespace controller
 {
-  class SrhMuscleJointPositionController :
-          public SrController
-  {
-  public:
-    SrhMuscleJointPositionController();
+class SrhMuscleJointPositionController :
+        public SrController
+{
+public:
+  SrhMuscleJointPositionController();
 
-    bool init(ros_ethercat_model::RobotState *robot, ros::NodeHandle &n);
+  bool init(ros_ethercat_model::RobotState *robot, ros::NodeHandle &n);
 
-    virtual void starting(const ros::Time &time);
+  virtual void starting(const ros::Time &time);
 
-    /*!
-     * \brief Issues commands to the joint. Should be called at regular intervals
-     */
-    virtual void update(const ros::Time &time, const ros::Duration &period);
+  /*!
+   * \brief Issues commands to the joint. Should be called at regular intervals
+   */
+  virtual void update(const ros::Time &time, const ros::Duration &period);
 
-    virtual void getGains(double &p, double &i, double &d, double &i_max, double &i_min);
+  virtual void getGains(double &p, double &i, double &d, double &i_max, double &i_min);
 
-    virtual bool resetGains(std_srvs::Empty::Request &req, std_srvs::Empty::Response &resp);
+  virtual bool resetGains(std_srvs::Empty::Request &req, std_srvs::Empty::Response &resp);
 
-    bool setGains(sr_robot_msgs::SetPidGains::Request &req, sr_robot_msgs::SetPidGains::Response &resp);
+  bool setGains(sr_robot_msgs::SetPidGains::Request &req, sr_robot_msgs::SetPidGains::Response &resp);
 
-  private:
-    /// Internal PID controller for the position loop.
-    boost::scoped_ptr<control_toolbox::Pid> pid_controller_position_;
+private:
+  /// Internal PID controller for the position loop.
+  boost::scoped_ptr<control_toolbox::Pid> pid_controller_position_;
 
-    /// publish our joint controller state
-    boost::scoped_ptr<realtime_tools::RealtimePublisher
-            <sr_robot_msgs::JointMusclePositionControllerState> > controller_state_publisher_;
+  /// publish our joint controller state
+  boost::scoped_ptr<realtime_tools::RealtimePublisher
+          <sr_robot_msgs::JointMusclePositionControllerState> > controller_state_publisher_;
 
-    /// the position deadband value used in the hysteresis_deadband
-    double position_deadband;
+  /// the position deadband value used in the hysteresis_deadband
+  double position_deadband;
 
-    /// We're using an hysteresis deadband.
-    sr_deadband::HysteresisDeadband<double> hysteresis_deadband;
+  /// We're using an hysteresis deadband.
+  sr_deadband::HysteresisDeadband<double> hysteresis_deadband;
 
-    /// Command accumulator, time to keep the valves open/shut, sign gives the direction
-    int command_acc_;
+  /// Command accumulator, time to keep the valves open/shut, sign gives the direction
+  int command_acc_;
 
-    /// read all the controller settings from the parameter server
-    void read_parameters();
+  /// read all the controller settings from the parameter server
+  void read_parameters();
 
-    /// set the position target from a topic
-    void setCommandCB(const std_msgs::Float64ConstPtr &msg);
+  /// set the position target from a topic
+  void setCommandCB(const std_msgs::Float64ConstPtr &msg);
 
-    void resetJointState();
-  };
+  void resetJointState();
+};
 }  // namespace controller
 
 /* For the emacs weenies in the crowd.
