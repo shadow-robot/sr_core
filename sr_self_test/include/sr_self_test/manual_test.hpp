@@ -34,28 +34,28 @@
 
 namespace shadow_robot
 {
-  class ManualTests
+class ManualTests
+{
+public:
+  ManualTests(std::string message, int id);
+
+  virtual ~ManualTests()
   {
-  public:
-    ManualTests(std::string message, int id);
-
-    virtual ~ManualTests()
-    {
-    };
-
-    void run_manual_tests(diagnostic_updater::DiagnosticStatusWrapper &status);
-
-  private:
-    ros::NodeHandle nh_;
-
-    /// the message we want the user to see
-    std::string message_;
-    /// an id for the test
-    int id_;
-
-    /// Service client for getting the user input
-    ros::ServiceClient user_input_client_;
   };
+
+  void run_manual_tests(diagnostic_updater::DiagnosticStatusWrapper &status);
+
+private:
+  ros::NodeHandle nh_;
+
+  /// the message we want the user to see
+  std::string message_;
+  /// an id for the test
+  int id_;
+
+  /// Service client for getting the user input
+  ros::ServiceClient user_input_client_;
+};
 }  // namespace shadow_robot
 
 /* For the emacs weenies in the crowd.

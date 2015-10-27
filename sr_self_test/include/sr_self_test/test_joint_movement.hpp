@@ -40,47 +40,47 @@
 
 namespace shadow_robot
 {
-  class TestJointMovement
+class TestJointMovement
+{
+public:
+  TestJointMovement(std::string joint_name, shadowrobot::HandCommander *hand_commander);
+
+  ~TestJointMovement()
   {
-  public:
-    TestJointMovement(std::string joint_name, shadowrobot::HandCommander *hand_commander);
-
-    ~TestJointMovement()
-    {
-    };
-
-    double mse;
-    std::map<std::string, std::vector<double> > values;
-
-  private:
-    ros::Subscriber sub_;
-    ros::Publisher pub_;
-
-    ros::Subscriber sr_sub_state_;
-    ros::Subscriber sub_state_;
-
-    void sr_state_cb_(const sr_robot_msgs::JointControllerState::ConstPtr &msg);
-
-    void state_cb_(const control_msgs::JointControllerState::ConstPtr &msg);
-
-    ros::Subscriber mse_sub_;
-
-    void mse_cb_(const std_msgs::Float64::ConstPtr &msg);
-
-    std::string get_ROS_topic_type(std::string topic_name);
-
-    boost::shared_ptr<shadowrobot::MovementFromImage> mvt_from_img_;
-    boost::shared_ptr<shadowrobot::MovementPublisher> mvt_pub_;
-
-    ros::NodeHandle nh_tilde_;
-
-    boost::shared_ptr<boost::thread> thread_;
-
-    std::string joint_name_;
-
-    /// used with the sole purpose of knowing the name of the topic we want to subscribe to
-    boost::shared_ptr<shadowrobot::HandCommander> hand_commander_;
   };
+
+  double mse;
+  std::map<std::string, std::vector<double> > values;
+
+private:
+  ros::Subscriber sub_;
+  ros::Publisher pub_;
+
+  ros::Subscriber sr_sub_state_;
+  ros::Subscriber sub_state_;
+
+  void sr_state_cb_(const sr_robot_msgs::JointControllerState::ConstPtr &msg);
+
+  void state_cb_(const control_msgs::JointControllerState::ConstPtr &msg);
+
+  ros::Subscriber mse_sub_;
+
+  void mse_cb_(const std_msgs::Float64::ConstPtr &msg);
+
+  std::string get_ROS_topic_type(std::string topic_name);
+
+  boost::shared_ptr<shadowrobot::MovementFromImage> mvt_from_img_;
+  boost::shared_ptr<shadowrobot::MovementPublisher> mvt_pub_;
+
+  ros::NodeHandle nh_tilde_;
+
+  boost::shared_ptr<boost::thread> thread_;
+
+  std::string joint_name_;
+
+  /// used with the sole purpose of knowing the name of the topic we want to subscribe to
+  boost::shared_ptr<shadowrobot::HandCommander> hand_commander_;
+};
 }  // namespace shadow_robot
 
 /* For the emacs weenies in the crowd.
