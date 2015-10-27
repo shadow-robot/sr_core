@@ -49,7 +49,7 @@ namespace shadow_robot
 class SrSelfTest
 {
 public:
-  SrSelfTest(bool simulated, const std::string &ns = "");
+  explicit SrSelfTest(bool simulated, const std::string &ns = "");
 
   ~SrSelfTest()
   {
