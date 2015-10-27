@@ -88,7 +88,7 @@ namespace shadow_robot
           }
         }
         std::set_intersection(joints_tmp.begin(), joints_tmp.end(), hand_joints.begin(), hand_joints.end(),
-                              joints_[hand_config_.mapping_[hand.first]].begin());
+                              std::back_inserter(joints_[hand_config_.mapping_[hand.first]]));
       }
     } else {
       ROS_WARN_STREAM("No robot_description found on parameter server. Joint names are loaded for 5 finger hand");

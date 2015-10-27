@@ -69,9 +69,9 @@ class ArmFinder(object):
                     if not match_suffix:
                         possible_arm_joints.append(joint.name)
 
-            for arm_id, arm_mapping in arm_parameters.mapping.iteritems():
+            for arm_id, arm_mapping in self.arm_config.mapping.iteritems():
                 self.arm_joints[arm_mapping] = []
-                arm_joint_prefix = arm_parameters.joint_prefix[arm_id]
+                arm_joint_prefix = self.arm_config.joint_prefix[arm_id]
                 for joint_name in possible_arm_joints:
                     if joint_name.startswith(arm_joint_prefix):
                         self.arm_joints[arm_mapping].append(joint_name)
