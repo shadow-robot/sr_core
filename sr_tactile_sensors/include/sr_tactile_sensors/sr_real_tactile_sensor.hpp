@@ -42,34 +42,34 @@
 
 namespace shadowrobot
 {
-  class SrRealTactileSensor :
-          public SrGenericTactileSensor
-  {
-  public:
-    SrRealTactileSensor(std::string name, std::string touch_name);
+class SrRealTactileSensor :
+        public SrGenericTactileSensor
+{
+public:
+  SrRealTactileSensor(std::string name, std::string touch_name);
 
-    virtual ~SrRealTactileSensor();
+  virtual ~SrRealTactileSensor();
 
-    /**
-     * Reads the value from the sensor
-     *
-     * @return the pressure value ; -1000 if sensor not found
-     */
-    virtual double get_touch_data();
+  /**
+   * Reads the value from the sensor
+   *
+   * @return the pressure value ; -1000 if sensor not found
+   */
+  virtual double get_touch_data();
 
-  private:
-    struct sensor sensor_touch;
-    int res_touch;
-  };
+private:
+  struct sensor sensor_touch;
+  int res_touch;
+};
 
-  class SrRealTactileSensorManager :
-          public SrTactileSensorManager
-  {
-  public:
-    SrRealTactileSensorManager();
+class SrRealTactileSensorManager :
+        public SrTactileSensorManager
+{
+public:
+  SrRealTactileSensorManager();
 
-    ~SrRealTactileSensorManager();
-  };
+  ~SrRealTactileSensorManager();
+};
 }  // namespace shadowrobot
 
 /* For the emacs weenies in the crowd.

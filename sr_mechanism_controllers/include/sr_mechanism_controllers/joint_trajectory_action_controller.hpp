@@ -39,21 +39,21 @@
 
 namespace shadowrobot
 {
-  class JointTrajectoryActionController
-  {
-    typedef actionlib::SimpleActionServer<control_msgs::FollowJointTrajectoryAction> JTAS;
-    typedef std::vector<trajectory_msgs::JointTrajectoryPoint> JointTrajectoryPointVec;
-    typedef std::map<std::string, ros::Publisher> JointPubMap;
-  public:
-    JointTrajectoryActionController();
+class JointTrajectoryActionController
+{
+  typedef actionlib::SimpleActionServer<control_msgs::FollowJointTrajectoryAction> JTAS;
+  typedef std::vector<trajectory_msgs::JointTrajectoryPoint> JointTrajectoryPointVec;
+  typedef std::map<std::string, ros::Publisher> JointPubMap;
+public:
+  JointTrajectoryActionController();
 
-  private:
-    ros::NodeHandle nh;
-    JointPubMap joint_pub;
-    boost::shared_ptr<JTAS> action_server;
+private:
+  ros::NodeHandle nh;
+  JointPubMap joint_pub;
+  boost::shared_ptr<JTAS> action_server;
 
-    void execute_trajectory(const control_msgs::FollowJointTrajectoryGoalConstPtr &goal);
-  };
+  void execute_trajectory(const control_msgs::FollowJointTrajectoryGoalConstPtr &goal);
+};
 }  // namespace shadowrobot
 
 /* For the emacs weenies in the crowd.

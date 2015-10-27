@@ -42,38 +42,38 @@
 
 namespace shadow_robot
 {
-  class DiagnosticParser
+class DiagnosticParser
+{
+public:
+  explicit DiagnosticParser(self_test::TestRunner *test_runner);
+
+  ~DiagnosticParser()
   {
-  public:
-    explicit DiagnosticParser(self_test::TestRunner *test_runner);
-
-    ~DiagnosticParser()
-    {
-    };
-
-  private:
-    ros::NodeHandle nh_;
-
-    /// Pointer to the test runner to be able to add new tests for each parser.
-    self_test::TestRunner *test_runner_;
-
-    /// ROS subscriber to the diagnostics_agg topic
-    ros::Subscriber diag_sub_;
-
-    /// Wait for the diagnostics to be received then run all tests on them
-    void run_tests_();
-
-    /**
-     * Susbscribed to the diagnostics_agg topic.
-     * @param msg new incoming msg
-     */
-    void diagnostics_agg_cb_(const diagnostic_msgs::DiagnosticArray::ConstPtr &msg);
-
-    boost::ptr_vector<BaseDiagnostics> diagnostics_;
-
-    typedef boost::ptr_map<std::string, BaseDiagnostics> DiagnosticsMap;
-    DiagnosticsMap all_diagnostics_;
   };
+
+private:
+  ros::NodeHandle nh_;
+
+  /// Pointer to the test runner to be able to add new tests for each parser.
+  self_test::TestRunner *test_runner_;
+
+  /// ROS subscriber to the diagnostics_agg topic
+  ros::Subscriber diag_sub_;
+
+  /// Wait for the diagnostics to be received then run all tests on them
+  void run_tests_();
+
+  /**
+   * Susbscribed to the diagnostics_agg topic.
+   * @param msg new incoming msg
+   */
+  void diagnostics_agg_cb_(const diagnostic_msgs::DiagnosticArray::ConstPtr &msg);
+
+  boost::ptr_vector<BaseDiagnostics> diagnostics_;
+
+  typedef boost::ptr_map<std::string, BaseDiagnostics> DiagnosticsMap;
+  DiagnosticsMap all_diagnostics_;
+};
 }  // namespace shadow_robot
 
 /* For the emacs weenies in the crowd.

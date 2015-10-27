@@ -33,32 +33,32 @@
 namespace shadowrobot
 {
 
-  class VirtualShadowhandLibrary :
-          public virtual SRArticulatedRobot
+class VirtualShadowhandLibrary :
+        public virtual SRArticulatedRobot
+{
+public:
+  VirtualShadowhandLibrary();
+
+  virtual ~VirtualShadowhandLibrary()
   {
-  public:
-    VirtualShadowhandLibrary();
+  };
 
-    virtual ~VirtualShadowhandLibrary()
-    {
-    };
+  virtual int16_t sendupdate(std::string joint_name, double target);
 
-    virtual int16_t sendupdate(std::string joint_name, double target);
+  virtual JointData getJointData(std::string joint_name);
 
-    virtual JointData getJointData(std::string joint_name);
+  virtual JointsMap getAllJointsData();
 
-    virtual JointsMap getAllJointsData();
+  virtual int16_t setContrl(std::string contrlr_name, JointControllerData ctrlr_data);
 
-    virtual int16_t setContrl(std::string contrlr_name, JointControllerData ctrlr_data);
+  virtual JointControllerData getContrl(std::string ctrlr_name);
 
-    virtual JointControllerData getContrl(std::string ctrlr_name);
+  virtual int16_t setConfig(std::vector<std::string> myConfig);
 
-    virtual int16_t setConfig(std::vector<std::string> myConfig);
+  virtual void getConfig(std::string joint_name);
 
-    virtual void getConfig(std::string joint_name);
-
-    virtual std::vector<DiagnosticData> getDiagnostics();
-  };  // end class
+  virtual std::vector<DiagnosticData> getDiagnostics();
+};  // end class
 
 }  // namespace shadowrobot
 #endif  // SR_HAND_HAND_VIRTUAL_SHADOWHAND_LIBRARY_H

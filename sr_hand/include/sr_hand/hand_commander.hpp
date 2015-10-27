@@ -59,69 +59,69 @@ namespace shadowrobot
  * This ROS subscriber is used to issue commands to the hand / arm, from sending a set of targets, to changing the
  * controller parameters.
  */
-  class HandCommander
-  {
-  public:
-    explicit HandCommander(const std::string &ns = "");
+class HandCommander
+{
+public:
+  explicit HandCommander(const std::string &ns = "");
 
-    /// Destructor
-    ~HandCommander();
+  /// Destructor
+  ~HandCommander();
 
-    void sendCommands(std::vector<sr_robot_msgs::joint> joint_vector);
+  void sendCommands(std::vector<sr_robot_msgs::joint> joint_vector);
 
-    /**
-     * Returns the topic name for the controller state of a given joint. Useful for
-     * easily subscribing to the corresponding state topic in another node.
-     *
-     * @param joint_name the joint for which you want the topic.
-     *
-     * @return the full name (fully resolved) of the topic to which you need to subscribe.
-     */
-    std::string get_controller_state_topic(std::string joint_name);
+  /**
+   * Returns the topic name for the controller state of a given joint. Useful for
+   * easily subscribing to the corresponding state topic in another node.
+   *
+   * @param joint_name the joint for which you want the topic.
+   *
+   * @return the full name (fully resolved) of the topic to which you need to subscribe.
+   */
+  std::string get_controller_state_topic(std::string joint_name);
 
-    /**
-     * Reads the min and max for a given joint from the urdf description.
-     *
-     * @param joint_name name of the joint (upper or lower case) (e.g. FFJ3)
-     *
-     * @return a pair containing first the min then the max for the given joint.
-     */
-    std::pair<double, double> get_min_max(std::string joint_name);
+  /**
+   * Reads the min and max for a given joint from the urdf description.
+   *
+   * @param joint_name name of the joint (upper or lower case) (e.g. FFJ3)
+   *
+   * @return a pair containing first the min then the max for the given joint.
+   */
+  std::pair<double, double> get_min_max(std::string joint_name);
 
-    /**
-     * Get all the joint names from the robot description.
-     *  Ideal for looping over all joints.
-     *
-     * @return A vector of joint names.
-     */
-    std::vector<std::string> get_all_joints();
+  /**
+   * Get all the joint names from the robot description.
+   *  Ideal for looping over all joints.
+   *
+   * @return A vector of joint names.
+   */
+  std::vector<std::string> get_all_joints();
 
-  private:
-    /// ros node handle
-    NodeHandle node_;
+private:
+  /// ros node handle
+  NodeHandle node_;
 
-    /// stores data about the hand (read from urdf)
-    std::map<std::string, boost::shared_ptr<urdf::Joint> > all_joints;
+  /// stores data about the hand (read from urdf)
+  std::map<std::string, boost::shared_ptr<urdf::Joint> > all_joints;
 
-    /// Publisher for the CAN hand targets
-    Publisher sr_hand_target_pub;
-    /// Publishers for the ethercat hand targets for every joint
-    boost::ptr_map<std::string, Publisher> sr_hand_target_pub_map;
+  /// Publisher for the CAN hand targets
+  Publisher sr_hand_target_pub;
+  /// Publishers for the ethercat hand targets for every joint
+  boost::ptr_map<std::string, Publisher> sr_hand_target_pub_map;
 
-    /// A map of topics for the controller states
-    std::map<std::string, std::string> sr_hand_sub_topics;
+  /// A map of topics for the controller states
+  std::map<std::string, std::string> sr_hand_sub_topics;
 
-    shadowhandRosLib::HandType hand_type;
-    bool ethercat_controllers_found;
+  shadowhandRosLib::HandType hand_type;
+  bool ethercat_controllers_found;
 
-    /**
-     * init function for the ethercat hand
-     * It can be called if we know that there's an ethercat hand (controller_manager running)
-     */
-    void initializeEthercatHand();
+  /**
+   * init function for the ethercat hand
+   * It can be called if we know that there's an ethercat hand (controller_manager running)
+   */
+  void initializeEthercatHand();
 
-    static const double TIMEOUT_TO_DETECT_CONTROLLER_MANAGER;
-  };  // end class ShadowhandSubscriber
+  static const double TIMEOUT_TO_DETECT_CONTROLLER_MANAGER;
+};  // end class ShadowhandSubscriber
 
 }  // namespace shadowrobot
 

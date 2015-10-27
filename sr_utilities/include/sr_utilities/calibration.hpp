@@ -34,79 +34,79 @@
 
 namespace joint_calibration
 {
-  /**
-   * A point in the N-point piecewise
-   * linear calibration
-   */
-  struct Point
-  {
-    double raw_value;
-    double calibrated_value;
-  };
+/**
+ * A point in the N-point piecewise
+ * linear calibration
+ */
+struct Point
+{
+  double raw_value;
+  double calibrated_value;
+};
 
-  /**
-   * This function is used by the sort algorithm to compare
-   * 2 different points and sort the calibration table by
-   * growing values of raw_value.
-   *
-   * @param p1 the first point to compare
-   * @param p2 the second point to compare
-   *
-   * @return true if p1.raw_value < p2.raw_value
-   */
-  static bool sort_growing_raw_operator(const Point &p1, const Point &p2)
-  {
-    return p1.raw_value < p2.raw_value;
-  }
+/**
+ * This function is used by the sort algorithm to compare
+ * 2 different points and sort the calibration table by
+ * growing values of raw_value.
+ *
+ * @param p1 the first point to compare
+ * @param p2 the second point to compare
+ *
+ * @return true if p1.raw_value < p2.raw_value
+ */
+static bool sort_growing_raw_operator(const Point &p1, const Point &p2)
+{
+  return p1.raw_value < p2.raw_value;
+}
 }  // namespace joint_calibration
 
 namespace shadow_robot
 {
+/**
+ * This class is used to compute the calibrated joint position, given a raw
+ * ADC sensor reading, using a N-point piecewise linear calibration table.
+ */
+class JointCalibration
+{
+public:
+  explicit JointCalibration(std::vector<joint_calibration::Point> calibration_table);
+
   /**
-   * This class is used to compute the calibrated joint position, given a raw
-   * ADC sensor reading, using a N-point piecewise linear calibration table.
+   * Computes the calibrated joint position from the ADC raw reading.
+   *
+   * @param raw_reading the reading from the ADC
+   *
+   * @return the calibrated joint position in radians.
    */
-  class JointCalibration
+  double compute(double raw_reading);
+
+  /**
+   * Overload the << operator, for easier debugging.
+   */
+  friend std::ostream &operator<<(std::ostream &out, const JointCalibration &calib)
   {
-  public:
-    explicit JointCalibration(std::vector<joint_calibration::Point> calibration_table);
-
-    /**
-     * Computes the calibrated joint position from the ADC raw reading.
-     *
-     * @param raw_reading the reading from the ADC
-     *
-     * @return the calibrated joint position in radians.
-     */
-    double compute(double raw_reading);
-
-    /**
-     * Overload the << operator, for easier debugging.
-     */
-    friend std::ostream &operator<<(std::ostream &out, const JointCalibration &calib)
+    out << " calibration = {";
+    out << "size: " << calib.calibration_table_size_;
+    for (unsigned int i = 0; i < calib.calibration_table_.size(); ++i)
     {
-      out << " calibration = {";
-      out << "size: " << calib.calibration_table_size_;
-      for (unsigned int i = 0; i < calib.calibration_table_.size(); ++i)
-      {
-        out << " [raw: " << calib.calibration_table_[i].raw_value;
-        out << ", cal: " << calib.calibration_table_[i].calibrated_value << "]";
-      }
-      out << " }";
-      return out;
-    };
-
-  private:
-    /**
-     * The calibration table. The vector is ordered by growing values
-     * of the raw_data
-     */
-    std::vector<joint_calibration::Point> calibration_table_;
-    /**
-     * The size of the calibration table, used for quick access
-     */
-    unsigned int calibration_table_size_;
+      out << " [raw: " << calib.calibration_table_[i].raw_value;
+      out << ", cal: " << calib.calibration_table_[i].calibrated_value << "]";
+    }
+    out << " }";
+    return out;
   };
+
+private:
+  /**
+   * The calibration table. The vector is ordered by growing values
+   * of the raw_data
+   */
+  std::vector<joint_calibration::Point> calibration_table_;
+  /**
+   * The size of the calibration table, used for quick access
+   */
+  unsigned int calibration_table_size_;
+};
 }  // namespace shadow_robot
 
 /* For the emacs weenies in the crowd.

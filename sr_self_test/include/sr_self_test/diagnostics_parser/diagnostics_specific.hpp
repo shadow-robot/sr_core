@@ -43,90 +43,90 @@
 
 namespace shadow_robot
 {
-  class RTLoopDiagnostics
-          :
-                  public MinMaxDiagnostics
+class RTLoopDiagnostics
+        :
+                public MinMaxDiagnostics
+{
+public:
+  RTLoopDiagnostics(std::string name, self_test::TestRunner *test_runner)
+          : MinMaxDiagnostics(name, test_runner)
   {
-  public:
-    RTLoopDiagnostics(std::string name, self_test::TestRunner *test_runner)
-            : MinMaxDiagnostics(name, test_runner)
-    {
-      values_.reset(new DiagMap());
-      DiagnosticTest jitter;
-      jitter.min_max = std::make_pair(0.0, 100.0);  // min and max acceptable jitter
-      values_->insert(std::pair<std::string, DiagnosticTest>("Avg Loop Jitter (us)", jitter));
-    }
+    values_.reset(new DiagMap());
+    DiagnosticTest jitter;
+    jitter.min_max = std::make_pair(0.0, 100.0);  // min and max acceptable jitter
+    values_->insert(std::pair<std::string, DiagnosticTest>("Avg Loop Jitter (us)", jitter));
+  }
 
-    virtual ~RTLoopDiagnostics()
-    {
-    }
+  virtual ~RTLoopDiagnostics()
+  {
+  }
 
-    virtual std::auto_ptr<BaseDiagnostics> shallow_clone(std::string name)
-    {
-      std::auto_ptr<BaseDiagnostics> tmp(new RTLoopDiagnostics(name, test_runner_));
-      return tmp;
-    };
-
-  private:
-    double avg_jitter;
-    int control_loop_overruns;
+  virtual std::auto_ptr<BaseDiagnostics> shallow_clone(std::string name)
+  {
+    std::auto_ptr<BaseDiagnostics> tmp(new RTLoopDiagnostics(name, test_runner_));
+    return tmp;
   };
 
-  class EtherCATMasterDiagnostics
-          :
-                  public MinMaxDiagnostics
+private:
+  double avg_jitter;
+  int control_loop_overruns;
+};
+
+class EtherCATMasterDiagnostics
+        :
+                public MinMaxDiagnostics
+{
+public:
+  EtherCATMasterDiagnostics(std::string name, self_test::TestRunner *test_runner)
+          : MinMaxDiagnostics(name, test_runner)
   {
-  public:
-    EtherCATMasterDiagnostics(std::string name, self_test::TestRunner *test_runner)
-            : MinMaxDiagnostics(name, test_runner)
-    {
-      values_.reset(new DiagMap());
-      DiagnosticTest dropped_packet;
-      dropped_packet.min_max = std::make_pair(0, 200);  // min and max acceptable dropped packets
-      // max  (TODO: this should be a ratio dropped/sent packets??)
-      values_->insert(std::pair<std::string, DiagnosticTest>("Dropped Packets", dropped_packet));
-    }
+    values_.reset(new DiagMap());
+    DiagnosticTest dropped_packet;
+    dropped_packet.min_max = std::make_pair(0, 200);  // min and max acceptable dropped packets
+    // max  (TODO: this should be a ratio dropped/sent packets??)
+    values_->insert(std::pair<std::string, DiagnosticTest>("Dropped Packets", dropped_packet));
+  }
 
-    virtual ~EtherCATMasterDiagnostics()
-    {
-    };
-
-    virtual std::auto_ptr<BaseDiagnostics> shallow_clone(std::string name)
-    {
-      std::auto_ptr<BaseDiagnostics> tmp(new EtherCATMasterDiagnostics(name, test_runner_));
-      return tmp;
-    };
+  virtual ~EtherCATMasterDiagnostics()
+  {
   };
 
-
-  class MotorDiagnostics
-          :
-                  public MinMaxDiagnostics
+  virtual std::auto_ptr<BaseDiagnostics> shallow_clone(std::string name)
   {
-  public:
-    MotorDiagnostics(std::string name, self_test::TestRunner *test_runner)
-            : MinMaxDiagnostics(name, test_runner)
-    {
-      values_.reset(new DiagMap());
-      DiagnosticTest voltage;
-      voltage.min_max = std::make_pair(23.5, 24.5);  // min and max acceptable voltage
-      values_->insert(std::pair<std::string, DiagnosticTest>("Measured Voltage", voltage));
-
-      DiagnosticTest temperature;
-      temperature.min_max = std::make_pair(20.0, 50.0);  // min and max acceptable temperature
-      values_->insert(std::pair<std::string, DiagnosticTest>("Temperature", temperature));
-    };
-
-    virtual ~MotorDiagnostics()
-    {
-    };
-
-    virtual std::auto_ptr<BaseDiagnostics> shallow_clone(std::string name)
-    {
-      std::auto_ptr<BaseDiagnostics> tmp(new MotorDiagnostics(name, test_runner_));
-      return tmp;
-    };
+    std::auto_ptr<BaseDiagnostics> tmp(new EtherCATMasterDiagnostics(name, test_runner_));
+    return tmp;
   };
+};
+
+
+class MotorDiagnostics
+        :
+                public MinMaxDiagnostics
+{
+public:
+  MotorDiagnostics(std::string name, self_test::TestRunner *test_runner)
+          : MinMaxDiagnostics(name, test_runner)
+  {
+    values_.reset(new DiagMap());
+    DiagnosticTest voltage;
+    voltage.min_max = std::make_pair(23.5, 24.5);  // min and max acceptable voltage
+    values_->insert(std::pair<std::string, DiagnosticTest>("Measured Voltage", voltage));
+
+    DiagnosticTest temperature;
+    temperature.min_max = std::make_pair(20.0, 50.0);  // min and max acceptable temperature
+    values_->insert(std::pair<std::string, DiagnosticTest>("Temperature", temperature));
+  };
+
+  virtual ~MotorDiagnostics()
+  {
+  };
+
+  virtual std::auto_ptr<BaseDiagnostics> shallow_clone(std::string name)
+  {
+    std::auto_ptr<BaseDiagnostics> tmp(new MotorDiagnostics(name, test_runner_));
+    return tmp;
+  };
+};
 }  // namespace shadow_robot
 
 /* For the emacs weenies in the crowd.

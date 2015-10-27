@@ -32,18 +32,16 @@
 
 namespace sr_mechanism_model
 {
+class J0TransmissionForMuscle :
+        public SimpleTransmissionForMuscle
+{
+public:
+  bool initXml(TiXmlElement *config, ros_ethercat_model::RobotState *robot);
 
-  class J0TransmissionForMuscle :
-          public SimpleTransmissionForMuscle
-  {
-  public:
-    bool initXml(TiXmlElement *config, ros_ethercat_model::RobotState *robot);
+  void propagatePosition();
 
-    void propagatePosition();
-
-    ros_ethercat_model::JointState *joint2_;
-  };
-
+  ros_ethercat_model::JointState *joint2_;
+};
 }  // namespace sr_mechanism_model
 
 /* For the emacs weenies in the crowd.
