@@ -28,6 +28,7 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <map>
 #include <set>
+#include <utility>
 #include <vector>
 #include <string>
 
@@ -45,7 +46,6 @@ SrArmFinder::SrArmFinder()
 
     if (ros::param::has("robot_description"))
     {
-
       const std::vector<std::string> default_hand_joints_vector = SrHandFinder::get_default_joints();
       const std::set<std::string> hand_default_joints(default_hand_joints_vector.begin(),
                                                       default_hand_joints_vector.end());
