@@ -1,0 +1,9 @@
+<launch>
+  <param name="no_hand_one_arm_description" textfile="$(find sr_utilities)/test/urdf/no_hand_description.urdf" />
+  <param name="right_hand_no_arm" textfile="$(find sr_utilities)/test/urdf/right_hand_description.urdf" />
+  <param name="two_hands_left_arm" textfile="$(find sr_utilities)/test/urdf/two_hands_left_arm.urdf" />
+  <param name="right_hand_two_arms" textfile="$(find sr_utilities)/test/urdf/right_hand_two_arms.urdf" />
+
+  <test test-name="test_arm_finder_cpp" pkg="sr_utilities" type="test_arm_finder"/>
+  <test test-name="test_arm_finder_py" pkg="sr_utilities" type="test_arm_finder.py" />
+</launch>

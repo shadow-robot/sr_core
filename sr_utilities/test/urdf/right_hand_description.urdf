@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<robot name="one_hand_robot">
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <cylinder length="1.0" radius="0.1"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <link name="rh_palm_link">
+    <visual>
+      <geometry>
+        <cylinder length="1.0" radius="0.1"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <joint name="rh_palm" type="continuous">
+    <parent link="base_link"/>
+    <child link="rh_palm_link"/>
+  </joint>
+
+  <link name="rh_RFJ4_link">
+    <visual>
+      <geometry>
+        <cylinder length="0.1" radius="0.01"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <joint name="rh_RFJ4" type="continuous">
+    <parent link="rh_palm_link"/>
+    <child link="rh_RFJ4_link"/>
+  </joint>
+
+</robot>

@@ -6,20 +6,47 @@
  * @brief see README.md
  */
 #include <gtest/gtest.h>
-#include <vector>
 #include "ros/ros.h"
 #include <ros/package.h>
-#include <iostream>
+#include <utility>
 #include <map>
+#include <vector>
 #include <string>
 #include "sr_utilities/sr_hand_finder.hpp"
+#include <boost/foreach.hpp>
 
 using std::vector;
 using std::map;
 using std::string;
+using std::pair;
+
+void ASSERT_MAP_HAS_VALUE(const map<string, string> &map, const string &value)
+{
+  bool found = false;
+  pair<string, string> item;
+  BOOST_FOREACH(item, map)
+  {
+    if (value == item.second)
+    {
+      found = true;
+    }
+  }
+
+  ASSERT_TRUE(found);
+}
 
 TEST(SrHandFinder, hand_absent_test)
 {
+  if (ros::param::has("hand"))
+  {
+    ros::param::del("hand");
+  }
+
+  if (ros::param::has("robot_description"))
+  {
+    ros::param::del("robot_description");
+  }
+
   shadow_robot::SrHandFinder hand_finder;
   map<string, vector<string> > hand_joints(hand_finder.get_joints());
   ASSERT_EQ(hand_joints.size(), 0);
@@ -31,8 +58,95 @@ TEST(SrHandFinder, hand_absent_test)
   ASSERT_EQ(controller_tuning.motor_control_.size(), 0);
 }
 
+TEST(SrHandFinder, one_hand_no_robot_description_finder_test)
+{
+  if (ros::param::has("hand"))
+  {
+    ros::param::del("hand");
+  }
+
+  if (ros::param::has("robot_description"))
+  {
+    ros::param::del("robot_description");
+  }
+
+  ros::param::set("hand/mapping/1", "rh");
+  ros::param::set("hand/joint_prefix/1", "rh_");
+
+  shadow_robot::SrHandFinder hand_finder;
+
+  ASSERT_GT(hand_finder.get_hand_parameters().mapping_.size(), 0);
+  ASSERT_GT(hand_finder.get_hand_parameters().joint_prefix_.size(), 0);
+  ASSERT_GT(hand_finder.get_joints().size(), 0);
+  ASSERT_GT(hand_finder.get_calibration_path().size(), 0);
+
+  ASSERT_EQ(hand_finder.get_hand_parameters().mapping_["1"], "rh");
+  ASSERT_EQ(hand_finder.get_hand_parameters().joint_prefix_["1"], "rh_");
+
+  ASSERT_EQ(hand_finder.get_joints().size(), 1);
+  ASSERT_GT(hand_finder.get_joints().count("rh"), 0);
+
+  const vector<string> rh_joints = hand_finder.get_joints().at("rh");
+  ASSERT_NE(std::find(rh_joints.begin(), rh_joints.end(), "rh_FFJ3"), rh_joints.end());
+}
+
+TEST(SrHandFinder, two_hand_robot_description_exists_finder_test)
+{
+  if (ros::param::has("hand"))
+  {
+    ros::param::del("hand");
+  }
+
+  if (ros::param::has("robot_description"))
+  {
+    ros::param::del("robot_description");
+  }
+
+  ros::param::set("hand/mapping/1", "rh");
+  ros::param::set("hand/joint_prefix/1", "rh_");
+  ros::param::set("hand/mapping/2", "lh");
+  ros::param::set("hand/joint_prefix/2", "lh_");
+
+  string two_hands_description;
+  ros::param::get("two_hands_description", two_hands_description);
+  ros::param::set("robot_description", two_hands_description);
+
+  shadow_robot::SrHandFinder hand_finder;
+
+  ASSERT_EQ(hand_finder.get_hand_parameters().mapping_.size(), 2);
+  ASSERT_EQ(hand_finder.get_hand_parameters().joint_prefix_.size(), 2);
+  ASSERT_EQ(hand_finder.get_joints().size(), 2);
+  ASSERT_GT(hand_finder.get_calibration_path().size(), 0);
+
+  ASSERT_MAP_HAS_VALUE(hand_finder.get_hand_parameters().mapping_, "rh");
+  ASSERT_MAP_HAS_VALUE(hand_finder.get_hand_parameters().mapping_, "lh");
+
+  ASSERT_MAP_HAS_VALUE(hand_finder.get_hand_parameters().joint_prefix_, "rh_");
+  ASSERT_MAP_HAS_VALUE(hand_finder.get_hand_parameters().joint_prefix_, "lh_");
+
+  ASSERT_GT(hand_finder.get_joints().count("rh"), 0);
+  const vector<string> rh_joints = hand_finder.get_joints().at("rh");
+  ASSERT_EQ(std::find(rh_joints.begin(), rh_joints.end(), "rh_FFJ3"), rh_joints.end());
+  ASSERT_NE(std::find(rh_joints.begin(), rh_joints.end(), "rh_RFJ4"), rh_joints.end());
+
+  ASSERT_GT(hand_finder.get_joints().count("lh"), 0);
+  const vector<string> lh_joints = hand_finder.get_joints().at("lh");
+  ASSERT_EQ(std::find(lh_joints.begin(), lh_joints.end(), "lh_FFJ1"), lh_joints.end());
+  ASSERT_NE(std::find(lh_joints.begin(), lh_joints.end(), "lh_LFJ4"), lh_joints.end());
+}
+
 TEST(SrHandFinder, hand_present_test)
 {
+  if (ros::param::has("hand"))
+  {
+    ros::param::del("hand");
+  }
+
+  if (ros::param::has("robot_description"))
+  {
+    ros::param::del("robot_description");
+  }
+
   ros::NodeHandle nh;
   nh.setParam("hand/mapping/1", "rh");
   nh.setParam("hand/joint_prefix/1", "rh_");
@@ -90,8 +204,6 @@ TEST(SrHandFinder, hand_present_test)
       ROS_DEBUG_STREAM(iter->second[i]);
     }
   }
-  nh.deleteParam("hand/mapping/1");
-  nh.deleteParam("hand/joint_prefix/1");
   ASSERT_TRUE(true);
 }
 

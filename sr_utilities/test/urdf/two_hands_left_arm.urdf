@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<robot name="dummy_robot">
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <cylinder length="1.0" radius="0.1"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <link name="la_first_link">
+    <visual>
+      <geometry>
+        <cylinder length="1.0" radius="0.1"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <joint name="la_base_to_first_link" type="continuous">
+    <parent link="base_link"/>
+    <child link="la_first_link"/>
+  </joint>
+
+  <link name="rh_palm_link">
+    <visual>
+      <geometry>
+        <cylinder length="1.0" radius="0.1"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <joint name="rh_palm" type="continuous">
+    <parent link="base_link"/>
+    <child link="rh_palm_link"/>
+  </joint>
+
+  <link name="rh_RFJ4_link">
+    <visual>
+      <geometry>
+        <cylinder length="0.1" radius="0.01"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <joint name="rh_RFJ4" type="continuous">
+    <parent link="rh_palm_link"/>
+    <child link="rh_RFJ4_link"/>
+  </joint>
+
+  <link name="lh_palm_link">
+    <visual>
+      <geometry>
+        <cylinder length="1.0" radius="0.1"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <joint name="lh_palm" type="continuous">
+    <parent link="la_first_link"/>
+    <child link="lh_palm_link"/>
+  </joint>
+
+  <link name="lh_LFJ4_link">
+    <visual>
+      <geometry>
+        <cylinder length="0.1" radius="0.01"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <joint name="lh_LFJ4" type="continuous">
+    <parent link="lh_palm_link"/>
+    <child link="lh_LFJ4_link"/>
+  </joint>
+
+
+</robot>
