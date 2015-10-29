@@ -22,10 +22,17 @@
 #include "sr_utilities/sr_arm_finder.hpp"
 #include "sr_utilities/sr_hand_finder.hpp"
 #include "urdf_parser/urdf_parser.h"
+#include "urdf_model/model.h"
+#include "urdf_model/joint.h"
+#include <boost/foreach.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 #include <map>
 #include <set>
 #include <vector>
 #include <string>
+
+using urdf::ModelInterface;
+using urdf::Joint;
 
 namespace shadow_robot
 {
@@ -38,33 +45,43 @@ SrArmFinder::SrArmFinder()
 
     if (ros::param::has("robot_description"))
     {
-      auto default_hand_joints_vector = SrHandFinder::get_default_joints();
+
+      const std::vector<std::string> default_hand_joints_vector = SrHandFinder::get_default_joints();
       const std::set<std::string> hand_default_joints(default_hand_joints_vector.begin(),
                                                       default_hand_joints_vector.end());
       std::string robot_description;
       ros::param::get("robot_description", robot_description);
-      const auto hand_urdf = urdf::parseURDF(robot_description);
+      const boost::shared_ptr<ModelInterface> hand_urdf = urdf::parseURDF(robot_description);
 
-      for (const auto &joint : hand_urdf->joints_)
+      std::pair<std::string, boost::shared_ptr<Joint> > joint;
+      BOOST_FOREACH(joint, hand_urdf->joints_)
       {
         const std::string joint_name = joint.first;
-        if ((urdf::Joint::FIXED != joint.second->type) &&
-            (hand_default_joints.end() == hand_default_joints.find(joint_name)) &&
-            std::none_of(hand_default_joints.begin(), hand_default_joints.end(),
-                         [&joint_name](const std::string &item)
-                         {
-                           return (joint_name.size() - item.size()) == joint_name.find_last_of(item);
-                         }))  // NOLINT(whitespace/braces)
+        if ((Joint::FIXED != joint.second->type) && (hand_default_joints.end() == hand_default_joints.find(joint_name)))
         {
-          for (const auto &hand : arm_config_.mapping_)
+          bool found_suffix = false;
+          BOOST_FOREACH(std::string default_joint_name, hand_default_joints)
           {
-            const auto hand_serial = hand.first;
-            const auto hand_id = hand.second;
+            if (boost::ends_with(joint_name, default_joint_name))
+            {
+              found_suffix = true;
+              break;
+            }
+          }
 
-            if ((arm_config_.joint_prefix_.count(hand_serial) > 0) &&
-                (0 == joint_name.find(arm_config_.joint_prefix_[hand_serial])))
-             {
-              joints_[hand_id].push_back(joint_name);
+          if (!found_suffix)
+          {
+            std::pair<std::string, std::string> hand;
+            BOOST_FOREACH(hand, arm_config_.mapping_)
+            {
+              const std::string hand_serial = hand.first;
+              const std::string hand_id = hand.second;
+
+              if ((arm_config_.joint_prefix_.count(hand_serial) > 0) &&
+                      boost::starts_with(joint_name, arm_config_.joint_prefix_[hand_serial]))
+              {
+                joints_[hand_id].push_back(joint_name);
+              }
             }
           }
         }

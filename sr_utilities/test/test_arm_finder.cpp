@@ -6,10 +6,27 @@
  * @brief see README.md
  */
 #include <gtest/gtest.h>
+#include <boost/foreach.hpp>
 #include "ros/ros.h"
 #include "sr_utilities/sr_arm_finder.hpp"
 #include <utility>
 #include <string>
+#include <map>
+
+void ASSERT_MAP_HAS_VALUE(const std::map<std::string, std::string> &map, const std::string &value)
+{
+  bool found = false;
+  std::pair<std::string, std::string> item;
+  BOOST_FOREACH(item, map)
+  {
+    if (value == item.second)
+    {
+      found = true;
+    }
+  }
+
+  ASSERT_TRUE(found);
+}
 
 TEST(SrArmFinder, no_hand_no_arm_finder_test)
 {
@@ -95,19 +112,8 @@ TEST(SrArmFinder, no_hand_one_arm_finder_test)
   ASSERT_EQ(arm_finder.get_arm_parameters().joint_prefix_.size(), 1);
   ASSERT_EQ(arm_finder.get_joints().size(), 1);
 
-  auto mapping = arm_finder.get_arm_parameters().mapping_;
-  ASSERT_NE(mapping.end(), std::find_if(mapping.begin(), mapping.end(),
-                                        [](const std::pair<std::string, std::string> &item)
-                                        {
-                                          return item.second == "la";
-                                        }));  // NOLINT(whitespace/braces)
-
-  auto joint_prefixes = arm_finder.get_arm_parameters().joint_prefix_;
-  ASSERT_NE(joint_prefixes.end(), std::find_if(joint_prefixes.begin(), joint_prefixes.end(),
-                                               [](const std::pair<std::string, std::string> &item)
-                                               {
-                                                 return item.second == "la_";
-                                               }));  // NOLINT(whitespace/braces)
+  ASSERT_MAP_HAS_VALUE(arm_finder.get_arm_parameters().mapping_, "la");
+  ASSERT_MAP_HAS_VALUE(arm_finder.get_arm_parameters().joint_prefix_, "la_");
 
   ASSERT_GT(arm_finder.get_joints().count("la"), 0);
 }
@@ -148,33 +154,15 @@ TEST(SrArmFinder, one_hand_two_arms_finder_test)
   ASSERT_EQ(arm_finder.get_arm_parameters().joint_prefix_.size(), 2);
   ASSERT_EQ(arm_finder.get_joints().size(), 2);
 
-  auto mapping = arm_finder.get_arm_parameters().mapping_;
-  ASSERT_NE(mapping.end(), std::find_if(mapping.begin(), mapping.end(),
-                                        [](const std::pair<std::string, std::string> &item)
-                                        {
-                                          return item.second == "ra";
-                                        }));  // NOLINT(whitespace/braces)
-
-  auto joint_prefixes = arm_finder.get_arm_parameters().joint_prefix_;
-  ASSERT_NE(joint_prefixes.end(), std::find_if(joint_prefixes.begin(), joint_prefixes.end(),
-                                               [](const std::pair<std::string, std::string> &item)
-                                               {
-                                                 return item.second == "ra_";
-                                               }));  // NOLINT(whitespace/braces)
+  ASSERT_MAP_HAS_VALUE(arm_finder.get_arm_parameters().mapping_, "ra");
+  ASSERT_MAP_HAS_VALUE(arm_finder.get_arm_parameters().joint_prefix_, "ra_");
 
   ASSERT_EQ(arm_finder.get_joints().count("ra"), 1);
   ASSERT_EQ(arm_finder.get_joints()["ra"].size(), 1);
 
-  ASSERT_NE(mapping.end(), std::find_if(mapping.begin(), mapping.end(),
-                                        [](const std::pair<std::string, std::string> &item)
-                                        {
-                                          return item.second == "la";
-                                        }));  // NOLINT(whitespace/braces)
-  ASSERT_NE(joint_prefixes.end(), std::find_if(joint_prefixes.begin(), joint_prefixes.end(),
-                                               [](const std::pair<std::string, std::string> &item)
-                                               {
-                                                 return item.second == "la_";
-                                               }));  // NOLINT(whitespace/braces)
+  ASSERT_MAP_HAS_VALUE(arm_finder.get_arm_parameters().mapping_, "la");
+  ASSERT_MAP_HAS_VALUE(arm_finder.get_arm_parameters().joint_prefix_, "la_");
+
   ASSERT_EQ(arm_finder.get_joints().count("la"), 1);
   ASSERT_EQ(arm_finder.get_joints()["la"].size(), 1);
 }
@@ -215,19 +203,9 @@ TEST(SrArmFinder, two_hands_one_arm_finder_test)
   ASSERT_EQ(arm_finder.get_arm_parameters().joint_prefix_.size(), 1);
   ASSERT_EQ(arm_finder.get_joints().size(), 1);
 
-  auto mapping = arm_finder.get_arm_parameters().mapping_;
-  ASSERT_NE(mapping.end(), std::find_if(mapping.begin(), mapping.end(),
-                                        [](const std::pair<std::string, std::string> &item)
-                                        {
-                                          return item.second == "la";
-                                        }));  // NOLINT(whitespace/braces)
+  ASSERT_MAP_HAS_VALUE(arm_finder.get_arm_parameters().mapping_, "la");
+  ASSERT_MAP_HAS_VALUE(arm_finder.get_arm_parameters().joint_prefix_, "la_");
 
-  auto joint_prefixes = arm_finder.get_arm_parameters().joint_prefix_;
-  ASSERT_NE(joint_prefixes.end(), std::find_if(joint_prefixes.begin(), joint_prefixes.end(),
-                                               [](const std::pair<std::string, std::string> &item)
-                                               {
-                                                 return item.second == "la_";
-                                               }));  // NOLINT(whitespace/braces)
   ASSERT_EQ(arm_finder.get_joints().count("la"), 1);
   ASSERT_EQ(arm_finder.get_joints()["la"].size(), 1);
 }

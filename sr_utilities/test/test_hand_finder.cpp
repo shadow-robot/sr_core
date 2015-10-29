@@ -13,10 +13,27 @@
 #include <vector>
 #include <string>
 #include "sr_utilities/sr_hand_finder.hpp"
+#include <boost/foreach.hpp>
 
 using std::vector;
 using std::map;
 using std::string;
+using std::pair;
+
+void ASSERT_MAP_HAS_VALUE(const map<string, string> &map, const string &value)
+{
+  bool found = false;
+  pair<string, string> item;
+  BOOST_FOREACH(item, map)
+  {
+    if (value == item.second)
+    {
+      found = true;
+    }
+  }
+
+  ASSERT_TRUE(found);
+}
 
 TEST(SrHandFinder, hand_absent_test)
 {
@@ -69,7 +86,7 @@ TEST(SrHandFinder, one_hand_no_robot_description_finder_test)
   ASSERT_EQ(hand_finder.get_joints().size(), 1);
   ASSERT_GT(hand_finder.get_joints().count("rh"), 0);
 
-  auto rh_joints = hand_finder.get_joints().at("rh");
+  const vector<string> rh_joints = hand_finder.get_joints().at("rh");
   ASSERT_NE(std::find(rh_joints.begin(), rh_joints.end(), "rh_FFJ3"), rh_joints.end());
 }
 
@@ -101,36 +118,19 @@ TEST(SrHandFinder, two_hand_robot_description_exists_finder_test)
   ASSERT_EQ(hand_finder.get_joints().size(), 2);
   ASSERT_GT(hand_finder.get_calibration_path().size(), 0);
 
-  auto mapping = hand_finder.get_hand_parameters().mapping_;
-  ASSERT_NE(mapping.end(), std::find_if(mapping.begin(), mapping.end(),
-                                        [](const std::pair<string, string> &item)
-                                        {
-                                          return item.second == "rh";
-                                        }));  // NOLINT(whitespace/braces)
-  ASSERT_NE(mapping.end(), std::find_if(mapping.begin(), mapping.end(),
-                                        [](const std::pair<string, string> &item)
-                                        {
-                                          return item.second == "lh";
-                                        }));  // NOLINT(whitespace/braces)
-  auto joint_prefixes = hand_finder.get_hand_parameters().joint_prefix_;
-  ASSERT_NE(joint_prefixes.end(), std::find_if(joint_prefixes.begin(), joint_prefixes.end(),
-                                               [](const std::pair<string, string> &item)
-                                               {
-                                                 return item.second == "rh_";
-                                               }));  // NOLINT(whitespace/braces)
-  ASSERT_NE(joint_prefixes.end(), std::find_if(joint_prefixes.begin(), joint_prefixes.end(),
-                                               [](const std::pair<string, string> &item)
-                                               {
-                                                 return item.second == "lh_";
-                                               }));  // NOLINT(whitespace/braces)
+  ASSERT_MAP_HAS_VALUE(hand_finder.get_hand_parameters().mapping_, "rh");
+  ASSERT_MAP_HAS_VALUE(hand_finder.get_hand_parameters().mapping_, "lh");
+
+  ASSERT_MAP_HAS_VALUE(hand_finder.get_hand_parameters().joint_prefix_, "rh_");
+  ASSERT_MAP_HAS_VALUE(hand_finder.get_hand_parameters().joint_prefix_, "lh_");
 
   ASSERT_GT(hand_finder.get_joints().count("rh"), 0);
-  auto rh_joints = hand_finder.get_joints().at("rh");
+  const vector<string> rh_joints = hand_finder.get_joints().at("rh");
   ASSERT_EQ(std::find(rh_joints.begin(), rh_joints.end(), "rh_FFJ3"), rh_joints.end());
   ASSERT_NE(std::find(rh_joints.begin(), rh_joints.end(), "rh_RFJ4"), rh_joints.end());
 
   ASSERT_GT(hand_finder.get_joints().count("lh"), 0);
-  auto lh_joints = hand_finder.get_joints().at("lh");
+  const vector<string> lh_joints = hand_finder.get_joints().at("lh");
   ASSERT_EQ(std::find(lh_joints.begin(), lh_joints.end(), "lh_FFJ1"), lh_joints.end());
   ASSERT_NE(std::find(lh_joints.begin(), lh_joints.end(), "lh_LFJ4"), lh_joints.end());
 }

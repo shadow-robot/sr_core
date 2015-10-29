@@ -1,10 +1,8 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(sr_utilities)
 find_package(catkin REQUIRED COMPONENTS sensor_msgs sr_robot_msgs rospy roscpp tf urdf)
-find_package(Boost REQUIRED COMPONENTS thread)
+find_package(Boost REQUIRED COMPONENTS thread system)
 find_package(rostest REQUIRED)
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 catkin_python_setup()
 

@@ -38,7 +38,7 @@ struct HandConfig
 struct HandControllerTuning
 {
   std::map<std::string, std::string> friction_compensation_;
-  std::map<std::string, std::vector<std::string>> host_control_;
+  std::map<std::string, std::vector<std::string> > host_control_;
   std::map<std::string, std::string> motor_control_;
 };
 
@@ -47,7 +47,7 @@ class SrHandFinder
 public:
   static const std::vector<std::string> get_default_joints();
 
-  std::map<std::string, std::vector<std::string>> get_joints();
+  std::map<std::string, std::vector<std::string> > get_joints();
 
   HandConfig get_hand_parameters();
 
