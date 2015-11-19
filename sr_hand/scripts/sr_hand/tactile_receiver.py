@@ -33,7 +33,7 @@ class TactileReceiver(object):
         """
         # appends trailing slash if necessary
         if not prefix.endswith("/"):
-            #kind of a hack to remove trailing underscores
+            # kind of a hack to remove trailing underscores
             if prefix.endswith("_"):
                 prefix = prefix[:-1]
             prefix += "/"
