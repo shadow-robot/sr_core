@@ -134,11 +134,9 @@ class TrajectoryControllerSpawner(object):
 
     @staticmethod
     def wait_for_topic(topic_name, timeout):
-        rospy.logwarn("topic name: %s" % topic_name)
         if not topic_name:
-            rospy.logwarn("here")
             return True
-        rospy.logwarn("outside")
+        
         # This has to be a list since Python has a peculiar mechanism to determine
         # whether a variable is local to a function or not:
         # if the variable is assigned in the body of the function, then it is
