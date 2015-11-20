@@ -136,7 +136,7 @@ class TrajectoryControllerSpawner(object):
     def wait_for_topic(topic_name, timeout):
         if not topic_name:
             return True
-        
+
         # This has to be a list since Python has a peculiar mechanism to determine
         # whether a variable is local to a function or not:
         # if the variable is assigned in the body of the function, then it is
@@ -159,7 +159,7 @@ class TrajectoryControllerSpawner(object):
             if not warned_about_not_hearing_anything:
                 if rospy.Time.now().to_sec() - started_waiting > timeout:
                     warned_about_not_hearing_anything = True
-                    rospy.logwarn("Controller Spawner hasn't heard anything from its \"wait for\" topic (%s)" % \
+                    rospy.logwarn("Controller Spawner hasn't heard anything from its \"wait for\" topic (%s)" %
                                   topic_name)
         while not wait_for_topic_result[0].data:
             rospy.sleep(0.01)
