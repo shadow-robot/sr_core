@@ -21,6 +21,7 @@ import rospkg
 from controller_manager_msgs.srv import ListControllers
 from controller_manager_msgs.srv import SwitchController, LoadController
 from sr_utilities.hand_finder import HandFinder
+from std_msgs.msg import Bool
 WAIT_TIME = 60
 
 
@@ -131,13 +132,51 @@ class TrajectoryControllerSpawner(object):
         if not success:
             rospy.logerr("Failed to launch trajectory controller!")
 
+    @staticmethod
+    def wait_for_topic(topic_name, timeout):
+        rospy.logwarn("topic name: %s" % topic_name)
+        if not topic_name:
+            rospy.logwarn("here")
+            return True
+        rospy.logwarn("outside")
+        # This has to be a list since Python has a peculiar mechanism to determine
+        # whether a variable is local to a function or not:
+        # if the variable is assigned in the body of the function, then it is
+        # assumed to be local. Modifying a mutable object (like a list)
+        # works around this debatable "design choice".
+        wait_for_topic_result = [None]
+
+        def wait_for_topic_cb(msg):
+            wait_for_topic_result[0] = msg
+            rospy.logdebug("Heard from wait-for topic: %s" % str(msg.data))
+        rospy.Subscriber(topic_name, Bool, wait_for_topic_cb)
+        started_waiting = rospy.Time.now().to_sec()
+
+        # We might not have received any time messages yet
+        warned_about_not_hearing_anything = False
+        while not wait_for_topic_result[0]:
+            rospy.sleep(0.01)
+            if rospy.is_shutdown():
+                return False
+            if not warned_about_not_hearing_anything:
+                if rospy.Time.now().to_sec() - started_waiting > timeout:
+                    warned_about_not_hearing_anything = True
+                    rospy.logwarn("Controller Spawner hasn't heard anything from its \"wait for\" topic (%s)" % \
+                                  topic_name)
+        while not wait_for_topic_result[0].data:
+            rospy.sleep(0.01)
+            if rospy.is_shutdown():
+                return False
+        return True
+
 
 if __name__ == "__main__":
     rospy.init_node("generate_trajectory_controller_parameters")
-    if rospy.has_param("~hand_trajectory") and rospy.get_param("~hand_trajectory"):
-        trajectory_spawner = TrajectoryControllerSpawner(trajectory=True)
-    else:
-        trajectory_spawner = TrajectoryControllerSpawner(trajectory=False)
+    wait_for_topic = rospy.get_param("~wait_for", "")
+    hand_trajectory = rospy.get_param("~hand_trajectory", False)
+    timeout = rospy.get_param("~timeout", 30.0)
 
-    trajectory_spawner.generate_parameters()
-    trajectory_spawner.set_controller()
+    trajectory_spawner = TrajectoryControllerSpawner(trajectory=hand_trajectory)
+    if trajectory_spawner.wait_for_topic(wait_for_topic, timeout):
+        trajectory_spawner.generate_parameters()
+        trajectory_spawner.set_controller()

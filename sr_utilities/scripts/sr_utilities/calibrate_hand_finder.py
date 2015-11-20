@@ -45,9 +45,11 @@ class CalibrateWithHand(Calibrate):
 def main():
     if rospy.is_shutdown():
         return
+
+    rospy.init_node('calibration', anonymous=True)
+
     calibrate_class = CalibrateWithHand()
     controllers = calibrate_class.generate_controllers()
-    rospy.init_node('calibration', anonymous=True)
 
     calibrate_class.pub_calibrated.publish(False)
     # Don't calibrate the IMU unless ordered to by user
