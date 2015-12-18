@@ -43,8 +43,8 @@ public:
           position_unfiltered_(0.0),
           can_msgs_received_(0),
           can_msgs_transmitted_(0),
-          pic_firmware_svn_revision_(0),
-          server_firmware_svn_revision_(0),
+          pic_firmware_git_revision_(0),
+          server_firmware_git_revision_(0),
           firmware_modified_(0),
           serial_number_low_set(false),
           serial_number_high_set(false),
@@ -94,8 +94,8 @@ public:
   uint64_t can_msgs_received_;
   uint64_t can_msgs_transmitted_;
 
-  unsigned int pic_firmware_svn_revision_;
-  unsigned int server_firmware_svn_revision_;
+  unsigned int pic_firmware_git_revision_;
+  unsigned int server_firmware_git_revision_;
   bool firmware_modified_;
 
   bool serial_number_low_set;
