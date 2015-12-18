@@ -33,6 +33,9 @@ class TactileReceiver(object):
         """
         # appends trailing slash if necessary
         if not prefix.endswith("/"):
+            # kind of a hack to remove trailing underscores
+            if prefix.endswith("_"):
+                prefix = prefix[:-1]
             prefix += "/"
 
         self._prefix = prefix
@@ -53,21 +56,21 @@ class TactileReceiver(object):
     def find_tactile_type(self):
         try:
             rospy.wait_for_message(
-                self._prefix + "tactile", ShadowPST, timeout=0.2)
+                self._prefix + "tactile", ShadowPST, timeout=1.0)
             return "PST"
         except (rospy.ROSException, rospy.ROSInterruptException):
             pass
 
         try:
             rospy.wait_for_message(
-                self._prefix + "tactile", BiotacAll, timeout=0.2)
+                self._prefix + "tactile", BiotacAll, timeout=1.0)
             return "biotac"
         except (rospy.ROSException, rospy.ROSInterruptException):
             pass
 
         try:
             rospy.wait_for_message(
-                self._prefix + "tactile", UBI0All, timeout=0.2)
+                self._prefix + "tactile", UBI0All, timeout=1.0)
             return "UBI0"
         except (rospy.ROSException, rospy.ROSInterruptException):
             rospy.logwarn(
