@@ -57,7 +57,11 @@ public:
   {
     boost::shared_lock<boost::shared_mutex> lock(*(mutex_.get()));
 
-    return map_->find(first)->second;
+    typename InternalMap::iterator it = map_->find(first);
+    if (it != map_->end())
+      return it->second;
+    else
+      return T();
   }
 
   bool insert(const std::string &first, const T &value)
