@@ -42,7 +42,10 @@ namespace shadow_robot
   {
     this->calibration_table_ = calibration_table;
     // calibration size - 1 because we use this number to access the last value in the vector
-    calibration_table_size_ = calibration_table.size() - 1;
+    if (calibration_table.size())
+      calibration_table_size_ = calibration_table.size() - 1;
+    else
+      calibration_table_size_ = 0;
 
     // fails if we have only one calibration point as it's not possible
     // to interpolate from one point
