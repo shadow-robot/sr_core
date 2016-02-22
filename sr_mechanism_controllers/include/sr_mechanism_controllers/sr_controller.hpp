@@ -30,7 +30,7 @@
 #include <ros/node_handle.h>
 
 #include <controller_interface/controller.h>
-#include <ros_ethercat_model/robot_state.hpp>
+#include <ros_ethercat_model/robot_state_interface.hpp>
 #include <control_toolbox/pid.h>
 #include <boost/scoped_ptr.hpp>
 #include <boost/thread/condition.hpp>
@@ -52,14 +52,14 @@
 namespace controller
 {
 class SrController :
-        public controller_interface::Controller<ros_ethercat_model::RobotState>
+        public controller_interface::Controller<ros_ethercat_model::RobotStateInterface>
 {
 public:
   SrController();
 
   virtual ~SrController();
 
-  virtual bool init(ros_ethercat_model::RobotState *robot, ros::NodeHandle &n) = 0;
+  virtual bool init(ros_ethercat_model::RobotStateInterface *robot, ros::NodeHandle &n) = 0;
 
   virtual void starting(const ros::Time &time)
   {

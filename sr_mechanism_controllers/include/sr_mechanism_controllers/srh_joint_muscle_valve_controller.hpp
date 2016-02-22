@@ -42,7 +42,7 @@ class SrhJointMuscleValveController :
 public:
   SrhJointMuscleValveController();
 
-  bool init(ros_ethercat_model::RobotState *robot, ros::NodeHandle &n);
+  bool init(ros_ethercat_model::RobotStateInterface *robot, ros::NodeHandle &n);
 
   virtual void starting(const ros::Time &time);
 
