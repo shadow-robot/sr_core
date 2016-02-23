@@ -29,7 +29,7 @@
 
 #include "ros/node_handle.h"
 #include <string>
-#include "ros_ethercat_model/robot_state.hpp"
+#include "ros_ethercat_model/robot_state_interface.hpp"
 #include "velocity_controllers/joint_velocity_controller.h"
 #include "realtime_tools/realtime_publisher.h"
 #include "std_msgs/Empty.h"
@@ -41,12 +41,12 @@ namespace controller
 {
 
 class SrhFakeJointCalibrationController :
-        public controller_interface::Controller<ros_ethercat_model::RobotState>
+        public controller_interface::Controller<ros_ethercat_model::RobotStateInterface>
 {
 public:
   SrhFakeJointCalibrationController();
 
-  virtual bool init(ros_ethercat_model::RobotState *robot, ros::NodeHandle &n);
+  virtual bool init(ros_ethercat_model::RobotStateInterface *robot, ros::NodeHandle &n);
 
   virtual void update(const ros::Time &time, const ros::Duration &period);
 

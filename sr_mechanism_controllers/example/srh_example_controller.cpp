@@ -50,7 +50,7 @@ namespace controller
     sub_command_.shutdown();
   }
 
-  bool SrhExampleController::init(ros_ethercat_model::RobotState *robot, ros::NodeHandle &n)
+  bool SrhExampleController::init(ros_ethercat_model::RobotStateInterface *robot, ros::NodeHandle &n)
   {
     assert(robot);
     node_ = n;
@@ -76,10 +76,22 @@ namespace controller
     return init(robot, joint_name);
   }
 
-  bool SrhExampleController::init(ros_ethercat_model::RobotState *robot, const std::string &joint_name)
+  bool SrhExampleController::init(ros_ethercat_model::RobotStateInterface *robot, const std::string &joint_name)
   {
-    assert(robot);
-    robot_ = robot;
+    ROS_ASSERT(robot);
+
+    std::string robot_state_name;
+    node_.param<std::string>("robot_state_name", robot_state_name, "unique_robot_hw");
+
+    try
+    {
+      robot_ = robot->getHandle(robot_state_name).getState();
+    }
+    catch(const hardware_interface::HardwareInterfaceException& e)
+    {
+      ROS_ERROR_STREAM("Could not find robot state: " << robot_state_name << " Not loading the controller. " << e.what());
+      return false;
+    }
 
     // We need to store 2 different joint states for the joint 0s:
     // They control the distal and the middle joint with the same control.

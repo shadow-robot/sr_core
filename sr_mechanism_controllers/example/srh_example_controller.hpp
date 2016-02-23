@@ -57,7 +57,7 @@ public:
    *
    * @return True if the 2nd init function succeeds.
    */
-  bool init(ros_ethercat_model::RobotState *robot, ros::NodeHandle &n);
+  bool init(ros_ethercat_model::RobotStateInterface *robot, ros::NodeHandle &n);
 
   /**
    * This init funciton is called by the previous init function. It
@@ -68,7 +68,7 @@ public:
    *
    * @return true if initialized.
    */
-  bool init(ros_ethercat_model::RobotState *robot, const std::string &joint_name);
+  bool init(ros_ethercat_model::RobotStateInterface *robot, const std::string &joint_name);
 
   /**
    * This method is called when the controller is started. The command is then

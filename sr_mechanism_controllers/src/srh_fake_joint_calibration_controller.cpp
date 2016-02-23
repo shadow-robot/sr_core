@@ -46,10 +46,23 @@ namespace controller
   {
   }
 
-  bool SrhFakeJointCalibrationController::init(ros_ethercat_model::RobotState *robot, ros::NodeHandle &n)
+  bool SrhFakeJointCalibrationController::init(ros_ethercat_model::RobotStateInterface *robot, ros::NodeHandle &n)
   {
     ROS_ASSERT(robot);
-    robot_ = robot;
+
+    std::string robot_state_name;
+    node_.param<std::string>("robot_state_name", robot_state_name, "unique_robot_hw");
+
+    try
+    {
+      robot_ = robot->getHandle(robot_state_name).getState();
+    }
+    catch(const hardware_interface::HardwareInterfaceException& e)
+    {
+      ROS_ERROR_STREAM("Could not find robot state: " << robot_state_name << " Not loading the controller. " << e.what());
+      return false;
+    }
+
     node_ = n;
 
     // robot_id robot_id_, joint_prefix_, ns_
@@ -67,7 +80,7 @@ namespace controller
       ROS_ERROR("No joint given (namespace: %s)", node_.getNamespace().c_str());
       return false;
     }
-    if (!(joint_ = robot->getJointState(joint_prefix_ + joint_name_)))
+    if (!(joint_ = robot_->getJointState(joint_prefix_ + joint_name_)))
     {
       ROS_ERROR("Could not find joint %s (namespace: %s)",
                 (joint_prefix_ + joint_name_).c_str(), node_.getNamespace().c_str());
@@ -80,7 +93,7 @@ namespace controller
       ROS_ERROR("No actuator given (namespace: %s)", node_.getNamespace().c_str());
       return false;
     }
-    if (!(actuator_ = robot->getActuator(joint_prefix_ + actuator_name_)))
+    if (!(actuator_ = robot_->getActuator(joint_prefix_ + actuator_name_)))
     {
       ROS_ERROR("Could not find actuator %s (namespace: %s)",
                 (joint_prefix_ + actuator_name_).c_str(), node_.getNamespace().c_str());
