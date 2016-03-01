@@ -31,6 +31,7 @@
 #include <ros/ros.h>
 #include <pluginlib/class_list_macros.h>
 #include "ros_ethercat_model/robot_state.hpp"
+#include "ros_ethercat_model/robot_state_interface.hpp"
 #include <gazebo_ros_control/default_robot_hw_sim.h>
 #include <gazebo_ros_control/robot_hw_sim.h>
 #include <urdf/model.h>
@@ -73,6 +74,7 @@ protected:
   static const std::string simple_transmission_name;
 
   ros_ethercat_model::RobotState fake_state_;
+  ros_ethercat_model::RobotStateInterface robot_state_interface_;
   boost::unordered_map<std::string, std::string> j2_j1_joints_;
 };
 
