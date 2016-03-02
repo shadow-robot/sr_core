@@ -52,7 +52,8 @@ namespace controller
   {
   }
 
-  bool SrhMixedPositionVelocityJointController::init(ros_ethercat_model::RobotStateInterface *robot, ros::NodeHandle &n)
+  bool SrhMixedPositionVelocityJointController::init(ros_ethercat_model::RobotStateInterface *robot,
+    ros::NodeHandle &n)
   {
     ROS_ASSERT(robot);
 
@@ -65,7 +66,8 @@ namespace controller
     }
     catch(const hardware_interface::HardwareInterfaceException& e)
     {
-      ROS_ERROR_STREAM("Could not find robot state: " << robot_state_name << " Not loading the controller. " << e.what());
+      ROS_ERROR_STREAM("Could not find robot state: " << robot_state_name << " Not loading the controller. " <<
+        e.what());
       return false;
     }
 
