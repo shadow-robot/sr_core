@@ -29,6 +29,7 @@
 #include "sr_mechanism_controllers/srh_joint_muscle_valve_controller.hpp"
 #include "angles/angles.h"
 #include "pluginlib/class_list_macros.h"
+#include <string>
 #include <sstream>
 #include <math.h>
 #include "sr_utilities/sr_math_utils.hpp"
@@ -59,7 +60,8 @@ namespace controller
     }
     catch(const hardware_interface::HardwareInterfaceException& e)
     {
-      ROS_ERROR_STREAM("Could not find robot state: " << robot_state_name << " Not loading the controller. " << e.what());
+      ROS_ERROR_STREAM("Could not find robot state: " << robot_state_name << " Not loading the controller. " <<
+        e.what());
       return false;
     }
 
