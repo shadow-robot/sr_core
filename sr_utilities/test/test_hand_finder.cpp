@@ -165,7 +165,7 @@ TEST(SrHandFinder, one_hand_no_mapping_no_robot_description_finder_test)
   // hand parameters
   ASSERT_GT(hand_finder.get_hand_parameters().mapping_.size(), 0);
   ASSERT_GT(hand_finder.get_hand_parameters().joint_prefix_.size(), 0);
-  ASSERT_EQ(hand_finder.get_hand_parameters().mapping_["1"], "");
+  ASSERT_EQ(hand_finder.get_hand_parameters().mapping_["1"], "1");
   ASSERT_EQ(hand_finder.get_hand_parameters().joint_prefix_["1"], "rh_");
   
   // hand joints
@@ -329,7 +329,7 @@ TEST(SrHandFinder, one_hand_no_mapping_no_prefix_no_robot_description_finder_tes
   // hand parameters
   ASSERT_GT(hand_finder.get_hand_parameters().mapping_.size(), 0);
   ASSERT_GT(hand_finder.get_hand_parameters().joint_prefix_.size(), 0);
-  ASSERT_EQ(hand_finder.get_hand_parameters().mapping_["1"], "");
+  ASSERT_EQ(hand_finder.get_hand_parameters().mapping_["1"], "1");
   ASSERT_EQ(hand_finder.get_hand_parameters().joint_prefix_["1"], "");
   
   // hand joints

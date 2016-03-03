@@ -102,7 +102,7 @@ class TestHandFinder(unittest.TestCase):
         self.assertIsNotNone(hand_finder.get_hand_parameters(), "Parameters extracted.")
         self.assertEqual(len(hand_finder.get_hand_parameters().mapping), 1, "It should be only one mapping")
         self.assertEqual(len(hand_finder.get_hand_parameters().joint_prefix), 1, "It should be only one joint_prefix")
-        self.assertEqual(hand_finder.get_hand_parameters().mapping['1'], "", "It should be only an empty mapping")
+        self.assertEqual(hand_finder.get_hand_parameters().mapping['1'], "1", "It should be the serial id as mapping")
         self.assertEqual(hand_finder.get_hand_parameters().joint_prefix['1'], "rh_", "It should be only rh_ prefix")
         # hand joints
         self.assertIsNotNone(hand_finder.get_hand_joints(), "Joints extracted.")
@@ -193,7 +193,7 @@ class TestHandFinder(unittest.TestCase):
         self.assertIsNotNone(hand_finder.get_hand_parameters(), "Parameters extracted.")
         self.assertEqual(len(hand_finder.get_hand_parameters().mapping), 1, "It should be only one mapping")
         self.assertEqual(len(hand_finder.get_hand_parameters().joint_prefix), 1, "It should be only one joint_prefix")
-        self.assertEqual(hand_finder.get_hand_parameters().mapping['1'], "", "It should be only an empty mapping")
+        self.assertEqual(hand_finder.get_hand_parameters().mapping['1'], "1", "It should be the serial id as mapping")
         self.assertEqual(hand_finder.get_hand_parameters().joint_prefix['1'], "", "It should be only an empty prefix")
         # hand joints
         self.assertIsNotNone(hand_finder.get_hand_joints(), "Joints extracted.")
@@ -382,7 +382,7 @@ class TestHandFinder(unittest.TestCase):
         self.assertIsNotNone(hand_finder.get_hand_parameters(), "Parameters extracted.")
         self.assertEqual(len(hand_finder.get_hand_parameters().mapping), 1, "It should be only one mapping")
         self.assertEqual(len(hand_finder.get_hand_parameters().joint_prefix), 1, "It should be only one joint_prefix")
-        self.assertEqual(hand_finder.get_hand_parameters().mapping['1'], "", "It should be only an empty mapping")
+        self.assertEqual(hand_finder.get_hand_parameters().mapping['1'], "1", "It should be the serial id as mapping")
         self.assertEqual(hand_finder.get_hand_parameters().joint_prefix['1'], "rh_", "It should be only rh_ prefix")
         # hand joints
         self.assertIsNotNone(hand_finder.get_hand_joints(), "Joints extracted.")
@@ -476,7 +476,7 @@ class TestHandFinder(unittest.TestCase):
         self.assertIsNotNone(hand_finder.get_hand_parameters(), "Parameters extracted.")
         self.assertEqual(len(hand_finder.get_hand_parameters().mapping), 1, "It should be only one mapping")
         self.assertEqual(len(hand_finder.get_hand_parameters().joint_prefix), 1, "It should be only one joint_prefix")
-        self.assertEqual(hand_finder.get_hand_parameters().mapping['1'], "", "It should be only an empty mapping")
+        self.assertEqual(hand_finder.get_hand_parameters().mapping['1'], "1", "It should be the serial id as mapping")
         self.assertEqual(hand_finder.get_hand_parameters().joint_prefix['1'], "", "It should be only an empty prefix")
         # hand joints
         self.assertIsNotNone(hand_finder.get_hand_joints(), "Joints extracted.")
