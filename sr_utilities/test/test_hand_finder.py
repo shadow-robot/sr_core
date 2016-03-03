@@ -537,13 +537,13 @@ class TestHandFinder(unittest.TestCase):
         self.assertIn("right", hand_finder.get_hand_joints(), "Mapping should be in the joints result")
         joints = hand_finder.get_hand_joints()['right']
         self.assertEqual(len(joints), 1, "Joint number should be 1")
-        self.assertNotIn("rh_FFJ3", hand_finder.get_hand_joints()["right"], "FFJ3 joint should not be in the joints list")
-        self.assertIn("rh_RFJ4", hand_finder.get_hand_joints()["right"], "RFJ4 joint should be in the joints list")
+        self.assertNotIn("rh_FFJ3", hand_finder.get_hand_joints()["right"], "rh_FFJ3 joint should not be in the joints list")
+        self.assertIn("rh_RFJ4", hand_finder.get_hand_joints()["right"], "rh_RFJ4 joint should be in the joints list")
         self.assertIn("left", hand_finder.get_hand_joints(), "Mapping should be in the joints result")
         joints = hand_finder.get_hand_joints()['left']
         self.assertEqual(len(joints), 1, "Joint number should be 1")
-        self.assertNotIn("lh_FFJ3", hand_finder.get_hand_joints()["left"], "FFJ3 joint should not be in the joints list")
-        self.assertIn("lh_RFJ4", hand_finder.get_hand_joints()["left"], "RFJ4 joint should be in the joints list")
+        self.assertNotIn("lh_FFJ3", hand_finder.get_hand_joints()["left"], "lh_FFJ3 joint should not be in the joints list")
+        self.assertIn("lh_LFJ4", hand_finder.get_hand_joints()["left"], "lh_LFJ4 joint should be in the joints list")
         
         # calibration
         self.assertIsNotNone(hand_finder.get_calibration_path(), "Calibration extracted.")
