@@ -120,9 +120,12 @@ class HandJoints(object):
                 for joint in hand_urdf.joints:
                     if joint.type != 'fixed':
                         prefix = joint.name[:3]
-                        if prefix not in joint_prefix.values():
-                            rospy.logdebug("joint " + joint.name + "has invalid "
-                                           "prefix")
+                        # is there an empty prefix ?
+                        if "" in joint_prefix.values():
+                            joints_tmp.append(joint.name)
+                        elif prefix not in joint_prefix.values():
+                            rospy.logdebug("joint " + joint.name + " has invalid "
+                                          "prefix:" + prefix)
                         elif prefix == joint_prefix[hand]:
                             joints_tmp.append(joint.name)
                 for joint_unordered in hand_joints:

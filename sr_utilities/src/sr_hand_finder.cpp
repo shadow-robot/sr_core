@@ -66,7 +66,14 @@ SrHandFinder::SrHandFinder()
     std::pair<std::string, std::string> pair;
     BOOST_FOREACH(pair, hand_config_.mapping_)
     {
-      ROS_INFO_STREAM("detected hands are \n" << "hand serial:" << pair.first << " hand_id:" << pair.second);
+      // hand empty mapping
+      if (pair.second.empty())
+      {
+        hand_config_.mapping_[pair.first] = pair.first;
+        ROS_INFO_STREAM("detected hands are \n" << "hand serial:" << pair.first << " hand_id:" << pair.second << " , replaced internally by: " << pair.first);
+      }
+      else
+        ROS_INFO_STREAM("detected hands are \n" << "hand serial:" << pair.first << " hand_id:" << pair.second);
     }
 
     generate_joints_with_prefix();
