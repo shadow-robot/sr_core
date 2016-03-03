@@ -85,9 +85,9 @@ TEST(SrHandFinder, one_hand_no_robot_description_finder_test)
   ASSERT_GT(hand_finder.get_hand_parameters().joint_prefix_.size(), 0);
   ASSERT_EQ(hand_finder.get_hand_parameters().mapping_["1"], "right");
   ASSERT_EQ(hand_finder.get_hand_parameters().joint_prefix_["1"], "rh_");
-  
+
   // hand joints
-  ASSERT_EQ(hand_finder.get_joints().size(), 1); 
+  ASSERT_EQ(hand_finder.get_joints().size(), 1);
   ASSERT_GT(hand_finder.get_joints().count("right"), 0);
   const vector<string> rh_joints = hand_finder.get_joints().at("right");
   ASSERT_EQ(rh_joints.size(), 24);
@@ -105,7 +105,7 @@ TEST(SrHandFinder, one_hand_no_robot_description_finder_test)
 
   // tuning
   shadow_robot::HandControllerTuning controller_tuning(hand_finder.get_hand_controller_tuning());
-  
+
   for (map<string, string>::const_iterator iter = controller_tuning.friction_compensation_.begin();
        iter != controller_tuning.friction_compensation_.end(); ++iter)
   {
@@ -135,7 +135,8 @@ TEST(SrHandFinder, one_hand_no_robot_description_finder_test)
     ASSERT_EQ(host_controller_files.size(), iter->second.size());
     for (size_t i = 0; i != iter->second.size(); ++i)
     {
-      ASSERT_STREQ(iter->second[i].c_str(), (ethercat_path + "/controls/host/right/" + host_controller_files[i]).c_str());
+      ASSERT_STREQ(iter->second[i].c_str(), (ethercat_path + "/controls/host/right/" +
+                                             host_controller_files[i]).c_str());
       ROS_DEBUG_STREAM(iter->second[i]);
     }
   }
@@ -167,9 +168,9 @@ TEST(SrHandFinder, one_hand_no_mapping_no_robot_description_finder_test)
   ASSERT_GT(hand_finder.get_hand_parameters().joint_prefix_.size(), 0);
   ASSERT_EQ(hand_finder.get_hand_parameters().mapping_["1"], "1");
   ASSERT_EQ(hand_finder.get_hand_parameters().joint_prefix_["1"], "rh_");
-  
+
   // hand joints
-  ASSERT_EQ(hand_finder.get_joints().size(), 1); 
+  ASSERT_EQ(hand_finder.get_joints().size(), 1);
   ASSERT_GT(hand_finder.get_joints().count("1"), 0);
   const vector<string> rh_joints = hand_finder.get_joints().at("1");
   ASSERT_EQ(rh_joints.size(), 24);
@@ -187,7 +188,7 @@ TEST(SrHandFinder, one_hand_no_mapping_no_robot_description_finder_test)
 
   // tuning
   shadow_robot::HandControllerTuning controller_tuning(hand_finder.get_hand_controller_tuning());
-  
+
   for (map<string, string>::const_iterator iter = controller_tuning.friction_compensation_.begin();
        iter != controller_tuning.friction_compensation_.end(); ++iter)
   {
@@ -249,12 +250,12 @@ TEST(SrHandFinder, one_hand_no_prefix_no_robot_description_finder_test)
   ASSERT_GT(hand_finder.get_hand_parameters().joint_prefix_.size(), 0);
   ASSERT_EQ(hand_finder.get_hand_parameters().mapping_["1"], "rh");
   ASSERT_EQ(hand_finder.get_hand_parameters().joint_prefix_["1"], "");
-  
+
   // hand joints
-  ASSERT_EQ(hand_finder.get_joints().size(), 1); 
+  ASSERT_EQ(hand_finder.get_joints().size(), 1);
   ASSERT_GT(hand_finder.get_joints().count("rh"), 0);
   const vector<string> rh_joints = hand_finder.get_joints().at("rh");
-  ASSERT_EQ(rh_joints.size(), 24); 
+  ASSERT_EQ(rh_joints.size(), 24);
   for (size_t i = 0; i < rh_joints.size(); ++i)
   {
     ROS_DEBUG_STREAM(rh_joints[i]);
@@ -269,7 +270,7 @@ TEST(SrHandFinder, one_hand_no_prefix_no_robot_description_finder_test)
 
   // tuning
   shadow_robot::HandControllerTuning controller_tuning(hand_finder.get_hand_controller_tuning());
-  
+
   for (map<string, string>::const_iterator iter = controller_tuning.friction_compensation_.begin();
        iter != controller_tuning.friction_compensation_.end(); ++iter)
   {
@@ -331,9 +332,9 @@ TEST(SrHandFinder, one_hand_no_mapping_no_prefix_no_robot_description_finder_tes
   ASSERT_GT(hand_finder.get_hand_parameters().joint_prefix_.size(), 0);
   ASSERT_EQ(hand_finder.get_hand_parameters().mapping_["1"], "1");
   ASSERT_EQ(hand_finder.get_hand_parameters().joint_prefix_["1"], "");
-  
+
   // hand joints
-  ASSERT_EQ(hand_finder.get_joints().size(), 1); 
+  ASSERT_EQ(hand_finder.get_joints().size(), 1);
   ASSERT_GT(hand_finder.get_joints().count("1"), 0);
   const vector<string> rh_joints = hand_finder.get_joints().at("1");
   ASSERT_EQ(rh_joints.size(), 24);
@@ -351,7 +352,7 @@ TEST(SrHandFinder, one_hand_no_mapping_no_prefix_no_robot_description_finder_tes
 
   // tuning
   shadow_robot::HandControllerTuning controller_tuning(hand_finder.get_hand_controller_tuning());
-  
+
   for (map<string, string>::const_iterator iter = controller_tuning.friction_compensation_.begin();
        iter != controller_tuning.friction_compensation_.end(); ++iter)
   {
@@ -416,15 +417,15 @@ TEST(SrHandFinder, one_hand_robot_description_exists_finger_test)
   ASSERT_GT(hand_finder.get_hand_parameters().joint_prefix_.size(), 0);
   ASSERT_EQ(hand_finder.get_hand_parameters().mapping_["1"], "right");
   ASSERT_EQ(hand_finder.get_hand_parameters().joint_prefix_["1"], "rh_");
-  
+
   // hand joints
-  ASSERT_EQ(hand_finder.get_joints().size(), 1); 
+  ASSERT_EQ(hand_finder.get_joints().size(), 1);
   ASSERT_GT(hand_finder.get_joints().count("right"), 0);
   const vector<string> rh_joints = hand_finder.get_joints().at("right");
-  ASSERT_EQ(rh_joints.size(), 1); // only RFJ4 is there
+  ASSERT_EQ(rh_joints.size(), 1);  // only RFJ4 is there
   ASSERT_EQ(std::find(rh_joints.begin(), rh_joints.end(), "rh_FFJ3"), rh_joints.end());
   ASSERT_NE(std::find(rh_joints.begin(), rh_joints.end(), "rh_RFJ4"), rh_joints.end());
-  
+
   // calibration
   ASSERT_GT(hand_finder.get_calibration_path().size(), 0);
   const string calibration_path = hand_finder.get_calibration_path().at("right");
@@ -433,7 +434,7 @@ TEST(SrHandFinder, one_hand_robot_description_exists_finger_test)
 
   // tuning
   shadow_robot::HandControllerTuning controller_tuning(hand_finder.get_hand_controller_tuning());
-  
+
   for (map<string, string>::const_iterator iter = controller_tuning.friction_compensation_.begin();
        iter != controller_tuning.friction_compensation_.end(); ++iter)
   {
@@ -463,7 +464,8 @@ TEST(SrHandFinder, one_hand_robot_description_exists_finger_test)
     ASSERT_EQ(host_controller_files.size(), iter->second.size());
     for (size_t i = 0; i != iter->second.size(); ++i)
     {
-      ASSERT_STREQ(iter->second[i].c_str(), (ethercat_path + "/controls/host/right/" + host_controller_files[i]).c_str());
+      ASSERT_STREQ(iter->second[i].c_str(), (ethercat_path + "/controls/host/right/"
+                                             + host_controller_files[i]).c_str());
       ROS_DEBUG_STREAM(iter->second[i]);
     }
   }
@@ -489,16 +491,16 @@ TEST(SrHandFinder, two_hand_robot_description_exists_finder_test)
   string two_hands_description;
   ros::param::get("two_hands_description", two_hands_description);
   ros::param::set("robot_description", two_hands_description);
-  
+
   const string joint_names[] = {"FFJ1", "FFJ2", "FFJ3", "FFJ4", "MFJ1", "MFJ2", "MFJ3", "MFJ4",
                                 "RFJ1", "RFJ2", "RFJ3", "RFJ4", "LFJ1", "LFJ2", "LFJ3", "LFJ4", "LFJ5",
                                 "THJ1", "THJ2", "THJ3", "THJ4", "THJ5", "WRJ1", "WRJ2"};
 
   unsigned idx = 0;
   const string dir[] =  {"left", "right"};
-  
+
   shadow_robot::SrHandFinder hand_finder;
-  
+
   ASSERT_EQ(hand_finder.get_hand_parameters().mapping_.size(), 2);
   ASSERT_EQ(hand_finder.get_hand_parameters().joint_prefix_.size(), 2);
   ASSERT_EQ(hand_finder.get_joints().size(), 2);
@@ -519,14 +521,15 @@ TEST(SrHandFinder, two_hand_robot_description_exists_finder_test)
   const vector<string> lh_joints = hand_finder.get_joints().at("left");
   ASSERT_EQ(std::find(lh_joints.begin(), lh_joints.end(), "lh_FFJ1"), lh_joints.end());
   ASSERT_NE(std::find(lh_joints.begin(), lh_joints.end(), "lh_LFJ4"), lh_joints.end());
-  
+
   string ethercat_path = ros::package::getPath("sr_ethercat_hand_config");
   map<string, string> calibration_path(hand_finder.get_calibration_path());
   idx = 0;
   for (map<string, string>::const_iterator iter = calibration_path.begin(); iter != calibration_path.end(); ++iter)
   {
     ROS_DEBUG_STREAM(iter->first << ":" << iter->second);
-    ASSERT_STREQ(iter->second.c_str(), (ethercat_path + "/calibrations/" + dir[idx] + "/" + "calibration.yaml").c_str());
+    ASSERT_STREQ(iter->second.c_str(), (ethercat_path + "/calibrations/"
+                                        + dir[idx] + "/" + "calibration.yaml").c_str());
     idx++;
   }
   shadow_robot::HandControllerTuning controller_tuning(hand_finder.get_hand_controller_tuning());
@@ -537,18 +540,17 @@ TEST(SrHandFinder, two_hand_robot_description_exists_finder_test)
     ASSERT_STREQ(iter->second.c_str(), (ethercat_path + "/controls/friction_compensation.yaml").c_str());
     ROS_DEBUG_STREAM(iter->second);
   }
-  
+
   idx = 0;
   for (map<string, string>::const_iterator iter = controller_tuning.motor_control_.begin();
        iter != controller_tuning.motor_control_.end(); ++iter)
   {
-    
     ASSERT_STREQ(iter->second.c_str(),
                  (ethercat_path + "/controls/motors/" + dir[idx] + "/motor_board_effort_controllers.yaml").c_str());
     ROS_DEBUG_STREAM(iter->second);
     idx++;
   }
-  
+
   idx = 0;
   for (map<string, vector<string> >::const_iterator iter = controller_tuning.host_control_.begin();
        iter != controller_tuning.host_control_.end(); ++iter)
@@ -566,7 +568,8 @@ TEST(SrHandFinder, two_hand_robot_description_exists_finder_test)
     ASSERT_EQ(host_controller_files.size(), iter->second.size());
     for (size_t i = 0; i != iter->second.size(); ++i)
     {
-      ASSERT_STREQ(iter->second[i].c_str(), (ethercat_path + "/controls/host/" + dir[idx] + "/" + host_controller_files[i]).c_str());
+      ASSERT_STREQ(iter->second[i].c_str(), (ethercat_path + "/controls/host/"
+                                             + dir[idx] + "/" + host_controller_files[i]).c_str());
       ROS_DEBUG_STREAM(iter->second[i]);
     }
     idx++;

@@ -70,7 +70,8 @@ SrHandFinder::SrHandFinder()
       if (pair.second.empty())
       {
         hand_config_.mapping_[pair.first] = pair.first;
-        ROS_INFO_STREAM("detected hands are \n" << "hand serial:" << pair.first << " hand_id:" << pair.second << " , replaced internally by: " << pair.first);
+        ROS_INFO_STREAM("detected hands are \n" << "hand serial:" << pair.first << " hand_id:"
+                        << pair.second << " , replaced internally by: " << pair.first);
       }
       else
         ROS_INFO_STREAM("detected hands are \n" << "hand serial:" << pair.first << " hand_id:" << pair.second);
