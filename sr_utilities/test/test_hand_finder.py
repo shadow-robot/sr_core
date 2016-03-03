@@ -422,7 +422,7 @@ class TestHandFinder(unittest.TestCase):
 
         rospy.set_param("hand/joint_prefix/1", "")
         rospy.set_param("hand/mapping/1", "rh")
-        rospy.set_param("robot_description", rospy.get_param("right_hand_description"))
+        rospy.set_param("robot_description", rospy.get_param("right_hand_description_no_prefix"))
 
         hand_finder = HandFinder()
         # hand params
@@ -469,7 +469,7 @@ class TestHandFinder(unittest.TestCase):
 
         rospy.set_param("hand/joint_prefix/1", "")
         rospy.set_param("hand/mapping/1", "")
-        rospy.set_param("robot_description", rospy.get_param("right_hand_description"))
+        rospy.set_param("robot_description", rospy.get_param("right_hand_description_no_prefix"))
 
         hand_finder = HandFinder()
         # hand params
