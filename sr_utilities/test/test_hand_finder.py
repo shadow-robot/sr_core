@@ -6,23 +6,23 @@ import rostest
 import unittest
 from sr_utilities.hand_finder import HandFinder
 joint_names = ["FFJ1", "FFJ2", "FFJ3", "FFJ4", "MFJ1", "MFJ2", "MFJ3", "MFJ4",
-                                "RFJ1", "RFJ2", "RFJ3", "RFJ4", "LFJ1", "LFJ2", "LFJ3", "LFJ4", "LFJ5",
-                                "THJ1", "THJ2", "THJ3", "THJ4", "THJ5", "WRJ1", "WRJ2"]
+               "RFJ1", "RFJ2", "RFJ3", "RFJ4", "LFJ1", "LFJ2", "LFJ3", "LFJ4", "LFJ5",
+               "THJ1", "THJ2", "THJ3", "THJ4", "THJ5", "WRJ1", "WRJ2"]
 controller_params = ["sr_edc_calibration_controllers.yaml",
-                           "sr_edc_joint_velocity_controllers_PWM.yaml",
-                           "sr_edc_effort_controllers_PWM.yaml",
-                           "sr_edc_joint_velocity_controllers.yaml",
-                           "sr_edc_effort_controllers.yaml",
-                           "sr_edc_mixed_position_velocity_joint_controllers_PWM.yaml",
-                           "sr_edc_joint_position_controllers_PWM.yaml",
-                           "sr_edc_mixed_position_velocity_joint_controllers.yaml",
-                           "sr_edc_joint_position_controllers.yaml"]
+                     "sr_edc_joint_velocity_controllers_PWM.yaml",
+                     "sr_edc_effort_controllers_PWM.yaml",
+                     "sr_edc_joint_velocity_controllers.yaml",
+                     "sr_edc_effort_controllers.yaml",
+                     "sr_edc_mixed_position_velocity_joint_controllers_PWM.yaml",
+                     "sr_edc_joint_position_controllers_PWM.yaml",
+                     "sr_edc_mixed_position_velocity_joint_controllers.yaml",
+                     "sr_edc_joint_position_controllers.yaml"]
 
 
 class TestHandFinder(unittest.TestCase):
     rospack = rospkg.RosPack()
     ethercat_path = rospack.get_path('sr_ethercat_hand_config')
-    
+
     def test_no_hand_no_robot_description_finder(self):
         if rospy.has_param("hand"):
             rospy.delete_param("hand")
@@ -41,7 +41,7 @@ class TestHandFinder(unittest.TestCase):
         self.assertEqual(len(hand_finder.get_hand_control_tuning(). host_control), 0, "correct tuning without a hands")
         self.assertEqual(len(hand_finder.get_hand_control_tuning(). motor_control), 0,
                          "correct tuning without a hands")
-                         
+
     def test_one_hand_no_robot_description_finder(self):
         if rospy.has_param("hand"):
             rospy.delete_param("hand")
@@ -90,10 +90,10 @@ class TestHandFinder(unittest.TestCase):
     def test_one_hand_no_mapping_no_robot_description_finder(self):
         if rospy.has_param("hand"):
             rospy.delete_param("hand")
-        
+
         if rospy.has_param("robot_description"):
             rospy.delete_param("robot_description")
-    
+
         rospy.set_param("hand/joint_prefix/1", "rh_")
         rospy.set_param("hand/mapping/1", "")
 
@@ -109,7 +109,7 @@ class TestHandFinder(unittest.TestCase):
         self.assertEqual(len(hand_finder.get_hand_joints().keys()), 1, "It should be only one mapping")
         print hand_finder.get_hand_joints()
         self.assertIn("1", hand_finder.get_hand_joints(), "Serial should be in the joints result")
-        joints = hand_finder.get_hand_joints()['1'] # use serial
+        joints = hand_finder.get_hand_joints()['1']  # use serial
         self.assertEqual(len(joints), 24, "Joint number should be 24")
         self.assertIn("rh_FFJ3", hand_finder.get_hand_joints()["1"], "FFJ3 joint should be in the joints list")
         # calibration
@@ -132,7 +132,7 @@ class TestHandFinder(unittest.TestCase):
         for controller_path, controller_param in zip(ctrl_tun_host_control_paths, controller_params):
             self.assertEqual(controller_path, self.ethercat_path + "/controls/host/1/" + controller_param,
                              "incorrect controller config file")
-            
+
     def test_one_hand_no_prefix_no_robot_description_finder(self):
         if rospy.has_param("hand"):
             rospy.delete_param("hand")
@@ -177,14 +177,14 @@ class TestHandFinder(unittest.TestCase):
         for controller_path, controller_param in zip(ctrl_tun_host_control_paths, controller_params):
             self.assertEqual(controller_path, self.ethercat_path + "/controls/host/rh/" + controller_param,
                              "incorrect controller config file")
-            
+
     def test_one_hand_no_prefix_no_mapping_no_robot_description_finder(self):
         if rospy.has_param("hand"):
             rospy.delete_param("hand")
-        
+
         if rospy.has_param("robot_description"):
             rospy.delete_param("robot_description")
-            
+
         rospy.set_param("hand/joint_prefix/1", "")
         rospy.set_param("hand/mapping/1", "")
 
@@ -236,17 +236,17 @@ class TestHandFinder(unittest.TestCase):
         rospy.set_param("hand/mapping/2", "left")
 
         hand_finder = HandFinder()
-        
+
         # hand params
         self.assertIsNotNone(hand_finder.get_hand_parameters(), "Parameters extracted.")
         self.assertEqual(len(hand_finder.get_hand_parameters().mapping), 2, "It should be two mappings")
         self.assertIn("right", hand_finder.get_hand_parameters().mapping.values(), "It should be right mapping")
         self.assertIn("left", hand_finder.get_hand_parameters().mapping.values(), "It should be left mapping")
         self.assertEqual(len(hand_finder.get_hand_parameters().joint_prefix), 2, "It should be two joint_prefixes")
-  
+
         self.assertIn("rh_", hand_finder.get_hand_parameters().joint_prefix.values(), "It should be rh_ prefix")
         self.assertIn("lh_", hand_finder.get_hand_parameters().joint_prefix.values(), "It should be rh_ prefix")
-        
+
         # hand joints
         self.assertIsNotNone(hand_finder.get_hand_joints(), "Joints extracted.")
         self.assertEqual(len(hand_finder.get_hand_joints().keys()), 2, "It should be two mappings")
@@ -258,7 +258,7 @@ class TestHandFinder(unittest.TestCase):
         joints = hand_finder.get_hand_joints()['left']
         self.assertEqual(len(joints), 24, "Joint number should be 24")
         self.assertIn("lh_FFJ1", hand_finder.get_hand_joints()["left"], "FFJ1 joint should be in the joints list")
-        
+
         # calibration
         self.assertIsNotNone(hand_finder.get_calibration_path(), "Calibration extracted.")
         calibration_path = hand_finder.get_calibration_path()['right']
@@ -282,7 +282,7 @@ class TestHandFinder(unittest.TestCase):
         for controller_path, controller_param in zip(ctrl_tun_host_control_paths, controller_params):
             self.assertEqual(controller_path, self.ethercat_path + "/controls/host/right/" + controller_param,
                              "incorrect controller config file")
-                             
+
         ctrl_tun_friction_comp_path = hand_finder.get_hand_control_tuning().friction_compensation['left']
         self.assertEqual(ctrl_tun_friction_comp_path, self.ethercat_path + "/controls/friction_compensation.yaml",
                          "incorrect friction compensation file")
@@ -296,7 +296,6 @@ class TestHandFinder(unittest.TestCase):
         for controller_path, controller_param in zip(ctrl_tun_host_control_paths, controller_params):
             self.assertEqual(controller_path, self.ethercat_path + "/controls/host/left/" + controller_param,
                              "incorrect controller config file")
-
 
     def test_no_hand_robot_description_exists_finder(self):
         if rospy.has_param("hand"):
@@ -319,7 +318,7 @@ class TestHandFinder(unittest.TestCase):
         self.assertEqual(len(hand_finder.get_hand_control_tuning(). motor_control), 0,
                          "correct tuning without a hands")
 
-    def test_one_hand_robot_description_exists_finder(self):        
+    def test_one_hand_robot_description_exists_finder(self):
         if rospy.has_param("hand"):
             rospy.delete_param("hand")
 
@@ -343,7 +342,8 @@ class TestHandFinder(unittest.TestCase):
         self.assertIn("right", hand_finder.get_hand_joints(), "Mapping should be in the joints result")
         joints = hand_finder.get_hand_joints()['right']
         self.assertEqual(len(joints), 1, "Joint number should be 1")
-        self.assertNotIn("rh_FFJ3", hand_finder.get_hand_joints()["right"], "FFJ3 joint should not be in the joints list")
+        self.assertNotIn("rh_FFJ3", hand_finder.get_hand_joints()["right"],
+                         "FFJ3 joint should not be in the joints list")
         self.assertIn("rh_RFJ4", hand_finder.get_hand_joints()["right"], "RFJ4 joint should be in the joints list")
         # calibration
         self.assertIsNotNone(hand_finder.get_calibration_path(), "Calibration extracted.")
@@ -412,7 +412,7 @@ class TestHandFinder(unittest.TestCase):
         for controller_path, controller_param in zip(ctrl_tun_host_control_paths, controller_params):
             self.assertEqual(controller_path, self.ethercat_path + "/controls/host/1/" + controller_param,
                              "incorrect controller config file")
-    
+
     def test_one_hand_no_prefix_robot_description_exists_finder(self):
         if rospy.has_param("hand"):
             rospy.delete_param("hand")
@@ -459,7 +459,7 @@ class TestHandFinder(unittest.TestCase):
         for controller_path, controller_param in zip(ctrl_tun_host_control_paths, controller_params):
             self.assertEqual(controller_path, self.ethercat_path + "/controls/host/rh/" + controller_param,
                              "incorrect controller config file")
-        
+
     def test_one_hand_no_prefix_no_ns_robot_description_exists_finder(self):
         if rospy.has_param("hand"):
             rospy.delete_param("hand")
@@ -507,7 +507,7 @@ class TestHandFinder(unittest.TestCase):
             self.assertEqual(controller_path, self.ethercat_path + "/controls/host/1/" + controller_param,
                              "incorrect controller config file")
 
-    def test_two_hand_robot_description_exists_finder(self):    
+    def test_two_hand_robot_description_exists_finder(self):
         if rospy.has_param("hand"):
             rospy.delete_param("hand")
 
@@ -527,24 +527,26 @@ class TestHandFinder(unittest.TestCase):
         self.assertIn("right", hand_finder.get_hand_parameters().mapping.values(), "It should be right mapping")
         self.assertIn("left", hand_finder.get_hand_parameters().mapping.values(), "It should be left mapping")
         self.assertEqual(len(hand_finder.get_hand_parameters().joint_prefix), 2, "It should be two joint_prefixes")
-  
+
         self.assertIn("rh_", hand_finder.get_hand_parameters().joint_prefix.values(), "It should be rh_ prefix")
         self.assertIn("lh_", hand_finder.get_hand_parameters().joint_prefix.values(), "It should be rh_ prefix")
-        
+
         # hand joints
         self.assertIsNotNone(hand_finder.get_hand_joints(), "Joints extracted.")
         self.assertEqual(len(hand_finder.get_hand_joints().keys()), 2, "It should be two mappings")
         self.assertIn("right", hand_finder.get_hand_joints(), "Mapping should be in the joints result")
         joints = hand_finder.get_hand_joints()['right']
         self.assertEqual(len(joints), 1, "Joint number should be 1")
-        self.assertNotIn("rh_FFJ3", hand_finder.get_hand_joints()["right"], "rh_FFJ3 joint should not be in the joints list")
+        self.assertNotIn("rh_FFJ3", hand_finder.get_hand_joints()["right"],
+                         "rh_FFJ3 joint should not be in the joints list")
         self.assertIn("rh_RFJ4", hand_finder.get_hand_joints()["right"], "rh_RFJ4 joint should be in the joints list")
         self.assertIn("left", hand_finder.get_hand_joints(), "Mapping should be in the joints result")
         joints = hand_finder.get_hand_joints()['left']
         self.assertEqual(len(joints), 1, "Joint number should be 1")
-        self.assertNotIn("lh_FFJ3", hand_finder.get_hand_joints()["left"], "lh_FFJ3 joint should not be in the joints list")
+        self.assertNotIn("lh_FFJ3", hand_finder.get_hand_joints()["left"],
+                         "lh_FFJ3 joint should not be in the joints list")
         self.assertIn("lh_LFJ4", hand_finder.get_hand_joints()["left"], "lh_LFJ4 joint should be in the joints list")
-        
+
         # calibration
         self.assertIsNotNone(hand_finder.get_calibration_path(), "Calibration extracted.")
         calibration_path = hand_finder.get_calibration_path()['right']
@@ -568,7 +570,7 @@ class TestHandFinder(unittest.TestCase):
         for controller_path, controller_param in zip(ctrl_tun_host_control_paths, controller_params):
             self.assertEqual(controller_path, self.ethercat_path + "/controls/host/right/" + controller_param,
                              "incorrect controller config file")
-                             
+
         ctrl_tun_friction_comp_path = hand_finder.get_hand_control_tuning().friction_compensation['left']
         self.assertEqual(ctrl_tun_friction_comp_path, self.ethercat_path + "/controls/friction_compensation.yaml",
                          "incorrect friction compensation file")

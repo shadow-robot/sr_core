@@ -102,7 +102,7 @@ class HandJoints(object):
 
         if rospy.has_param('robot_description'):
             robot_description = rospy.get_param('robot_description')
-            
+
             # concatenate all the joints with prefixes
             for hand in mapping:
                 if hand in joint_prefix:
@@ -111,7 +111,7 @@ class HandJoints(object):
                 else:
                     rospy.logwarn("Cannot find serial " + hand +
                                   "in joint_prefix parameters")
-                    
+
             # add the prefixed joints to each hand but remove fixed joints
             hand_urdf = URDF.from_xml_string(robot_description)
             for hand in mapping:
@@ -125,7 +125,7 @@ class HandJoints(object):
                             joints_tmp.append(joint.name)
                         elif prefix not in joint_prefix.values():
                             rospy.logdebug("joint " + joint.name + " has invalid "
-                                          "prefix:" + prefix)
+                                           "prefix:" + prefix)
                         elif prefix == joint_prefix[hand]:
                             joints_tmp.append(joint.name)
                 for joint_unordered in hand_joints:
@@ -146,6 +146,7 @@ class HandJoints(object):
                     rospy.logwarn("Cannot find serial " + hand +
                                   "in joint_prefix parameters")
                 self.joints[mapping[hand]] = hand_joints
+
 
 class HandFinder(object):
     """

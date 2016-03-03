@@ -95,7 +95,7 @@ TEST(SrHandFinder, one_hand_no_robot_description_finder_test)
   {
     ROS_DEBUG_STREAM(rh_joints[i]);
     ASSERT_STREQ(rh_joints[i].c_str(), ("rh_" + joint_names[i]).c_str());
-    }
+  }
 
   // calibration
   ASSERT_GT(hand_finder.get_calibration_path().size(), 0);
@@ -177,7 +177,7 @@ TEST(SrHandFinder, one_hand_no_mapping_no_robot_description_finder_test)
   {
     ROS_DEBUG_STREAM(rh_joints[i]);
     ASSERT_STREQ(rh_joints[i].c_str(), ("rh_" + joint_names[i]).c_str());
-    }
+  }
 
   // calibration
   ASSERT_GT(hand_finder.get_calibration_path().size(), 0);
