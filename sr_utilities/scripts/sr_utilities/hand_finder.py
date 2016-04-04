@@ -72,7 +72,13 @@ class HandConfig(object):
         """
 
         """
-        self.mapping = mapping
+        # handle possibly empty mapping
+        self.mapping = {}
+        for serial_id in mapping:
+            if mapping[serial_id] == '':
+                self.mapping[serial_id] = str(serial_id)
+            else:
+                self.mapping[serial_id] = mapping[serial_id]
         self.joint_prefix = joint_prefix
 
 
@@ -86,7 +92,7 @@ class HandJoints(object):
                   'THJ5', 'WRJ1', 'WRJ2']
         return joints
 
-    def __init__(self, mapping):
+    def __init__(self, mapping, joint_prefix):
         """
 
         """
@@ -95,22 +101,32 @@ class HandJoints(object):
         joints = self.get_default_joints()
 
         if rospy.has_param('robot_description'):
-            for hand in mapping:
-                for joint in joints:
-                    hand_joints.append(mapping[hand] + '_' + joint)
-
             robot_description = rospy.get_param('robot_description')
+
+            # concatenate all the joints with prefixes
+            for hand in mapping:
+                if hand in joint_prefix:
+                    for joint in joints:
+                        hand_joints.append(joint_prefix[hand] + joint)
+                else:
+                    rospy.logwarn("Cannot find serial " + hand +
+                                  "in joint_prefix parameters")
+
+            # add the prefixed joints to each hand but remove fixed joints
             hand_urdf = URDF.from_xml_string(robot_description)
             for hand in mapping:
                 joints_tmp = []
                 self.joints[mapping[hand]] = []
                 for joint in hand_urdf.joints:
                     if joint.type != 'fixed':
-                        joint_prefix = joint.name[:2]
-                        if joint_prefix not in mapping.values():
-                            rospy.logdebug("joint " + joint.name + "has invalid "
-                                           "prefix")
-                        elif joint_prefix == mapping[hand]:
+                        prefix = joint.name[:3]
+                        # is there an empty prefix ?
+                        if "" in joint_prefix.values():
+                            joints_tmp.append(joint.name)
+                        elif prefix not in joint_prefix.values():
+                            rospy.logdebug("joint " + joint.name + " has invalid "
+                                           "prefix:" + prefix)
+                        elif prefix == joint_prefix[hand]:
                             joints_tmp.append(joint.name)
                 for joint_unordered in hand_joints:
                     if joint_unordered in joints_tmp:
@@ -119,11 +135,17 @@ class HandJoints(object):
         else:
             rospy.logwarn("No robot_description found on parameter server."
                           "Joint names are loaded for 5 finger hand")
+
+            # concatenate all the joints with prefixes
             for hand in mapping:
-                hand_mapping = mapping[hand]
-                self.joints[hand_mapping] = []
-                for joint in joints:
-                    self.joints[hand_mapping].append(hand_mapping + '_' + joint)
+                hand_joints = []
+                if hand in joint_prefix:
+                    for joint in joints:
+                        hand_joints.append(joint_prefix[hand] + joint)
+                else:
+                    rospy.logwarn("Cannot find serial " + hand +
+                                  "in joint_prefix parameters")
+                self.joints[mapping[hand]] = hand_joints
 
 
 class HandFinder(object):
@@ -137,14 +159,14 @@ class HandFinder(object):
         """
         Parses the parameter server to extract the necessary information.
         """
-        if not rospy.has_param("hand"):
+        if not rospy.has_param("/hand"):
             rospy.logerr("No hand is detected")
             hand_parameters = {'joint_prefix': {}, 'mapping': {}}
         else:
-            hand_parameters = rospy.get_param("hand")
+            hand_parameters = rospy.get_param("/hand")
         self.hand_config = HandConfig(hand_parameters["mapping"],
                                       hand_parameters["joint_prefix"])
-        self.hand_joints = HandJoints(self.hand_config.mapping).joints
+        self.hand_joints = HandJoints(self.hand_config.mapping, self.hand_config.joint_prefix).joints
         self.calibration_path = \
             HandCalibration(self.hand_config.mapping).calibration_path
         self.hand_control_tuning = \

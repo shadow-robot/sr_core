@@ -135,7 +135,8 @@ namespace sr_gazebo_sim
       }
     }
 
-    registerInterface(&this->fake_state_);
+    robot_state_interface_.registerHandle(ros_ethercat_model::RobotStateHandle("unique_robot_hw", &fake_state_));
+    registerInterface(&robot_state_interface_);
     ROS_INFO_STREAM("Registered fake state");
   }
 
