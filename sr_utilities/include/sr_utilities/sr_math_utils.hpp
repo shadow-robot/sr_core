@@ -189,8 +189,10 @@ public:
     {
       dt = timestamp - timestamp_1;
     }
-
-    double alpha = exp(-dt / tau);
+    
+    double alpha = 0.0; 
+    if (tau > 0.0 && dt > 0.0)
+      alpha = exp(-dt / tau);
 
     // filtering the input
     value_derivative.first = alpha * value_derivative.first + (1 - alpha) * q;
