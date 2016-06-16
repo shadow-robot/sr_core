@@ -22,12 +22,12 @@ from controller_manager_msgs.srv import ListControllers
 from controller_manager_msgs.srv import SwitchController, LoadController
 from sr_utilities.hand_finder import HandFinder
 from std_msgs.msg import Bool
-WAIT_TIME = 60
 
 
 class TrajectoryControllerSpawner(object):
-    def __init__(self, trajectory):
+    def __init__(self, trajectory, service_timeout):
         self.trajectory = trajectory
+        self.service_timeout = service_timeout
         self.hand_finder = HandFinder()
         self.joints = self.hand_finder.get_hand_joints()
         ros_pack = rospkg.RosPack()
@@ -88,7 +88,7 @@ class TrajectoryControllerSpawner(object):
             hand_prefix = self.hand_mapping[hand_serial]
             success = True
             try:
-                rospy.wait_for_service('controller_manager/list_controllers', WAIT_TIME)
+                rospy.wait_for_service('controller_manager/list_controllers', self.service_timeout)
                 list_controllers = rospy.ServiceProxy(
                     'controller_manager/list_controllers', ListControllers)
 
@@ -110,7 +110,7 @@ class TrajectoryControllerSpawner(object):
 
         for load_control in controllers_to_start:
             try:
-                rospy.wait_for_service('controller_manager/load_controller', WAIT_TIME)
+                rospy.wait_for_service('controller_manager/load_controller', self.service_timeout)
                 load_controllers = rospy.ServiceProxy('controller_manager/load_controller', LoadController)
                 loaded_controllers = load_controllers(load_control)
             except rospy.ServiceException:
@@ -119,7 +119,7 @@ class TrajectoryControllerSpawner(object):
                 success = False
 
         try:
-            rospy.wait_for_service('controller_manager/switch_controller', WAIT_TIME)
+            rospy.wait_for_service('controller_manager/switch_controller', self.service_timeout)
             switch_controllers = rospy.ServiceProxy('controller_manager/switch_controller', SwitchController)
             switched_controllers = switch_controllers(controllers_to_start, None,
                                                       SwitchController._request_class.BEST_EFFORT)
@@ -173,8 +173,9 @@ if __name__ == "__main__":
     wait_for_topic = rospy.get_param("~wait_for", "")
     hand_trajectory = rospy.get_param("~hand_trajectory", False)
     timeout = rospy.get_param("~timeout", 30.0)
+    service_timeout = rospy.get_param("~service_timeout", 60.0)
 
-    trajectory_spawner = TrajectoryControllerSpawner(trajectory=hand_trajectory)
+    trajectory_spawner = TrajectoryControllerSpawner(trajectory=hand_trajectory, service_timeout=service_timeout)
     if trajectory_spawner.wait_for_topic(wait_for_topic, timeout):
         trajectory_spawner.generate_parameters()
         trajectory_spawner.set_controller()
