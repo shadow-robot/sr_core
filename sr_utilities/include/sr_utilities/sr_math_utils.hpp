@@ -189,17 +189,17 @@ public:
     {
       dt = timestamp - timestamp_1;
     }
-    
-    double alpha = 0.0; 
+
+    double alpha = 0.0;
     if (tau > 0.0 && dt > 0.0)
       alpha = exp(-dt / tau);
 
     // filtering the input
     value_derivative.first = alpha * value_derivative.first + (1 - alpha) * q;
     // filtering the derivative
-    value_derivative.second = alpha * value_derivative.second + (1 - alpha) / dt * (q - q_prev);
+    value_derivative.second = alpha * value_derivative.second + (1 - alpha) / dt * (value_derivative.first - q_prev);
 
-    q_prev = q;
+    q_prev = value_derivative.first;
     timestamp_1 = timestamp;
 
     return value_derivative;
