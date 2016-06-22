@@ -47,7 +47,8 @@ namespace controller
 {
 
   SrhMixedPositionVelocityJointController::SrhMixedPositionVelocityJointController()
-          : max_velocity_(1.0), min_velocity_(-1.0),
+          : max_velocity_(1.0), min_velocity_(-1.0), prev_in_deadband_(false),
+            maintained_command_(0.0),
             position_deadband(0.05), motor_min_force_threshold(0)
   {
   }
@@ -328,6 +329,7 @@ namespace controller
     // velocity loop:
     if (!in_deadband)  // don't compute the error if we're in the deadband
     {
+      prev_in_deadband_ = false;
       // we're not in the deadband, compute the error
       if (has_j2)
       {
@@ -338,7 +340,24 @@ namespace controller
         error_velocity = commanded_velocity - joint_state_->velocity_;
       }
     }
+    // compute the effort demand using the velocity pid loop
     commanded_effort = pid_controller_velocity_->computeCommand(-error_velocity, period);
+
+    // when entering the deadband, override command with current joint_effort to avoid further movements
+    if (in_deadband && !prev_in_deadband_)
+    {
+      prev_in_deadband_ = true;
+      commanded_effort = joint_state_->effort_;
+      maintained_command_ = commanded_effort;
+    }
+    else
+    { 
+      // when already in deadband, override command with previous command
+      if (in_deadband && prev_in_deadband_)
+      {
+        commanded_effort = maintained_command_;
+      }
+    }
 
     // clamp the result to max force
     commanded_effort = min(commanded_effort, (max_force_demand * max_force_factor_));

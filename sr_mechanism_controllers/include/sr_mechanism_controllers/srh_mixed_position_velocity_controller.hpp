@@ -73,6 +73,10 @@ private:
   /// The values for the velocity demand saturation
   double max_velocity_, min_velocity_;
 
+  /// Stores if was previously in the deadband
+  bool prev_in_deadband_;
+  double maintained_command_;
+
 #ifdef DEBUG_PUBLISHER
   ros::Publisher debug_pub;
 #endif
