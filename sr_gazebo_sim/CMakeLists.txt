@@ -14,6 +14,8 @@ catkin_package(
         LIBRARIES sr_gazebo_sim
 )
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GAZEBO_CXX_FLAGS}")
+
 add_library(sr_gazebo_sim src/gazebo_hardware_sim.cpp)
 add_dependencies(sr_gazebo_sim ${catkin_EXPORTED_TARGETS})
 target_link_libraries(sr_gazebo_sim ${TinyXML_LIBRARIES} ${catkin_LIBRARIES})
