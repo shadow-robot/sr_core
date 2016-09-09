@@ -44,6 +44,10 @@ namespace controller
             command_(0),
             min_(0.0),
             max_(sr_math_utils::pi),
+            vel_min_(-1 * sr_math_utils::pi),
+            vel_max_(sr_math_utils::pi),
+            eff_min_(-1023.),
+            eff_max_(1023.),
             loop_count_(0),
             initialized_(false),
             robot_(NULL),
@@ -108,6 +112,10 @@ namespace controller
 
       min_ = joint1->limits->lower + joint2->limits->lower;
       max_ = joint1->limits->upper + joint2->limits->upper;
+      vel_max_ = joint1->limits->velocity + joint2->limits->velocity;
+      vel_min_ = -1 * vel_max_;
+      eff_max_ = joint1->limits->effort + joint2->limits->effort;
+      eff_min_ = -1 * eff_max_;
     }
     else
     {
@@ -115,22 +123,29 @@ namespace controller
 
       min_ = joint->limits->lower;
       max_ = joint->limits->upper;
+      vel_max_ = joint->limits->velocity;
+      vel_min_ = -1 * vel_max_;
+      eff_max_ = joint->limits->effort;
+      eff_min_ = -1 * eff_max_;
     }
+  }
+
+  double SrController::clamp_command(double cmd, double min_cmd, double max_cmd)
+  {
+    if (cmd < min_cmd)
+    {
+      return min_cmd;
+    }
+    if (cmd > max_cmd)
+    {
+      return max_cmd;
+    }
+    return cmd;
   }
 
   double SrController::clamp_command(double cmd)
   {
-    if (cmd < min_)
-    {
-      return min_;
-    }
-
-    if (cmd > max_)
-    {
-      return max_;
-    }
-
-    return cmd;
+    return clamp_command(cmd, min_, max_);
   }
 
   void SrController::maxForceFactorCB(const std_msgs::Float64ConstPtr &msg)

@@ -101,7 +101,19 @@ protected:
 
   /**
    * Clamps the command to the correct range
-   * (between min and max).
+   * (between min_cmd and max_cmd).
+   *
+   * @param cmd the command we want to clamp
+   * @param min_cmd the min to clamp to
+   * @param max_cmd the max to clamp to
+   *
+   * @return the clamped command
+   */
+  double clamp_command(double cmd, double min_cmd, double max_cmd);
+
+  /**
+   * Clamps the command to the correct range
+   * (between angular min and max).
    *
    * @param cmd the command we want to clamp
    *
@@ -120,6 +132,10 @@ protected:
 
   /// Min and max range of the joint, used to clamp the command.
   double min_, max_;
+  /// Min and max range of the velocity, used to clamp the command.
+  double vel_min_, vel_max_;
+  /// Min and max range of the effort, used to clamp the command.
+  double eff_min_, eff_max_;
 
   int loop_count_;
   bool initialized_;
