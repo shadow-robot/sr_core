@@ -128,6 +128,9 @@ namespace controller
 
     friction_compensator.reset(new sr_friction_compensation::SrFrictionCompensator(joint_name_));
 
+    // get the min and max value for the current joint:
+    get_min_max(robot_->robot_model_, joint_name_);
+
     serve_set_gains_ = node_.advertiseService("set_gains", &SrhJointVelocityController::setGains, this);
     serve_reset_gains_ = node_.advertiseService("reset_gains", &SrhJointVelocityController::resetGains, this);
 
@@ -288,6 +291,11 @@ namespace controller
       }
     }
     loop_count_++;
+  }
+
+  double SrhJointVelocityController::clamp_command(double cmd)
+  {
+    return SrController::clamp_command(cmd, vel_min_, vel_max_);
   }
 
   void SrhJointVelocityController::read_parameters()
