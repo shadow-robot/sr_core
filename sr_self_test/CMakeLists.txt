@@ -11,6 +11,9 @@ catkin_package(
         LIBRARIES sr_self_test
 )
 
+add_definitions(-DMAGICKCORE_QUANTUM_DEPTH=16)
+add_definitions(-DMAGICKCORE_HDRI_ENABLE=0)
+
 add_library(sr_self_test src/sr_self_test.cpp src/sr_test_runner.cpp src/test_joint_movement.cpp src/manual_test.cpp
         src/diagnostic_parser.cpp src/sensor_noise_test.cpp src/motor_test.cpp)
 add_dependencies(sr_self_test ${catkin_EXPORTED_TARGETS})
