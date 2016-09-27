@@ -29,7 +29,8 @@
 #define _THREAD_SAFE_MAP_HPP_
 
 #include <boost/smart_ptr.hpp>
-#include <boost/thread.hpp>
+#include <boost/thread/shared_mutex.hpp>
+#include <boost/thread/mutex.hpp>
 
 #include <map>
 #include <vector>

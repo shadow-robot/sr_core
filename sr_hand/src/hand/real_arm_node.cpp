@@ -29,7 +29,7 @@
 
 #include <ros/ros.h>
 
-#include <boost/thread.hpp>
+#include <boost/thread/thread.hpp>
 #include <boost/smart_ptr.hpp>
 
 #include "sr_hand/sr_subscriber.h"
