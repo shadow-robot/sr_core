@@ -15,9 +15,9 @@ catkin_package(
 # Real Hand
 set(real_hand $ENV{REAL_HAND})
 if (real_hand)
-    message(" [x] Real Hand.")
+    message(STATUS " [x] Real Hand.")
 else(real_hand)
-    message(" [ ] Real Hand.")
+    message(STATUS " [ ] Real Hand.")
 endif (real_hand)
 
 #############################

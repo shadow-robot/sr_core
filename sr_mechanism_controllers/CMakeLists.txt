@@ -16,16 +16,15 @@ catkin_package(
 
 #if you compile with "DEBUG=1 make", some debug data are going to be published
 set(debug $ENV{DEBUG})
-message(" ----- Shadow Robot EtherCAT driver configuration:")
+message(STATUS "Shadow Mechanism Controller configuration:")
 if (DEFINED debug)
     #it is forbidden to set CMAKE_CXX_FLAGS in catkin, so this should probably be added as a command lina argument
     # http://docs.ros.org/hydro/api/catkin/html/user_guide/standards.html
     set(CMAKE_CXX_FLAGS "-D DEBUG_PUBLISHER")
-    message(" [x] Debug publisher")
+    message(STATUS " [x] Debug publisher")
 else(DEFINED debug)
-    message(" [ ] Debug publisher")
+    message(STATUS " [ ] Debug publisher")
 endif (DEFINED debug)
-message(" ----- ")
 
 add_executable(joint_trajectory_action_controller src/joint_trajectory_action_controller.cpp)
 add_dependencies(joint_trajectory_action_controller ${catkin_EXPORTED_TARGETS})
