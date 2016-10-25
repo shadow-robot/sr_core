@@ -30,7 +30,7 @@
 #include <string>
 #include <vector>
 
-#include <boost/thread.hpp>
+#include <boost/thread/mutex.hpp>
 
 #include <std_msgs/Float64.h>
 

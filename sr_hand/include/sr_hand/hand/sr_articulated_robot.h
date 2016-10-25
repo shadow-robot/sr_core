@@ -41,7 +41,7 @@
 #include "self_test/self_test.h"
 
 #include <boost/smart_ptr.hpp>
-#include <boost/thread.hpp>
+#include <boost/thread/mutex.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/assign.hpp>
 

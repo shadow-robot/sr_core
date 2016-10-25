@@ -36,7 +36,7 @@
 #include "sr_self_test/sr_test_runner.hpp"
 #include "sr_self_test/motor_test.hpp"
 
-#include <boost/thread.hpp>
+#include <boost/thread/thread.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <sr_robot_msgs/joint.h>
 #include <sr_hand/hand_commander.hpp>
