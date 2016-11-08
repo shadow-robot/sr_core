@@ -48,7 +48,7 @@ class ArmFinder(object):
             arm_parameters = rospy.get_param("arm")
 
         # TODO(@anyone): This parameter is never set. This script needs to be modified to find available
-        # arms from robot_description and present them appropriately.
+        # arms from robot_description and present them appropriately. (sr_core issue #74)
 
         self.arm_config = ArmConfig(arm_parameters["mapping"], arm_parameters["joint_prefix"])
         self.arm_joints = {}
