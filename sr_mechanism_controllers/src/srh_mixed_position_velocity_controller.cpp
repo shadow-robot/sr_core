@@ -48,7 +48,7 @@ namespace controller
 
   SrhMixedPositionVelocityJointController::SrhMixedPositionVelocityJointController()
           : max_velocity_(1.0), min_velocity_(-1.0), prev_in_deadband_(false),
-            maintained_command_(0.0),
+            maintained_command_(0.0), override_to_current_effort_(false),
             position_deadband(0.05), motor_min_force_threshold(0)
   {
   }
@@ -343,15 +343,20 @@ namespace controller
     // compute the effort demand using the velocity pid loop
     commanded_effort = pid_controller_velocity_->computeCommand(-error_velocity, period);
 
-    // when entering the deadband, override command with current joint_effort to avoid further movements
+    // when entering the deadband, override command
     if (in_deadband && !prev_in_deadband_)
     {
       prev_in_deadband_ = true;
-      commanded_effort = joint_state_->effort_;
+      if (override_to_current_effort_)
+      {
+        // override with current joint_effort to avoid further movements
+        commanded_effort = joint_state_->effort_;
+      }
+      // else use the current command for further loops in deadband
       maintained_command_ = commanded_effort;
     }
     else
-    { 
+    {
       // when already in deadband, override command with previous command
       if (in_deadband && prev_in_deadband_)
       {
@@ -446,6 +451,9 @@ namespace controller
     node_.param<int>("velocity_pid/friction_deadband", friction_deadband, 5);
     node_.param<double>("velocity_pid/max_force", max_force_demand, 1023.0);
     node_.param<int>("motor_min_force_threshold", motor_min_force_threshold, 0);
+    node_.param<bool>("override_to_current_effort", override_to_current_effort_, false);
+    if (override_to_current_effort_)
+      ROS_WARN_STREAM("using override commanded effort to current effort for " << joint_state_->joint_->name);
   }
 
   void SrhMixedPositionVelocityJointController::setCommandCB(const std_msgs::Float64ConstPtr &msg)

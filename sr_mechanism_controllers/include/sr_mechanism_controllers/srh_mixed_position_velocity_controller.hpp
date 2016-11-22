@@ -76,6 +76,8 @@ private:
   /// Stores if was previously in the deadband
   bool prev_in_deadband_;
   double maintained_command_;
+  /// Override commanded_effort to current effort when in deadband
+  bool override_to_current_effort_;
 
 #ifdef DEBUG_PUBLISHER
   ros::Publisher debug_pub;
