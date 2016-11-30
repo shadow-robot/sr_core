@@ -30,6 +30,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <boost/thread/thread.hpp>
 #include <sr_movements/movement_from_image.hpp>
 #include <sr_movements/movement_publisher.hpp>
 #include <sr_robot_msgs/JointControllerState.h>

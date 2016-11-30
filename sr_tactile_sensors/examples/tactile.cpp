@@ -29,7 +29,7 @@
 #include <ros/ros.h>
 #include <string>
 
-#include <boost/thread.hpp>
+#include <boost/thread/mutex.hpp>
 
 // messages
 #include <std_msgs/Float64.h>
