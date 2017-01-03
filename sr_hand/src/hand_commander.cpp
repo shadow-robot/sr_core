@@ -101,6 +101,7 @@ namespace shadowrobot
     std::string controlled_joint_name;
 
     controller_list_client.call(controller_list);
+
     for (size_t i = 0; i < controller_list.response.controller.size(); i++)
     {
       if (controller_list.response.controller[i].state == "running")
@@ -134,7 +135,6 @@ namespace shadowrobot
       }
       for (size_t i = 0; i < joint_vector.size(); ++i)
       {
-        boost::algorithm::to_upper(joint_vector.at(i).joint_name);
         std_msgs::Float64 target;
         target.data = joint_vector.at(i).joint_target * M_PI / 180.0;
         sr_hand_target_pub_map[joint_vector.at(i).joint_name].publish(target);
@@ -173,8 +173,6 @@ namespace shadowrobot
     {
       std::string jn = joint_names[i];
 
-      // urdf names are upper case
-      boost::algorithm::to_upper(jn);
       std::map<std::string, boost::shared_ptr<urdf::Joint> >::iterator it = all_joints.find(jn);
 
       if (it != all_joints.end())
@@ -198,13 +196,7 @@ namespace shadowrobot
 
     for (it = sr_hand_sub_topics.begin(); it != sr_hand_sub_topics.end(); ++it)
     {
-      // all Hand joint names have a length of 4...
-      // The other way would be to check if the name is in a list
-      // of possible names. Not sure what's best.
-      if (it->first.size() == 4)
-      {
-        all_joints_names.push_back(it->first);
-      }
+      all_joints_names.push_back(it->first);
     }
 
     return all_joints_names;
@@ -216,8 +208,6 @@ namespace shadowrobot
 
     if (hand_type == shadowhandRosLib::ETHERCAT)
     {
-      // urdf names are upper case
-      boost::algorithm::to_upper(joint_name);
       std::map<std::string, std::string>::iterator it = sr_hand_sub_topics.find(joint_name);
       if (it != sr_hand_sub_topics.end())
       {
