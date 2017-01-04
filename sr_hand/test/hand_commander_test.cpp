@@ -105,7 +105,7 @@ int main(int argc, char **argv)
   ros::NodeHandle nh;  // init the node
 
   // sleep until gazebo is ready
-  sleep(10.0);
+  sleep(30.0);
 
   return RUN_ALL_TESTS();
 }
