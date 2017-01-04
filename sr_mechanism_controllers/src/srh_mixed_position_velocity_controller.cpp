@@ -190,7 +190,7 @@ namespace controller
             req.velocity_d << ", " << req.velocity_i_clamp << "], max force: " << req.max_force <<
             ", friction deadband: " << req.friction_deadband << " pos deadband: " << req.position_deadband <<
             " min and max vel: [" << req.min_velocity << ", " << req.max_velocity << "]");
-            
+
     // retrieve previous antiwindup settings for velocity
     double p, i, d, i_max, i_min;
     bool antiwindup;
