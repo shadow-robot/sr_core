@@ -11,7 +11,7 @@ catkin_python_setup()
 catkin_package(
         DEPENDS gazebo
         CATKIN_DEPENDS roslib roscpp rospy std_msgs std_srvs sensor_msgs sr_robot_msgs control_msgs controller_manager_msgs sr_utilities
-        diagnostic_msgs dynamic_reconfigure self_test urdf gazebo_msgs
+        diagnostic_msgs dynamic_reconfigure self_test urdf gazebo_msgs ros_ethercat_model
         INCLUDE_DIRS include
         LIBRARIES HandCommander SrVirtual
 )
@@ -154,10 +154,6 @@ if (COMMAND add_rostest_gtest)
     add_rostest_gtest(hand_commander_test test/hand_commander_test.test test/hand_commander_test.cpp)
     add_dependencies(hand_commander_test ${catkin_EXPORTED_TARGETS})
     target_link_libraries(hand_commander_test HandCommander ${GTEST_LIBRARIES} ${catkin_LIBRARIES})
-    add_rostest(test/hand_commander_mock_test.test)
-    add_rostest_gtest(hand_commander_arm_and_hand_test test/hand_commander_arm_and_hand_test.test test/hand_commander_test.cpp)
-    add_dependencies(hand_commander_arm_and_hand_test ${catkin_EXPORTED_TARGETS})
-    target_link_libraries(hand_commander_arm_and_hand_test HandCommander ${GTEST_LIBRARIES} ${catkin_LIBRARIES})
 endif (COMMAND add_rostest_gtest)
 
 if (valves)

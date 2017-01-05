@@ -49,10 +49,10 @@ TEST(HandCommander, topic_state)
   // get_controller_state_topic returns fully resolved topics
   ros::NodeHandle nh;
 
-  std::string topic = handcmd.get_controller_state_topic("rh_ffj3");
+  std::string topic = handcmd.get_controller_state_topic("rh_FFJ3");
   EXPECT_EQ(nh.resolveName("sh_rh_ffj3_position_controller/state"), topic);
 
-  topic = handcmd.get_controller_state_topic("rh_ffj0");
+  topic = handcmd.get_controller_state_topic("rh_FFJ0");
   EXPECT_EQ(nh.resolveName("sh_rh_ffj0_position_controller/state"), topic);
 
   topic = handcmd.get_controller_state_topic("unknown joint");
@@ -68,12 +68,12 @@ TEST(HandCommander, min_max)
   EXPECT_DOUBLE_EQ(min_max.second, 1.57079632679);
 
   // also works for lower case
-  min_max = handcmd.get_min_max("rh_ffj3");
+  min_max = handcmd.get_min_max("rh_FFJ3");
   EXPECT_DOUBLE_EQ(min_max.first, 0.0);
   EXPECT_DOUBLE_EQ(min_max.second, 1.57079632679);
 
   // j0 should be 0, 180
-  min_max = handcmd.get_min_max("rh_ffj0");
+  min_max = handcmd.get_min_max("rh_FFJ0");
   EXPECT_DOUBLE_EQ(min_max.first, 0.0);
   EXPECT_DOUBLE_EQ(min_max.second, 3.14159265358);
 
@@ -101,11 +101,13 @@ TEST(HandCommander, all_joints)
 int main(int argc, char **argv)
 {
   testing::InitGoogleTest(&argc, argv);
+
+  // sleep until gazebo is ready
+  sleep(300.0);
+
   ros::init(argc, argv, "hand_commander_test");
   ros::NodeHandle nh;  // init the node
 
-  // sleep until gazebo is ready
-  sleep(10.0);
 
   return RUN_ALL_TESTS();
 }
