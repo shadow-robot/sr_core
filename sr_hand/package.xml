@@ -37,6 +37,7 @@
     <build_depend>gazebo_msgs</build_depend>
     <build_depend>gazebo</build_depend>
     <build_depend>rostest</build_depend>
+    <build_depend>ros_ethercat_hardware</build_depend>
 
     <!-- Dependencies needed after this package is compiled. -->
     <run_depend>roslib</run_depend>
@@ -57,6 +58,7 @@
     <run_depend>gazebo_ros</run_depend>
     <run_depend>gazebo</run_depend>
     <run_depend>robot_state_publisher</run_depend>
+    <run_depend>ros_ethercat_hardware</run_depend>
 
     <!-- Dependencies needed only for running tests. -->
     <test_depend>gtest</test_depend>
