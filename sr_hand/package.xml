@@ -63,5 +63,5 @@
     <!-- Dependencies needed only for running tests. -->
     <test_depend>gtest</test_depend>
     <test_depend>ros_ethercat_loop</test_depend>
-    <test_depend>ros_ethercat_hardware</test_depend>
+<!--    <test_depend>ros_ethercat_hardware</test_depend>-->
 </package>
