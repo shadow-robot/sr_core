@@ -103,7 +103,7 @@ int main(int argc, char **argv)
   testing::InitGoogleTest(&argc, argv);
 
   // sleep until gazebo is ready
-  sleep(15.0);
+  sleep(300.0);
 
   ros::init(argc, argv, "hand_commander_test");
   ros::NodeHandle nh;  // init the node
