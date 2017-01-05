@@ -38,26 +38,26 @@ class MockHand(object):
         rospy.loginfo("Started MockHand")
 
     def list_controllers_cb(self, req):
-        cons = ('sh_ffj0_position_controller',
-                'sh_ffj3_position_controller',
-                'sh_ffj4_position_controller',
-                'sh_lfj0_position_controller',
-                'sh_lfj3_position_controller',
-                'sh_lfj4_position_controller',
-                'sh_lfj5_position_controller',
-                'sh_mfj0_position_controller',
-                'sh_mfj3_position_controller',
-                'sh_mfj4_position_controller',
-                'sh_rfj0_position_controller',
-                'sh_rfj3_position_controller',
-                'sh_rfj4_position_controller',
-                'sh_thj1_position_controller',
-                'sh_thj2_position_controller',
-                'sh_thj3_position_controller',
-                'sh_thj4_position_controller',
-                'sh_thj5_position_controller',
-                'sh_wrj1_position_controller',
-                'sh_wrj2_position_controller')
+        cons = ('sr_rh_ffj0_position_controller',
+                'sr_rh_ffj3_position_controller',
+                'sr_rh_ffj4_position_controller',
+                'sr_rh_lfj0_position_controller',
+                'sr_rh_lfj3_position_controller',
+                'sr_rh_lfj4_position_controller',
+                'sr_rh_lfj5_position_controller',
+                'sr_rh_mfj0_position_controller',
+                'sr_rh_mfj3_position_controller',
+                'sr_rh_mfj4_position_controller',
+                'sr_rh_rfj0_position_controller',
+                'sr_rh_rfj3_position_controller',
+                'sr_rh_rfj4_position_controller',
+                'sr_rh_thj1_position_controller',
+                'sr_rh_thj2_position_controller',
+                'sr_rh_thj3_position_controller',
+                'sr_rh_thj4_position_controller',
+                'sr_rh_thj5_position_controller',
+                'sr_rh_wrj1_position_controller',
+                'sr_rh_wrj2_position_controller')
         res = ListControllersResponse()
         res.controller = [ControllerState(name=c, state='running') for c in cons]
         return res
