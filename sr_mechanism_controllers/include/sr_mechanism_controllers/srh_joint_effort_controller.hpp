@@ -59,6 +59,9 @@ private:
   /// read all the controller settings from the parameter server
   void read_parameters();
 
+  /// clamp the command to effort limits
+  double clamp_command(double cmd);
+
   /// set the effort target from a topic
   void setCommandCB(const std_msgs::Float64ConstPtr &msg);
 };
