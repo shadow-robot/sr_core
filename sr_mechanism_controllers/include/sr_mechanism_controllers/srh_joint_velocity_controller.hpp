@@ -68,6 +68,9 @@ private:
   /// read all the controller settings from the parameter server
   void read_parameters();
 
+  /// clamp the command to velocity limits
+  double clamp_command(double cmd);
+
   /// set the velocity target from a topic
   void setCommandCB(const std_msgs::Float64ConstPtr &msg);
 
