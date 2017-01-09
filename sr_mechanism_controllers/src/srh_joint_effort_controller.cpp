@@ -104,6 +104,9 @@ namespace controller
 
     friction_compensator.reset(new sr_friction_compensation::SrFrictionCompensator(joint_name_));
 
+    // get the min and max value for the current joint:
+    get_min_max(robot_->robot_model_, joint_name_);
+
     serve_set_gains_ = node_.advertiseService("set_gains", &SrhEffortJointController::setGains, this);
     serve_reset_gains_ = node_.advertiseService("reset_gains", &SrhEffortJointController::resetGains, this);
 
@@ -172,7 +175,7 @@ namespace controller
     // The commanded effort is the error directly:
     // the PID loop for the force controller is running on the
     // motorboard.
-    double commanded_effort = command_;
+    double commanded_effort = command_;  // clamp_command(command_) // do not use urdf effort limits;
 
     // Clamps the effort
     commanded_effort = min(commanded_effort, (max_force_demand * max_force_factor_));
@@ -217,6 +220,11 @@ namespace controller
       }
     }
     loop_count_++;
+  }
+
+  double SrhEffortJointController::clamp_command(double cmd)
+  {
+    return SrController::clamp_command(cmd, eff_min_, eff_max_);
   }
 
   void SrhEffortJointController::read_parameters()

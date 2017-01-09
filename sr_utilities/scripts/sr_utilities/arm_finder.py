@@ -42,10 +42,13 @@ class ArmFinder(object):
         Parses the parameter server to extract the necessary information.
         """
         if not rospy.has_param("arm"):
-            rospy.logerr("No arm is detected.")
+            rospy.logerr("No arm param defined.")
             arm_parameters = {'joint_prefix': {}, 'mapping': {}}
         else:
             arm_parameters = rospy.get_param("arm")
+
+        # TODO(@anyone): This parameter is never set. This script needs to be modified to find available
+        # arms from robot_description and present them appropriately. (sr_core issue #74)
 
         self.arm_config = ArmConfig(arm_parameters["mapping"], arm_parameters["joint_prefix"])
         self.arm_joints = {}

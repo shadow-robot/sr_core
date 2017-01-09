@@ -3,5 +3,5 @@
     <arg name="gui" value="false"/>
   </include>
 
-  <test test-name="hand_commander_test" pkg="sr_hand" type="hand_commander_test"/>
+  <test test-name="hand_commander_test" pkg="sr_hand" type="hand_commander_test" time-limit="360.00"/>
 </launch>
