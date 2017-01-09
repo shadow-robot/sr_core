@@ -128,6 +128,9 @@ namespace controller
 
     friction_compensator.reset(new sr_friction_compensation::SrFrictionCompensator(joint_name_));
 
+    // get the min and max value for the current joint:
+    get_min_max(robot_->robot_model_, joint_name_);
+
     serve_set_gains_ = node_.advertiseService("set_gains", &SrhJointVelocityController::setGains, this);
     serve_reset_gains_ = node_.advertiseService("reset_gains", &SrhJointVelocityController::resetGains, this);
 
@@ -219,8 +222,9 @@ namespace controller
     }
     command_ = clamp_command(command_);
 
-    // Compute velocity demand from position error:
     double error_velocity = 0.0;
+    double commanded_effort = 0.0;
+
     if (has_j2)
     {
       error_velocity = (joint_state_->velocity_ + joint_state_2->velocity_) - command_;
@@ -230,32 +234,39 @@ namespace controller
       error_velocity = joint_state_->velocity_ - command_;
     }
 
-    double commanded_effort = 0.0;
-
-    // don't compute the error if we're in the deadband.
-    if (!hysteresis_deadband.is_in_deadband(command_, error_velocity, velocity_deadband))
+    bool in_deadband = hysteresis_deadband.is_in_deadband(command_, error_velocity, velocity_deadband);
+    // are we in the deadband?
+    if (in_deadband)
     {
-      commanded_effort = pid_controller_velocity_->computeCommand(-error_velocity, period);
-
-      // clamp the result to max force
-      commanded_effort = min(commanded_effort, (max_force_demand * max_force_factor_));
-      commanded_effort = max(commanded_effort, -(max_force_demand * max_force_factor_));
-
-      if (has_j2)
+      error_velocity = 0.0;  // force the error to zero to not further change the pid control terms
+      // if the requested velocity is smaller than the velocity_deadband, consider no movement is wanted.
+      if (std::fabs(command_) < velocity_deadband)
       {
-        commanded_effort += friction_compensator->friction_compensation(
-                (joint_state_->position_ + joint_state_2->position_),
-                (joint_state_->velocity_ + joint_state_2->velocity_),
-                static_cast<int>(commanded_effort),
-                friction_deadband);
+        pid_controller_velocity_->reset();
       }
-      else
-      {
-        commanded_effort += friction_compensator->friction_compensation(joint_state_->position_,
-                                                                        joint_state_->velocity_,
-                                                                        static_cast<int>(commanded_effort),
-                                                                        friction_deadband);
-      }
+    }
+
+    // compute the effort demand using the velocity pid loop
+    commanded_effort = pid_controller_velocity_->computeCommand(-error_velocity, period);
+
+    // clamp the result to max force
+    commanded_effort = min(commanded_effort, (max_force_demand * max_force_factor_));
+    commanded_effort = max(commanded_effort, -(max_force_demand * max_force_factor_));
+
+    if (has_j2)
+    {
+      commanded_effort += friction_compensator->friction_compensation(
+              (joint_state_->position_ + joint_state_2->position_),
+              (joint_state_->velocity_ + joint_state_2->velocity_),
+              static_cast<int>(commanded_effort),
+              friction_deadband);
+    }
+    else
+    {
+      commanded_effort += friction_compensator->friction_compensation(joint_state_->position_,
+                                                                      joint_state_->velocity_,
+                                                                      static_cast<int>(commanded_effort),
+                                                                      friction_deadband);
     }
 
     joint_state_->commanded_effort_ = commanded_effort;
@@ -288,6 +299,11 @@ namespace controller
       }
     }
     loop_count_++;
+  }
+
+  double SrhJointVelocityController::clamp_command(double cmd)
+  {
+    return SrController::clamp_command(cmd, vel_min_, vel_max_);
   }
 
   void SrhJointVelocityController::read_parameters()

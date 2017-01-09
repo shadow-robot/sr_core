@@ -57,8 +57,8 @@
     <run_depend>gazebo_ros</run_depend>
     <run_depend>gazebo</run_depend>
     <run_depend>robot_state_publisher</run_depend>
+    <run_depend>ros_ethercat_model</run_depend>
 
     <!-- Dependencies needed only for running tests. -->
     <test_depend>gtest</test_depend>
-
 </package>

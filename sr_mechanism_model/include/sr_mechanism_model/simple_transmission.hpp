@@ -52,6 +52,11 @@ class SimpleTransmission :
         public ros_ethercat_model::Transmission
 {
 public:
+  ~SimpleTransmission()
+  {
+    ROS_DEBUG_STREAM("Destroying simple transmission");
+  }  // added degub stream line because empty destructor make sr-ros-interface-interface unit test fail
+
   bool initXml(TiXmlElement *config, ros_ethercat_model::RobotState *robot);
 
   void propagatePosition();
