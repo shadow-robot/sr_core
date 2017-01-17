@@ -4,7 +4,7 @@
   <arg name="gui" default="true" />
   <arg name="headless" default="false" />
   <arg name="debug" default="false" />
-  <arg name="verbose" default="false" />
+  <arg name="verbose" default="true" />
   <arg name="hand_id" default="rh" />
   <arg name="hand_serial" default="1234"/>  
   
