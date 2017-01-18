@@ -178,8 +178,6 @@ namespace controller
 
 }  // namespace controller
 
-}  // namespace controller
-
 /* For the emacs weenies in the crowd.
 Local Variables:
    c-basic-offset: 2
