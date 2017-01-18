@@ -15,16 +15,16 @@ catkin_package(
 # Real Hand
 set(real_hand $ENV{REAL_HAND})
 if (real_hand)
-    message(" [x] Real Hand.")
+    message(STATUS " [x] Real Hand.")
 else(real_hand)
-    message(" [ ] Real Hand.")
+    message(STATUS " [ ] Real Hand.")
 endif (real_hand)
 
 #############################
 #  VIRTUAL TACTILE SENSORS  #
 #############################
 add_executable(sr_tactile_virtual src/sr_virtual_tactile_sensor.cpp src/sr_generic_tactile_sensor.cpp)
-add_dependencies(sr_tactile_virtual src ${catkin_EXPORTED_TARGETS})
+add_dependencies(sr_tactile_virtual ${catkin_EXPORTED_TARGETS})
 target_link_libraries(sr_tactile_virtual ${Boost_LIBRARIES} ${catkin_LIBRARIES})
 
 add_executable(sr_tactile_virtual_gazebo src/sr_gazebo_virtual_tactile_sensor.cpp src/sr_generic_tactile_sensor.cpp)

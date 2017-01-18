@@ -23,38 +23,38 @@ catkin_package(
 # Real Hand
 set(real_hand $ENV{REAL_HAND})
 if (real_hand)
-    message(" [x] Real Hand.")
+    message(STATUS " [x] Real Hand.")
 else(real_hand)
-    message(" [ ] Real Hand.")
+    message(STATUS " [ ] Real Hand.")
 endif (real_hand)
 
 #Real Arm
 set(real_arm $ENV{REAL_ARM})
 if (real_arm)
-    message(" [x] Real Arm.")
+    message(STATUS " [x] Real Arm.")
 else(real_arm)
-    message(" [ ] Real Arm.")
+    message(STATUS " [ ] Real Arm.")
 endif (real_arm)
 
 #Valves
 set(muscle $ENV{MUSCLE})
 if (real_hand)
     if (muscle)
-        message(" [x] Valves.")
+        message(STATUS " [x] Valves.")
     else(muscle)
-        message(" [ ] Valves.")
+        message(STATUS " [ ] Valves.")
     endif (muscle)
 else(real_hand)
-    message(" [ ] Valves.")
+    message(STATUS " [ ] Valves.")
 endif (real_hand)
-message("---------")
+message(STATUS "---------")
 
 #CAN compatibility Interface
 set(can_compat $ENV{CAN_COMPATIBILITY})
 if (can_compat)
-    message(" [x] CAN compatibility interface.")
+    message(STATUS " [x] CAN compatibility interface.")
 else(can_compat)
-    message(" [ ] CAN compatibility interface.")
+    message(STATUS " [ ] CAN compatibility interface.")
 endif (can_compat)
 
 ##################
@@ -107,7 +107,7 @@ add_executable(shadowhand_ethercat src/hand/sr_articulated_robot.cpp src/hand/et
         src/sr_subscriber.cpp src/hand/etherCAT_compatibility_hand_node.cpp src/sr_diagnosticer.cpp)
 add_dependencies(shadowhand_ethercat ${catkin_EXPORTED_TARGETS})
 target_link_libraries(shadowhand_ethercat ${Boost_LIBRARIES} ${catkin_LIBRARIES})
-message(" [x] EtherCAT compatibility interface.")
+message(STATUS " [x] EtherCAT compatibility interface.")
 
 ###################################
 #  CAN COMPATIBILITY WRAPPER ARM  #
