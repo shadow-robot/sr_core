@@ -157,11 +157,15 @@ namespace controller
     // Reset the motor to make sure we have the proper 0 + correct PID settings
     // trim any prefix in the actuator_name for low level driver to find it
     std::string lowlevel_actuator_name = actuator_name_.substr(actuator_name_.size() - 4, 4);
-    string service_name = "realtime_loop/" + ns_ + "reset_motor_" + boost::to_upper_copy(lowlevel_actuator_name);
-    if (ros::service::waitForService(service_name, ros::Duration(2.0)))
+    ros::NodeHandle local_node("~");
+
+    string service_name = ns_ + "reset_motor_" + boost::to_upper_copy(lowlevel_actuator_name);
+    ros::ServiceClient reset_service = local_node.serviceClient<std_srvs::Empty>(service_name.c_str());
+
+    if (reset_service.waitForExistence(ros::Duration(2.0)))
     {
       std_srvs::Empty srv;
-      if (ros::service::call(service_name, srv))
+      if (reset_service.call(srv))
       {
         return;
       }
@@ -171,6 +175,8 @@ namespace controller
       }
     }
   }
+
+}  // namespace controller
 
 }  // namespace controller
 
