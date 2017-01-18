@@ -8,7 +8,17 @@
     uri: https://github.com/shadow-robot/ros_ethercat
     version: kinetic-devel
 
--git:
+- git:
     local-name: sr_tools
     uri: https://github.com/shadow-robot/sr_tools
     version: kinetic-devel
+
+- git:
+    local-name: sr_config
+    uri: https://github.com/shadow-robot/sr-config
+    version: 'kinetic-devel'
+
+- git:
+    local-name: ethercat_grant
+    uri: https://github.com/shadow-robot/ethercat_grant
+    version: 'kinetic-devel'

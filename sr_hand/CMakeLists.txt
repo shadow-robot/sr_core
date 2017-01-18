@@ -11,7 +11,7 @@ catkin_python_setup()
 catkin_package(
         DEPENDS gazebo
         CATKIN_DEPENDS roslib roscpp rospy std_msgs std_srvs sensor_msgs sr_robot_msgs control_msgs controller_manager_msgs sr_utilities
-        diagnostic_msgs dynamic_reconfigure self_test urdf gazebo_msgs ros_ethercat_model
+        diagnostic_msgs dynamic_reconfigure self_test urdf gazebo_msgs ros_ethercat_model position_controllers
         INCLUDE_DIRS include
         LIBRARIES HandCommander SrVirtual
 )
