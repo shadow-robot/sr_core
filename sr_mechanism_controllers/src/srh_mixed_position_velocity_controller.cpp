@@ -191,11 +191,16 @@ namespace controller
             ", friction deadband: " << req.friction_deadband << " pos deadband: " << req.position_deadband <<
             " min and max vel: [" << req.min_velocity << ", " << req.max_velocity << "]");
 
+    // retrieve previous antiwindup settings for velocity
+    double p, i, d, i_max, i_min;
+    bool antiwindup;
+    pid_controller_velocity_->getGains(p, i, d, i_max, i_min, antiwindup);
+
     pid_controller_position_->setGains(req.position_p, req.position_i, req.position_d, req.position_i_clamp,
                                        -req.position_i_clamp);
 
     pid_controller_velocity_->setGains(req.velocity_p, req.velocity_i, req.velocity_d, req.velocity_i_clamp,
-                                       -req.velocity_i_clamp);
+                                       -req.velocity_i_clamp, antiwindup);
     max_force_demand = req.max_force;
     friction_deadband = req.friction_deadband;
     position_deadband = req.position_deadband;
@@ -221,6 +226,7 @@ namespace controller
 
     node_.setParam("velocity_pid/friction_deadband", friction_deadband);
     node_.setParam("velocity_pid/max_force", max_force_demand);
+    node_.setParam("velocity_pid/antiwindup", antiwindup);
     node_.setParam("motor_min_force_threshold", motor_min_force_threshold);
 
     return true;
