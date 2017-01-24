@@ -22,8 +22,7 @@ trunks:
         release: kinetic
       docker:
         tag: xenial-kinetic
-      toolset:
-        modules:
-          - kinetic-devel-specific-module
+
+
 branch:
   parent: kinetic-devel
