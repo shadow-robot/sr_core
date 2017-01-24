@@ -23,5 +23,6 @@ trunks:
       docker:
         tag: xenial-kinetic
 
+
 branch:
   parent: kinetic-devel
