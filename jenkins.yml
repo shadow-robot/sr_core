@@ -22,10 +22,10 @@ trunks:
             docker:
                 tag: xenial-kinetic
           - ubuntu:
-                version: xenial
+                version: willy
             ros:
                 release: kinetic
             docker:
-                tag: xenial-kinetic
+                tag: willy-kinetic
 branch:
     parent: kinetic-devel
