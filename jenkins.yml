@@ -7,25 +7,32 @@ settings:
     ros:
         release: indigo
     toolset:
-        template_job_name: template_unit_tests_and_code_coverage
+        template_job_name: my_template
         modules:
             - check_cache
             - code_coverage
 trunks:
     - name: indigo-devel
-    - name: kinetic-devel
       settings:
           - ubuntu:
-                version: xenial
+                version: trusty
             ros:
-                release: kinetic
+                release: indigo
             docker:
-                tag: xenial-kinetic
+                tag: trusty-indigo
           - ubuntu:
-                version: xenial
+                version: trusty
             ros:
-                release: kinetic
+                release: indigo
             docker:
-                tag: xenial-kinetic
+                tag: trusty-indigo
+    - name: kinetic-devel
+      settings:
+          ubuntu:
+              version: xenial
+          ros:
+              release: kinetic
+          docker:
+              tag: xenial-kinetic
 branch:
-    parent: kinetic-devel
+    parent: indigo-devel
