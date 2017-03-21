@@ -7,7 +7,7 @@ settings:
     ros:
         release: indigo
     toolset:
-        template_job_name: my_template
+        template_job_name: template_unit_tests_and_code_coverage
         modules:
             - check_cache
             - code_coverage
