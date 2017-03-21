@@ -24,12 +24,12 @@ trunks:
 
 branch:
     parent: indigo-devel
-     settings:
-         - toolset:
-               modules:
-                   - check_cache
-         - toolset:
-               template_job_name: template_unit_tests_and_code_coverage
-               modules:
-                   - code_coverage
+    settings:
+        - toolset:
+              modules:
+                  - check_cache
+        - toolset:
+              template_job_name: template_unit_tests_and_code_coverage
+              modules:
+                  - code_coverage
     
