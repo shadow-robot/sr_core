@@ -21,3 +21,10 @@ trunks:
               release: kinetic
           docker:
               tag: xenial-kinetic
+branch:
+   parent: kinetic-devel
+   settings:
+       toolset:
+           modules:
+               - check_cache
+               - software_tests              
