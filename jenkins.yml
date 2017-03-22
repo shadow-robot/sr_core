@@ -22,10 +22,16 @@ trunks:
            docker:
                tag: xenial-kinetic
          - ubuntu:
-               version: indigo
+               version: willy
            ros:
-               release: jade
+               release: kinetic
            docker:
-               tag: indigo-jade
+               tag: willy-kinetic
+         - ubuntu:
+               version: trusty
+           ros:
+               release: kinetic
+           docker:
+               tag: trusty-kinetic
 branch:
    parent: kinetic-devel
