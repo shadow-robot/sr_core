@@ -10,7 +10,7 @@ settings:
        template_job_name: template_unit_tests_and_code_coverage
        modules:
            - check_cache
-           - software_tests
+           - code_coverage
 trunks:
    - name: indigo-devel
    - name: kinetic-devel
@@ -21,5 +21,14 @@ trunks:
              release: kinetic
          docker:
              tag: xenial-kinetic
+         toolset:
+             modules:
+                 - check_cache
+                 - all_tests
 branch:
    parent: kinetic-devel
+   settings:
+       toolset:
+           modules:
+               - check_cache
+               - software_tests
