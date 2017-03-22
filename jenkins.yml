@@ -10,7 +10,7 @@ settings:
        template_job_name: template_unit_tests_and_code_coverage
        modules:
            - check_cache
-           - code_coverage
+           - software_tests
 trunks:
    - name: indigo-devel
    - name: kinetic-devel
