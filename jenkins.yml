@@ -15,20 +15,15 @@ trunks:
    - name: indigo-devel
    - name: kinetic-devel
      settings:
-         ubuntu:
-             version: xenial
-         ros:
-             release: kinetic
-         docker:
-             tag: xenial-kinetic
-         toolset:
-             modules:
-                 - check_cache
-                 - all_tests
-branch:
-   parent: kinetic-devel
-   settings:
-       toolset:
-           modules:
-               - check_cache
-               - software_tests
+         - ubuntu:
+               version: xenial
+           ros:
+               release: kinetic
+           docker:
+               tag: xenial-kinetic
+         - ubuntu:
+               version: willy
+           ros:
+               release: kinetic
+           docker:
+               tag: willy-kinetic
