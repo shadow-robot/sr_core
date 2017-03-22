@@ -22,12 +22,6 @@ trunks:
            docker:
                tag: xenial-kinetic
          - ubuntu:
-               version: willy
-           ros:
-               release: kinetic
-           docker:
-               tag: willy-kinetic
-         - ubuntu:
                version: indigo
            ros:
                release: jade
