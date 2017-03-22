@@ -12,24 +12,26 @@ settings:
            - check_cache
            - code_coverage
 trunks:
-   - name: new-version-devel
+   - name: indigo-devel
    - name: kinetic-devel
      settings:
-         ubuntu:
-             version: xenial
-         ros:
-             release: kinetic
-         docker:
-             tag: xenial-kinetic
-
+         - ubuntu:
+               version: xenial
+           ros:
+               release: kinetic
+           docker:
+               tag: xenial-kinetic
+         - ubuntu:
+               version: willy
+           ros:
+               release: kinetic
+           docker:
+               tag: willy-kinetic
+         - ubuntu:
+               version: indigo
+           ros:
+               release: jade
+           docker:
+               tag: indigo-jade
 branch:
-   parent: new-version-devel
-   settings:
-       - toolset:
-             modules:
-                 - check_cache
-                 - software_tests
-       - toolset:
-             template_job_name: my_second_template
-             modules:
-               - code_style_check
+   parent: kinetic-devel
