@@ -11,15 +11,3 @@ settings:
        modules:
            - check_cache
            - code_coverage
-trunks:
-   - name: indigo-devel
-   - name: kinetic-devel
-     settings:
-         ubuntu:
-             version: xenial
-         ros:
-             release: kinetic
-         docker:
-             tag: xenial-kinetic
-branch:
-   parent: kinetic-devel
