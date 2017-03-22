@@ -27,11 +27,5 @@ trunks:
                release: kinetic
            docker:
                tag: willy-kinetic
-         - ubuntu:
-               version: trusty
-           ros:
-               release: jade
-           docker:
-               tag: trusty-jade
 branch:
    parent: kinetic-devel
