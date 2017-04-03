@@ -27,3 +27,5 @@ trunks:
                release: kinetic
            docker:
                tag: willy-kinetic
+branch:
+   parent: kinetic-devel
