@@ -92,7 +92,7 @@ class HandJoints(object):
                   'THJ5', 'WRJ1', 'WRJ2']
         return joints
 
-    def __init__(self, mapping, joint_prefix):
+    def __init__(self, mapping, joint_prefix, hand_h=None):
         """
 
         """
@@ -159,27 +159,83 @@ class HandFinder(object):
         """
         Parses the parameter server to extract the necessary information.
         """
-        if not rospy.has_param("/hand"):
+        self._hand_e = False
+        self._hand_h = False
+
+        if rospy.has_param("/hand"):
+            self._hand_e = True
+        if rospy.has_param("/fh_hand"):
+            self._hand_h = True
+
+        if not (self._hand_e or self._hand_h):
             rospy.logerr("No hand is detected")
             hand_parameters = {'joint_prefix': {}, 'mapping': {}}
+            self._hand_h_parameters = {}
         else:
-            hand_parameters = rospy.get_param("/hand")
-        self.hand_config = HandConfig(hand_parameters["mapping"],
-                                      hand_parameters["joint_prefix"])
-        self.hand_joints = HandJoints(self.hand_config.mapping, self.hand_config.joint_prefix).joints
-        self.calibration_path = \
-            HandCalibration(self.hand_config.mapping).calibration_path
-        self.hand_control_tuning = \
-            HandControllerTuning(self.hand_config.mapping)
+            if self._hand_e:
+                hand_parameters = rospy.get_param("/hand")
+                self.hand_config = HandConfig(hand_parameters["mapping"],
+                                              hand_parameters["joint_prefix"])
+                self.hand_joints = HandJoints(self.hand_config.mapping, self.hand_config.joint_prefix).joints
+                self.calibration_path = HandCalibration(self.hand_config.mapping).calibration_path
+                self.hand_control_tuning = HandControllerTuning(self.hand_config.mapping)
+
+            if self._hand_h:
+                self._hand_h_parameters = rospy.get_param("/fh_hand")
+
+    def get+
 
     def get_calibration_path(self):
-        return self.calibration_path
+        if not self._hand_e:
+            rospy.log_fatal("No Hand E present - can't get calibration path")
+        else:
+            return self.calibration_path
 
     def get_hand_joints(self):
-        return self.hand_joints
+        # TODO(@anyone): update HandJoints to work with Hand H. Didn't seem necessary yet, so left for now - dg
+        if not self._hand_e:
+            rospy.log_fatal("No Hand E present - can't get hand joints")
+        else:
+            return self.hand_joints
 
     def get_hand_parameters(self):
-        return self.hand_config
+        if not self._hand_e:
+            rospy.log_fatal("No Hand E present - can't get hand parameters")
+        else:
+            return self.hand_config
 
     def get_hand_control_tuning(self):
-        return self.hand_control_tuning
+        if not self._hand_e:
+            rospy.log_fatal("No Hand E present - can't get hand control_tuning")
+        else:
+            return self.hand_control_tuning
+
+    def hand_e_available(self):
+        return self._hand_e
+
+    def hand_h_available(self):
+        return self._hand_h
+
+    def get_first_hand_e(self):
+        hand_parameters = self.get_hand_parameters()
+        serial = hand_parameters.mapping.keys()[0]
+        name = hand_parameters.mapping[serial]
+        prefix = hand_parameters.joint_prefix[serial]
+`        return name, prefix, serial
+
+    def get_first_hand_h(self):
+        name = self._hand_h_parameters.keys()[0]
+        prefix = self._hand_h_parameters[name]['controller_prefix']
+        serial = self._hand_h_parameters[name]['palm']['serial_number']
+        return "hand_h", prefix, serial
+        # TODO(@anyone): replace "hand_h" with name once moveit config is auto-generated with correct movegroup name
+
+    def get_first_available_prefix(self):
+        if self._hand_e:
+            hand_parameters = self.get_hand_parameters()
+            serial = hand_parameters.mapping.keys()[0]
+            return hand_parameters.joint_prefix[serial]
+        elif self._hand_h:
+            name = self._hand_h_parameters.keys()[0]
+            return self._hand_h_parameters[name]['controller_prefix']
+`
