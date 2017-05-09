@@ -92,7 +92,7 @@ class HandJoints(object):
                   'THJ5', 'WRJ1', 'WRJ2']
         return joints
 
-    def __init__(self, mapping, joint_prefix, hand_h=None):
+    def __init__(self, mapping, joint_prefix):
         """
 
         """
@@ -216,26 +216,30 @@ class HandFinder(object):
     def hand_h_available(self):
         return self._hand_h
 
-    def get_first_hand_e(self):
+    def get_hand_e(self, number=0, serial=None):
         hand_parameters = self.get_hand_parameters()
-        serial = hand_parameters.mapping.keys()[0]
+        if serial is None:
+            serial = sorted(hand_parameters.mapping.keys())[number]
         name = hand_parameters.mapping[serial]
         prefix = hand_parameters.joint_prefix[serial]
 `        return name, prefix, serial
 
-    def get_first_hand_h(self):
-        name = self._hand_h_parameters.keys()[0]
+    def get_hand_h(self, number=0, name=None):
+        if name is None:
+            name = sorted(self._hand_h_parameters.keys())[number]
         prefix = self._hand_h_parameters[name]['controller_prefix']
         serial = self._hand_h_parameters[name]['palm']['serial_number']
         return "hand_h", prefix, serial
         # TODO(@anyone): replace "hand_h" with name once moveit config is auto-generated with correct movegroup name
 
-    def get_first_available_prefix(self):
+    def get_available_prefix(self, number=0, serial=None, name=None):
         if self._hand_e:
             hand_parameters = self.get_hand_parameters()
-            serial = hand_parameters.mapping.keys()[0]
+            if serial is None:
+                serial = sorted(hand_parameters.mapping.keys())[number]
             return hand_parameters.joint_prefix[serial]
         elif self._hand_h:
-            name = self._hand_h_parameters.keys()[0]
+            if name is None:
+                name = sorted(self._hand_h_parameters.keys())[number]
             return self._hand_h_parameters[name]['controller_prefix']
 `
