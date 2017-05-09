@@ -183,30 +183,28 @@ class HandFinder(object):
             if self._hand_h:
                 self._hand_h_parameters = rospy.get_param("/fh_hand")
 
-    def get+
-
     def get_calibration_path(self):
         if not self._hand_e:
-            rospy.log_fatal("No Hand E present - can't get calibration path")
+            rospy.logfatal("No Hand E present - can't get calibration path")
         else:
             return self.calibration_path
 
     def get_hand_joints(self):
         # TODO(@anyone): update HandJoints to work with Hand H. Didn't seem necessary yet, so left for now - dg
         if not self._hand_e:
-            rospy.log_fatal("No Hand E present - can't get hand joints")
+            rospy.logfatal("No Hand E present - can't get hand joints")
         else:
             return self.hand_joints
 
     def get_hand_parameters(self):
         if not self._hand_e:
-            rospy.log_fatal("No Hand E present - can't get hand parameters")
+            rospy.logfatal("No Hand E present - can't get hand parameters")
         else:
             return self.hand_config
 
     def get_hand_control_tuning(self):
         if not self._hand_e:
-            rospy.log_fatal("No Hand E present - can't get hand control_tuning")
+            rospy.logfatal("No Hand E present - can't get hand control_tuning")
         else:
             return self.hand_control_tuning
 
@@ -222,7 +220,7 @@ class HandFinder(object):
             serial = sorted(hand_parameters.mapping.keys())[number]
         name = hand_parameters.mapping[serial]
         prefix = hand_parameters.joint_prefix[serial]
-`        return name, prefix, serial
+        return name, prefix, serial
 
     def get_hand_h(self, number=0, name=None):
         if name is None:
@@ -242,4 +240,3 @@ class HandFinder(object):
             if name is None:
                 name = sorted(self._hand_h_parameters.keys())[number]
             return self._hand_h_parameters[name]['controller_prefix']
-`
