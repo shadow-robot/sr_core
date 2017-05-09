@@ -160,6 +160,7 @@ class HandFinder(object):
         Parses the parameter server to extract the necessary information.
         """
 
+        hand_parameters = {}
         if rospy.has_param("/hand"):
             self._hand_e = True
             hand_parameters = rospy.get_param("/hand")
