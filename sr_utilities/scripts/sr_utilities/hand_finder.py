@@ -159,29 +159,30 @@ class HandFinder(object):
         """
         Parses the parameter server to extract the necessary information.
         """
-        self._hand_e = False
-        self._hand_h = False
 
         if rospy.has_param("/hand"):
             self._hand_e = True
+            hand_parameters = rospy.get_param("/hand")
+        else:
+            self._hand_e = False
+            hand_parameters = {'joint_prefix': {}, 'mapping': {}}
+
         if rospy.has_param("/fh_hand"):
             self._hand_h = True
+            self._hand_h_parameters = rospy.get_param("/fh_hand")
+        else:
+            self._hand_h = False
+            self._hand_h_parameters = {}
 
         if not (self._hand_e or self._hand_h):
             rospy.logerr("No hand is detected")
-            hand_parameters = {'joint_prefix': {}, 'mapping': {}}
-            self._hand_h_parameters = {}
-        else:
-            if self._hand_e:
-                hand_parameters = rospy.get_param("/hand")
-                self.hand_config = HandConfig(hand_parameters["mapping"],
-                                              hand_parameters["joint_prefix"])
-                self.hand_joints = HandJoints(self.hand_config.mapping, self.hand_config.joint_prefix).joints
-                self.calibration_path = HandCalibration(self.hand_config.mapping).calibration_path
-                self.hand_control_tuning = HandControllerTuning(self.hand_config.mapping)
 
-            if self._hand_h:
-                self._hand_h_parameters = rospy.get_param("/fh_hand")
+        self.hand_config = HandConfig(hand_parameters["mapping"],
+                                      hand_parameters["joint_prefix"])
+        self.hand_joints = HandJoints(self.hand_config.mapping, self.hand_config.joint_prefix).joints
+        self.calibration_path = HandCalibration(self.hand_config.mapping).calibration_path
+        self.hand_control_tuning = HandControllerTuning(self.hand_config.mapping)
+
 
     def get_calibration_path(self):
         if not self._hand_e:
