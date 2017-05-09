@@ -222,7 +222,6 @@ class HandFinder(object):
         return name, prefix, serial
 
     def get_first_hand_h(self):
-
         name = self._hand_h_parameters.keys()[0]
         prefix = self._hand_h_parameters[name]['controller_prefix']
         serial = self._hand_h_parameters[name]['palm']['serial_number']
