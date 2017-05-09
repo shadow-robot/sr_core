@@ -183,7 +183,6 @@ class HandFinder(object):
         self.calibration_path = HandCalibration(self.hand_config.mapping).calibration_path
         self.hand_control_tuning = HandControllerTuning(self.hand_config.mapping)
 
-
     def get_calibration_path(self):
         if not self._hand_e:
             rospy.logfatal("No Hand E present - can't get calibration path")
