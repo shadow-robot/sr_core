@@ -237,4 +237,3 @@ class HandFinder(object):
         elif self._hand_h:
             name = self._hand_h_parameters.keys()[0]
             return self._hand_h_parameters[name]['controller_prefix']
-
