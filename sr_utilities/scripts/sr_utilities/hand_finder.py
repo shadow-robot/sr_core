@@ -186,23 +186,23 @@ class HandFinder(object):
 
     def get_calibration_path(self):
         if not self._hand_e:
-            rospy.logerror("No Hand E present - can't get calibration path")
+            rospy.logerr("No Hand E present - can't get calibration path")
         return self.calibration_path
 
     def get_hand_joints(self):
         # TODO(@anyone): update HandJoints to work with Hand H. Didn't seem necessary yet, so left for now - dg
         if not self._hand_e:
-            rospy.logerror("No Hand E present - can't get hand joints")
+            rospy.logerr("No Hand E present - can't get hand joints")
         return self.hand_joints
 
     def get_hand_parameters(self):
         if not self._hand_e:
-            rospy.logerror("No Hand E present - can't get hand parameters")
+            rospy.logerr("No Hand E present - can't get hand parameters")
         return self.hand_config
 
     def get_hand_control_tuning(self):
         if not self._hand_e:
-            rospy.logerror("No Hand E present - can't get hand control_tuning")
+            rospy.logerr("No Hand E present - can't get hand control_tuning")
         return self.hand_control_tuning
 
     def hand_e_available(self):
