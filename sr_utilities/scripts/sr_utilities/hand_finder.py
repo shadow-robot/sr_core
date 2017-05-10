@@ -159,27 +159,81 @@ class HandFinder(object):
         """
         Parses the parameter server to extract the necessary information.
         """
-        if not rospy.has_param("/hand"):
-            rospy.logerr("No hand is detected")
-            hand_parameters = {'joint_prefix': {}, 'mapping': {}}
-        else:
+
+        hand_parameters = {}
+        if rospy.has_param("/hand"):
+            self._hand_e = True
             hand_parameters = rospy.get_param("/hand")
+        else:
+            self._hand_e = False
+            hand_parameters = {'joint_prefix': {}, 'mapping': {}}
+
+        if rospy.has_param("/fh_hand"):
+            self._hand_h = True
+            self._hand_h_parameters = rospy.get_param("/fh_hand")
+        else:
+            self._hand_h = False
+            self._hand_h_parameters = {}
+
+        if not (self._hand_e or self._hand_h):
+            rospy.logerr("No hand is detected")
+
         self.hand_config = HandConfig(hand_parameters["mapping"],
                                       hand_parameters["joint_prefix"])
         self.hand_joints = HandJoints(self.hand_config.mapping, self.hand_config.joint_prefix).joints
-        self.calibration_path = \
-            HandCalibration(self.hand_config.mapping).calibration_path
-        self.hand_control_tuning = \
-            HandControllerTuning(self.hand_config.mapping)
+        self.calibration_path = HandCalibration(self.hand_config.mapping).calibration_path
+        self.hand_control_tuning = HandControllerTuning(self.hand_config.mapping)
 
     def get_calibration_path(self):
+        if not self._hand_e:
+            rospy.logerr("No Hand E present - can't get calibration path")
         return self.calibration_path
 
     def get_hand_joints(self):
+        # TODO(@anyone): update HandJoints to work with Hand H. Didn't seem necessary yet, so left for now - dg
+        if not self._hand_e:
+            rospy.logerr("No Hand E present - can't get hand joints")
         return self.hand_joints
 
     def get_hand_parameters(self):
+        if not self._hand_e:
+            rospy.logerr("No Hand E present - can't get hand parameters")
         return self.hand_config
 
     def get_hand_control_tuning(self):
+        if not self._hand_e:
+            rospy.logerr("No Hand E present - can't get hand control_tuning")
         return self.hand_control_tuning
+
+    def hand_e_available(self):
+        return self._hand_e
+
+    def hand_h_available(self):
+        return self._hand_h
+
+    def get_hand_e(self, number=0, serial=None):
+        hand_parameters = self.get_hand_parameters()
+        if serial is None:
+            serial = sorted(hand_parameters.mapping.keys())[number]
+        name = hand_parameters.mapping[serial]
+        prefix = hand_parameters.joint_prefix[serial]
+        return name, prefix, serial
+
+    def get_hand_h(self, number=0, name=None):
+        if name is None:
+            name = sorted(self._hand_h_parameters.keys())[number]
+        prefix = self._hand_h_parameters[name]['controller_prefix']
+        serial = self._hand_h_parameters[name]['palm']['serial_number']
+        return "hand_h", prefix, serial
+        # TODO(@anyone): replace "hand_h" with name once moveit config is auto-generated with correct movegroup name
+
+    def get_available_prefix(self, number=0, serial=None, name=None):
+        if self._hand_e:
+            hand_parameters = self.get_hand_parameters()
+            if serial is None:
+                serial = sorted(hand_parameters.mapping.keys())[number]
+            return hand_parameters.joint_prefix[serial]
+        elif self._hand_h:
+            if name is None:
+                name = sorted(self._hand_h_parameters.keys())[number]
+            return self._hand_h_parameters[name]['controller_prefix']
