@@ -237,3 +237,8 @@ class HandFinder(object):
             if name is None:
                 name = sorted(self._hand_h_parameters.keys())[number]
             return self._hand_h_parameters[name]['controller_prefix']
+
+if __name__ == "__main__":
+    hand_finder = HandFinder()
+    print hand_finder._hand_h_parameters
+    print hand_finder.get_hand_h()
