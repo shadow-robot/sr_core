@@ -17,7 +17,6 @@
     <run_depend>sr_hardware_interface</run_depend>
     <run_depend>sr_mechanism_controllers</run_depend>
     <run_depend>sr_mechanism_model</run_depend>
-    <run_depend>sr_self_test</run_depend>
     <run_depend>sr_tactile_sensors</run_depend>
     <run_depend>sr_utilities</run_depend>
 
