@@ -215,7 +215,7 @@ class HandFinder(object):
         hand_parameters = self.get_hand_parameters()
         if serial is None:
             serial = sorted(hand_parameters.mapping.keys())[number]
-        name = "right_hand" if  hand_parameters.mapping[serial] == "rh" else "left_hand"
+        name = "right_hand" if hand_parameters.mapping[serial] == "rh" else "left_hand"
         prefix = hand_parameters.joint_prefix[serial]
         return name, prefix, serial
 
