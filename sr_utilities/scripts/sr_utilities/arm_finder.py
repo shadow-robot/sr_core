@@ -16,7 +16,7 @@
 # with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 import rospy
-from local_urdf_parser_py import URDF
+from urdf_parser_py.urdf import URDF
 from hand_finder import HandJoints
 
 
