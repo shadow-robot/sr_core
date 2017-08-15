@@ -8,8 +8,7 @@
   <arg name="hand_id" default="rh" />
 
   <!-- Gazebo world file to load. -->
-  <arg name="world_name"
-  default="$(find sr_description)/other/worlds/shadowhand.world" />
+  <arg name="world_name" value="$(find sr_description_common)/worlds/shadowhand.world"/>
   <!-- Set to 0 if the arm and hand description will not be specified with the arguments hand_description and arm_hand_description. In which case it depends on the environment variables -->
   <arg name="set_arm_hand_description" default="0" />
   <!-- Xacro file containing the robot description we want to load. Only taken into acount if the set_description arg is set to 1

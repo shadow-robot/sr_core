@@ -12,15 +12,13 @@
   <param name="/hand/joint_prefix/$(arg hand_serial)" value="$(arg hand_id)_"/>
 
   <!-- Gazebo world file to load. -->
-  <arg name="world_name"
-  default="$(find sr_description)/other/worlds/shadowhand.world" />
+  <arg name="world_name" value="$(find sr_description_common)/worlds/shadowhand.world"/>
   <!-- Set to 0 if the hand description will not be specified with the argument hand_description. In which case it depends on the environment variables -->
   <arg name="set_hand_description" default="0" />
   <!-- Xacro file containing the robot description we want to load. Only taken into acount if the set_description arg is set to 1
        the default value -->
   <arg name="hand_description"
   default="$(find sr_description)/robots/shadowhand_motor.urdf.xacro" />
-  <!-- Gazebo world file to load. -->
   <!-- We want gazebo to stay in the root namespace but the nodes below to be
   relative. Can then launch this inside a namespace to namespace the hand. -->
   <group ns="/">
