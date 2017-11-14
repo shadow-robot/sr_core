@@ -52,6 +52,7 @@ namespace controller
   {
     ROS_ASSERT(robot);
     ROS_INFO("************************ STARTING GRASP CONTROLLER ************************************");
+    i = 0;
 
     std::string robot_state_name;
     node_.param<std::string>("robot_state_name", robot_state_name, "unique_robot_hw");
@@ -94,19 +95,19 @@ namespace controller
       get_joints_states_1_2();
       if (!joint_state_)
       {
-        ROS_ERROR("SrhJointPositionController could not find the first joint relevant to \"%s\"\n",
+        ROS_ERROR("SrhGraspController could not find the first joint relevant to \"%s\"\n",
                   joint_name_.c_str());
         return false;
       }
       if (!joint_state_2)
       {
-        ROS_ERROR("SrhJointPositionController could not find the second joint relevant to \"%s\"\n",
+        ROS_ERROR("SrhGraspController could not find the second joint relevant to \"%s\"\n",
                   joint_name_.c_str());
         return false;
       }
       if (!joint_state_2->calibrated_)
       {
-        ROS_ERROR("Joint %s not calibrated for SrhJointPositionController", joint_name_.c_str());
+        ROS_ERROR("Joint %s not calibrated for SrhGraspController", joint_name_.c_str());
         return false;
       }
       else
@@ -119,12 +120,12 @@ namespace controller
       joint_state_ = robot_->getJointState(joint_name_);
       if (!joint_state_)
       {
-        ROS_ERROR("SrhJointPositionController could not find joint named \"%s\"\n", joint_name_.c_str());
+        ROS_ERROR("SrhGraspController could not find joint named \"%s\"\n", joint_name_.c_str());
         return false;
       }
       if (!joint_state_->calibrated_)
       {
-        ROS_ERROR("Joint %s not calibrated for SrhJointPositionController", joint_name_.c_str());
+        ROS_ERROR("Joint %s not calibrated for SrhGraspnController", joint_name_.c_str());
         return false;
       }
     }
@@ -275,6 +276,25 @@ namespace controller
       }
     }
 
+    if ("rh_FFJ0" == joint_name_)
+    {
+        if (i < 10000)
+        {
+            commanded_effort = 150;
+            i++;
+        }
+        else
+        {
+            commanded_effort = -150;
+            i++;
+            if (i > 20000)
+            {
+                i = 0;
+            }
+        }
+        
+        
+    }
     joint_state_->commanded_effort_ = commanded_effort;
 
     if (loop_count_ % 10 == 0)

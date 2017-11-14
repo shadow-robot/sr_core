@@ -193,10 +193,6 @@ void SrHandFinder::generate_hand_controller_tuning_path()
             host_path + "sr_edc_mixed_position_velocity_joint_controllers.yaml");
     hand_controller_tuning_.host_control_[mapping_iter->second].push_back(
             host_path + "sr_edc_joint_position_controllers.yaml");
-    hand_controller_tuning_.host_control_[mapping_iter->second].push_back(
-            host_path + "sr_edc_grasp_controller.yaml");
-    hand_controller_tuning_.host_control_[mapping_iter->second].push_back(
-            host_path + "sr_edc_grasp_controller_PWM.yaml");
   }
 }
 

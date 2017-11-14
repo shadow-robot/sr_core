@@ -40,6 +40,7 @@ public:
   SrhGraspController();
 
   bool init(ros_ethercat_model::RobotStateInterface *robot, ros::NodeHandle &n);
+  int i;
 
   virtual void starting(const ros::Time &time);
 
