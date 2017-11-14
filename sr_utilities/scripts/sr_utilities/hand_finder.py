@@ -45,7 +45,9 @@ class HandControllerTuning(object):
                  host_path + 'sr_edc_joint_position_controllers_PWM.yaml',
                  host_path + 'sr_edc_mixed_position_velocity_'
                              'joint_controllers.yaml',
-                 host_path + 'sr_edc_joint_position_controllers.yaml']
+                 host_path + 'sr_edc_joint_position_controllers.yaml',
+                 host_path + 'sr_edc_grasp_controller.yaml',
+                 host_path + 'sr_edc_grasp_controller_PWM.yaml']
 
             self.motor_control[mapping[hand]] = \
                 ethercat_path + '/controls/motors/' +\

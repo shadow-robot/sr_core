@@ -27,4 +27,8 @@
     <class name="sr_mechanism_controllers/SrhJointMuscleValveController"
            type="controller::SrhJointMuscleValveController"
            base_class_type="controller_interface::ControllerBase"/>
+    
+    <class name="sr_mechanism_controllers/SrhGraspController"
+           type="controller::SrhGraspController"
+           base_class_type="controller_interface::ControllerBase"/>
 </library>
