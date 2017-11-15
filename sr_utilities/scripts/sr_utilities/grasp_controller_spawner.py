@@ -85,7 +85,7 @@ class GraspControllerSpawner(object):
             success = False
 
         if not success:
-            rospy.logerr("Failed to launch trajectory controller!")
+            rospy.logerr("Failed to launch grasp controller!")
 
     @staticmethod
     def wait_for_topic(topic_name, timeout):
