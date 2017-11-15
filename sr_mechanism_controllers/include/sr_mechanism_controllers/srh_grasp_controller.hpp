@@ -29,6 +29,7 @@
 #define _SRH_GRASP_CONTROLLER_HPP_
 
 #include <sr_mechanism_controllers/sr_controller.hpp>
+#include "vector"
 
 
 namespace controller
@@ -56,6 +57,8 @@ public:
   bool setGains(sr_robot_msgs::SetPidGains::Request &req, sr_robot_msgs::SetPidGains::Response &resp);
 
 private:
+  std::vector<ros_ethercat_model::JointState> joints_;
+  
   /// Internal PID controller for the position loop.
   boost::scoped_ptr<control_toolbox::Pid> pid_controller_position_;
 

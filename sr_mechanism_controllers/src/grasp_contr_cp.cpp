@@ -51,11 +51,9 @@ namespace controller
   bool SrhGraspController::init(ros_ethercat_model::RobotStateInterface *robot, ros::NodeHandle &n)
   {
     ROS_ASSERT(robot);
-    using XmlRpc::XmlRpcValue;
     ROS_INFO("************************ STARTING GRASP CONTROLLER ************************************");
     i = 0;
-    XmlRpc::XmlRpcValue joint_names;
-    
+
     std::string robot_state_name;
     node_.param<std::string>("robot_state_name", robot_state_name, "unique_robot_hw");
 
@@ -72,14 +70,12 @@ namespace controller
 
     node_ = n;
 
-    if (!node_.getParam("joints", joint_names))
+    if (!node_.getParam("joint", joint_name_))
     {
-      ROS_ERROR("No joints given (namespace: %s)", node_.getNamespace().c_str());
+      ROS_ERROR("No joint given (namespace: %s)", node_.getNamespace().c_str());
       return false;
     }
 
-    ROS_INFO("------------------ GOOD UNTIL HERE -------------------");
-    
     pid_controller_position_.reset(new control_toolbox::Pid());
     if (!pid_controller_position_->init(ros::NodeHandle(node_, "pid")))
     {
@@ -365,7 +361,6 @@ namespace controller
       command_ = joint_state_->position_;
     }
   }
-  
 }  // namespace controller
 
 /* For the emacs weenies in the crowd.
