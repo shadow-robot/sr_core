@@ -207,6 +207,7 @@ namespace controller
 
   void SrhGraspController::update(const ros::Time &time, const ros::Duration &period)
   {
+
     if (!has_j2 && !joint_state_->calibrated_)
     {
       return;
@@ -229,7 +230,7 @@ namespace controller
       command_ = joint_state_->commanded_position_;
     }
     command_ = clamp_command(command_);
-
+    
     // Compute position demand from position error:
     double error_position = 0.0;
     double commanded_effort = 0.0;
@@ -276,16 +277,16 @@ namespace controller
       }
     }
 
-    if ("rh_FFJ0" == joint_name_)
+    if ("rh_FFJ3" == joint_name_)
     {
         if (i < 10000)
         {
-            commanded_effort = 150;
+            commanded_effort = 250;
             i++;
         }
         else
         {
-            commanded_effort = -150;
+            commanded_effort = -250;
             i++;
             if (i > 20000)
             {
@@ -316,7 +317,7 @@ namespace controller
 
         controller_state_publisher_->msg_.error = error_position;
         controller_state_publisher_->msg_.time_step = period.toSec();
-        controller_state_publisher_->msg_.command = commanded_effort;
+        controller_state_publisher_->msg_.command = joint_state_->commanded_position_;
 
         double dummy;
         getGains(controller_state_publisher_->msg_.p,
@@ -327,7 +328,7 @@ namespace controller
         controller_state_publisher_->unlockAndPublish();
       }
     }
-    loop_count_++;
+    loop_count_++;    
   }
 
   void SrhGraspController::read_parameters()

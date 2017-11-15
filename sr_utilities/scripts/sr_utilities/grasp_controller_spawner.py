@@ -24,52 +24,12 @@ from sr_utilities.hand_finder import HandFinder
 from std_msgs.msg import Bool
 
 
-class TrajectoryControllerSpawner(object):
-    def __init__(self, trajectory, service_timeout):
-        self.trajectory = trajectory
+class GraspControllerSpawner(object):
+    def __init__(self, service_timeout):
         self.service_timeout = service_timeout
         self.hand_finder = HandFinder()
         self.joints = self.hand_finder.get_hand_joints()
-        ros_pack = rospkg.RosPack()
-        sr_robot_launch_path = ros_pack.get_path('sr_robot_launch')
         self.hand_mapping = self.hand_finder.get_hand_parameters().mapping
-        self.yaml_file_path = {}
-        for hand in self.hand_mapping:
-            self.yaml_file_path[self.hand_mapping[hand]] = (
-                sr_robot_launch_path + "/config/" + self.hand_mapping[hand] + "_trajectory_controller.yaml")
-
-    def generate_parameters(self):
-        for hand in self.yaml_file_path:
-            with open(self.yaml_file_path[hand], 'r') as yaml_file:
-                yaml_content = yaml.load(yaml_file)
-            if hand + "_trajectory_controller" not in yaml_content.keys():
-                rospy.logerr("there are errors opening trajectory controller yaml file")
-            else:
-                hand_trajectory = yaml_content[hand + "_trajectory_controller"]
-                if rospy.has_param('~exclude_wrist') and rospy.get_param('~exclude_wrist'):
-                    hand_trajectory['joints'] = [s for s in self.joints[hand] if "WR" not in s]
-                else:
-                    hand_trajectory['joints'] = self.joints[hand]
-                for joint_name in hand_trajectory['constraints'].keys():
-                    if (joint_name not in hand_trajectory['joints'] and
-                            joint_name != 'goal_time' and joint_name != 'stopped_velocity_tolerance'):
-                        del hand_trajectory['constraints'][joint_name]
-
-                param_prefix = hand + "_trajectory_controller/"
-                rospy.set_param(param_prefix + 'allow_partial_joints_goal',
-                                hand_trajectory['allow_partial_joints_goal'])
-                rospy.set_param(param_prefix + 'joints', hand_trajectory['joints'])
-                rospy.set_param(param_prefix + 'stop_trajectory_duration', hand_trajectory['stop_trajectory_duration'])
-                rospy.set_param(param_prefix + 'type', hand_trajectory['type'])
-                constrain_prefix = param_prefix + 'constraints/'
-                for constraint in hand_trajectory['constraints']:
-                    if constraint == 'goal_time' or constraint == 'stopped_velocity_tolerance':
-                        rospy.set_param(constrain_prefix + constraint, hand_trajectory['constraints'][constraint])
-                    else:
-                        rospy.set_param(constrain_prefix + constraint + '/goal',
-                                        hand_trajectory['constraints'][constraint]['goal'])
-                        rospy.set_param(constrain_prefix + constraint + '/trajectory',
-                                        hand_trajectory['constraints'][constraint]['trajectory'])
 
     @staticmethod
     def check_joint(joint, controllers_to_start, controller_names):
@@ -91,7 +51,6 @@ class TrajectoryControllerSpawner(object):
                 rospy.wait_for_service('controller_manager/list_controllers', self.service_timeout)
                 list_controllers = rospy.ServiceProxy(
                     'controller_manager/list_controllers', ListControllers)
-
                 running_controllers = list_controllers()
             except rospy.ServiceException:
                 success = False
@@ -101,12 +60,8 @@ class TrajectoryControllerSpawner(object):
                 controller_names = []
                 for controller_state in running_controllers.controller:
                     controller_names.append(controller_state.name)
-                    if controller_state.name == hand_prefix + '_trajectory_controller':
-                        already_running = True
-                if self.trajectory and not already_running:
-                    controllers_to_start.append(hand_prefix + '_trajectory_controller')
                 for joint in self.joints[hand_prefix]:
-                    TrajectoryControllerSpawner.check_joint(joint, controllers_to_start, controller_names)
+                    GraspControllerSpawner.check_joint(joint, controllers_to_start, controller_names)
 
         for load_control in controllers_to_start:
             try:
@@ -175,7 +130,7 @@ if __name__ == "__main__":
     timeout = rospy.get_param("~timeout", 30.0)
     service_timeout = rospy.get_param("~service_timeout", 60.0)
 
-    trajectory_spawner = TrajectoryControllerSpawner(trajectory=hand_trajectory, service_timeout=service_timeout)
+    trajectory_spawner = GraspControllerSpawner(service_timeout=service_timeout)
     if trajectory_spawner.wait_for_topic(wait_for_topic, timeout):
-        trajectory_spawner.generate_parameters()
+        # trajectory_spawner.generate_parameters()
         trajectory_spawner.set_controller()
