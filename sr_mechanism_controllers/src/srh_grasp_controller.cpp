@@ -154,7 +154,8 @@ namespace controller
         }
         else
         {
-            joints_[i].push_back(robot_->getJointState(joint_name));
+            joints_[i].push_back(NULL);
+            joints_[i][0] = robot_->getJointState(joint_name);
             if (!joints_[i][0])
             {
                 ROS_ERROR("SrhGraspController could not find joint named \"%s\"\n", joint_name);
@@ -167,6 +168,15 @@ namespace controller
             }
         }
     }
+    
+ 
+    // *********** DEBUG CODE ****************************
+    for (int i = 0; i < joint_names.size(); ++i)
+    {
+        for (int k = 0; k < joints_[i].size(); ++k)
+        ROS_INFO_STREAM("Joint " << static_cast<std::string>(joint_names[i]).c_str() << " position: " << joints_[i][k]->position_);
+    }
+    //**************************************************
 
     // get the min and max value for the current joint:
     get_min_max(robot_->robot_model_, joint_name_);
@@ -419,8 +429,10 @@ void SrhGraspController::get_joints_states_1_2(const std::string & joint_name, s
 
     ROS_DEBUG_STREAM("Joint 0: " << j1 << " " << j2);
 
-    joint.push_back(robot_->getJointState(j1));
-    joint.push_back(robot_->getJointState(j2));
+    joint.push_back(NULL);
+    joint[0] = robot_->getJointState(j1);
+    joint.push_back(NULL);
+    joint[1] = robot_->getJointState(j2);
   }
   
 }  // namespace controller

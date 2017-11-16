@@ -59,6 +59,7 @@ public:
 private:
   std::vector<std::vector<ros_ethercat_model::JointState *> > joints_;
   std::vector<control_toolbox::Pid> pids_;
+  std::vector<double> mins_, maxs_, vel_mins_, vel_maxs_, eff_mins_, eff_maxs_;
   
   /// Internal PID controller for the position loop.
   boost::scoped_ptr<control_toolbox::Pid> pid_controller_position_;
