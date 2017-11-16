@@ -57,7 +57,8 @@ public:
   bool setGains(sr_robot_msgs::SetPidGains::Request &req, sr_robot_msgs::SetPidGains::Response &resp);
 
 private:
-  std::vector<ros_ethercat_model::JointState> joints_;
+  std::vector<std::vector<ros_ethercat_model::JointState *> > joints_;
+  std::vector<control_toolbox::Pid> pids_;
   
   /// Internal PID controller for the position loop.
   boost::scoped_ptr<control_toolbox::Pid> pid_controller_position_;
@@ -75,6 +76,9 @@ private:
   void setCommandCB(const std_msgs::Float64ConstPtr &msg);
 
   void resetJointState();
+  
+  bool is_joint_0(const std::string &);
+  void get_joints_states_1_2(const std::string &, std::vector<ros_ethercat_model::JointState*> &);
 };
 }  // namespace controller
 

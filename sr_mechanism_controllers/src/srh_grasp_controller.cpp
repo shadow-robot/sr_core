@@ -52,12 +52,10 @@ namespace controller
   {
     ROS_ASSERT(robot);
     using XmlRpc::XmlRpcValue;
-    ROS_INFO("************************ STARTING GRASP CONTROLLER ************************************");
-    i = 0;
     XmlRpc::XmlRpcValue joint_names;
-    
     std::string robot_state_name;
     node_.param<std::string>("robot_state_name", robot_state_name, "unique_robot_hw");
+    node_ = n;
 
     try
     {
@@ -69,69 +67,105 @@ namespace controller
         e.what());
       return false;
     }
-
-    node_ = n;
-
+    
+    ROS_INFO("Getting joint names");
     if (!node_.getParam("joints", joint_names))
     {
       ROS_ERROR("No joints given (namespace: %s)", node_.getNamespace().c_str());
       return false;
     }
-
-    ROS_INFO("------------------ GOOD UNTIL HERE -------------------");
     
+    // check for message type
+    if (joint_names.getType() != XmlRpc::XmlRpcValue::TypeArray)
+    {
+      ROS_ERROR("Malformed joint specification.  (namespace: %s)", node_.getNamespace().c_str());
+      return false;
+    }
+
+    ROS_INFO("Getting pid values");
+    
+    std::string gains_ns;
+    if (!node_.getParam("gains", gains_ns))
+    {
+      gains_ns = node_.getNamespace() + "/gains";
+    }
+    
+    pids_.resize(joint_names.size());
+    for (int i = 0; i < joint_names.size(); ++i)
+    {
+      if (!pids_[i].init(ros::NodeHandle(gains_ns + "/" + static_cast<std::string>(joint_names[i]).c_str())))
+      {
+        return false;
+      }
+    }
+    
+    /*
     pid_controller_position_.reset(new control_toolbox::Pid());
     if (!pid_controller_position_->init(ros::NodeHandle(node_, "pid")))
     {
       return false;
     }
+    */
 
     controller_state_publisher_.reset(new realtime_tools::RealtimePublisher<control_msgs::JointControllerState>
                                               (node_, "state", 1));
 
-    ROS_DEBUG(" --------- ");
-    ROS_DEBUG_STREAM("Init: " << joint_name_);
-
-    // joint 0s e.g. FFJ0
-    has_j2 = is_joint_0();
-    if (has_j2)
+/*    double p, i, d, i_max, i_min;
+    for (int k = 0; k < joint_names.size(); ++k)
     {
-      get_joints_states_1_2();
-      if (!joint_state_)
-      {
-        ROS_ERROR("SrhGraspController could not find the first joint relevant to \"%s\"\n",
-                  joint_name_.c_str());
-        return false;
-      }
-      if (!joint_state_2)
-      {
-        ROS_ERROR("SrhGraspController could not find the second joint relevant to \"%s\"\n",
-                  joint_name_.c_str());
-        return false;
-      }
-      if (!joint_state_2->calibrated_)
-      {
-        ROS_ERROR("Joint %s not calibrated for SrhGraspController", joint_name_.c_str());
-        return false;
-      }
-      else
-      {
-        joint_state_->calibrated_ = true;
-      }
+        ROS_INFO_STREAM("Joint " << k << "name: " << joint_names[k]);
+        pids_[k].getGains(p, i, d, i_max, i_min);
+        ROS_INFO_STREAM("P: " << p << " I: " << i << " D: " << d);
+        
     }
-    else
+*/
+
+    joints_.resize(joint_names.size());
+    std::string joint_name;
+    for (int i = 0; i < joint_names.size(); ++i)
     {
-      joint_state_ = robot_->getJointState(joint_name_);
-      if (!joint_state_)
-      {
-        ROS_ERROR("SrhGraspController could not find joint named \"%s\"\n", joint_name_.c_str());
-        return false;
-      }
-      if (!joint_state_->calibrated_)
-      {
-        ROS_ERROR("Joint %s not calibrated for SrhGraspnController", joint_name_.c_str());
-        return false;
-      }
+        // joint 0s e.g. FFJ0
+        joint_name = static_cast<std::string>(joint_names[i]).c_str();
+        has_j2 = is_joint_0(joint_name);
+        if (has_j2)
+        {
+            get_joints_states_1_2(joint_name, joints_[i]);
+            if (!joints_[i][0])
+            {
+                ROS_ERROR("SrhGraspController could not find the first joint relevant to \"%s\"\n",
+                        joint_name);
+                return false;
+            }
+            if (!joints_[i][1])
+            {
+                ROS_ERROR("SrhGraspController could not find the second joint relevant to \"%s\"\n",
+                        joint_name);
+                return false;
+            }
+            if (!joints_[i][1]->calibrated_)
+            {
+                ROS_ERROR("Joint %s not calibrated for SrhGraspController", joint_name);
+                return false;
+            }
+            else
+            {
+                joints_[i][0]->calibrated_ = true;
+            }
+        }
+        else
+        {
+            joints_[i].push_back(robot_->getJointState(joint_name));
+            if (!joints_[i][0])
+            {
+                ROS_ERROR("SrhGraspController could not find joint named \"%s\"\n", joint_name);
+                return false;
+            }
+            if (!joints_[i][0]->calibrated_)
+            {
+                ROS_ERROR("Joint %s not calibrated for SrhGraspnController", joint_name);
+                return false;
+            }
+        }
     }
 
     // get the min and max value for the current joint:
@@ -364,6 +398,29 @@ namespace controller
       joint_state_->commanded_position_ = joint_state_->position_;
       command_ = joint_state_->position_;
     }
+  }
+  
+  bool SrhGraspController::is_joint_0(const std::string & joint_name)
+  {
+    // joint_name_ has unknown length
+    // it is assumed that last char is the joint number
+    if (joint_name[joint_name.size() - 1] == '0')
+    {
+      return true;
+    }
+    return false;
+  }
+  
+void SrhGraspController::get_joints_states_1_2(const std::string & joint_name, std::vector<ros_ethercat_model::JointState*> & joint)
+  {
+    std::string j1 = joint_name, j2 = joint_name;
+    j1[j1.size() - 1] = '1';
+    j2[j2.size() - 1] = '2';
+
+    ROS_DEBUG_STREAM("Joint 0: " << j1 << " " << j2);
+
+    joint.push_back(robot_->getJointState(j1));
+    joint.push_back(robot_->getJointState(j2));
   }
   
 }  // namespace controller
