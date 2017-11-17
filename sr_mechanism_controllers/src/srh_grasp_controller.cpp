@@ -68,15 +68,13 @@ namespace controller
       ROS_ERROR_STREAM("Could not find robot state: " << robot_state_name << " Not loading the controller. " << e.what());
       return false;
     }
-    
-    ROS_INFO("Getting joint names");
+
     if (!node_.getParam("joints", joint_names_xml))
     {
       ROS_ERROR("No joints given (namespace: %s)", node_.getNamespace().c_str());
       return false;
     }
-    
-    // check for message type
+
     if (joint_names_xml.getType() != XmlRpc::XmlRpcValue::TypeArray)
     {
       ROS_ERROR("Malformed joint specification.  (namespace: %s)", node_.getNamespace().c_str());
@@ -88,7 +86,6 @@ namespace controller
         joint_names.push_back(static_cast<std::string>(joint_names_xml[i]).c_str());
     }
 
-    ROS_INFO("Getting pid values");    
     std::string gains_ns;
     if (!node_.getParam("gains", gains_ns))
     {
@@ -196,9 +193,6 @@ namespace controller
         friction_compensator.reset(new sr_friction_compensation::SrFrictionCompensator(joint_names[i]));
     }
 
-    //serve_set_gains_ = node_.advertiseService("set_gains", &SrhGraspController::setGains, this);
-    //serve_reset_gains_ = node_.advertiseService("reset_gains", &SrhGraspController::resetGains, this);
-
     sub_command_ = node_.subscribe<std_msgs::Float64MultiArray>("command", 1, &SrhGraspController::setCommandCB, this);
     
     return true;
@@ -211,63 +205,6 @@ namespace controller
     {
         pids_[i].reset();
     }
-
-    if (has_j2)
-      ROS_WARN_STREAM(
-              "Reseting PID for joints " << joint_state_->joint_->name << " and " << joint_state_2->joint_->name);
-    else
-      ROS_WARN_STREAM("Reseting PID for joint  " << joint_state_->joint_->name);
-  }
-
-/*  bool SrhGraspController::setGains(sr_robot_msgs::SetPidGains::Request &req,
-                                            sr_robot_msgs::SetPidGains::Response &resp)
-  {
-    ROS_INFO_STREAM("Setting new PID parameters. P:" << req.p << " / I:" << req.i <<
-                    " / D:" << req.d << " / IClamp:" << req.i_clamp << ", max force: " <<
-                    req.max_force << ", friction deadband: " << req.friction_deadband <<
-                    " pos deadband: " << req.deadband);
-
-    pid_controller_position_->setGains(req.p, req.i, req.d, req.i_clamp, -req.i_clamp);
-    max_force_demand = req.max_force;
-    friction_deadband = req.friction_deadband;
-    position_deadband = req.deadband;
-
-    // Setting the new parameters in the parameter server
-    node_.setParam("pid/p", req.p);
-    node_.setParam("pid/i", req.i);
-    node_.setParam("pid/d", req.d);
-    node_.setParam("pid/i_clamp", req.i_clamp);
-    node_.setParam("pid/max_force", max_force_demand);
-    node_.setParam("pid/position_deadband", position_deadband);
-    node_.setParam("pid/friction_deadband", friction_deadband);
-
-    return true;
-  }
-*/
-  bool SrhGraspController::resetGains(std_srvs::Empty::Request &req, std_srvs::Empty::Response &resp)
-  {
-    resetJointState();
-
-    if (!pid_controller_position_->init(ros::NodeHandle(node_, "pid")))
-    {
-      return false;
-    }
-
-    read_parameters();
-
-    if (has_j2)
-      ROS_WARN_STREAM(
-              "Reseting controller gains: " << joint_state_->joint_->name << " and " << joint_state_2->joint_->name);
-    else
-      ROS_WARN_STREAM("Reseting controller gains: " << joint_state_->joint_->name);
-
-    return true;
-  }
-
-
-  void SrhGraspController::getGains(double &p, double &i, double &d, double &i_max, double &i_min)
-  {
-    pid_controller_position_->getGains(p, i, d, i_max, i_min);
   }
 
   void SrhGraspController::update(const ros::Time &time, const ros::Duration &period)
@@ -394,13 +331,6 @@ namespace controller
       }
     }
     loop_count_++;    
-  }
-
-  void SrhGraspController::read_parameters()
-  {
-    node_.param<double>("pid/max_force", max_force_demand, 1023.0);
-    node_.param<double>("pid/position_deadband", position_deadband, 0.015);
-    node_.param<int>("pid/friction_deadband", friction_deadband, 5);
   }
 
   void SrhGraspController::setCommandCB(const std_msgs::Float64MultiArrayConstPtr &msg)

@@ -50,12 +50,6 @@ public:
    */
   virtual void update(const ros::Time &time, const ros::Duration &period);
 
-  virtual void getGains(double &p, double &i, double &d, double &i_max, double &i_min);
-
-  virtual bool resetGains(std_srvs::Empty::Request &req, std_srvs::Empty::Response &resp);
-
-  bool setGains(sr_robot_msgs::SetPidGains::Request &req, sr_robot_msgs::SetPidGains::Response &resp);
-
 private:
   std::vector<std::vector<ros_ethercat_model::JointState *> > joints_;
   std::vector<control_toolbox::Pid> pids_;
@@ -77,7 +71,6 @@ private:
   void read_parameters();
 
   void resetJointState();
-  
   bool is_joint_0(const std::string &);
   void get_joints_states_1_2(const std::string &, std::vector<ros_ethercat_model::JointState*> &);
   void get_min_max(urdf::Model model, const std::vector<std::string> &);
