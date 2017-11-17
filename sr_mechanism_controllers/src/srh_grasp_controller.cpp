@@ -34,6 +34,7 @@
 #include "sr_utilities/sr_math_utils.hpp"
 
 #include <std_msgs/Float64.h>
+#include <std_msgs/Float64MultiArray.h>
 
 PLUGINLIB_EXPORT_CLASS(controller::SrhGraspController, controller_interface::ControllerBase)
 
@@ -189,7 +190,8 @@ namespace controller
     //serve_set_gains_ = node_.advertiseService("set_gains", &SrhGraspController::setGains, this);
     //serve_reset_gains_ = node_.advertiseService("reset_gains", &SrhGraspController::resetGains, this);
 
-    after_init();
+    sub_command_ = node_.subscribe<std_msgs::Float64MultiArray>("command", 1, &SrhGraspController::setCommandCB, this);
+    
     return true;
   }
 
@@ -390,12 +392,16 @@ namespace controller
     node_.param<int>("pid/friction_deadband", friction_deadband, 5);
   }
 
-  void SrhGraspController::setCommandCB(const std_msgs::Float64ConstPtr &msg)
+  void SrhGraspController::setCommandCB(const std_msgs::Float64MultiArrayConstPtr &msg)
   {
-    joint_state_->commanded_position_ = msg->data;
-    if (has_j2)
+    
+    for (int i = 0; i < joints_.size(); ++i)
     {
-      joint_state_2->commanded_position_ = 0.0;
+        joints_[i][0]->commanded_position_ = msg->data[i];
+        if (joints_[i].size())
+        {
+        joints_[i][1]->commanded_position_ = 0.0;
+        }
     }
   }
 

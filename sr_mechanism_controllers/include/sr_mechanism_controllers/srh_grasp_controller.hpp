@@ -29,6 +29,7 @@
 #define _SRH_GRASP_CONTROLLER_HPP_
 
 #include <sr_mechanism_controllers/sr_controller.hpp>
+#include <std_msgs/Float64MultiArray.h>
 #include "vector"
 
 namespace controller
@@ -72,14 +73,13 @@ private:
   /// read all the controller settings from the parameter server
   void read_parameters();
 
-  /// set the position target from a topic
-  void setCommandCB(const std_msgs::Float64ConstPtr &msg);
-
   void resetJointState();
   
   bool is_joint_0(const std::string &);
   void get_joints_states_1_2(const std::string &, std::vector<ros_ethercat_model::JointState*> &);
   void get_min_max(urdf::Model model, const std::vector<std::string> &);
+  void setCommandCB(const std_msgs::Float64MultiArrayConstPtr &msg);
+  
 };
 }  // namespace controller
 
