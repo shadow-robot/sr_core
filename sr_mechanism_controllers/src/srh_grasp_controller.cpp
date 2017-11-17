@@ -96,12 +96,18 @@ namespace controller
     }
     
     pids_.resize(joint_names.size());
+    max_force_demands_.resize(joint_names.size());
+    position_deadbands_.resize(joint_names.size());
+    friction_deadbands_.resize(joint_names.size());
     for (int i = 0; i < joint_names.size(); ++i)
     {
       if (!pids_[i].init(ros::NodeHandle(gains_ns + "/" + joint_names[i])))
       {
         return false;
       }
+      node_.param<double>(gains_ns + "/" + joint_names[i] + "/max_force", max_force_demands_[i], 1023.0);
+      node_.param<double>(gains_ns + "/" + joint_names[i] + "/position_deadband", position_deadbands_[i], 0.015);
+      node_.param<int>(gains_ns + "/" + joint_names[i] + "/friction_deadband", friction_deadbands_[i], 5);
     }
 
     controller_state_publisher_.reset(new realtime_tools::RealtimePublisher<control_msgs::JointControllerState>
@@ -111,9 +117,12 @@ namespace controller
     double p, i, d, i_max, i_min;
     for (int k = 0; k < joint_names.size(); ++k)
     {
-        ROS_INFO_STREAM("Joint " << k << "name: " << joint_names[k]);
+        ROS_INFO_STREAM("Joint " << k << " name: " << joint_names[k]);
         pids_[k].getGains(p, i, d, i_max, i_min);
-        ROS_INFO_STREAM("P: " << p << " I: " << i << " D: " << d);
+        ROS_INFO_STREAM("P: " << p << " I: " << i << " D: " << d << std::endl);
+        ROS_INFO_STREAM("mfd: " << max_force_demands_[k] << std::endl);
+        ROS_INFO_STREAM("pd: " << position_deadbands_[k] << std::endl);
+        ROS_INFO_STREAM("fd: " << friction_deadbands_[k] << std::endl);
         
     }
     //**************************************************
@@ -198,8 +207,10 @@ namespace controller
   void SrhGraspController::starting(const ros::Time &time)
   {
     resetJointState();
-    pid_controller_position_->reset();
-    read_parameters();
+    for (int i = 0; i < pids_.size(); ++i)
+    {
+        pids_[i].reset();
+    }
 
     if (has_j2)
       ROS_WARN_STREAM(
@@ -398,7 +409,7 @@ namespace controller
     for (int i = 0; i < joints_.size(); ++i)
     {
         joints_[i][0]->commanded_position_ = msg->data[i];
-        if (joints_[i].size())
+        if (2 == joints_[i].size())
         {
         joints_[i][1]->commanded_position_ = 0.0;
         }
@@ -407,23 +418,24 @@ namespace controller
 
   void SrhGraspController::resetJointState()
   {
-    if (has_j2)
+    for (int i = 0; i < joints_.size(); ++i)
     {
-      joint_state_->commanded_position_ = joint_state_->position_;
-      joint_state_2->commanded_position_ = joint_state_2->position_;
-      command_ = joint_state_->position_ + joint_state_2->position_;
-    }
-    else
-    {
-      joint_state_->commanded_position_ = joint_state_->position_;
-      command_ = joint_state_->position_;
+        if (2 == joints_[i].size())
+        {
+        joints_[i][0]->commanded_position_ = joints_[i][0]->position_;
+        joints_[i][1]->commanded_position_ = joints_[i][1]->position_;
+        position_command_[i] = joints_[i][0]->position_ + joints_[i][1]->position_;
+        }
+        else
+        {
+        joints_[i][0]->commanded_position_ = joints_[i][0]->position_;
+        position_command_[i] = joints_[i][0]->position_;
+        }
     }
   }
   
   bool SrhGraspController::is_joint_0(const std::string & joint_name)
   {
-    // joint_name_ has unknown length
-    // it is assumed that last char is the joint number
     if (joint_name[joint_name.size() - 1] == '0')
     {
       return true;
