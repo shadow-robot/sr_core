@@ -31,8 +31,6 @@
 #include <sr_mechanism_controllers/sr_controller.hpp>
 #include "vector"
 
-using XmlRpc::XmlRpcValue;
-
 namespace controller
 {
 class SrhGraspController :
@@ -58,7 +56,6 @@ public:
   bool setGains(sr_robot_msgs::SetPidGains::Request &req, sr_robot_msgs::SetPidGains::Response &resp);
 
 private:
-  XmlRpc::XmlRpcValue joint_names_;
   std::vector<std::vector<ros_ethercat_model::JointState *> > joints_;
   std::vector<control_toolbox::Pid> pids_;
   std::vector<double> mins_, maxs_, vel_mins_, vel_maxs_, eff_mins_, eff_maxs_;
@@ -82,7 +79,7 @@ private:
   
   bool is_joint_0(const std::string &);
   void get_joints_states_1_2(const std::string &, std::vector<ros_ethercat_model::JointState*> &);
-  void get_min_max(urdf::Model model, std::string);
+  void get_min_max(urdf::Model model, const std::vector<std::string> &);
 };
 }  // namespace controller
 

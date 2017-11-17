@@ -54,116 +54,92 @@ namespace controller
     std::string robot_state_name;
     node_.param<std::string>("robot_state_name", robot_state_name, "unique_robot_hw");
     node_ = n;
-
+    using XmlRpc::XmlRpcValue;
+    XmlRpc::XmlRpcValue joint_names_xml;
+    std::vector<std::string> joint_names;
+    
     try
     {
       robot_ = robot->getHandle(robot_state_name).getState();
     }
     catch(const hardware_interface::HardwareInterfaceException& e)
     {
-      ROS_ERROR_STREAM("Could not find robot state: " << robot_state_name << " Not loading the controller. " <<
-        e.what());
+      ROS_ERROR_STREAM("Could not find robot state: " << robot_state_name << " Not loading the controller. " << e.what());
       return false;
     }
     
     ROS_INFO("Getting joint names");
-    if (!node_.getParam("joints", joint_names_))
+    if (!node_.getParam("joints", joint_names_xml))
     {
       ROS_ERROR("No joints given (namespace: %s)", node_.getNamespace().c_str());
       return false;
     }
-
-    //¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬
-    std::string tmp_joint_names;
-    if (!node_.getParam("joints", tmp_joint_names))
-    {
-      ROS_ERROR("No joints given (namespace: %s)", node_.getNamespace().c_str());
-      return false;
-    }
-    
-    for (int i = 0; i < joint_names_.size(); ++i)
-    {
-        ROS_INFO_STREAM(" >>>>>>>>>>>>>>>>> Joint states: " << tmp_joint_names);
-    }
-    //¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬
     
     // check for message type
-    if (joint_names_.getType() != XmlRpc::XmlRpcValue::TypeArray)
+    if (joint_names_xml.getType() != XmlRpc::XmlRpcValue::TypeArray)
     {
       ROS_ERROR("Malformed joint specification.  (namespace: %s)", node_.getNamespace().c_str());
       return false;
     }
-    
-    mins_.resize(joint_names_.size());
-    maxs_.resize(joint_names_.size());
-    vel_mins_.resize(joint_names_.size());
-    vel_maxs_.resize(joint_names_.size());
-    eff_mins_.resize(joint_names_.size());
-    eff_maxs_.resize(joint_names_.size());
 
-    ROS_INFO("Getting pid values");
-    
+    for (int i = 0; i < joint_names_xml.size(); ++i)
+    {
+        joint_names.push_back(static_cast<std::string>(joint_names_xml[i]).c_str());
+    }
+
+    ROS_INFO("Getting pid values");    
     std::string gains_ns;
     if (!node_.getParam("gains", gains_ns))
     {
       gains_ns = node_.getNamespace() + "/gains";
     }
     
-    pids_.resize(joint_names_.size());
-    for (int i = 0; i < joint_names_.size(); ++i)
+    pids_.resize(joint_names.size());
+    for (int i = 0; i < joint_names.size(); ++i)
     {
-      if (!pids_[i].init(ros::NodeHandle(gains_ns + "/" + static_cast<std::string>(joint_names_[i]).c_str())))
+      if (!pids_[i].init(ros::NodeHandle(gains_ns + "/" + joint_names[i])))
       {
         return false;
       }
     }
-    
-    /*
-    pid_controller_position_.reset(new control_toolbox::Pid());
-    if (!pid_controller_position_->init(ros::NodeHandle(node_, "pid")))
-    {
-      return false;
-    }
-    */
 
     controller_state_publisher_.reset(new realtime_tools::RealtimePublisher<control_msgs::JointControllerState>
                                               (node_, "state", 1));
 
-/*    double p, i, d, i_max, i_min;
-    for (int k = 0; k < joint_names_.size(); ++k)
+    //************** debug code ************************
+    double p, i, d, i_max, i_min;
+    for (int k = 0; k < joint_names.size(); ++k)
     {
-        ROS_INFO_STREAM("Joint " << k << "name: " << joint_names_[k]);
+        ROS_INFO_STREAM("Joint " << k << "name: " << joint_names[k]);
         pids_[k].getGains(p, i, d, i_max, i_min);
         ROS_INFO_STREAM("P: " << p << " I: " << i << " D: " << d);
         
     }
-*/
+    //**************************************************
 
-    joints_.resize(joint_names_.size());
-    std::string joint_name;
-    for (int i = 0; i < joint_names_.size(); ++i)
+    joints_.resize(joint_names.size());
+    for (int i = 0; i < joint_names.size(); ++i)
     {
         // joint 0s e.g. FFJ0
-        joint_name = static_cast<std::string>(joint_names_[i]).c_str();
-        has_j2 = is_joint_0(joint_name);
+        has_j2 = is_joint_0(joint_names[i]);
         if (has_j2)
         {
-            get_joints_states_1_2(joint_name, joints_[i]);
+            get_joints_states_1_2(joint_names[i], joints_[i]);
             if (!joints_[i][0])
             {
                 ROS_ERROR("SrhGraspController could not find the first joint relevant to \"%s\"\n",
-                        joint_name);
+                        joint_names[i]);
                 return false;
             }
             if (!joints_[i][1])
             {
                 ROS_ERROR("SrhGraspController could not find the second joint relevant to \"%s\"\n",
-                        joint_name);
+                        joint_names[i]);
                 return false;
             }
             if (!joints_[i][1]->calibrated_)
             {
-                ROS_ERROR("Joint %s not calibrated for SrhGraspController", joint_name);
+                ROS_ERROR("Joint %s not calibrated for SrhGraspController", joint_names[i]);
                 return false;
             }
             else
@@ -174,15 +150,15 @@ namespace controller
         else
         {
             joints_[i].push_back(NULL);
-            joints_[i][0] = robot_->getJointState(joint_name);
+            joints_[i][0] = robot_->getJointState(joint_names[i]);
             if (!joints_[i][0])
             {
-                ROS_ERROR("SrhGraspController could not find joint named \"%s\"\n", joint_name);
+                ROS_ERROR("SrhGraspController could not find joint named \"%s\"\n", joint_names[i]);
                 return false;
             }
             if (!joints_[i][0]->calibrated_)
             {
-                ROS_ERROR("Joint %s not calibrated for SrhGraspnController", joint_name);
+                ROS_ERROR("Joint %s not calibrated for SrhGraspnController", joint_names[i]);
                 return false;
             }
         }
@@ -190,20 +166,25 @@ namespace controller
     
  
     // *********** DEBUG CODE ****************************
-    for (int i = 0; i < joint_names_.size(); ++i)
+    for (int i = 0; i < joint_names.size(); ++i)
     {
         for (int k = 0; k < joints_[i].size(); ++k)
-        ROS_INFO_STREAM("Joint " << static_cast<std::string>(joint_names_[i]).c_str() << " position: " << joints_[i][k]->position_);
+        ROS_INFO_STREAM("Joint " << joint_names[i] << " position: " << joints_[i][k]->position_);
     }
     //**************************************************
 
-    // get the min and max value for the current joint:
-    //for (int i = 0; i < joint_names_.size(); ++i)
-   // {
-   //     get_min_max(robot_->robot_model_, static_cast<std::string>(joint_names_[i]).c_str());
-   // }
+    get_min_max(robot_->robot_model_, joint_names);
 
-    friction_compensator.reset(new sr_friction_compensation::SrFrictionCompensator(joint_name_));
+    //**************** DEBUG CODE *****************************
+    for (int i = 0; i < joint_names.size(); ++i)
+    {
+        ROS_INFO_STREAM("Limits: " << mins_[i] << " " << maxs_[i] << " " << vel_mins_[i] << " " << vel_maxs_[i] << " " << eff_mins_[i] << " " << eff_maxs_[i]);
+    }
+    //****************************************************************
+    for (int i = 0; i < joint_names.size(); ++i)
+    {
+        friction_compensator.reset(new sr_friction_compensation::SrFrictionCompensator(joint_names[i]));
+    }
 
     //serve_set_gains_ = node_.advertiseService("set_gains", &SrhGraspController::setGains, this);
     //serve_reset_gains_ = node_.advertiseService("reset_gains", &SrhGraspController::resetGains, this);
@@ -458,40 +439,44 @@ namespace controller
     joint[1] = robot_->getJointState(j2);
   }
   
-/*  void SrhGraspController::get_min_max(urdf::Model model, std::string joint_name)
+  void SrhGraspController::get_min_max(urdf::Model model, const std::vector<std::string> & joint_names)
   {
-    int pos = find(joint_names_.begin(), joint_names_.end(), joint_name) - joint_names_.begin();  
-    
-    if (joint_name_[joint_name.size() - 1] == '0')
+    std::string joint_name;
+    for (int i = 0; i < joint_names.size(); ++i)
     {
-      joint_name[joint_name.size() - 1] = '1';
-      std::string j1 = joint_name;
-      joint_name[joint_name.size() - 1] = '2';
-      std::string j2 = joint_name;
+        joint_name = joint_names[i];
+        if (joint_name[joint_name.size() - 1] == '0')
+        {
+            joint_name[joint_name.size() - 1] = '1';
+            std::string j1 = joint_name;
+            joint_name[joint_name.size() - 1] = '2';
+            std::string j2 = joint_name;
 
-      boost::shared_ptr<const urdf::Joint> joint1 = model.getJoint(j1);
-      boost::shared_ptr<const urdf::Joint> joint2 = model.getJoint(j2);
+            boost::shared_ptr<const urdf::Joint> joint1 = model.getJoint(j1);
+            boost::shared_ptr<const urdf::Joint> joint2 = model.getJoint(j2);
 
-      mins_[pos] = joint1->limits->lower + joint2->limits->lower;
-      maxs_[pos] = joint1->limits->upper + joint2->limits->upper;
-      vel_maxs_[pos] = joint1->limits->velocity + joint2->limits->velocity;
-      vel_mins_[pos] = -1 * vel_maxs_[pos];
-      eff_maxs_[pos] = joint1->limits->effort + joint2->limits->effort;
-      eff_mins_[pos] = -1 * eff_maxs_[pos];
+            mins_.push_back(joint1->limits->lower + joint2->limits->lower);
+            maxs_.push_back(joint1->limits->upper + joint2->limits->upper);
+            vel_maxs_.push_back(joint1->limits->velocity + joint2->limits->velocity);
+            vel_mins_.push_back(-1 * vel_maxs_[i]);
+            eff_maxs_.push_back(joint1->limits->effort + joint2->limits->effort);
+            eff_mins_.push_back(-1 * eff_maxs_[i]);
+        }
+        else
+        {
+            boost::shared_ptr<const urdf::Joint> joint = model.getJoint(joint_name);
+
+            mins_.push_back(joint->limits->lower);
+            maxs_.push_back(joint->limits->upper);
+            vel_maxs_.push_back(joint->limits->velocity);
+            vel_mins_.push_back(-1 * vel_maxs_[i]);
+            eff_maxs_.push_back(joint->limits->effort);
+            eff_mins_.push_back(-1 * eff_maxs_[i]);
+        }
     }
-    else
-    {
-      boost::shared_ptr<const urdf::Joint> joint = model.getJoint(joint_name);
 
-      mins_[pos] = joint->limits->lower;
-      maxs_[pos] = joint->limits->upper;
-      vel_maxs_[pos] = joint->limits->velocity;
-      vel_mins_[pos] = -1 * vel_maxs_[pos];
-      eff_maxs_[pos] = joint->limits->effort;
-      eff_mins_[pos] = -1 * eff_maxs_[pos];
-    }
   }
-*/
+
   
 }  // namespace controller
 
