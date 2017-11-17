@@ -107,8 +107,7 @@ namespace controller
       node_.param<int>(gains_ns + "/" + joint_names[i] + "/friction_deadband", friction_deadbands_[i], 5);
     }
 
-    controller_state_publisher_.reset(new realtime_tools::RealtimePublisher<control_msgs::JointControllerState>
-                                              (node_, "state", 1));
+    //controller_state_publisher_.reset(new realtime_tools::RealtimePublisher<control_msgs::JointControllerState>(node_, "state", 1));
 
     //************** debug code ************************
     double p, i, d, i_max, i_min;
@@ -299,7 +298,7 @@ namespace controller
         
     }
     joint_state_->commanded_effort_ = commanded_effort;
-
+/*
     if (loop_count_ % 10 == 0)
     {
       if (controller_state_publisher_ && controller_state_publisher_->trylock())
@@ -330,7 +329,8 @@ namespace controller
         controller_state_publisher_->unlockAndPublish();
       }
     }
-    loop_count_++;    
+    loop_count_++;   
+*/
   }
 
   void SrhGraspController::setCommandCB(const std_msgs::Float64MultiArrayConstPtr &msg)
