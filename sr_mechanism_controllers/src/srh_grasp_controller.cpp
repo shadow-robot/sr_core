@@ -124,6 +124,7 @@ namespace controller
     //**************************************************
 
     joints_.resize(joint_names.size());
+    position_command_.resize(joint_names.size());
     for (int i = 0; i < joint_names.size(); ++i)
     {
         // joint 0s e.g. FFJ0
@@ -193,7 +194,7 @@ namespace controller
     }
 
     sub_command_ = node_.subscribe<std_msgs::Float64MultiArray>("command", 1, &SrhGraspController::setCommandCB, this);
-    
+
     return true;
   }
 
@@ -204,33 +205,40 @@ namespace controller
     {
         pids_[i].reset();
     }
+    
   }
 
   void SrhGraspController::update(const ros::Time &time, const ros::Duration &period)
   {
-
-    if (!has_j2 && !joint_state_->calibrated_)
-    {
-      return;
-    }
-
-    ROS_ASSERT(robot_);
-    ROS_ASSERT(joint_state_->joint_);
-
     if (!initialized_)
     {
       resetJointState();
       initialized_ = true;
     }
-    if (has_j2)
+    
+    for (int i = 0; i < joints_.size(); ++i)
     {
-      command_ = joint_state_->commanded_position_ + joint_state_2->commanded_position_;
+    
+      if (2 == joints_[i].size())
+      {
+          has_j2_=true;
+      }
+        
+      if (!has_j2_ && !joints_[i][0]->calibrated_)
+      {
+        return;
+      }
+    }
+    
+    if (has_j2_)
+    {
+      command_ = joints_[i][0]->commanded_position_ + joints_[i][1]->commanded_position_;
     }
     else
     {
-      command_ = joint_state_->commanded_position_;
+      command_ = joints_[i][0]->commanded_position_;
     }
-    command_ = clamp_command(command_);
+    command_ = clamp_command(command_);  // CHECK!!!!!!
     
     // Compute position demand from position error:
     double error_position = 0.0;
@@ -238,11 +246,11 @@ namespace controller
 
     if (has_j2)
     {
-      error_position = (joint_state_->position_ + joint_state_2->position_) - command_;
+      error_position = (joints_[i][0]->position_ + joints_[i][1]->position_) - command_;
     }
     else
     {
-      error_position = joint_state_->position_ - command_;
+      error_position = joints_[i][0]->position_ - command_;
     }
 
     bool in_deadband = hysteresis_deadband.is_in_deadband(command_, error_position, position_deadband);

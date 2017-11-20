@@ -58,6 +58,7 @@ private:
   std::vector<double> max_force_demands_;
   std::vector<double> position_deadbands_;
   std::vector<int> friction_deadbands_;
+  bool has_j2_;
 
   /// the position deadband value used in the hysteresis_deadband
   double position_deadband;
