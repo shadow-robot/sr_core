@@ -109,20 +109,6 @@ namespace controller
 
     //controller_state_publisher_.reset(new realtime_tools::RealtimePublisher<control_msgs::JointControllerState>(node_, "state", 1));
 
-    //************** debug code ************************
-    double p, i, d, i_max, i_min;
-    for (int k = 0; k < joint_names.size(); ++k)
-    {
-        ROS_INFO_STREAM("Joint " << k << " name: " << joint_names[k]);
-        pids_[k].getGains(p, i, d, i_max, i_min);
-        ROS_INFO_STREAM("P: " << p << " I: " << i << " D: " << d << std::endl);
-        ROS_INFO_STREAM("mfd: " << max_force_demands_[k] << std::endl);
-        ROS_INFO_STREAM("pd: " << position_deadbands_[k] << std::endl);
-        ROS_INFO_STREAM("fd: " << friction_deadbands_[k] << std::endl);
-        
-    }
-    //**************************************************
-
     joints_.resize(joint_names.size());
     position_command_.resize(joint_names.size());
     for (int i = 0; i < joint_names.size(); ++i)
@@ -170,24 +156,9 @@ namespace controller
             }
         }
     }
-    
- 
-    // *********** DEBUG CODE ****************************
-    for (int i = 0; i < joint_names.size(); ++i)
-    {
-        for (int k = 0; k < joints_[i].size(); ++k)
-        ROS_INFO_STREAM("Joint " << joint_names[i] << " position: " << joints_[i][k]->position_);
-    }
-    //**************************************************
 
     get_min_max(robot_->robot_model_, joint_names);
 
-    //**************** DEBUG CODE *****************************
-    for (int i = 0; i < joint_names.size(); ++i)
-    {
-        ROS_INFO_STREAM("Limits: " << mins_[i] << " " << maxs_[i] << " " << vel_mins_[i] << " " << vel_maxs_[i] << " " << eff_mins_[i] << " " << eff_maxs_[i]);
-    }
-    //****************************************************************
     for (int i = 0; i < joint_names.size(); ++i)
     {
         friction_compensator.reset(new sr_friction_compensation::SrFrictionCompensator(joint_names[i]));
@@ -205,7 +176,6 @@ namespace controller
     {
         pids_[i].reset();
     }
-    
   }
 
   void SrhGraspController::update(const ros::Time &time, const ros::Duration &period)
@@ -222,7 +192,6 @@ namespace controller
     
     for (int i = 0; i < joints_.size(); ++i)
     {
-    
       if (2 == joints_[i].size())
       {
           has_j2_=true;
@@ -235,13 +204,13 @@ namespace controller
       
       if (has_j2_)
       {
-        command_ = joints_[i][0]->commanded_position_ + joints_[i][1]->commanded_position_;
+        position_command_[i] = joints_[i][0]->commanded_position_ + joints_[i][1]->commanded_position_;
       }
       else
       {
-        command_ = joints_[i][0]->commanded_position_;
+        position_command_[i] = joints_[i][0]->commanded_position_;
       }
-      command_ = clamp_command(command_);  // CHECK!!!!!!
+      position_command_[i] = clamp_command(position_command_[i]);  // CHECK!!!!!!
       
       // Compute position demand from position error:
       error_position = 0.0;
@@ -249,14 +218,14 @@ namespace controller
       
       if (has_j2_)
       {
-        error_position = (joints_[i][0]->position_ + joints_[i][1]->position_) - command_;
+        error_position = (joints_[i][0]->position_ + joints_[i][1]->position_) - position_command_[i];
       }
       else
       {
-        error_position = joints_[i][0]->position_ - command_;
+        error_position = joints_[i][0]->position_ - position_command_[i];
       }
       
-      in_deadband = hysteresis_deadband.is_in_deadband(command_, error_position, position_deadband);
+      in_deadband = hysteresis_deadband.is_in_deadband(position_command_[i], error_position, position_deadband);
       
       // don't compute the error if we're in the deadband.
       if (in_deadband)
@@ -288,6 +257,9 @@ namespace controller
                                                                         friction_deadbands_[i]);
         }
       }
+      
+      joints_[i][0]->commanded_effort_ = commanded_effort;
+      
     }
 
 //     if ("rh_FFJ3" == joint_name_)
@@ -309,14 +281,13 @@ namespace controller
 //         
 //         
 //     }
-    joint_state_->commanded_effort_ = commanded_effort;
 /*
     if (loop_count_ % 10 == 0)
     {
       if (controller_state_publisher_ && controller_state_publisher_->trylock())
       {
         controller_state_publisher_->msg_.header.stamp = time;
-        controller_state_publisher_->msg_.set_point = command_;
+        controller_state_publisher_->msg_.set_point = position_command_[i];
         if (has_j2)
         {
           controller_state_publisher_->msg_.process_value = joint_state_->position_ + joint_state_2->position_;
@@ -347,7 +318,6 @@ namespace controller
 
   void SrhGraspController::setCommandCB(const std_msgs::Float64MultiArrayConstPtr &msg)
   {
-    
     for (int i = 0; i < joints_.size(); ++i)
     {
         joints_[i][0]->commanded_position_ = msg->data[i];

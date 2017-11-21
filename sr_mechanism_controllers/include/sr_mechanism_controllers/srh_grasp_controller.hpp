@@ -30,6 +30,10 @@
 
 #include <sr_mechanism_controllers/sr_controller.hpp>
 #include <std_msgs/Float64MultiArray.h>
+#include "sr_manipulation_msgs/Grasp.h"
+#include "sr_manipulation_msgs/GraspCommand.h"
+#include "sr_manipulation_msgs/SqueezeDirection.h"
+#include "moveit_msgs/Grasp.h"
 #include "vector"
 
 namespace controller
@@ -51,6 +55,7 @@ public:
   virtual void update(const ros::Time &time, const ros::Duration &period);
 
 private:
+  sr_deadband::HysteresisDeadband<double> hysteresis_deadband;
   std::vector<std::vector<ros_ethercat_model::JointState *> > joints_;
   std::vector<control_toolbox::Pid> pids_;
   std::vector<double> mins_, maxs_, vel_mins_, vel_maxs_, eff_mins_, eff_maxs_;
@@ -58,18 +63,9 @@ private:
   std::vector<double> max_force_demands_;
   std::vector<double> position_deadbands_;
   std::vector<int> friction_deadbands_;
-  bool has_j2_;
-
-  /// the position deadband value used in the hysteresis_deadband
   double position_deadband;
-  
-  boost::scoped_ptr<control_toolbox::Pid> pid_controller_position_;
-
-  /// We're using an hysteresis deadband.
-  sr_deadband::HysteresisDeadband<double> hysteresis_deadband;
-
-  /// read all the controller settings from the parameter server
-  void read_parameters();
+  bool new_command_;
+  bool has_j2_;
 
   void resetJointState();
   bool is_joint_0(const std::string &);
