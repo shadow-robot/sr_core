@@ -216,6 +216,10 @@ namespace controller
       initialized_ = true;
     }
     
+    double error_position;
+    double commanded_effort;
+    bool in_deadband;
+    
     for (int i = 0; i < joints_.size(); ++i)
     {
     
@@ -228,83 +232,83 @@ namespace controller
       {
         return;
       }
-    }
-    
-    if (has_j2_)
-    {
-      command_ = joints_[i][0]->commanded_position_ + joints_[i][1]->commanded_position_;
-    }
-    else
-    {
-      command_ = joints_[i][0]->commanded_position_;
-    }
-    command_ = clamp_command(command_);  // CHECK!!!!!!
-    
-    // Compute position demand from position error:
-    double error_position = 0.0;
-    double commanded_effort = 0.0;
-
-    if (has_j2)
-    {
-      error_position = (joints_[i][0]->position_ + joints_[i][1]->position_) - command_;
-    }
-    else
-    {
-      error_position = joints_[i][0]->position_ - command_;
-    }
-
-    bool in_deadband = hysteresis_deadband.is_in_deadband(command_, error_position, position_deadband);
-
-    // don't compute the error if we're in the deadband.
-    if (in_deadband)
-    {
-      error_position = 0.0;
-    }
-
-    commanded_effort = pid_controller_position_->computeCommand(-error_position, period);
-
-    // clamp the result to max force
-    commanded_effort = min(commanded_effort, (max_force_demand * max_force_factor_));
-    commanded_effort = max(commanded_effort, -(max_force_demand * max_force_factor_));
-
-    if (!in_deadband)
-    {
-      if (has_j2)
+      
+      if (has_j2_)
       {
-        commanded_effort += friction_compensator->friction_compensation(
-                joint_state_->position_ + joint_state_2->position_,
-                joint_state_->velocity_ + joint_state_2->velocity_,
-                static_cast<int>(commanded_effort),
-                friction_deadband);
+        command_ = joints_[i][0]->commanded_position_ + joints_[i][1]->commanded_position_;
       }
       else
       {
-        commanded_effort += friction_compensator->friction_compensation(joint_state_->position_,
-                                                                        joint_state_->velocity_,
-                                                                        static_cast<int>(commanded_effort),
-                                                                        friction_deadband);
+        command_ = joints_[i][0]->commanded_position_;
       }
-    }
+      command_ = clamp_command(command_);  // CHECK!!!!!!
+      
+      // Compute position demand from position error:
+      error_position = 0.0;
+      commanded_effort = 0.0;
+      
+      if (has_j2_)
+      {
+        error_position = (joints_[i][0]->position_ + joints_[i][1]->position_) - command_;
+      }
+      else
+      {
+        error_position = joints_[i][0]->position_ - command_;
+      }
+      
+      in_deadband = hysteresis_deadband.is_in_deadband(command_, error_position, position_deadband);
+      
+      // don't compute the error if we're in the deadband.
+      if (in_deadband)
+      {
+        error_position = 0.0;
+      }
+      
+      commanded_effort = pids_[i].computeCommand(-error_position, period);
 
-    if ("rh_FFJ3" == joint_name_)
-    {
-        if (i < 10000)
+      // clamp the result to max force
+      commanded_effort = min(commanded_effort, (max_force_demands_[i] * max_force_factor_));
+      commanded_effort = max(commanded_effort, -(max_force_demands_[i] * max_force_factor_));
+      
+      if (!in_deadband)
+      {
+        if (has_j2)
         {
-            commanded_effort = 250;
-            i++;
+          commanded_effort += friction_compensator->friction_compensation(
+                joints_[i][0]->position_ + joints_[i][1]->position_,
+                joints_[i][0]->velocity_ + joints_[i][1]->velocity_,
+                static_cast<int>(commanded_effort),
+                friction_deadbands_[i]);
         }
         else
         {
-            commanded_effort = -250;
-            i++;
-            if (i > 20000)
-            {
-                i = 0;
-            }
+          commanded_effort += friction_compensator->friction_compensation(joints_[i][0]->position_,
+                                                                        joints_[i][0]->velocity_,
+                                                                        static_cast<int>(commanded_effort),
+                                                                        friction_deadbands_[i]);
         }
-        
-        
+      }
     }
+
+//     if ("rh_FFJ3" == joint_name_)
+//     {
+//         if (i < 10000)
+//         {
+//             commanded_effort = 250;
+//             i++;
+//         }
+//         else
+//         {
+//             commanded_effort = -250;
+//             i++;
+//             if (i > 20000)
+//             {
+//                 i = 0;
+//             }
+//         }
+//         
+//         
+//     }
     joint_state_->commanded_effort_ = commanded_effort;
 /*
     if (loop_count_ % 10 == 0)
