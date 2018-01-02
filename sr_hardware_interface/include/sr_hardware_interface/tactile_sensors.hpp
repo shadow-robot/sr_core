@@ -250,7 +250,7 @@ public:
   {
     for (unsigned int i = 0; i < btac.electrodes.size(); i++)
     {
-      electrodes[i] = btac.electrodes[i];
+      electrodes.push_back(btac.electrodes[i]);
     }
   };
 
