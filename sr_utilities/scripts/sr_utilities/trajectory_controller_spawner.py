@@ -103,8 +103,8 @@ class TrajectoryControllerSpawner(object):
                     controller_names.append(controller_state.name)
                     if controller_state.name == hand_prefix + '_trajectory_controller':
                         already_running = True
-                #if self.trajectory and not already_running:
-                    #controllers_to_start.append(hand_prefix + '_trajectory_controller')
+                if self.trajectory and not already_running:
+                    controllers_to_start.append(hand_prefix + '_trajectory_controller')
                 for joint in self.joints[hand_prefix]:
                     TrajectoryControllerSpawner.check_joint(joint, controllers_to_start, controller_names)
 
