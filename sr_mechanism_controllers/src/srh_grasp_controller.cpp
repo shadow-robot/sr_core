@@ -96,6 +96,7 @@ namespace controller
     max_force_demands_.resize(joint_names.size());
     position_deadbands_.resize(joint_names.size());
     friction_deadbands_.resize(joint_names.size());
+
     for (int i = 0; i < joint_names.size(); ++i)
     {
       if (!pids_[i].init(ros::NodeHandle(gains_ns + "/" + joint_names[i])))
@@ -106,23 +107,6 @@ namespace controller
       node_.param<double>(gains_ns + "/" + joint_names[i] + "/position_deadband", position_deadbands_[i], 0.015);
       node_.param<int>(gains_ns + "/" + joint_names[i] + "/friction_deadband", friction_deadbands_[i], 5);
     }
-
-    //controller_state_publisher_.reset(new realtime_tools::RealtimePublisher<control_msgs::JointControllerState>(node_, "state", 1));
-
-
-    //************** debug code ************************
-    double p, i, d, i_max, i_min;
-    for (int k = 0; k < joint_names.size(); ++k)
-    {
-        ROS_INFO_STREAM("Joint " << k << " name: " << joint_names[k]);
-        pids_[k].getGains(p, i, d, i_max, i_min);
-        ROS_INFO_STREAM("P: " << p << " I: " << i << " D: " << d << std::endl);
-        ROS_INFO_STREAM("mfd: " << max_force_demands_[k] << std::endl);
-        ROS_INFO_STREAM("pd: " << position_deadbands_[k] << std::endl);
-        ROS_INFO_STREAM("fd: " << friction_deadbands_[k] << std::endl);
-        
-    }
-    //**************************************************
 
     joints_.resize(joint_names.size());
     position_command_.resize(joint_names.size());
@@ -200,7 +184,7 @@ namespace controller
       resetJointState();
       initialized_ = true;
     }
-    
+
     double error_position;
     double commanded_effort;
     bool in_deadband;
@@ -275,44 +259,11 @@ namespace controller
       
       joints_[i][0]->commanded_effort_ = commanded_effort;
       
-    }
-
-    if (loop_count_ % 10 == 0)
-    {
-      if (controller_state_publisher_ && controller_state_publisher_->trylock())
-      {
-        controller_state_publisher_->msg_.header.stamp = time;
-        controller_state_publisher_->msg_.set_point = position_command_[i];
-        if (has_j2)
-        {
-          controller_state_publisher_->msg_.process_value = joint_state_->position_ + joint_state_2->position_;
-          controller_state_publisher_->msg_.process_value_dot = joint_state_->velocity_ + joint_state_2->velocity_;
-        }
-        else
-        {
-          controller_state_publisher_->msg_.process_value = joint_state_->position_;
-          controller_state_publisher_->msg_.process_value_dot = joint_state_->velocity_;
-        }
-
-        controller_state_publisher_->msg_.error = error_position;
-        controller_state_publisher_->msg_.time_step = period.toSec();
-        controller_state_publisher_->msg_.command = joint_state_->commanded_position_;
-
-        double dummy;
-        getGains(controller_state_publisher_->msg_.p,
-                 controller_state_publisher_->msg_.i,
-                 controller_state_publisher_->msg_.d,
-                 controller_state_publisher_->msg_.i_clamp,
-                 dummy);
-        controller_state_publisher_->unlockAndPublish();
-      }
-    }
-    loop_count_++;   
+    }  
   }
 
   void SrhGraspController::setCommandCB(const std_msgs::Float64MultiArrayConstPtr &msg)
   {
-    ROS_INFO_STREAM("yo");
     for (int i = 0; i < joints_.size(); ++i)
     {
         joints_[i][0]->commanded_position_ = msg->data[i];
@@ -329,14 +280,14 @@ namespace controller
     {
         if (2 == joints_[i].size())
         {
-        joints_[i][0]->commanded_position_ = joints_[i][0]->position_;
-        joints_[i][1]->commanded_position_ = joints_[i][1]->position_;
-        position_command_[i] = joints_[i][0]->position_ + joints_[i][1]->position_;
+          joints_[i][0]->commanded_position_ = joints_[i][0]->position_;
+          joints_[i][1]->commanded_position_ = joints_[i][1]->position_;
+          position_command_[i] = joints_[i][0]->position_ + joints_[i][1]->position_;
         }
         else
         {
-        joints_[i][0]->commanded_position_ = joints_[i][0]->position_;
-        position_command_[i] = joints_[i][0]->position_;
+          joints_[i][0]->commanded_position_ = joints_[i][0]->position_;
+          position_command_[i] = joints_[i][0]->position_;
         }
     }
   }
