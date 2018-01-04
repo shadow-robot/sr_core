@@ -109,6 +109,21 @@ namespace controller
 
     //controller_state_publisher_.reset(new realtime_tools::RealtimePublisher<control_msgs::JointControllerState>(node_, "state", 1));
 
+
+    //************** debug code ************************
+    double p, i, d, i_max, i_min;
+    for (int k = 0; k < joint_names.size(); ++k)
+    {
+        ROS_INFO_STREAM("Joint " << k << " name: " << joint_names[k]);
+        pids_[k].getGains(p, i, d, i_max, i_min);
+        ROS_INFO_STREAM("P: " << p << " I: " << i << " D: " << d << std::endl);
+        ROS_INFO_STREAM("mfd: " << max_force_demands_[k] << std::endl);
+        ROS_INFO_STREAM("pd: " << position_deadbands_[k] << std::endl);
+        ROS_INFO_STREAM("fd: " << friction_deadbands_[k] << std::endl);
+        
+    }
+    //**************************************************
+
     joints_.resize(joint_names.size());
     position_command_.resize(joint_names.size());
     for (int i = 0; i < joint_names.size(); ++i)
@@ -262,26 +277,6 @@ namespace controller
       
     }
 
-//     if ("rh_FFJ3" == joint_name_)
-//     {
-//         if (i < 10000)
-//         {
-//             commanded_effort = 250;
-//             i++;
-//         }
-//         else
-//         {
-//             commanded_effort = -250;
-//             i++;
-//             if (i > 20000)
-//             {
-//                 i = 0;
-//             }
-//         }
-//         
-//         
-//     }
-/*
     if (loop_count_ % 10 == 0)
     {
       if (controller_state_publisher_ && controller_state_publisher_->trylock())
@@ -313,11 +308,11 @@ namespace controller
       }
     }
     loop_count_++;   
-*/
   }
 
   void SrhGraspController::setCommandCB(const std_msgs::Float64MultiArrayConstPtr &msg)
   {
+    ROS_INFO_STREAM("yo");
     for (int i = 0; i < joints_.size(); ++i)
     {
         joints_[i][0]->commanded_position_ = msg->data[i];
