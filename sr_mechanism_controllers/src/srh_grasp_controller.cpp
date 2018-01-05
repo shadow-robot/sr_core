@@ -215,8 +215,8 @@ namespace controller
         position_command_[i] = joints_[i][0]->commanded_position_;
       }
 
-      // position_command_[i] = clamp_command(position_command_[i]);  // CHECK!!!!!!
-      
+      position_command_[i] = clamp_command(position_command_[i], mins_[i], maxs_[i]);
+
       // Compute position demand from position error:
       error_position = 0.0;
       commanded_effort = 0.0;
@@ -230,13 +230,13 @@ namespace controller
         error_position = joints_[i][0]->position_ - position_command_[i];
       }
       
-      //in_deadband = hysteresis_deadband.is_in_deadband(position_command_[i], error_position, position_deadband);
+      in_deadband = hysteresis_deadband.is_in_deadband(position_command_[i], error_position, position_deadbands_[i]);
       
       // don't compute the error if we're in the deadband.
-      //if (in_deadband)
-      //{
-      //  error_position = 0.0;
-      //}
+      if (in_deadband)
+      {
+       error_position = 0.0;
+      }
       
       commanded_effort = pids_[i].computeCommand(-error_position, period);
 
@@ -262,7 +262,6 @@ namespace controller
                                                                         friction_deadbands_[i]);
         }
       }
-      
       joints_[i][0]->commanded_effort_ = commanded_effort;
     } 
   }
@@ -272,7 +271,6 @@ namespace controller
     for (int i = 0; i < joints_.size(); ++i)
     {
         joints_[i][0]->commanded_position_ = msg->data[i];
-        ROS_INFO_STREAM("Commanded position: " << joints_[i][0]->commanded_position_);
         if (2 == joints_[i].size())
         {
         joints_[i][1]->commanded_position_ = 0.0;
@@ -361,11 +359,5 @@ namespace controller
 
   
 }  // namespace controller
-
-/* For the emacs weenies in the crowd.
-Local Variables:
-   c-basic-offset: 2
-End:
- */
 
 
