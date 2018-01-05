@@ -33,7 +33,7 @@ class GraspControllerSpawner(object):
 
     @staticmethod
     def check_joint(joint, controllers_to_start, controller_names):
-        joint_controller='hand_g_grasp_controller'
+        joint_controller='sh_rh_grasp_controller'
         if joint_controller not in controller_names and joint_controller not in controllers_to_start:
             controllers_to_start.append(joint_controller)
 
