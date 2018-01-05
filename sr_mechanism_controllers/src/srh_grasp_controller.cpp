@@ -45,7 +45,6 @@ namespace controller
 {
 
   SrhGraspController::SrhGraspController()
-          : position_deadband(0.015)
   {
   }
 
@@ -57,7 +56,6 @@ namespace controller
     node_ = n;
     using XmlRpc::XmlRpcValue;
     XmlRpc::XmlRpcValue joint_names_xml;
-    std::vector<std::string> joint_names;
     
     try
     {
@@ -83,7 +81,7 @@ namespace controller
 
     for (int i = 0; i < joint_names_xml.size(); ++i)
     {
-        joint_names.push_back(static_cast<std::string>(joint_names_xml[i]).c_str());
+        joint_names_.push_back(static_cast<std::string>(joint_names_xml[i]).c_str());
     }
 
     std::string gains_ns;
@@ -92,46 +90,48 @@ namespace controller
       gains_ns = node_.getNamespace() + "/gains";
     }
     
-    pids_.resize(joint_names.size());
-    max_force_demands_.resize(joint_names.size());
-    position_deadbands_.resize(joint_names.size());
-    friction_deadbands_.resize(joint_names.size());
+    pids_.resize(joint_names_.size());
+    max_force_demands_.resize(joint_names_.size());
+    position_deadbands_.resize(joint_names_.size());
+    friction_deadbands_.resize(joint_names_.size());
+    lookup_pos_.resize(joint_names_.size());
+    lookup_torq_.resize(joint_names_.size());
 
-    for (int i = 0; i < joint_names.size(); ++i)
+    for (int i = 0; i < joint_names_.size(); ++i)
     {
-      if (!pids_[i].init(ros::NodeHandle(gains_ns + "/" + joint_names[i])))
+      if (!pids_[i].init(ros::NodeHandle(gains_ns + "/" + joint_names_[i])))
       {
         return false;
       }
-      node_.param<double>(gains_ns + "/" + joint_names[i] + "/max_force", max_force_demands_[i], 1023.0);
-      node_.param<double>(gains_ns + "/" + joint_names[i] + "/position_deadband", position_deadbands_[i], 0.015);
-      node_.param<int>(gains_ns + "/" + joint_names[i] + "/friction_deadband", friction_deadbands_[i], 5);
+      node_.param<double>(gains_ns + "/" + joint_names_[i] + "/max_force", max_force_demands_[i], 1023.0);
+      node_.param<double>(gains_ns + "/" + joint_names_[i] + "/position_deadband", position_deadbands_[i], 0.015);
+      node_.param<int>(gains_ns + "/" + joint_names_[i] + "/friction_deadband", friction_deadbands_[i], 5);
     }
 
-    joints_.resize(joint_names.size());
-    position_command_.resize(joint_names.size());
-    for (int i = 0; i < joint_names.size(); ++i)
+    joints_.resize(joint_names_.size());
+    position_command_.resize(joint_names_.size());
+    for (int i = 0; i < joint_names_.size(); ++i)
     {
         // joint 0s e.g. FFJ0
-        has_j2 = is_joint_0(joint_names[i]);
+        has_j2 = is_joint_0(joint_names_[i]);
         if (has_j2)
         {
-            get_joints_states_1_2(joint_names[i], joints_[i]);
+            get_joints_states_1_2(joint_names_[i], joints_[i]);
             if (!joints_[i][0])
             {
                 ROS_ERROR("SrhGraspController could not find the first joint relevant to \"%s\"\n",
-                        joint_names[i]);
+                        joint_names_[i]);
                 return false;
             }
             if (!joints_[i][1])
             {
                 ROS_ERROR("SrhGraspController could not find the second joint relevant to \"%s\"\n",
-                        joint_names[i]);
+                        joint_names_[i]);
                 return false;
             }
             if (!joints_[i][1]->calibrated_)
             {
-                ROS_ERROR("Joint %s not calibrated for SrhGraspController", joint_names[i]);
+                ROS_ERROR("Joint %s not calibrated for SrhGraspController", joint_names_[i]);
                 return false;
             }
             else
@@ -142,28 +142,29 @@ namespace controller
         else
         {
             joints_[i].push_back(NULL);
-            joints_[i][0] = robot_->getJointState(joint_names[i]);
+            joints_[i][0] = robot_->getJointState(joint_names_[i]);
             if (!joints_[i][0])
             {
-                ROS_ERROR("SrhGraspController could not find joint named \"%s\"\n", joint_names[i]);
+                ROS_ERROR("SrhGraspController could not find joint named \"%s\"\n", joint_names_[i]);
                 return false;
             }
             if (!joints_[i][0]->calibrated_)
             {
-                ROS_ERROR("Joint %s not calibrated for SrhGraspnController", joint_names[i]);
+                ROS_ERROR("Joint %s not calibrated for SrhGraspnController", joint_names_[i]);
                 return false;
             }
         }
     }
 
-    get_min_max(robot_->robot_model_, joint_names);
+    get_min_max(robot_->robot_model_, joint_names_);
 
-    for (int i = 0; i < joint_names.size(); ++i)
+    for (int i = 0; i < joint_names_.size(); ++i)
     {
-        friction_compensator.reset(new sr_friction_compensation::SrFrictionCompensator(joint_names[i]));
+        friction_compensator.reset(new sr_friction_compensation::SrFrictionCompensator(joint_names_[i]));
     }
 
     sub_command_ = node_.subscribe<std_msgs::Float64MultiArray>("command", 1, &SrhGraspController::setCommandCB, this);
+    grasp_command_ = node_.subscribe("grasp_cmd", 1, &SrhGraspController::grasp_command_CB, this);
 
     return true;
   }
@@ -179,8 +180,6 @@ namespace controller
 
   void SrhGraspController::update(const ros::Time &time, const ros::Duration &period)
   {
-    int lol = 0;
-    
     if (!initialized_)
     {
       resetJointState();
@@ -278,6 +277,53 @@ namespace controller
     }
   }
 
+  void SrhGraspController::grasp_command_CB(const sr_manipulation_msgs::GraspCommand::ConstPtr &command)
+  {
+    Grasp_State commanded_state;
+    sr_manipulation_msgs::Grasp grasp_info;
+    sr_manipulation_msgs::SqueezeDirection squeeze_direction;
+    moveit_msgs::Grasp moveit_grasp;
+
+    commanded_state = (Grasp_State)command->grasp_state;
+    // Extract max_torque
+    max_torque_ = command->max_torque;
+    // extract grasp info message
+    grasp_info = command->grasp_info;
+    squeeze_direction = grasp_info.squeeze_direction;
+    moveit_grasp = grasp_info.grasp;
+    hand_id_ = grasp_info.hand_id;
+    // retrieve squeeze direction and joint positions with proper mapping
+    lookup_pos_ = std::vector<int>(lookup_pos_.size(), -1);
+    lookup_torq_ = std::vector<int>(lookup_torq_.size(), -1);
+
+    for (size_t i = 0; i < joints_.size(); ++i)
+    {
+      for (size_t k = 0; k < moveit_grasp.pre_grasp_posture.joint_names.size(); ++k)
+      {
+        if (moveit_grasp.pre_grasp_posture.joint_names[k] == joint_names_[i])
+        {
+          lookup_pos_[i] = k;
+          break;
+        }
+      }
+
+      if (lookup_pos_[i] == -1)
+      {
+        ROS_ERROR_STREAM("Unable to locate joint " << joint_names_[i] << " for position.");
+        return;
+      }
+
+      if (commanded_state == PRE_GRASP)
+      {
+        joints_[i][0]->commanded_position_ = moveit_grasp.pre_grasp_posture.points.back().positions[lookup_pos_[i]];
+        if (2 == joints_[i].size())
+        {
+            joints_[i][1]->commanded_position_ = 0.0;
+        }
+      }
+    }
+  }
+
   void SrhGraspController::resetJointState()
   {
     for (int i = 0; i < joints_.size(); ++i)
@@ -356,8 +402,6 @@ namespace controller
     }
 
   }
-
-  
 }  // namespace controller
 
 

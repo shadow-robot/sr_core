@@ -55,6 +55,7 @@ public:
   virtual void update(const ros::Time &time, const ros::Duration &period);
 
 private:
+  enum Grasp_State {PRE_GRASP = 0, GRASP = 1};
   sr_deadband::HysteresisDeadband<double> hysteresis_deadband;
   std::vector<std::vector<ros_ethercat_model::JointState *> > joints_;
   std::vector<control_toolbox::Pid> pids_;
@@ -63,7 +64,12 @@ private:
   std::vector<double> max_force_demands_;
   std::vector<double> position_deadbands_;
   std::vector<int> friction_deadbands_;
-  double position_deadband;
+  std::vector<int> lookup_pos_;
+  std::vector<int> lookup_torq_;
+  std::vector<std::string> joint_names_;
+  std::string hand_id_;
+  ros::Subscriber grasp_command_;
+  float max_torque_;
   bool new_command_;
   bool has_j2_;
 
@@ -72,6 +78,7 @@ private:
   void get_joints_states_1_2(const std::string &, std::vector<ros_ethercat_model::JointState*> &);
   void get_min_max(urdf::Model model, const std::vector<std::string> &);
   void setCommandCB(const std_msgs::Float64MultiArrayConstPtr &msg);
+  void grasp_command_CB(const sr_manipulation_msgs::GraspCommand::ConstPtr &command);
   
 };
 }  // namespace controller
