@@ -113,7 +113,6 @@ namespace controller
         node_.param<double>(gains_ns + "/" + joint_names_[i] + "/position_deadband", position_deadbands_[i], 0.015);
         node_.param<int>(gains_ns + "/" + joint_names_[i] + "/friction_deadband", friction_deadbands_[i], 5);
 
-        // joint 0s e.g. FFJ0
         has_j2 = is_joint_0(joint_names_[i]);
         if (has_j2)
         {
@@ -180,7 +179,6 @@ namespace controller
     double commanded_effort;
     bool in_deadband;
     float current_torque;
-    ros::Duration d(0.5);
 
     if (!initialized_)
     {
@@ -213,7 +211,7 @@ namespace controller
           new_command_ = false;
         }
 
-        if((time - phase1_start_time_) > d)
+        if((time - phase1_start_time_) > (ros::Duration)0.15)
         {
           control_stage_ = PHASE_TWO;
         }
@@ -238,9 +236,9 @@ namespace controller
 
     for (int i = 0; i < joints_.size(); ++i)
     {
-      has_j2_ = (2 == joints_[i].size());
       error_position = 0.0;
       commanded_effort = 0.0;
+      has_j2_ = (2 == joints_[i].size());
         
       if (!has_j2_ && !joints_[i][0]->calibrated_)
       {
@@ -265,7 +263,6 @@ namespace controller
         
         in_deadband = hysteresis_deadband.is_in_deadband(position_command_[i], error_position, position_deadbands_[i]);
         
-        // don't compute the error if we're in the deadband.
         if (in_deadband)
         {
         error_position = 0.0;
@@ -273,7 +270,6 @@ namespace controller
         
         commanded_effort = pids_[i].computeCommand(-error_position, period);
 
-        // clamp the result to max force
         commanded_effort = min(commanded_effort, (max_force_demands_[i] * max_force_factor_));
         commanded_effort = max(commanded_effort, -(max_force_demands_[i] * max_force_factor_));
         
@@ -324,14 +320,11 @@ namespace controller
     moveit_msgs::Grasp moveit_grasp;
 
     commanded_state = (Grasp_State)command->grasp_state;
-    // Extract max_torque
     max_torque_ = command->max_torque;
-    // extract grasp info message
     grasp_info = command->grasp_info;
     squeeze_direction = grasp_info.squeeze_direction;
     moveit_grasp = grasp_info.grasp;
     hand_id_ = grasp_info.hand_id;
-    // retrieve squeeze direction and joint positions with proper mapping
     lookup_pos_ = std::vector<int>(lookup_pos_.size(), -1);
     lookup_torq_ = std::vector<int>(lookup_torq_.size(), -1);
 
@@ -373,7 +366,7 @@ namespace controller
             break;
           }
         }
-        
+
         joints_[i][0]->commanded_position_ = moveit_grasp.grasp_posture.points.back().positions[lookup_pos_[i]];
         if (2 == joints_[i].size())
         {
