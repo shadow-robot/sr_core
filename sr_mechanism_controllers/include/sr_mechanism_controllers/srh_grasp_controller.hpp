@@ -56,6 +56,8 @@ public:
 
 private:
   enum Grasp_State {PRE_GRASP = 0, GRASP = 1};
+  enum Mode_State {TORQUE = 0, POSITION = 1};
+  enum Controller_Phase {PHASE_ONE = 0, PHASE_TWO = 1, PHASE_THREE = 2};
   sr_deadband::HysteresisDeadband<double> hysteresis_deadband;
   std::vector<std::vector<ros_ethercat_model::JointState *> > joints_;
   std::vector<control_toolbox::Pid> pids_;
@@ -63,12 +65,17 @@ private:
   std::vector<double> position_command_;
   std::vector<double> max_force_demands_;
   std::vector<double> position_deadbands_;
+  std::vector<double> torque_direction_;
   std::vector<int> friction_deadbands_;
   std::vector<int> lookup_pos_;
   std::vector<int> lookup_torq_;
   std::vector<std::string> joint_names_;
+  std::vector<Mode_State> mode_;
   std::string hand_id_;
   ros::Subscriber grasp_command_;
+  ros::Time phase1_start_time_;
+  Grasp_State commanded_state_;
+  Controller_Phase control_stage_;
   float max_torque_;
   bool new_command_;
   bool has_j2_;
