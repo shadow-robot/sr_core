@@ -52,6 +52,7 @@ namespace controller
   {
     ROS_ASSERT(robot);
     std::string robot_state_name;
+    std::string gains_ns;
     node_.param<std::string>("robot_state_name", robot_state_name, "unique_robot_hw");
     node_ = n;
     using XmlRpc::XmlRpcValue;
@@ -86,12 +87,6 @@ namespace controller
         joint_names_.push_back(static_cast<std::string>(joint_names_xml[i]).c_str());
     }
 
-    std::string gains_ns;
-    if (!node_.getParam("gains", gains_ns))
-    {
-      gains_ns = node_.getNamespace() + "/gains";
-    }
-    
     pids_.resize(joint_names_.size());
     max_force_demands_.resize(joint_names_.size());
     position_deadbands_.resize(joint_names_.size());
@@ -100,22 +95,24 @@ namespace controller
     lookup_torq_.resize(joint_names_.size());
     mode_.resize(joint_names_.size());
     torque_direction_.resize(joint_names_.size());
-
-    for (int i = 0; i < joint_names_.size(); ++i)
-    {
-      if (!pids_[i].init(ros::NodeHandle(gains_ns + "/" + joint_names_[i])))
-      {
-        return false;
-      }
-      node_.param<double>(gains_ns + "/" + joint_names_[i] + "/max_force", max_force_demands_[i], 1023.0);
-      node_.param<double>(gains_ns + "/" + joint_names_[i] + "/position_deadband", position_deadbands_[i], 0.015);
-      node_.param<int>(gains_ns + "/" + joint_names_[i] + "/friction_deadband", friction_deadbands_[i], 5);
-    }
-
     joints_.resize(joint_names_.size());
     position_command_.resize(joint_names_.size());
+
+    if (!node_.getParam("gains", gains_ns))
+    {
+      gains_ns = node_.getNamespace() + "/gains";
+    }
+
     for (int i = 0; i < joint_names_.size(); ++i)
     {
+        if (!pids_[i].init(ros::NodeHandle(gains_ns + "/" + joint_names_[i])))
+        {
+          return false;
+        }
+        node_.param<double>(gains_ns + "/" + joint_names_[i] + "/max_force", max_force_demands_[i], 1023.0);
+        node_.param<double>(gains_ns + "/" + joint_names_[i] + "/position_deadband", position_deadbands_[i], 0.015);
+        node_.param<int>(gains_ns + "/" + joint_names_[i] + "/friction_deadband", friction_deadbands_[i], 5);
+
         // joint 0s e.g. FFJ0
         has_j2 = is_joint_0(joint_names_[i]);
         if (has_j2)
@@ -158,15 +155,10 @@ namespace controller
                 return false;
             }
         }
-    }
-
-    get_min_max(robot_->robot_model_, joint_names_);
-
-    for (int i = 0; i < joint_names_.size(); ++i)
-    {
         friction_compensator.reset(new sr_friction_compensation::SrFrictionCompensator(joint_names_[i]));
     }
 
+    get_min_max(robot_->robot_model_, joint_names_);
     sub_command_ = node_.subscribe<std_msgs::Float64MultiArray>("command", 1, &SrhGraspController::setCommandCB, this);
     grasp_command_ = node_.subscribe("grasp_cmd", 1, &SrhGraspController::grasp_command_CB, this);
 
@@ -184,29 +176,27 @@ namespace controller
 
   void SrhGraspController::update(const ros::Time &time, const ros::Duration &period)
   {
-    if (!initialized_)
-    {
-      resetJointState();
-      initialized_ = true;
-    }
-
     double error_position;
     double commanded_effort;
     bool in_deadband;
     float current_torque;
     ros::Duration d(0.5);
 
+    if (!initialized_)
+    {
+      resetJointState();
+      initialized_ = true;
+    }
+
     switch (commanded_state_)
     {
       case PRE_GRASP:
         if (new_command_ == true)
         {
-          // Set all joints to Position mode
           for (size_t i = 0; i < joints_.size(); ++i)
           {
             mode_[i] = POSITION;
           }
-          // pos_max_torque_ = pos_high_max_torque_;
           new_command_ = false;
         }
         break;
@@ -215,7 +205,7 @@ namespace controller
         {
           control_stage_ = PHASE_ONE;
           phase1_start_time_ = ros::Time::now();
-          // Set all joints to Position mode
+
           for (size_t i = 0; i < joints_.size(); ++i)
           {
             mode_[i] = POSITION;
@@ -248,14 +238,9 @@ namespace controller
 
     for (int i = 0; i < joints_.size(); ++i)
     {
-      if (2 == joints_[i].size())
-      {
-          has_j2_= true;
-      }
-      else
-      {
-          has_j2_= false;
-      }
+      has_j2_ = (2 == joints_[i].size());
+      error_position = 0.0;
+      commanded_effort = 0.0;
         
       if (!has_j2_ && !joints_[i][0]->calibrated_)
       {
@@ -264,27 +249,17 @@ namespace controller
 
       if (mode_[i] == POSITION)
       {
+
         if (has_j2_)
         {
           position_command_[i] = joints_[i][0]->commanded_position_ + joints_[i][1]->commanded_position_;
-        }
-        else
-        {
-          position_command_[i] = joints_[i][0]->commanded_position_;
-        }
-
-        position_command_[i] = clamp_command(position_command_[i], mins_[i], maxs_[i]);
-
-        // Compute position demand from position error:
-        error_position = 0.0;
-        commanded_effort = 0.0;
-        
-        if (has_j2_)
-        {
+          position_command_[i] = clamp_command(position_command_[i], mins_[i], maxs_[i]);
           error_position = (joints_[i][0]->position_ + joints_[i][1]->position_) - position_command_[i];
         }
         else
         {
+          position_command_[i] = joints_[i][0]->commanded_position_;
+          position_command_[i] = clamp_command(position_command_[i], mins_[i], maxs_[i]);
           error_position = joints_[i][0]->position_ - position_command_[i];
         }
         
@@ -315,9 +290,9 @@ namespace controller
           else
           {
             commanded_effort += friction_compensator->friction_compensation(joints_[i][0]->position_,
-                                                                          joints_[i][0]->velocity_,
-                                                                          static_cast<int>(commanded_effort),
-                                                                          friction_deadbands_[i]);
+                                                                            joints_[i][0]->velocity_,
+                                                                            static_cast<int>(commanded_effort),
+                                                                            friction_deadbands_[i]);
           }
         }
         joints_[i][0]->commanded_effort_ = commanded_effort;
@@ -336,7 +311,7 @@ namespace controller
         joints_[i][0]->commanded_position_ = msg->data[i];
         if (2 == joints_[i].size())
         {
-        joints_[i][1]->commanded_position_ = 0.0;
+          joints_[i][1]->commanded_position_ = 0.0;
         }
     }
   }
@@ -373,11 +348,12 @@ namespace controller
             break;
           }
         }
-      joints_[i][0]->commanded_position_ = moveit_grasp.pre_grasp_posture.points.back().positions[lookup_pos_[i]];
-      if (2 == joints_[i].size())
-      {
-           joints_[i][1]->commanded_position_ = 0.0;
-      }
+
+        joints_[i][0]->commanded_position_ = moveit_grasp.pre_grasp_posture.points.back().positions[lookup_pos_[i]];
+        if (2 == joints_[i].size())
+        {
+            joints_[i][1]->commanded_position_ = 0.0;
+        }
       }
       else
       {
@@ -397,11 +373,12 @@ namespace controller
             break;
           }
         }
-      joints_[i][0]->commanded_position_ = moveit_grasp.grasp_posture.points.back().positions[lookup_pos_[i]];
-      if (2 == joints_[i].size())
-      {
-           joints_[i][1]->commanded_position_ = 0.0;
-      }
+        
+        joints_[i][0]->commanded_position_ = moveit_grasp.grasp_posture.points.back().positions[lookup_pos_[i]];
+        if (2 == joints_[i].size())
+        {
+            joints_[i][1]->commanded_position_ = 0.0;
+        }
       }
 
       if (lookup_pos_[i] == -1)
