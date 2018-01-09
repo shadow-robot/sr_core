@@ -229,7 +229,7 @@ namespace controller
               mode_[i] = POSITION;
             }
           }
-          current_torque = 200;
+          current_torque = max_torque_;
         }
         break;
     }
