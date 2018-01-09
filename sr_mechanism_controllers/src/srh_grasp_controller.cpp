@@ -33,6 +33,7 @@
 #include <math.h>
 #include <sstream>
 #include <string>
+#include <vector>
 
 #include <std_msgs/Float64.h>
 #include <std_msgs/Float64MultiArray.h>
@@ -48,7 +49,6 @@ namespace controller
 
 SrhGraspController::SrhGraspController()
 {
-
 }
 
 bool SrhGraspController::init(ros_ethercat_model::RobotStateInterface *robot,
@@ -242,7 +242,9 @@ void SrhGraspController::update(const ros::Time &time,
         if (torque_direction_[i] != 0)
         {
           mode_[i] = TORQUE;
-        } else {
+        }
+        else
+        {
           mode_[i] = POSITION;
         }
       }
@@ -484,4 +486,4 @@ void SrhGraspController::get_min_max(
     }
   }
 }
-} // namespace controller
+}  // namespace controller
