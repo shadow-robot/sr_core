@@ -19,27 +19,26 @@
 * with this program.  If not, see <http://www.gnu.org/licenses/>.
 *
 *
- * @brief  Follows a position target. The position demand is converted into a force
+ * @brief  Follows a position target. The position demand is converted into a
+* force
  * demand by a PID loop.
  *
  */
 
-
 #ifndef _SRH_GRASP_CONTROLLER_HPP_
 #define _SRH_GRASP_CONTROLLER_HPP_
 
-#include <sr_mechanism_controllers/sr_controller.hpp>
-#include <std_msgs/Float64MultiArray.h>
+#include "moveit_msgs/Grasp.h"
 #include "sr_manipulation_msgs/Grasp.h"
 #include "sr_manipulation_msgs/GraspCommand.h"
 #include "sr_manipulation_msgs/SqueezeDirection.h"
-#include "moveit_msgs/Grasp.h"
 #include "vector"
+#include <sr_mechanism_controllers/sr_controller.hpp>
+#include <std_msgs/Float64MultiArray.h>
 
 namespace controller
 {
-class SrhGraspController :
-        public SrController
+class SrhGraspController : public SrController
 {
 public:
   SrhGraspController();
@@ -55,9 +54,9 @@ public:
   virtual void update(const ros::Time &time, const ros::Duration &period);
 
 private:
-  enum Grasp_State {PRE_GRASP = 0, GRASP = 1};
-  enum Mode_State {TORQUE = 0, POSITION = 1};
-  enum Controller_Phase {PHASE_ONE = 0, PHASE_TWO = 1, PHASE_THREE = 2};
+  enum Grasp_State { PRE_GRASP = 0, GRASP = 1 };
+  enum Mode_State { TORQUE = 0, POSITION = 1 };
+  enum Controller_Phase { PHASE_ONE = 0, PHASE_TWO = 1, PHASE_THREE = 2 };
   sr_deadband::HysteresisDeadband<double> hysteresis_deadband;
   std::vector<std::vector<ros_ethercat_model::JointState *> > joints_;
   std::vector<control_toolbox::Pid> pids_;
@@ -82,12 +81,12 @@ private:
 
   void resetJointState();
   bool is_joint_0(const std::string &);
-  void get_joints_states_1_2(const std::string &, std::vector<ros_ethercat_model::JointState*> &);
+  void get_joints_states_1_2(const std::string &,
+                             std::vector<ros_ethercat_model::JointState *> &);
   void get_min_max(urdf::Model model, const std::vector<std::string> &);
-  void setCommandCB(const std_msgs::Float64MultiArrayConstPtr &msg);
-  void grasp_command_CB(const sr_manipulation_msgs::GraspCommand::ConstPtr &command);
-  
+  void
+  grasp_command_CB(const sr_manipulation_msgs::GraspCommand::ConstPtr &command);
 };
-}  // namespace controller
+} // namespace controller
 
 #endif
