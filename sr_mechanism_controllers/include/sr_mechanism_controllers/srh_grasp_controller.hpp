@@ -32,7 +32,8 @@
 #include "sr_manipulation_msgs/Grasp.h"
 #include "sr_manipulation_msgs/GraspCommand.h"
 #include "sr_manipulation_msgs/SqueezeDirection.h"
-#include "vector"
+#include <vector>
+#include <string>
 #include <sr_mechanism_controllers/sr_controller.hpp>
 #include <std_msgs/Float64MultiArray.h>
 
@@ -87,6 +88,6 @@ private:
   void
   grasp_command_CB(const sr_manipulation_msgs::GraspCommand::ConstPtr &command);
 };
-} // namespace controller
+}  // namespace controller
 
 #endif
