@@ -20,58 +20,30 @@ import yaml
 import rospkg
 from controller_manager_msgs.srv import ListControllers
 from controller_manager_msgs.srv import SwitchController, LoadController
-from sr_utilities.hand_finder import HandFinder
 from std_msgs.msg import Bool
 
 
 class GraspControllerSpawner(object):
     def __init__(self, service_timeout):
         self.service_timeout = service_timeout
-        self.hand_finder = HandFinder()
-        self.joints = self.hand_finder.get_hand_joints()
-        self.hand_mapping = self.hand_finder.get_hand_parameters().mapping
-
-    @staticmethod
-    def check_joint(joint, controllers_to_start, controller_names):
-        joint_controller = 'sh_rh_grasp_controller'
-        if joint_controller not in controller_names and joint_controller not in controllers_to_start:
-            controllers_to_start.append(joint_controller)
 
     def set_controller(self):
-        controllers_to_start = []
-        for hand_serial in self.hand_mapping:
-            hand_prefix = self.hand_mapping[hand_serial]
-            success = True
-            try:
-                rospy.wait_for_service('controller_manager/list_controllers', self.service_timeout)
-                list_controllers = rospy.ServiceProxy(
-                    'controller_manager/list_controllers', ListControllers)
-                running_controllers = list_controllers()
-            except rospy.ServiceException:
-                success = False
-                rospy.logerr("Failed to load trajectory controller")
-            if success:
-                already_running = False
-                controller_names = []
-                for controller_state in running_controllers.controller:
-                    controller_names.append(controller_state.name)
-                for joint in self.joints[hand_prefix]:
-                    GraspControllerSpawner.check_joint(joint, controllers_to_start, controller_names)
+        controller_to_start = 'sh_rh_grasp_controller'
+        success = True
 
-        for load_control in controllers_to_start:
-            try:
-                rospy.wait_for_service('controller_manager/load_controller', self.service_timeout)
-                load_controllers = rospy.ServiceProxy('controller_manager/load_controller', LoadController)
-                loaded_controllers = load_controllers(load_control)
-            except rospy.ServiceException:
-                success = False
-            if not loaded_controllers.ok:
-                success = False
+        try:
+            rospy.wait_for_service('controller_manager/load_controller', self.service_timeout)
+            load_controllers = rospy.ServiceProxy('controller_manager/load_controller', LoadController)
+            loaded_controllers = load_controllers(controller_to_start)
+        except rospy.ServiceException:
+            success = False
+        if not loaded_controllers.ok:
+            success = False
 
         try:
             rospy.wait_for_service('controller_manager/switch_controller', self.service_timeout)
             switch_controllers = rospy.ServiceProxy('controller_manager/switch_controller', SwitchController)
-            switched_controllers = switch_controllers(controllers_to_start, None,
+            switched_controllers = switch_controllers([controller_to_start], None,
                                                       SwitchController._request_class.BEST_EFFORT)
         except rospy.ServiceException:
             success = False
@@ -119,13 +91,11 @@ class GraspControllerSpawner(object):
 
 
 if __name__ == "__main__":
-    rospy.init_node("generate_trajectory_controller_parameters")
+    rospy.init_node("grasp_controller_spawner")
     wait_for_topic = rospy.get_param("~wait_for", "")
-    hand_trajectory = rospy.get_param("~hand_trajectory", False)
     timeout = rospy.get_param("~timeout", 30.0)
     service_timeout = rospy.get_param("~service_timeout", 60.0)
 
-    trajectory_spawner = GraspControllerSpawner(service_timeout=service_timeout)
-    if trajectory_spawner.wait_for_topic(wait_for_topic, timeout):
-        # trajectory_spawner.generate_parameters()
-        trajectory_spawner.set_controller()
+    grasp_spawner = GraspControllerSpawner(service_timeout=service_timeout)
+    if grasp_spawner.wait_for_topic(wait_for_topic, timeout):
+        grasp_spawner.set_controller()
