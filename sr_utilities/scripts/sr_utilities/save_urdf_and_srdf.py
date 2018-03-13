@@ -23,7 +23,7 @@ class SaveUrdfAndSrdf(object):
     def __init__(self):
         pass
 
-    def save_urdf_from_param(self, path_to_save_files = "/tmp", file_name="robot"):
+    def save_urdf_from_param(self, path_to_save_files="/tmp", file_name="robot"):
         if rospy.has_param('/robot_description'):
             urdf_str = rospy.get_param('/robot_description')
             path = path_to_save_files + "/" + file_name + ".urdf"
@@ -34,7 +34,7 @@ class SaveUrdfAndSrdf(object):
         else:
             rospy.logerr("Parameter server does not have /robot_description param")
 
-    def save_srdf_from_param(self, path_to_save_files = "/tmp", file_name="robot"):
+    def save_srdf_from_param(self, path_to_save_files="/tmp", file_name="robot"):
         if rospy.has_param('/robot_description_semantic'):
             srdf_str = rospy.get_param('/robot_description_semantic')
             path = path_to_save_files + "/" + file_name + ".srdf"
