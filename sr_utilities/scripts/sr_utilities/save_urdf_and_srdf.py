@@ -19,7 +19,7 @@
 import rospy
 
 
-class SrROSUtils(object):
+class SaveUrdfAndSrdf(object):
     def __init__(self):
         pass
 
@@ -48,6 +48,6 @@ class SrROSUtils(object):
 
 if __name__ == '__main__':
     rospy.init_node("saving_urdf_and_srdf_to_files", anonymous=True)
-    sr_or_utils = SrROSUtils()
-    sr_or_utils.save_urdf_from_param()
-    sr_or_utils.save_srdf_from_param()
+    save_files = SaveUrdfAndSrdf()
+    save_files.save_urdf_from_param()
+    save_files.save_srdf_from_param()
