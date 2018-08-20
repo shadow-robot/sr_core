@@ -9,7 +9,7 @@ jobs:
           server_type: circle
           ros_release_name: kinetic
           ubuntu_version_name: xenial
-          used_modules: check_cache, code_style_check
+          used_modules: check_cache,code_style_check
     steps:
       - checkout
       - run: echo 'export remote_shell_script="https://raw.githubusercontent.com/shadow-robot/sr-build-tools/$toolset_branch/bin/sr-run-ci-build.sh"' >> $BASH_ENV
