@@ -44,7 +44,8 @@ namespace shadowrobot
     // Hand joints
     // @todo this could be read from the controller manager
     // rosservice call /controller_manager/list_controllers
-    std::string hand_names[] = {
+    std::string hand_names[] =
+    {
             "ffj0", "ffj3", "ffj4",
             "lfj0", "lfj3", "lfj4", "lfj5",
             "mfj0", "mfj3", "mfj4",
