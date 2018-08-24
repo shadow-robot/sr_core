@@ -173,7 +173,7 @@ namespace shadowrobot
     {
       std::string jn = joint_names[i];
 
-      std::map<std::string, boost::shared_ptr<urdf::Joint> >::iterator it = all_joints.find(jn);
+      std::map<std::string, urdf::JointSharedPtr>::iterator it = all_joints.find(jn);
 
       if (it != all_joints.end())
       {

@@ -97,8 +97,8 @@ namespace shadowrobot
       return;
     }
 
-    std::map<std::string, boost::shared_ptr<urdf::Joint> > all_joints = robot_model.joints_;
-    std::map<std::string, boost::shared_ptr<urdf::Joint> >::const_iterator iter = all_joints.begin();
+    std::map<std::string, urdf::JointSharedPtr> all_joints = robot_model.joints_;
+    std::map<std::string, urdf::JointSharedPtr>::const_iterator iter = all_joints.begin();
     ROS_DEBUG("All the Hand joints: ");
 
 #ifdef GAZEBO

@@ -101,7 +101,7 @@ private:
   NodeHandle node_;
 
   /// stores data about the hand (read from urdf)
-  std::map<std::string, boost::shared_ptr<urdf::Joint> > all_joints;
+  std::map<std::string, urdf::JointSharedPtr> all_joints;
 
   /// Publisher for the CAN hand targets
   Publisher sr_hand_target_pub;
