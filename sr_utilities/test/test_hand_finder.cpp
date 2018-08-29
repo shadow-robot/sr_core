@@ -75,9 +75,12 @@ TEST(SrHandFinder, one_hand_no_robot_description_finder_test)
   ros::param::set("hand/joint_prefix/1", "rh_");
 
   string ethercat_path = ros::package::getPath("sr_ethercat_hand_config");
-  const string joint_names[] = {"FFJ1", "FFJ2", "FFJ3", "FFJ4", "MFJ1", "MFJ2", "MFJ3", "MFJ4",
-                                "RFJ1", "RFJ2", "RFJ3", "RFJ4", "LFJ1", "LFJ2", "LFJ3", "LFJ4", "LFJ5",
-                                "THJ1", "THJ2", "THJ3", "THJ4", "THJ5", "WRJ1", "WRJ2"};
+  const string joint_names[] =
+  {
+    "FFJ1", "FFJ2", "FFJ3", "FFJ4", "MFJ1", "MFJ2", "MFJ3", "MFJ4",
+    "RFJ1", "RFJ2", "RFJ3", "RFJ4", "LFJ1", "LFJ2", "LFJ3", "LFJ4", "LFJ5",
+    "THJ1", "THJ2", "THJ3", "THJ4", "THJ5", "WRJ1", "WRJ2"
+  };
 
   shadow_robot::SrHandFinder hand_finder;
   // hand parameters
@@ -122,15 +125,18 @@ TEST(SrHandFinder, one_hand_no_robot_description_finder_test)
   for (map<string, vector<string> >::const_iterator iter = controller_tuning.host_control_.begin();
        iter != controller_tuning.host_control_.end(); ++iter)
   {
-    string host_array[] = {"sr_edc_calibration_controllers.yaml",
-                           "sr_edc_joint_velocity_controllers_PWM.yaml",
-                           "sr_edc_effort_controllers_PWM.yaml",
-                           "sr_edc_joint_velocity_controllers.yaml",
-                           "sr_edc_effort_controllers.yaml",
-                           "sr_edc_mixed_position_velocity_joint_controllers_PWM.yaml",
-                           "sr_edc_joint_position_controllers_PWM.yaml",
-                           "sr_edc_mixed_position_velocity_joint_controllers.yaml",
-                           "sr_edc_joint_position_controllers.yaml"};
+    string host_array[] =
+    {
+      "sr_edc_calibration_controllers.yaml",
+      "sr_edc_joint_velocity_controllers_PWM.yaml",
+      "sr_edc_effort_controllers_PWM.yaml",
+      "sr_edc_joint_velocity_controllers.yaml",
+      "sr_edc_effort_controllers.yaml",
+      "sr_edc_mixed_position_velocity_joint_controllers_PWM.yaml",
+      "sr_edc_joint_position_controllers_PWM.yaml",
+      "sr_edc_mixed_position_velocity_joint_controllers.yaml",
+      "sr_edc_joint_position_controllers.yaml"
+    };
     vector<string> host_controller_files(host_array, host_array + 9);
     ASSERT_EQ(host_controller_files.size(), iter->second.size());
     for (size_t i = 0; i != iter->second.size(); ++i)
@@ -158,9 +164,12 @@ TEST(SrHandFinder, one_hand_no_mapping_no_robot_description_finder_test)
   ros::param::set("hand/joint_prefix/1", "rh_");
 
   string ethercat_path = ros::package::getPath("sr_ethercat_hand_config");
-  const string joint_names[] = {"FFJ1", "FFJ2", "FFJ3", "FFJ4", "MFJ1", "MFJ2", "MFJ3", "MFJ4",
-                                "RFJ1", "RFJ2", "RFJ3", "RFJ4", "LFJ1", "LFJ2", "LFJ3", "LFJ4", "LFJ5",
-                                "THJ1", "THJ2", "THJ3", "THJ4", "THJ5", "WRJ1", "WRJ2"};
+  const string joint_names[] =
+  {
+    "FFJ1", "FFJ2", "FFJ3", "FFJ4", "MFJ1", "MFJ2", "MFJ3", "MFJ4",
+    "RFJ1", "RFJ2", "RFJ3", "RFJ4", "LFJ1", "LFJ2", "LFJ3", "LFJ4", "LFJ5",
+    "THJ1", "THJ2", "THJ3", "THJ4", "THJ5", "WRJ1", "WRJ2"
+  };
 
   shadow_robot::SrHandFinder hand_finder;
   // hand parameters
@@ -205,15 +214,18 @@ TEST(SrHandFinder, one_hand_no_mapping_no_robot_description_finder_test)
   for (map<string, vector<string> >::const_iterator iter = controller_tuning.host_control_.begin();
        iter != controller_tuning.host_control_.end(); ++iter)
   {
-    string host_array[] = {"sr_edc_calibration_controllers.yaml",
-                           "sr_edc_joint_velocity_controllers_PWM.yaml",
-                           "sr_edc_effort_controllers_PWM.yaml",
-                           "sr_edc_joint_velocity_controllers.yaml",
-                           "sr_edc_effort_controllers.yaml",
-                           "sr_edc_mixed_position_velocity_joint_controllers_PWM.yaml",
-                           "sr_edc_joint_position_controllers_PWM.yaml",
-                           "sr_edc_mixed_position_velocity_joint_controllers.yaml",
-                           "sr_edc_joint_position_controllers.yaml"};
+    string host_array[] =
+    {
+      "sr_edc_calibration_controllers.yaml",
+      "sr_edc_joint_velocity_controllers_PWM.yaml",
+      "sr_edc_effort_controllers_PWM.yaml",
+      "sr_edc_joint_velocity_controllers.yaml",
+      "sr_edc_effort_controllers.yaml",
+      "sr_edc_mixed_position_velocity_joint_controllers_PWM.yaml",
+      "sr_edc_joint_position_controllers_PWM.yaml",
+      "sr_edc_mixed_position_velocity_joint_controllers.yaml",
+      "sr_edc_joint_position_controllers.yaml"
+    };
     vector<string> host_controller_files(host_array, host_array + 9);
     ASSERT_EQ(host_controller_files.size(), iter->second.size());
     for (size_t i = 0; i != iter->second.size(); ++i)
@@ -240,9 +252,12 @@ TEST(SrHandFinder, one_hand_no_prefix_no_robot_description_finder_test)
   ros::param::set("hand/joint_prefix/1", "");
 
   string ethercat_path = ros::package::getPath("sr_ethercat_hand_config");
-  const string joint_names[] = {"FFJ1", "FFJ2", "FFJ3", "FFJ4", "MFJ1", "MFJ2", "MFJ3", "MFJ4",
-                                "RFJ1", "RFJ2", "RFJ3", "RFJ4", "LFJ1", "LFJ2", "LFJ3", "LFJ4", "LFJ5",
-                                "THJ1", "THJ2", "THJ3", "THJ4", "THJ5", "WRJ1", "WRJ2"};
+  const string joint_names[] =
+  {
+    "FFJ1", "FFJ2", "FFJ3", "FFJ4", "MFJ1", "MFJ2", "MFJ3", "MFJ4",
+    "RFJ1", "RFJ2", "RFJ3", "RFJ4", "LFJ1", "LFJ2", "LFJ3", "LFJ4", "LFJ5",
+    "THJ1", "THJ2", "THJ3", "THJ4", "THJ5", "WRJ1", "WRJ2"
+  };
 
   shadow_robot::SrHandFinder hand_finder;
   // hand parameters
@@ -287,15 +302,18 @@ TEST(SrHandFinder, one_hand_no_prefix_no_robot_description_finder_test)
   for (map<string, vector<string> >::const_iterator iter = controller_tuning.host_control_.begin();
        iter != controller_tuning.host_control_.end(); ++iter)
   {
-    string host_array[] = {"sr_edc_calibration_controllers.yaml",
-                           "sr_edc_joint_velocity_controllers_PWM.yaml",
-                           "sr_edc_effort_controllers_PWM.yaml",
-                           "sr_edc_joint_velocity_controllers.yaml",
-                           "sr_edc_effort_controllers.yaml",
-                           "sr_edc_mixed_position_velocity_joint_controllers_PWM.yaml",
-                           "sr_edc_joint_position_controllers_PWM.yaml",
-                           "sr_edc_mixed_position_velocity_joint_controllers.yaml",
-                           "sr_edc_joint_position_controllers.yaml"};
+    string host_array[] =
+    {
+      "sr_edc_calibration_controllers.yaml",
+      "sr_edc_joint_velocity_controllers_PWM.yaml",
+      "sr_edc_effort_controllers_PWM.yaml",
+      "sr_edc_joint_velocity_controllers.yaml",
+      "sr_edc_effort_controllers.yaml",
+      "sr_edc_mixed_position_velocity_joint_controllers_PWM.yaml",
+      "sr_edc_joint_position_controllers_PWM.yaml",
+      "sr_edc_mixed_position_velocity_joint_controllers.yaml",
+      "sr_edc_joint_position_controllers.yaml"
+    };
     vector<string> host_controller_files(host_array, host_array + 9);
     ASSERT_EQ(host_controller_files.size(), iter->second.size());
     for (size_t i = 0; i != iter->second.size(); ++i)
@@ -322,9 +340,12 @@ TEST(SrHandFinder, one_hand_no_mapping_no_prefix_no_robot_description_finder_tes
   ros::param::set("hand/joint_prefix/1", "");
 
   string ethercat_path = ros::package::getPath("sr_ethercat_hand_config");
-  const string joint_names[] = {"FFJ1", "FFJ2", "FFJ3", "FFJ4", "MFJ1", "MFJ2", "MFJ3", "MFJ4",
-                                "RFJ1", "RFJ2", "RFJ3", "RFJ4", "LFJ1", "LFJ2", "LFJ3", "LFJ4", "LFJ5",
-                                "THJ1", "THJ2", "THJ3", "THJ4", "THJ5", "WRJ1", "WRJ2"};
+  const string joint_names[] =
+  {
+    "FFJ1", "FFJ2", "FFJ3", "FFJ4", "MFJ1", "MFJ2", "MFJ3", "MFJ4",
+    "RFJ1", "RFJ2", "RFJ3", "RFJ4", "LFJ1", "LFJ2", "LFJ3", "LFJ4", "LFJ5",
+    "THJ1", "THJ2", "THJ3", "THJ4", "THJ5", "WRJ1", "WRJ2"
+  };
 
   shadow_robot::SrHandFinder hand_finder;
   // hand parameters
@@ -369,15 +390,18 @@ TEST(SrHandFinder, one_hand_no_mapping_no_prefix_no_robot_description_finder_tes
   for (map<string, vector<string> >::const_iterator iter = controller_tuning.host_control_.begin();
        iter != controller_tuning.host_control_.end(); ++iter)
   {
-    string host_array[] = {"sr_edc_calibration_controllers.yaml",
-                           "sr_edc_joint_velocity_controllers_PWM.yaml",
-                           "sr_edc_effort_controllers_PWM.yaml",
-                           "sr_edc_joint_velocity_controllers.yaml",
-                           "sr_edc_effort_controllers.yaml",
-                           "sr_edc_mixed_position_velocity_joint_controllers_PWM.yaml",
-                           "sr_edc_joint_position_controllers_PWM.yaml",
-                           "sr_edc_mixed_position_velocity_joint_controllers.yaml",
-                           "sr_edc_joint_position_controllers.yaml"};
+    string host_array[] =
+    {
+      "sr_edc_calibration_controllers.yaml",
+      "sr_edc_joint_velocity_controllers_PWM.yaml",
+      "sr_edc_effort_controllers_PWM.yaml",
+      "sr_edc_joint_velocity_controllers.yaml",
+      "sr_edc_effort_controllers.yaml",
+      "sr_edc_mixed_position_velocity_joint_controllers_PWM.yaml",
+      "sr_edc_joint_position_controllers_PWM.yaml",
+      "sr_edc_mixed_position_velocity_joint_controllers.yaml",
+      "sr_edc_joint_position_controllers.yaml"
+    };
     vector<string> host_controller_files(host_array, host_array + 9);
     ASSERT_EQ(host_controller_files.size(), iter->second.size());
     for (size_t i = 0; i != iter->second.size(); ++i)
@@ -407,9 +431,12 @@ TEST(SrHandFinder, one_hand_robot_description_exists_finger_test)
   ros::param::set("hand/mapping/1", "right");
   ros::param::set("hand/joint_prefix/1", "rh_");
   string ethercat_path = ros::package::getPath("sr_ethercat_hand_config");
-  const string joint_names[] = {"FFJ1", "FFJ2", "FFJ3", "FFJ4", "MFJ1", "MFJ2", "MFJ3", "MFJ4",
-                                "RFJ1", "RFJ2", "RFJ3", "RFJ4", "LFJ1", "LFJ2", "LFJ3", "LFJ4", "LFJ5",
-                                "THJ1", "THJ2", "THJ3", "THJ4", "THJ5", "WRJ1", "WRJ2"};
+  const string joint_names[] =
+  {
+    "FFJ1", "FFJ2", "FFJ3", "FFJ4", "MFJ1", "MFJ2", "MFJ3", "MFJ4",
+    "RFJ1", "RFJ2", "RFJ3", "RFJ4", "LFJ1", "LFJ2", "LFJ3", "LFJ4", "LFJ5",
+    "THJ1", "THJ2", "THJ3", "THJ4", "THJ5", "WRJ1", "WRJ2"
+  };
 
   shadow_robot::SrHandFinder hand_finder;
   // hand parameters
@@ -451,15 +478,18 @@ TEST(SrHandFinder, one_hand_robot_description_exists_finger_test)
   for (map<string, vector<string> >::const_iterator iter = controller_tuning.host_control_.begin();
        iter != controller_tuning.host_control_.end(); ++iter)
   {
-    string host_array[] = {"sr_edc_calibration_controllers.yaml",
-                           "sr_edc_joint_velocity_controllers_PWM.yaml",
-                           "sr_edc_effort_controllers_PWM.yaml",
-                           "sr_edc_joint_velocity_controllers.yaml",
-                           "sr_edc_effort_controllers.yaml",
-                           "sr_edc_mixed_position_velocity_joint_controllers_PWM.yaml",
-                           "sr_edc_joint_position_controllers_PWM.yaml",
-                           "sr_edc_mixed_position_velocity_joint_controllers.yaml",
-                           "sr_edc_joint_position_controllers.yaml"};
+    string host_array[] =
+    {
+      "sr_edc_calibration_controllers.yaml",
+      "sr_edc_joint_velocity_controllers_PWM.yaml",
+      "sr_edc_effort_controllers_PWM.yaml",
+      "sr_edc_joint_velocity_controllers.yaml",
+      "sr_edc_effort_controllers.yaml",
+      "sr_edc_mixed_position_velocity_joint_controllers_PWM.yaml",
+      "sr_edc_joint_position_controllers_PWM.yaml",
+      "sr_edc_mixed_position_velocity_joint_controllers.yaml",
+      "sr_edc_joint_position_controllers.yaml"
+    };
     vector<string> host_controller_files(host_array, host_array + 9);
     ASSERT_EQ(host_controller_files.size(), iter->second.size());
     for (size_t i = 0; i != iter->second.size(); ++i)
@@ -492,9 +522,12 @@ TEST(SrHandFinder, two_hand_robot_description_exists_finder_test)
   ros::param::get("two_hands_description", two_hands_description);
   ros::param::set("robot_description", two_hands_description);
 
-  const string joint_names[] = {"FFJ1", "FFJ2", "FFJ3", "FFJ4", "MFJ1", "MFJ2", "MFJ3", "MFJ4",
-                                "RFJ1", "RFJ2", "RFJ3", "RFJ4", "LFJ1", "LFJ2", "LFJ3", "LFJ4", "LFJ5",
-                                "THJ1", "THJ2", "THJ3", "THJ4", "THJ5", "WRJ1", "WRJ2"};
+  const string joint_names[] =
+  {
+    "FFJ1", "FFJ2", "FFJ3", "FFJ4", "MFJ1", "MFJ2", "MFJ3", "MFJ4",
+    "RFJ1", "RFJ2", "RFJ3", "RFJ4", "LFJ1", "LFJ2", "LFJ3", "LFJ4", "LFJ5",
+    "THJ1", "THJ2", "THJ3", "THJ4", "THJ5", "WRJ1", "WRJ2"
+  };
 
   unsigned idx = 0;
   const string dir[] =  {"left", "right"};
@@ -555,15 +588,18 @@ TEST(SrHandFinder, two_hand_robot_description_exists_finder_test)
   for (map<string, vector<string> >::const_iterator iter = controller_tuning.host_control_.begin();
        iter != controller_tuning.host_control_.end(); ++iter)
   {
-    string host_array[] = {"sr_edc_calibration_controllers.yaml",
-                           "sr_edc_joint_velocity_controllers_PWM.yaml",
-                           "sr_edc_effort_controllers_PWM.yaml",
-                           "sr_edc_joint_velocity_controllers.yaml",
-                           "sr_edc_effort_controllers.yaml",
-                           "sr_edc_mixed_position_velocity_joint_controllers_PWM.yaml",
-                           "sr_edc_joint_position_controllers_PWM.yaml",
-                           "sr_edc_mixed_position_velocity_joint_controllers.yaml",
-                           "sr_edc_joint_position_controllers.yaml"};
+    string host_array[] =
+    {
+      "sr_edc_calibration_controllers.yaml",
+      "sr_edc_joint_velocity_controllers_PWM.yaml",
+      "sr_edc_effort_controllers_PWM.yaml",
+      "sr_edc_joint_velocity_controllers.yaml",
+      "sr_edc_effort_controllers.yaml",
+      "sr_edc_mixed_position_velocity_joint_controllers_PWM.yaml",
+      "sr_edc_joint_position_controllers_PWM.yaml",
+      "sr_edc_mixed_position_velocity_joint_controllers.yaml",
+      "sr_edc_joint_position_controllers.yaml"
+    };
     vector<string> host_controller_files(host_array, host_array + 9);
     ASSERT_EQ(host_controller_files.size(), iter->second.size());
     for (size_t i = 0; i != iter->second.size(); ++i)
