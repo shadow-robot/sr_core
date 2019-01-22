@@ -1,16 +1,16 @@
 - git:
     local-name: sr_common
-    uri: https://github.com/shadow-robot/sr_common
+    uri: https://github.com/shadow-robot/sr_common.git
     version: kinetic-devel
 
 - git:
     local-name: ros_ethercat
-    uri: https://github.com/shadow-robot/ros_ethercat
+    uri: https://github.com/shadow-robot/ros_ethercat.git
     version: kinetic-devel
 
 - git:
     local-name: sr_config
-    uri: https://github.com/shadow-robot/sr-config
+    uri: https://github.com/shadow-robot/sr-config.git
     version: 'kinetic-devel'
 
 - git:
