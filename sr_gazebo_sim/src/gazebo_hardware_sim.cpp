@@ -35,7 +35,7 @@ namespace sr_gazebo_sim
   const std::string SrGazeboHWSim::simple_transmission_name = "sr_mechanism_model/SimpleTransmission";
 
   SrGazeboHWSim::SrGazeboHWSim() :
-          DefaultRobotHWSim(), fake_state_(NULL)
+          DefaultRobotHWSim(), fake_state_((tinyxml2::XMLElement *)NULL)
   {
   }
 
