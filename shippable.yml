@@ -8,7 +8,7 @@ env:
 
 build:
   pre_ci_boot:
-    image_name: shadowrobot/ubuntu-ros-indigo-build-tools
+    image_name: shadowrobot/ubuntu-ros-kinetic-build-tools
     image_tag: latest
     pull: true
     options: "-e HOME=/root"
