@@ -6,7 +6,7 @@
 - git:
     local-name: ros_ethercat
     uri: https://github.com/shadow-robot/ros_ethercat.git
-    version: kinetic-devel
+    version: melodic-devel
 
 - git:
     local-name: sr_config
