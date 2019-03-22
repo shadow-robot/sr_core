@@ -125,7 +125,7 @@ namespace sr_gazebo_sim
   {
     this->fake_state_.robot_model_ = *urdf_model;
 
-    for (std::map<std::string, boost::shared_ptr<urdf::Joint> >::const_iterator it = urdf_model->joints_.begin();
+    for (std::map<std::string, urdf::JointSharedPtr>::const_iterator it = urdf_model->joints_.begin();
          it != urdf_model->joints_.end(); ++it)
     {
       if (this->isHandJoint(transmissions, it->first))

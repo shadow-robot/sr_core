@@ -107,8 +107,8 @@ namespace controller
       joint_name[joint_name.size() - 1] = '2';
       std::string j2 = joint_name;
 
-      boost::shared_ptr<const urdf::Joint> joint1 = model.getJoint(j1);
-      boost::shared_ptr<const urdf::Joint> joint2 = model.getJoint(j2);
+      urdf::JointConstSharedPtr joint1 = model.getJoint(j1);
+      urdf::JointConstSharedPtr joint2 = model.getJoint(j2);
 
       min_ = joint1->limits->lower + joint2->limits->lower;
       max_ = joint1->limits->upper + joint2->limits->upper;
@@ -119,7 +119,7 @@ namespace controller
     }
     else
     {
-      boost::shared_ptr<const urdf::Joint> joint = model.getJoint(joint_name);
+      urdf::JointConstSharedPtr joint = model.getJoint(joint_name);
 
       min_ = joint->limits->lower;
       max_ = joint->limits->upper;

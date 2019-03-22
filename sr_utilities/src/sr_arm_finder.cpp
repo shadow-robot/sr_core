@@ -32,9 +32,6 @@
 #include <vector>
 #include <string>
 
-using urdf::ModelInterface;
-using urdf::Joint;
-
 namespace shadow_robot
 {
 SrArmFinder::SrArmFinder()
@@ -51,13 +48,13 @@ SrArmFinder::SrArmFinder()
                                                       default_hand_joints_vector.end());
       std::string robot_description;
       ros::param::get("robot_description", robot_description);
-      const boost::shared_ptr<ModelInterface> hand_urdf = urdf::parseURDF(robot_description);
+      const urdf::ModelInterfaceSharedPtr hand_urdf = urdf::parseURDF(robot_description);
 
-      std::pair<std::string, boost::shared_ptr<Joint> > joint;
+      std::pair<std::string, urdf::JointSharedPtr> joint;
       BOOST_FOREACH(joint, hand_urdf->joints_)
       {
         const std::string joint_name = joint.first;
-        if ((Joint::FIXED != joint.second->type) && (hand_default_joints.end() == hand_default_joints.find(joint_name)))
+        if ((urdf::Joint::FIXED != joint.second->type) && (hand_default_joints.end() == hand_default_joints.find(joint_name)))
         {
           bool found_suffix = false;
           BOOST_FOREACH(std::string default_joint_name, hand_default_joints)

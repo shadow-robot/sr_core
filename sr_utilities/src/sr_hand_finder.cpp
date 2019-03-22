@@ -36,8 +36,6 @@
 #include <iostream>
 
 using boost::assign::list_of;
-using urdf::ModelInterface;
-using urdf::Joint;
 
 namespace shadow_robot
 {
@@ -103,14 +101,14 @@ void SrHandFinder::generate_joints_with_prefix()
     }
     std::string robot_description;
     ros::param::get("robot_description", robot_description);
-    const boost::shared_ptr<ModelInterface> hand_urdf = urdf::parseURDF(robot_description);
+    const urdf::ModelInterfaceSharedPtr hand_urdf = urdf::parseURDF(robot_description);
     BOOST_FOREACH(hand, hand_config_.joint_prefix_)
     {
       std::set<std::string> joints_tmp;
-      std::pair<std::string, boost::shared_ptr<Joint> > joint;
+      std::pair<std::string, urdf::JointSharedPtr> joint;
       BOOST_FOREACH(joint, hand_urdf->joints_)
       {
-        if (Joint::FIXED != joint.second->type)
+        if (urdf::Joint::FIXED != joint.second->type)
         {
           const std::string joint_name = joint.first;
           bool found_prefix = false;
