@@ -54,7 +54,8 @@ SrArmFinder::SrArmFinder()
       BOOST_FOREACH(joint, hand_urdf->joints_)
       {
         const std::string joint_name = joint.first;
-        if ((urdf::Joint::FIXED != joint.second->type) && (hand_default_joints.end() == hand_default_joints.find(joint_name)))
+        if ((urdf::Joint::FIXED != joint.second->type) &&
+            (hand_default_joints.end() == hand_default_joints.find(joint_name)))
         {
           bool found_suffix = false;
           BOOST_FOREACH(std::string default_joint_name, hand_default_joints)
