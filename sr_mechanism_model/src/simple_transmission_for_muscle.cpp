@@ -50,7 +50,7 @@ PLUGINLIB_EXPORT_CLASS(sr_mechanism_model::SimpleTransmissionForMuscle, Transmis
 namespace sr_mechanism_model
 {
 
-  bool SimpleTransmissionForMuscle::initXml(TiXmlElement *elt, RobotState *robot)
+  bool SimpleTransmissionForMuscle::initXml(tinyxml2::XMLElement *elt, RobotState *robot)
   {
     if (!SimpleTransmission::Transmission::initXml(elt, robot))
     {

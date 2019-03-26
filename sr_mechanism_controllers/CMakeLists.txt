@@ -3,8 +3,8 @@ project(sr_mechanism_controllers)
 find_package(catkin REQUIRED COMPONENTS rostest std_msgs std_srvs roscpp actionlib controller_manager_msgs sr_robot_msgs
         sr_utilities controller_interface ros_ethercat_model realtime_tools velocity_controllers
         pluginlib rosconsole angles control_toolbox sr_hardware_interface xmlrpcpp cmake_modules)
-find_package(TinyXML REQUIRED)
-include_directories(include ${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS} ${TinyXML_INCLUDE_DIRS})
+find_package(TinyXML2 REQUIRED)
+include_directories(include ${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS} ${TinyXML2_INCLUDE_DIRS})
 
 catkin_package(
         DEPENDS xmlrpcpp
@@ -66,12 +66,12 @@ target_link_libraries(simple_trajectory_compare ${catkin_LIBRARIES})
 #  add_rostest_gtest(test_joint_pos_controller test/joint_pos_controller.test test/test_joint_pos_controller.cpp test/test_controllers.cpp
 #    src/srh_joint_position_controller.cpp src/sr_controller.cpp)
 #  add_dependencies(test_joint_pos_controller ${catkin_EXPORTED_TARGETS})
-#  target_link_libraries(test_joint_pos_controller sr_mechanism_controllers ${GTEST_LIBRARIES} ${catkin_LIBRARIES} ${TinyXML_LIBRARIES})
+#  target_link_libraries(test_joint_pos_controller sr_mechanism_controllers ${GTEST_LIBRARIES} ${catkin_LIBRARIES} ${TinyXML2_LIBRARIES})
 
 #  add_rostest_gtest(test_joint_pos_controller_with_fc test/joint_pos_controller_with_fc.test test/test_joint_pos_controller.cpp test/test_controllers.cpp
 #    src/srh_joint_position_controller.cpp src/sr_controller.cpp)
 #  add_dependencies(test_joint_pos_controller_with_fc ${catkin_EXPORTED_TARGETS})
-#  target_link_libraries(test_joint_pos_controller_with_fc sr_mechanism_controllers ${GTEST_LIBRARIES} ${catkin_LIBRARIES} ${TinyXML_LIBRARIES})
+#  target_link_libraries(test_joint_pos_controller_with_fc sr_mechanism_controllers ${GTEST_LIBRARIES} ${catkin_LIBRARIES} ${TinyXML2_LIBRARIES})
 #endif(COMMAND add_rostest_gtest)
 
 install(TARGETS joint_trajectory_action_controller joint_spline_trajectory_action_controller simple_spline_trajectory

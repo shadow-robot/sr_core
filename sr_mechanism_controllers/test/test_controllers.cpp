@@ -45,7 +45,7 @@ void TestControllers::init()
 
   robot = boost::shared_ptr<pr2_mechanism_model::Robot>(new pr2_mechanism_model::Robot(hw.get()));
 
-  model = boost::shared_ptr<TiXmlDocument>(new TiXmlDocument());
+  model = boost::shared_ptr<tinyxml2::XMLDocument>(new tinyxml2::XMLDocument());
 
   ros::NodeHandle rosnode;
   std::string urdf_param_name;
@@ -70,7 +70,7 @@ void TestControllers::init()
   }
   ROS_DEBUG("Parsing xml...");
 
-  // initialize TiXmlDocument doc with a string
+  // initialize tinyxml2::XMLDocument doc with a string
   if (!model->Parse(urdf_string.c_str()) && model->Error())
   {
     ROS_ERROR("Failed to parse urdf: %s\n",

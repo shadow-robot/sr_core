@@ -33,7 +33,7 @@
 #include <control_toolbox/pid.h>
 #include <pr2_hardware_interface/hardware_interface.h>
 #include <pr2_mechanism_model/robot.h>
-#include <tinyxml.h>
+#include <tinyxml2.h>
 #include <sr_hardware_interface/sr_actuator.hpp>
 
 class TestControllers
@@ -53,7 +53,7 @@ public:
   boost::shared_ptr <pr2_hardware_interface::HardwareInterface> hw;
   boost::shared_ptr <pr2_mechanism_model::Robot> robot;
   boost::shared_ptr <pr2_mechanism_model::RobotState> robot_state;
-  boost::shared_ptr <TiXmlDocument> model;
+  boost::shared_ptr <tinyxml2::XMLDocument> model;
   boost::shared_ptr <sr_actuator::SrMotorActuator> actuator;
   pr2_mechanism_model::JointState *joint_state;
 };

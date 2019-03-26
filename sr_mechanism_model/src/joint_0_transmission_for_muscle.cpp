@@ -38,7 +38,7 @@ PLUGINLIB_EXPORT_CLASS(sr_mechanism_model::J0TransmissionForMuscle, Transmission
 namespace sr_mechanism_model
 {
 
-  bool J0TransmissionForMuscle::initXml(TiXmlElement *elt, RobotState *robot)
+  bool J0TransmissionForMuscle::initXml(tinyxml2::XMLElement *elt, RobotState *robot)
   {
     if (!SimpleTransmissionForMuscle::initXml(elt, robot))
     {

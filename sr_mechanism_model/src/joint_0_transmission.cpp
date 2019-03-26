@@ -40,7 +40,7 @@ PLUGINLIB_EXPORT_CLASS(sr_mechanism_model::J0Transmission, Transmission)
 namespace sr_mechanism_model
 {
 
-  bool J0Transmission::initXml(TiXmlElement *elt, RobotState *robot)
+  bool J0Transmission::initXml(tinyxml2::XMLElement *elt, RobotState *robot)
   {
     if (!SimpleTransmission::initXml(elt, robot))
     {
