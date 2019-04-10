@@ -17,3 +17,4 @@ _Put an `x` in the boxes that apply. You can also fill these out after creating 
 - [ ] All tests pass with my changes
 - [ ] I have added tests that prove my fix is effective or that my feature works
 - [ ] I have added necessary documentation (if appropriate)
+- [ ] You have added the corresponding license to each file and updated the year of any one that you modified.
