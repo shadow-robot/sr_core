@@ -15,7 +15,7 @@ What types of changes does your code introduce?
 _Put an `x` in the boxes that apply. You can also fill these out after creating the PR. This is a reminder of what we should look for before merging this code._
 
 - [ ] I have read and follow the [contributing guidelines](https://github.com/shadow-robot/sr_documentation/blob/F%23SRC-3083_Contributing_guide/CONTRIBUTING.md).
-- [ ] All tests pass with my changes
+- [ ] I have checked that all tests pass with my changes
 - [ ] I have added tests (automatic or manual) that prove the fix is effective or that the feature works
 - [ ] I have added necessary documentation (if appropriate)
 - [ ] I have added the corresponding license to each file and updated the year of any one that you modified.
