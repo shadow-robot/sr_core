@@ -6,4 +6,4 @@
 | Install tests     | [![Build Status](https://semaphoreci.com/api/v1/projects/23fc083a-c386-4321-90e6-cdb2235c288f/525053/shields_badge.svg)](https://semaphoreci.com/shadow-robot/sr_core) |
 
 # Shadow Robot Core Packages
-These are the core packages for the Shadow Robot hardware and simulation.
+These are the core packages for the Shadow Robot hardware and simulation. 
