@@ -41,6 +41,7 @@ target_link_libraries(simple_spline_trajectory ${catkin_LIBRARIES})
 add_library(sr_mechanism_controllers
         src/srh_fake_joint_calibration_controller.cpp
         src/srh_joint_position_controller.cpp
+        src/srh_joint_variable_pid_position_controller.cpp
         src/srh_joint_effort_controller.cpp
         src/srh_joint_velocity_controller.cpp
         src/srh_mixed_position_velocity_controller.cpp
