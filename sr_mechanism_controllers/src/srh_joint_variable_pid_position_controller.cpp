@@ -83,6 +83,9 @@ namespace controller
       return false;
     }
 
+    double dummy;
+    pid_controller_position_->getGains(p_init, i_init, d_init, i_clamp, dummy);
+
     controller_state_publisher_.reset(new realtime_tools::RealtimePublisher<control_msgs::JointControllerState>
                                               (node_, "state", 1));
 
@@ -165,11 +168,6 @@ namespace controller
                     " pos deadband: " << req.deadband);
 
     pid_controller_position_->setGains(req.p, req.i, req.d, req.i_clamp, -req.i_clamp);
-
-    p_init = req.p;
-    i_init = req.i;
-    d_init = req.d;
-    i_clamp = req.i_clamp;
 
     max_force_demand = req.max_force;
     friction_deadband = req.friction_deadband;
