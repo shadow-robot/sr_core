@@ -169,6 +169,11 @@ namespace controller
 
     pid_controller_position_->setGains(req.p, req.i, req.d, req.i_clamp, -req.i_clamp);
 
+    p_init = req.p;
+    i_init = req.i;
+    d_init = req.d;
+    i_clamp = req.i_clamp;
+
     max_force_demand = req.max_force;
     friction_deadband = req.friction_deadband;
     position_deadband = req.deadband;
@@ -215,26 +220,38 @@ namespace controller
     double i_initial = i_init;
     double d_initial = d_init;
 
-    if (error > -0.1 && error < 0.1)
+    if (error > -0.02 && error < 0.02)
     {
       error = 0.0;
       i_initial = 0.0;
       d_initial = 0.0;
     }
 
-    double diff_set_point = set_point_old - set_point;
-    double diff_error = error_old - error;
+    double diff_set_point = fabs(set_point_old - set_point);
+    double diff_error = fabs(error_old - error);
+
+    if (diff_set_point == 0)
+    {
+      if (i_init > 0)
+      {
+        i_initial = 10.0;
+      }
+      else
+      {
+        i_initial = -10.0;
+      }
+    }
 
     if (diff_set_point > -0.05 && diff_set_point < 0.05)
     {
       diff_set_point = 0.0;
     }
 
-    double p = p_init + p_init * error + p_init * diff_error + p_init * diff_set_point;
-    double i = i_initial + i_initial * error + i_initial * diff_error + i_initial * diff_set_point;
-    double d = d_initial + d_initial * error + d_initial * diff_error + d_initial * diff_set_point;
+    double p = p_init + p_init * fabs(error) + p_init * diff_error + p_init * diff_set_point;
+    double i = i_initial + i_initial * fabs(error) + i_initial * diff_error + i_initial * diff_set_point;
+    double d = d_initial + d_initial * fabs(error) + d_initial * diff_error + d_initial * diff_set_point;
 
-    pid_controller_position_->setGains(p, i, d, i_clamp, -i_clamp);
+    pid_controller_position_->setGains(p, i, d, i_clamp, -i_clamp, 1);
 
     set_point_old = set_point;
     error_old = error;
@@ -242,6 +259,7 @@ namespace controller
 
   void SrhJointVariablePidPositionController::update(const ros::Time &time, const ros::Duration &period)
   {
+    // ros::Time start_time = ros::Time::now();
     if (!has_j2 && !joint_state_->calibrated_)
     {
       return;
@@ -346,6 +364,7 @@ namespace controller
       }
     }
     loop_count_++;
+    // ROS_WARN_STREAM("update pid time: " << ros::Time::now() - start_time);
   }
 
   void SrhJointVariablePidPositionController::read_parameters()
