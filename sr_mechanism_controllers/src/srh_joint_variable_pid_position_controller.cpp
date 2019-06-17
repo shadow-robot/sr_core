@@ -148,7 +148,9 @@ namespace controller
     friction_compensator.reset(new sr_friction_compensation::SrFrictionCompensator(joint_name_));
 
     serve_set_gains_ = node_.advertiseService("set_gains", &SrhJointVariablePidPositionController::setGains, this);
-    serve_reset_gains_ = node_.advertiseService("reset_gains", &SrhJointVariablePidPositionController::resetGains, this);
+    serve_reset_gains_ = node_.advertiseService("reset_gains",
+                                                &SrhJointVariablePidPositionController::resetGains,
+                                                this);
 
     after_init();
     return true;
