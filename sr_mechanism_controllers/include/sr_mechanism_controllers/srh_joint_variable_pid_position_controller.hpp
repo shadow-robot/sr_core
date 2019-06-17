@@ -70,6 +70,12 @@ private:
   double i_clamp;
   double error_old;
   double set_point_old;
+  double frequency;
+  double smoothing_velocity_min;
+  double smoothing_velocity_max;
+  double smoothing_factor_p;
+  double smoothing_factor_i;
+  double smoothing_factor_d;
 
   /// We're using an hysteresis deadband.
   sr_deadband::HysteresisDeadband<double> hysteresis_deadband;

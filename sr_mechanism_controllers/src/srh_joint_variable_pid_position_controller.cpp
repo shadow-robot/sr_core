@@ -54,6 +54,12 @@ namespace controller
 
     set_point_old = 0.0;
     error_old = 0.0;
+    frequency = 1000.0;
+    smoothing_velocity_min = 2.08;
+    smoothing_velocity_max = 4.2;
+    smoothing_factor_p = 0.8;
+    smoothing_factor_i = 0.8;
+    smoothing_factor_d = 0.8;
 
     std::string robot_state_name;
     node_.param<std::string>("robot_state_name", robot_state_name, "unique_robot_hw");
@@ -220,36 +226,24 @@ namespace controller
     double i_initial = i_init;
     double d_initial = d_init;
 
-    if (error > -0.02 && error < 0.02)
-    {
-      error = 0.0;
-      i_initial = 0.0;
-      d_initial = 0.0;
-    }
-
     double diff_set_point = fabs(set_point_old - set_point);
+    double set_point_velocity = diff_set_point * frequency;
     double diff_error = fabs(error_old - error);
+    double error_velocity = diff_error * frequency;
 
-    if (diff_set_point == 0)
+    double exp_error = exp(fabs(error));
+    double exp_log_error_velocity = exp(log10(error_velocity));
+
+    double p = p_init * (exp_error + exp_log_error_velocity + set_point_velocity);
+    double i = i_init * (exp_error + exp_log_error_velocity + set_point_velocity);
+    double d = d_init * (exp_error + exp_log_error_velocity + set_point_velocity);
+
+    if (set_point_velocity > smoothing_velocity_min && set_point_velocity < smoothing_velocity_max)
     {
-      if (i_init > 0)
-      {
-        i_initial = 10.0;
-      }
-      else
-      {
-        i_initial = -10.0;
-      }
+        p = smoothing_factor_p * p;
+        i = smoothing_factor_i * i;
+        d = smoothing_factor_d * d;
     }
-
-    if (diff_set_point > -0.05 && diff_set_point < 0.05)
-    {
-      diff_set_point = 0.0;
-    }
-
-    double p = p_init + p_init * fabs(error) + p_init * diff_error + p_init * diff_set_point;
-    double i = i_initial + i_initial * fabs(error) + i_initial * diff_error + i_initial * diff_set_point;
-    double d = d_initial + d_initial * fabs(error) + d_initial * diff_error + d_initial * diff_set_point;
 
     pid_controller_position_->setGains(p, i, d, i_clamp, -i_clamp, 1);
 
@@ -259,7 +253,6 @@ namespace controller
 
   void SrhJointVariablePidPositionController::update(const ros::Time &time, const ros::Duration &period)
   {
-    // ros::Time start_time = ros::Time::now();
     if (!has_j2 && !joint_state_->calibrated_)
     {
       return;
@@ -364,7 +357,6 @@ namespace controller
       }
     }
     loop_count_++;
-    // ROS_WARN_STREAM("update pid time: " << ros::Time::now() - start_time);
   }
 
   void SrhJointVariablePidPositionController::read_parameters()
