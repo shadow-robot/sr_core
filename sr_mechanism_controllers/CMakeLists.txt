@@ -50,6 +50,7 @@ add_library(sr_mechanism_controllers
         src/srh_joint_muscle_valve_controller.cpp
         example/srh_syntouch_controllers.cpp
         src/sr_controller.cpp
+        src/sr_plain_pid.cpp
 )
 add_dependencies(sr_mechanism_controllers ${catkin_EXPORTED_TARGETS})
 target_link_libraries(sr_mechanism_controllers ${catkin_LIBRARIES})
