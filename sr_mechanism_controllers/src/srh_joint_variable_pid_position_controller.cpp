@@ -177,8 +177,6 @@ namespace controller
                     req.max_force << ", friction deadband: " << req.friction_deadband <<
                     " pos deadband: " << req.deadband);
 
-    pid_controller_position_->setGains(req.p, req.i, req.d, req.i_clamp, -req.i_clamp);
-
     p_init = req.p;
     i_init = req.i;
     d_init = req.d;
