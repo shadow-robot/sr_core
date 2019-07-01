@@ -31,7 +31,7 @@
 #define _SRH_JOINT_VARIABLE_PID_POSITION_CONTROLLER_HPP_
 
 #include <sr_mechanism_controllers/sr_controller.hpp>
-#include <sr_mechanism_controllers/sr_plain_pid.h>
+#include <sr_mechanism_controllers/sr_plain_pid.hpp>
 
 
 namespace controller

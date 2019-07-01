@@ -38,7 +38,7 @@
   Desc: Implements a standard proportional-integral-derivative controller
 */
 
-#include <sr_mechanism_controllers/sr_plain_pid.h>
+#include <sr_mechanism_controllers/sr_plain_pid.hpp>
 #include <tinyxml.h>
 
 #include <boost/algorithm/clamp.hpp>
@@ -46,10 +46,7 @@
 
 namespace controller {
 
-static const std::string DEFAULT_NAMESPACE = "pid"; // \todo better default prefix?
-
 PlainPid::PlainPid(double p, double i, double d, double i_max, double i_min, bool antiwindup)
-//  : dynamic_reconfig_initialized_(false)
 {
   setGains(p,i,d,i_max,i_min,antiwindup);
 
@@ -59,26 +56,6 @@ PlainPid::PlainPid(double p, double i, double d, double i_max, double i_min, boo
 PlainPid::~PlainPid()
 {
 }
-
-//void PlainPid::initPid(double p, double i, double d, double i_max, double i_min) //,
-//  //const ros::NodeHandle& /*node*/)
-//{
-//  initPid(p, i, d, i_max, i_min);
-//
-//  // Create node handle for dynamic reconfigure
-////  ros::NodeHandle nh(DEFAULT_NAMESPACE);
-////  initDynamicReconfig(nh);
-//}
-
-//void PlainPid::initPid(double p, double i, double d, double i_max, double i_min, bool antiwindup) //,
-////  const ros::NodeHandle& /*node*/)
-//{
-//  initPid(p, i, d, i_max, i_min, antiwindup);
-//
-//  // Create node handle for dynamic reconfigure
-////  ros::NodeHandle nh(DEFAULT_NAMESPACE);
-////  initDynamicReconfig(nh);
-//}
 
 void PlainPid::initPid(double p, double i, double d, double i_max, double i_min, bool antiwindup)
 {
@@ -128,19 +105,15 @@ bool PlainPid::init(const ros::NodeHandle &node, const bool quiet)
   }
   nh.param("antiwindup", gains.antiwindup_, false);
 
-  setGains(gains);
+  setGains(gains.p_gain_, gains.i_gain_, gains.d_gain_, gains.i_max_, gains.i_min_, gains.antiwindup_);
 
   reset();
-//  initDynamicReconfig(nh);
 
   return true;
 }
 
 bool PlainPid::initXml(TiXmlElement *config)
 {
-  // Create node handle for dynamic reconfigure
-//  ros::NodeHandle nh(DEFAULT_NAMESPACE);
-
   double i_clamp;
   i_clamp = config->Attribute("iClamp") ? atof(config->Attribute("iClamp")) : 0.0;
 
@@ -154,7 +127,6 @@ bool PlainPid::initXml(TiXmlElement *config)
   );
 
   reset();
-//  initDynamicReconfig(nh);
 
   return true;
 }
@@ -192,14 +164,10 @@ void PlainPid::setGains(double p, double i, double d, double i_max, double i_min
   pid_gains.i_max_ = i_max;
   pid_gains.i_min_ = i_min;
   pid_gains.antiwindup_ = antiwindup;
-//  Gains gains(p,i,d,i_max,i_min, antiwindup);
-
-//  setGains(gains);
 }
 
 double PlainPid::computeCommand(double error, ros::Duration dt)
 {
-
   if (dt == ros::Duration(0.0) || std::isnan(error) || std::isinf(error))
     return 0.0;
 
@@ -222,9 +190,6 @@ double PlainPid::updatePid(double error, ros::Duration dt)
 
 double PlainPid::computeCommand(double error, double error_dot, ros::Duration dt)
 {
-  // Get the gain parameters from the realtime buffer
-//  Gains gains = *gains_buffer_.readFromRT();
-
   double p_term, d_term, i_term;
   p_error_ = error; // this is error = target - state
   d_error_ = error_dot;
@@ -280,9 +245,6 @@ double PlainPid::getCurrentCmd()
 
 void PlainPid::getCurrentPIDErrors(double *pe, double *ie, double *de)
 {
-  // Get the gain parameters from the realtime buffer
-//  Gains gains = *gains_buffer_.readFromRT();
-
   *pe = p_error_;
   *ie = i_error_;
   *de = d_error_;
@@ -290,8 +252,6 @@ void PlainPid::getCurrentPIDErrors(double *pe, double *ie, double *de)
 
 void PlainPid::printValues()
 {
-//  Gains gains = getGains();
-
   ROS_INFO_STREAM_NAMED("pid","Current Values of PID Class:\n"
     << "  P Gain: " << pid_gains.p_gain_ << "\n"
     << "  I Gain: " << pid_gains.i_gain_ << "\n"

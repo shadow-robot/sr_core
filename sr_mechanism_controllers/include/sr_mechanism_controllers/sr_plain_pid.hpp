@@ -31,6 +31,11 @@
  *  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
+
+#ifndef SR_MECHANISM_CONTROLLERS_SR_PLAIN_PID_HPP
+#define SR_MECHANISM_CONTROLLERS_SR_PLAIN_PID_HPP
+
+
 #include <string>
 #include <ros/ros.h>
 #include <control_msgs/PidState.h>
@@ -176,19 +181,6 @@ public:
   void initPid(double p, double i, double d, double i_max, double i_min, bool antiwindup = false);
 
   /*!
-   * \brief Zeros out Pid values and initialize Pid-gains and integral term limits
-   *        Initializes dynamic reconfigure for PID gains
-   *
-   * \param p  The proportional gain.
-   * \param i  The integral gain.
-   * \param d  The derivative gain.
-   * \param i_max The max integral windup.
-   * \param i_min The min integral windup.
-   */
-//  void initPid(double p, double i, double d, double i_max, double i_min); //, const ros::NodeHandle& /*node*/);
-//  void initPid(double p, double i, double d, double i_max, double i_min, bool antiwindup, const ros::NodeHandle& /*node*/);
-
-  /*!
    * \brief Initialize PID with the parameters in a namespace
    *        Initializes dynamic reconfigure for PID gains
    *
@@ -250,7 +242,7 @@ public:
    * \brief Set PID gains for the controller.
    * \param gains A struct of the PID gain values
    */
-  void setGains(const Gains &gains);
+//  void setGains(const Gains &gains);
 
   /*!
    * \brief Set the PID error and compute the PID command with nonuniform time
@@ -341,3 +333,4 @@ private:
 };
 
 }
+#endif
