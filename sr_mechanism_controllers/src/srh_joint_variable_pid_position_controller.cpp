@@ -85,7 +85,7 @@ namespace controller
       return false;
     }
 
-    pid_controller_position_.reset(new control_toolbox::Pid());
+    pid_controller_position_.reset(new PlainPid());
     if (!pid_controller_position_->init(ros::NodeHandle(node_, "pid")))
     {
       return false;

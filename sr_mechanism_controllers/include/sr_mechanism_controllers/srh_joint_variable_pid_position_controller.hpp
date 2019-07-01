@@ -27,10 +27,11 @@
  */
 
 
-#ifndef _SRH_JOINT_POSITION_CONTROLLER_HPP_
-#define _SRH_JOINT_POSITION_CONTROLLER_HPP_
+#ifndef _SRH_JOINT_VARIABLE_PID_POSITION_CONTROLLER_HPP_
+#define _SRH_JOINT_VARIABLE_PID_POSITION_CONTROLLER_HPP_
 
 #include <sr_mechanism_controllers/sr_controller.hpp>
+#include <sr_mechanism_controllers/sr_plain_pid.h>
 
 
 namespace controller
@@ -60,7 +61,7 @@ public:
 
 private:
   /// Internal PID controller for the position loop.
-  boost::scoped_ptr<control_toolbox::Pid> pid_controller_position_;
+  boost::scoped_ptr<PlainPid> pid_controller_position_;
 
   /// the position deadband value used in the hysteresis_deadband
   double position_deadband;
