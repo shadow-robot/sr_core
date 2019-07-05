@@ -42,7 +42,8 @@
 
 class TiXmlElement;
 
-namespace controller {
+namespace controller
+{
 
 /***************************************************/
 /*! \class Pid
@@ -109,7 +110,6 @@ namespace controller {
 class PlainPid
 {
 public:
-
   /*!
    * \brief Store gains in a struct to allow easier realtime buffer usage
    */
@@ -161,7 +161,12 @@ public:
    * \param i_max The max integral windup.
    * \param i_min The min integral windup.
    */
-  PlainPid(double p = 0.0, double i = 0.0, double d = 0.0, double i_max = 0.0, double i_min = -0.0, bool antiwindup = false);
+  PlainPid(double p = 0.0,
+           double i = 0.0,
+           double d = 0.0,
+           double i_max = 0.0,
+           double i_min = -0.0,
+           bool antiwindup = false);
 
   /*!
    * \brief Destructor of Pid class.
@@ -187,7 +192,7 @@ public:
    * \param prefix The namespace prefix.
    * \param quiet If true, no error messages will be emitted on failure.
    */
-  bool initParam(const std::string& prefix, const bool quiet=false);
+  bool initParam(const std::string& prefix, const bool quiet = false);
 
   /*!
    * \brief Initialize PID with the parameters in a NodeHandle namespace
@@ -196,7 +201,7 @@ public:
    * \param n The NodeHandle which should be used to query parameters.
    * \param quiet If true, no error messages will be emitted on failure.
    */
-  bool init(const ros::NodeHandle &n, const bool quiet=false);
+  bool init(const ros::NodeHandle &n, const bool quiet = false);
 
   /*!
    * \brief Initialize PID with the parameters in an XML element
@@ -324,13 +329,11 @@ public:
   void printValues();
 
 private:
-
-  double p_error_last_; /**< _Save position state for derivative state calculation. */
-  double p_error_; /**< Position error. */
-  double i_error_; /**< Integral of position error. */
-  double d_error_; /**< Derivative of position error. */
+  double p_error_last_;  /**< _Save position state for derivative state calculation. */
+  double p_error_;  /**< Position error. */
+  double i_error_;  /**< Integral of position error. */
+  double d_error_;  /**< Derivative of position error. */
   double cmd_;     /**< Command to send. */
 };
-
-}
+}  // namespace controller
 #endif
