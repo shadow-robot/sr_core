@@ -221,7 +221,7 @@ double PlainPid::computeCommand(double error, double error_dot, ros::Duration dt
   // Calculate integral contribution to command
   i_term = pid_gains.i_gain_ * i_error_;
 
-  if(!pid_gains.antiwindup_)
+  if (!pid_gains.antiwindup_)
   {
     // Limit i_term so that the limit is meaningful in the output
     i_term = boost::algorithm::clamp(i_term, pid_gains.i_min_, pid_gains.i_max_);
