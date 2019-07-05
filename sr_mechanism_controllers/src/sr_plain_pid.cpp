@@ -44,11 +44,12 @@
 #include <boost/algorithm/clamp.hpp>
 #include <boost/algorithm/minmax.hpp>
 
-namespace controller {
+namespace controller
+{
 
 PlainPid::PlainPid(double p, double i, double d, double i_max, double i_min, bool antiwindup)
 {
-  setGains(p,i,d,i_max,i_min,antiwindup);
+  setGains(p, i, d, i_max, i_min, antiwindup);
 
   reset();
 }
@@ -59,7 +60,7 @@ PlainPid::~PlainPid()
 
 void PlainPid::initPid(double p, double i, double d, double i_max, double i_min, bool antiwindup)
 {
-  setGains(p,i,d,i_max,i_min, antiwindup);
+  setGains(p, i, d, i_max, i_min, antiwindup);
 
   reset();
 }
@@ -79,7 +80,8 @@ bool PlainPid::init(const ros::NodeHandle &node, const bool quiet)
   // Load PID gains from parameter server
   if (!nh.getParam("p", gains.p_gain_))
   {
-    if (!quiet) {
+    if (!quiet)
+    {
       ROS_ERROR("No p gain specified for pid.  Namespace: %s", nh.getNamespace().c_str());
     }
     return false;
@@ -93,15 +95,15 @@ bool PlainPid::init(const ros::NodeHandle &node, const bool quiet)
   nh.param("i_clamp", i_clamp, 0.0);
   gains.i_max_ = std::abs(i_clamp);
   gains.i_min_ = -std::abs(i_clamp);
-  if(nh.hasParam("i_clamp_min"))
+  if (nh.hasParam("i_clamp_min"))
   {
-    nh.param("i_clamp_min", gains.i_min_, gains.i_min_); // use i_clamp_min parameter, otherwise keep -i_clamp
-    gains.i_min_ = -std::abs(gains.i_min_); // make sure the value is <= 0
+    nh.param("i_clamp_min", gains.i_min_, gains.i_min_);  // use i_clamp_min parameter, otherwise keep -i_clamp
+    gains.i_min_ = -std::abs(gains.i_min_);  // make sure the value is <= 0
   }
-  if(nh.hasParam("i_clamp_max"))
+  if (nh.hasParam("i_clamp_max"))
   {
-    nh.param("i_clamp_max", gains.i_max_, gains.i_max_); // use i_clamp_max parameter, otherwise keep i_clamp
-    gains.i_max_ = std::abs(gains.i_max_); // make sure the value is >= 0
+    nh.param("i_clamp_max", gains.i_max_, gains.i_max_);  // use i_clamp_max parameter, otherwise keep i_clamp
+    gains.i_max_ = std::abs(gains.i_max_);  // make sure the value is >= 0
   }
   nh.param("antiwindup", gains.antiwindup_, false);
 
@@ -123,8 +125,7 @@ bool PlainPid::initXml(TiXmlElement *config)
     config->Attribute("d") ? atof(config->Attribute("d")) : 0.0,
     std::abs(i_clamp),
     -std::abs(i_clamp),
-    config->Attribute("antiwindup") ? atof(config->Attribute("antiwindup")) : false
-  );
+    config->Attribute("antiwindup") ? atof(config->Attribute("antiwindup")) : false);
 
   reset();
 
@@ -191,10 +192,14 @@ double PlainPid::updatePid(double error, ros::Duration dt)
 double PlainPid::computeCommand(double error, double error_dot, ros::Duration dt)
 {
   double p_term, d_term, i_term;
-  p_error_ = error; // this is error = target - state
+  p_error_ = error;  // this is error = target - state
   d_error_ = error_dot;
 
-  if (dt == ros::Duration(0.0) || std::isnan(error) || std::isinf(error) || std::isnan(error_dot) || std::isinf(error_dot))
+  if (dt == ros::Duration(0.0) ||
+  std::isnan(error) ||
+  std::isinf(error) ||
+  std::isnan(error_dot) ||
+  std::isinf(error_dot))
     return 0.0;
 
   // Calculate proportional contribution to command
@@ -203,10 +208,11 @@ double PlainPid::computeCommand(double error, double error_dot, ros::Duration dt
   // Calculate the integral of the position error
   i_error_ += dt.toSec() * p_error_;
 
-  if(pid_gains.antiwindup_ && pid_gains.i_gain_!=0)
+  if (pid_gains.antiwindup_ && pid_gains.i_gain_ != 0)
   {
     // Prevent i_error_ from climbing higher than permitted by i_max_/i_min_
-    boost::tuple<double, double> bounds = boost::minmax<double>(pid_gains.i_min_ / pid_gains.i_gain_, pid_gains.i_max_ / pid_gains.i_gain_);
+    boost::tuple<double, double> bounds = boost::minmax<double>(pid_gains.i_min_ / pid_gains.i_gain_,
+                                                                pid_gains.i_max_ / pid_gains.i_gain_);
     i_error_ = boost::algorithm::clamp(i_error_, bounds.get<0>(), bounds.get<1>());
   }
 
@@ -252,7 +258,7 @@ void PlainPid::getCurrentPIDErrors(double *pe, double *ie, double *de)
 
 void PlainPid::printValues()
 {
-  ROS_INFO_STREAM_NAMED("pid","Current Values of PID Class:\n"
+  ROS_INFO_STREAM_NAMED("pid", "Current Values of PID Class:\n"
     << "  P Gain: " << pid_gains.p_gain_ << "\n"
     << "  I Gain: " << pid_gains.i_gain_ << "\n"
     << "  D Gain: " << pid_gains.d_gain_ << "\n"
@@ -263,9 +269,6 @@ void PlainPid::printValues()
     << "  P_Error:      " << p_error_  << "\n"
     << "  I_Error:       " << i_error_  << "\n"
     << "  D_Error:      " << d_error_  << "\n"
-    << "  Command:      " << cmd_
-  );
-
+    << "  Command:      " << cmd_);
 }
-
-} // namespace
+}  // namespace controller

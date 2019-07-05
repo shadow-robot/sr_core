@@ -46,7 +46,7 @@ namespace controller
 {
 
   SrhJointVariablePidPositionController::SrhJointVariablePidPositionController()
-          : position_deadband(0.015)
+          : position_deadband_(0.015)
   {
   }
 
@@ -54,14 +54,14 @@ namespace controller
   {
     ROS_ASSERT(robot);
 
-    set_point_old = 0.0;
-    error_old = 0.0;
-    frequency = 1000.0;
-    smoothing_velocity_min = 2.08;
-    smoothing_velocity_max = 4.2;
-    smoothing_factor_p = 0.8;
-    smoothing_factor_i = 0.8;
-    smoothing_factor_d = 0.8;
+    set_point_old_ = 0.0;
+    error_old_ = 0.0;
+    frequency_ = 1000.0;
+    smoothing_velocity_min_ = 2.08;
+    smoothing_velocity_max_ = 4.2;
+    smoothing_factor_p_ = 0.8;
+    smoothing_factor_i_ = 0.8;
+    smoothing_factor_d_ = 0.8;
 
     std::string robot_state_name;
     node_.param<std::string>("robot_state_name", robot_state_name, "unique_robot_hw");
@@ -92,7 +92,7 @@ namespace controller
     }
 
     double dummy;
-    pid_controller_position_->getGains(p_init, i_init, d_init, i_clamp, dummy);
+    pid_controller_position_->getGains(p_init_, i_init_, d_init_, i_clamp_, dummy);
 
     controller_state_publisher_.reset(new realtime_tools::RealtimePublisher<control_msgs::JointControllerState>
                                               (node_, "state", 1));
@@ -177,14 +177,14 @@ namespace controller
                     req.max_force << ", friction deadband: " << req.friction_deadband <<
                     " pos deadband: " << req.deadband);
 
-    p_init = req.p;
-    i_init = req.i;
-    d_init = req.d;
-    i_clamp = req.i_clamp;
+    p_init_ = req.p;
+    i_init_ = req.i;
+    d_init_ = req.d;
+    i_clamp_ = req.i_clamp;
 
     max_force_demand = req.max_force;
     friction_deadband = req.friction_deadband;
-    position_deadband = req.deadband;
+    position_deadband_ = req.deadband;
 
     // Setting the new parameters in the parameter server
     node_.setParam("pid/p", req.p);
@@ -192,7 +192,7 @@ namespace controller
     node_.setParam("pid/d", req.d);
     node_.setParam("pid/i_clamp", req.i_clamp);
     node_.setParam("pid/max_force", max_force_demand);
-    node_.setParam("pid/position_deadband", position_deadband);
+    node_.setParam("pid/position_deadband", position_deadband_);
     node_.setParam("pid/friction_deadband", friction_deadband);
 
     return true;
@@ -225,32 +225,32 @@ namespace controller
 
   void SrhJointVariablePidPositionController::updatePid(double error, double set_point)
   {
-    double i_initial = i_init;
-    double d_initial = d_init;
+    double i_initial = i_init_;
+    double d_initial = d_init_;
 
-    double diff_set_point = fabs(set_point_old - set_point);
-    double set_point_velocity = diff_set_point * frequency;
-    double diff_error = fabs(error_old - error);
-    double error_velocity = diff_error * frequency;
+    double diff_set_point = fabs(set_point_old_ - set_point);
+    double set_point_velocity = diff_set_point * frequency_;
+    double diff_error = fabs(error_old_ - error);
+    double error_velocity = diff_error * frequency_;
 
     double exp_error = exp(fabs(error));
     double exp_log_error_velocity = exp(log10(error_velocity));
 
-    double p = p_init * (exp_error + exp_log_error_velocity + set_point_velocity);
-    double i = i_init * (exp_error + exp_log_error_velocity + set_point_velocity);
-    double d = d_init * (exp_error + exp_log_error_velocity + set_point_velocity);
+    double p = p_init_ * (exp_error + exp_log_error_velocity + set_point_velocity);
+    double i = i_init_ * (exp_error + exp_log_error_velocity + set_point_velocity);
+    double d = d_init_ * (exp_error + exp_log_error_velocity + set_point_velocity);
 
-    if (set_point_velocity > smoothing_velocity_min && set_point_velocity < smoothing_velocity_max)
+    if (set_point_velocity > smoothing_velocity_min_ && set_point_velocity < smoothing_velocity_max_)
     {
-        p = smoothing_factor_p * p;
-        i = smoothing_factor_i * i;
-        d = smoothing_factor_d * d;
+        p = smoothing_factor_p_ * p;
+        i = smoothing_factor_i_ * i;
+        d = smoothing_factor_d_ * d;
     }
 
-    pid_controller_position_->setGains(p, i, d, i_clamp, -i_clamp, 1);
+    pid_controller_position_->setGains(p, i, d, i_clamp_, -i_clamp_, 1);
 
-    set_point_old = set_point;
-    error_old = error;
+    set_point_old_ = set_point;
+    error_old_ = error;
   }
 
   void SrhJointVariablePidPositionController::update(const ros::Time &time, const ros::Duration &period)
@@ -291,7 +291,7 @@ namespace controller
       error_position = joint_state_->position_ - command_;
     }
 
-    bool in_deadband = hysteresis_deadband.is_in_deadband(command_, error_position, position_deadband);
+    bool in_deadband = hysteresis_deadband.is_in_deadband(command_, error_position, position_deadband_);
 
     // don't compute the error if we're in the deadband.
     if (in_deadband)
@@ -364,7 +364,7 @@ namespace controller
   void SrhJointVariablePidPositionController::read_parameters()
   {
     node_.param<double>("pid/max_force", max_force_demand, 1023.0);
-    node_.param<double>("pid/position_deadband", position_deadband, 0.015);
+    node_.param<double>("pid/position_deadband", position_deadband_, 0.015);
     node_.param<int>("pid/friction_deadband", friction_deadband, 5);
   }
 

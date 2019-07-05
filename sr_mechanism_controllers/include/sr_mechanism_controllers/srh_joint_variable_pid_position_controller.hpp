@@ -64,21 +64,21 @@ private:
   boost::scoped_ptr<PlainPid> pid_controller_position_;
 
   /// the position deadband value used in the hysteresis_deadband
-  double position_deadband;
+  double position_deadband_;
 
   /// initial PID parameters
-  double p_init;
-  double i_init;
-  double d_init;
-  double i_clamp;
-  double error_old;
-  double set_point_old;
-  double frequency;
-  double smoothing_velocity_min;
-  double smoothing_velocity_max;
-  double smoothing_factor_p;
-  double smoothing_factor_i;
-  double smoothing_factor_d;
+  double p_init_;
+  double i_init_;
+  double d_init_;
+  double i_clamp_;
+  double error_old_;
+  double set_point_old_;
+  double frequency_;
+  double smoothing_velocity_min_;
+  double smoothing_velocity_max_;
+  double smoothing_factor_p_;
+  double smoothing_factor_i_;
+  double smoothing_factor_d_;
 
   /// We're using an hysteresis deadband.
   sr_deadband::HysteresisDeadband<double> hysteresis_deadband;

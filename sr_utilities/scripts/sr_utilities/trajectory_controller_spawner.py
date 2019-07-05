@@ -190,7 +190,7 @@ if __name__ == "__main__":
     rospy.init_node("generate_trajectory_controller_parameters")
     wait_for_topic = rospy.get_param("~wait_for", "")
     hand_trajectory = rospy.get_param("~hand_trajectory", False)
-    variable_controller = rospy.get_param("~variable_controller", True)
+    variable_controller = rospy.get_param("~variable_controller", False)
     timeout = rospy.get_param("~timeout", 30.0)
     service_timeout = rospy.get_param("~service_timeout", 60.0)
 
