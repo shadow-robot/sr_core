@@ -25,11 +25,10 @@ from std_msgs.msg import Bool
 
 
 class TrajectoryControllerSpawner(object):
-    def __init__(self, trajectory, variable_controller, service_timeout):
+    def __init__(self, trajectory, variable_controller, variable_controller_only_joint_0, service_timeout):
         self.trajectory = trajectory
         self.variable_controller = variable_controller
-        if variable_controller:
-            self.variable_controller_only_joint_0 = rospy.get_param("~variable_controller_only_joint_0", False)
+        self.variable_controller_only_joint_0 = variable_controller_only_joint_0
         self.service_timeout = service_timeout
         self.hand_finder = HandFinder()
         self.joints = self.hand_finder.get_hand_joints()
@@ -119,12 +118,12 @@ class TrajectoryControllerSpawner(object):
                 if self.trajectory and not already_running:
                     controllers_to_start.append(hand_prefix + '_trajectory_controller')
                 for joint in self.joints[hand_prefix]:
-                    TrajectoryControllerSpawner.check_joint(joint,
-                                                            controllers_to_start,
-                                                            controller_names,
-                                                            variable_controller=self.variable_controller,
-                                                            variable_controller_only_joint_0=
-                                                            self.variable_controller_only_joint_0)
+                    TrajectoryControllerSpawner.\
+                        check_joint(joint,
+                                    controllers_to_start,
+                                    controller_names,
+                                    variable_controller=self.variable_controller,
+                                    variable_controller_only_joint_0=self.variable_controller_only_joint_0)
 
         for load_control in controllers_to_start:
             try:
@@ -191,11 +190,13 @@ if __name__ == "__main__":
     wait_for_topic = rospy.get_param("~wait_for", "")
     hand_trajectory = rospy.get_param("~hand_trajectory", False)
     variable_controller = rospy.get_param("~variable_controller", False)
+    variable_controller_only_joint_0 = rospy.get_param("~variable_controller_only_joint_0", False)
     timeout = rospy.get_param("~timeout", 30.0)
     service_timeout = rospy.get_param("~service_timeout", 60.0)
 
     trajectory_spawner = TrajectoryControllerSpawner(trajectory=hand_trajectory,
                                                      variable_controller=variable_controller,
+                                                     variable_controller_only_joint_0=variable_controller_only_joint_0,
                                                      service_timeout=service_timeout)
     if trajectory_spawner.wait_for_topic(wait_for_topic, timeout):
         trajectory_spawner.generate_parameters()

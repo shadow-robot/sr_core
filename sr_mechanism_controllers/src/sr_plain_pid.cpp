@@ -40,6 +40,8 @@
 
 #include <sr_mechanism_controllers/sr_plain_pid.hpp>
 #include <tinyxml.h>
+#include <string>
+#include <tuple>
 
 #include <boost/algorithm/clamp.hpp>
 #include <boost/algorithm/minmax.hpp>
