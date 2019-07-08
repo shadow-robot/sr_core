@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(sr_mechanism_controllers)
+add_compile_options(-std=c++11)
 find_package(catkin REQUIRED COMPONENTS rostest std_msgs std_srvs roscpp actionlib controller_manager_msgs sr_robot_msgs
         sr_utilities controller_interface ros_ethercat_model realtime_tools velocity_controllers
         pluginlib rosconsole angles control_toolbox sr_hardware_interface xmlrpcpp cmake_modules)
@@ -41,6 +42,7 @@ target_link_libraries(simple_spline_trajectory ${catkin_LIBRARIES})
 add_library(sr_mechanism_controllers
         src/srh_fake_joint_calibration_controller.cpp
         src/srh_joint_position_controller.cpp
+        src/srh_joint_variable_pid_position_controller.cpp
         src/srh_joint_effort_controller.cpp
         src/srh_joint_velocity_controller.cpp
         src/srh_mixed_position_velocity_controller.cpp
@@ -49,6 +51,7 @@ add_library(sr_mechanism_controllers
         src/srh_joint_muscle_valve_controller.cpp
         example/srh_syntouch_controllers.cpp
         src/sr_controller.cpp
+        src/sr_plain_pid.cpp
 )
 add_dependencies(sr_mechanism_controllers ${catkin_EXPORTED_TARGETS})
 target_link_libraries(sr_mechanism_controllers ${catkin_LIBRARIES})
