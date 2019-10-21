@@ -5,7 +5,7 @@
   <arg name="headless" default="false" />
   <arg name="debug" default="false" />
   <arg name="verbose" default="false" />
-  <arg name="hand_id" default="rh" />
+  <arg name="hand_prefix" default="rh" />
 
   <!-- Gazebo world file to load. -->
   <arg name="world_name" value="$(find sr_description_common)/worlds/shadowhand.world"/>
@@ -59,7 +59,7 @@
   respawn="false" output="screen" />
   <!-- Controllers for the hand -->
    <include file="$(find sr_hand)/launch/gazebo/loaders/hand_controllers.launch" >
-    <arg name="hand_id" value="$(arg hand_id)" />
+    <arg name="hand_prefix" value="$(arg hand_prefix)" />
   </include>
   <!-- launch trajectory controllers for the arm -->
   <include file="$(find sr_hand)/launch/gazebo/loaders/arm_controllers_extended.launch" />
