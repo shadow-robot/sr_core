@@ -34,7 +34,6 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/find_iterator.hpp>
 #include <boost/circular_buffer.hpp>
-#include <boost/thread/mutex.hpp>
 #include <sstream>
 
 #include <ros/ros.h>
@@ -239,7 +238,6 @@ public:
   {
     pac_buffer_ = boost::circular_buffer<int16_t>(pac_size_);
     pac_vector_.reserve(pac_size_);
-    pac_mutex_ = new boost::mutex();
   };
 
   BiotacData(const BiotacData &btac)
@@ -249,13 +247,13 @@ public:
                                btac.software_version_server,
                                btac.software_version_modified,
                                btac.pcb_version),
+            pac0(btac.pac0), pac1(btac.pac1),
             pdc(btac.pdc), tac(btac.tac),
             tdc(btac.tdc)
   {
     electrodes = std::vector<int16_t>(btac.electrodes);
     pac_vector_ = std::vector<int16_t>(btac.pac_vector_);
     pac_buffer_ = boost::circular_buffer<int16_t>(btac.pac_buffer_);
-    pac_mutex_ = new boost::mutex();
   };
 
   explicit BiotacData(const GenericTactileData &gtd)
@@ -268,31 +266,20 @@ public:
   {
     pac_buffer_ = boost::circular_buffer<int16_t>(pac_size_);
     pac_vector_.reserve(pac_size_);
-    pac_mutex_ = new boost::mutex();
   };
 
   ~BiotacData()
   {
-    delete pac_mutex_;
   };
-
-  void add_pac(int16_t value)
-  {
-    pac_mutex_->lock();
-    pac_buffer_.push_back(value);
-    pac_mutex_->unlock();
-  }
 
   std::vector<int16_t> get_pac(bool consume = false)
   {
     pac_vector_.clear();
-    pac_mutex_->lock();
     pac_vector_.insert(pac_vector_.begin(), pac_buffer_.begin(), pac_buffer_.end());
     if (consume)
     {
       pac_buffer_.clear();
     }
-    pac_mutex_->unlock();
     return pac_vector_;
   }
 
@@ -301,18 +288,19 @@ public:
     return get_pac(true);
   }
 
+  int pac0;  // always there, in word[0] and 1; int16u (2kHz)
+  int pac1;  // int16u
 
   int pdc;  // int16u in word[2]
 
   int tac;  // int16u in word[2]
   int tdc;  // int16u in word[2]
   std::vector<int16_t> electrodes;  // int16u in word[2]
+  boost::circular_buffer<int16_t> pac_buffer_; // 2.2kHz history of int16u/word[2] values. Capacity of 270 samples is 10 read cycles, or 122ms history
+  static const size_t pac_size_ = 270;
 
 private:
-  static const size_t pac_size_ = 270;
-  boost::circular_buffer<int16_t> pac_buffer_; // 2.2kHz history of int16u/word[2] values. Capacity of 270 samples is 10 read cycles, or 122ms history
   std::vector<int16_t> pac_vector_;
-  boost::mutex * pac_mutex_;
 
 };
 
