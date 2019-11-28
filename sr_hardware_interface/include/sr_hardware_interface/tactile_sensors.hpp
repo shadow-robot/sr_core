@@ -296,8 +296,8 @@ public:
   int tac;  // int16u in word[2]
   int tdc;  // int16u in word[2]
   std::vector<int16_t> electrodes;  // int16u in word[2]
-  boost::circular_buffer<int16_t> pac_buffer_;  // 2.2kHz history of int16u/word[2] values. Capacity of 270 samples is
-                                                // 10 read cycles, or 122ms history
+  boost::circular_buffer<int16_t> pac_buffer_;  // 2kHz history of int16u/word[2] values. Capacity of 270 samples is
+                                                // 135ms history
   static const size_t pac_size_ = 270;
 
 private:
