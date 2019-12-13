@@ -33,6 +33,7 @@
 #include <boost/array.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/find_iterator.hpp>
+#include <boost/circular_buffer.hpp>
 #include <sstream>
 
 #include <ros/ros.h>
@@ -235,6 +236,8 @@ public:
   BiotacData()
           : GenericTactileData()
   {
+    pac_buffer_ = boost::circular_buffer<int16_t>(pac_size_);
+    pac_vector_.reserve(pac_size_);
   };
 
   BiotacData(const BiotacData &btac)
@@ -248,10 +251,9 @@ public:
             pdc(btac.pdc), tac(btac.tac),
             tdc(btac.tdc)
   {
-    for (unsigned int i = 0; i < btac.electrodes.size(); i++)
-    {
-      electrodes[i] = btac.electrodes[i];
-    }
+    electrodes = std::vector<int16_t>(btac.electrodes);
+    pac_vector_ = std::vector<int16_t>(btac.pac_vector_);
+    pac_buffer_ = boost::circular_buffer<int16_t>(btac.pac_buffer_);
   };
 
   explicit BiotacData(const GenericTactileData &gtd)
@@ -262,11 +264,29 @@ public:
                                gtd.software_version_modified,
                                gtd.pcb_version)
   {
+    pac_buffer_ = boost::circular_buffer<int16_t>(pac_size_);
+    pac_vector_.reserve(pac_size_);
   };
 
   ~BiotacData()
   {
   };
+
+  std::vector<int16_t> get_pac(bool consume = false)
+  {
+    pac_vector_.clear();
+    pac_vector_.insert(pac_vector_.begin(), pac_buffer_.begin(), pac_buffer_.end());
+    if (consume)
+    {
+      pac_buffer_.clear();
+    }
+    return pac_vector_;
+  }
+
+  std::vector<int16_t> consume_pac()
+  {
+    return get_pac(true);
+  }
 
   int pac0;  // always there, in word[0] and 1; int16u (2kHz)
   int pac1;  // int16u
@@ -276,6 +296,12 @@ public:
   int tac;  // int16u in word[2]
   int tdc;  // int16u in word[2]
   std::vector<int16_t> electrodes;  // int16u in word[2]
+  boost::circular_buffer<int16_t> pac_buffer_;  // 2kHz history of int16u/word[2] values. Capacity of 270 samples is
+                                                // 135ms history
+  static const size_t pac_size_ = 270;
+
+private:
+  std::vector<int16_t> pac_vector_;
 };
 
 class UBI0Data
