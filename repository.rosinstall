@@ -1,7 +1,7 @@
 - git:
     local-name: sr_common
     uri: https://github.com/shadow-robot/sr_common.git
-    version: kinetic-devel
+    version: melodic-devel
 
 - git:
     local-name: ros_ethercat
@@ -11,9 +11,9 @@
 - git:
     local-name: sr_config
     uri: https://github.com/shadow-robot/sr-config.git
-    version: 'kinetic-devel'
+    version: melodic-devel
 
 - git:
     local-name: common_resources
     uri: https://github.com/shadow-robot/common_resources.git
-    version: kinetic-devel
+    version: melodic-devel
