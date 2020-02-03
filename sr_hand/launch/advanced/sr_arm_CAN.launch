@@ -16,7 +16,7 @@
   </node>
   <!-- Robot state publisher: publishes tf information regarding the
        positions of the arm -->
-  <node pkg="robot_state_publisher" type="state_publisher"
+  <node pkg="robot_state_publisher" type="robot_state_publisher"
   name="robot_state_publisher_pos_arm">
     <remap from="robot_description" to="sa_description" />
     <remap from="joint_states" to="sr_arm/position/joint_states" />
@@ -26,7 +26,7 @@
   </node>
   <!-- Robot state publisher: publishes tf information regarding the
        targets of the arm -->
-  <node pkg="robot_state_publisher" type="state_publisher"
+  <node pkg="robot_state_publisher" type="robot_state_publisher"
   name="robot_state_publisher_target_arm">
     <remap from="robot_description" to="sa_description" />
     <remap from="joint_states" to="sr_arm/target/joint_states" />
