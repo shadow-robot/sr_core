@@ -137,7 +137,7 @@ class TrajectoryControllerSpawner(object):
         try:
             rospy.wait_for_service('controller_manager/switch_controller', self.service_timeout)
             switch_controllers = rospy.ServiceProxy('controller_manager/switch_controller', SwitchController)
-            switched_controllers = switch_controllers(controllers_to_start, None,
+            switched_controllers = switch_controllers(controllers_to_start, None, False, 0,
                                                       SwitchController._request_class.BEST_EFFORT)
         except rospy.ServiceException:
             success = False
