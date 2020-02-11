@@ -63,7 +63,7 @@
     <arg name="hand_id" value="$(arg hand_id)" />
   </include>
   <include file="$(find ros_ethercat_model)/launch/joint_state_publisher.launch" />
-  <node pkg="robot_state_publisher" type="state_publisher"
+  <node pkg="robot_state_publisher" type="robot_state_publisher"
   name="robot_state_publisher_full_pos">
     <param name="publish_frequency" type="double" value="20.0" />
   </node>
