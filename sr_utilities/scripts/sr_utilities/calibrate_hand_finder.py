@@ -98,9 +98,7 @@ def main():
 
     calibrate_class.pub_calibrated.publish(True)
 
-
     print("Hand calibration complete")
-
     rospy.spin()
 
 if __name__ == '__main__':
