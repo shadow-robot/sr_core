@@ -43,7 +43,7 @@ class GraspControllerSpawner(object):
             rospy.wait_for_service('controller_manager/switch_controller', self.service_timeout)
             switch_controllers = rospy.ServiceProxy('controller_manager/switch_controller', SwitchController)
             switched_controllers = switch_controllers([controller_to_start], None,
-                                                      SwitchController._request_class.BEST_EFFORT)
+                                                      SwitchController._request_class.BEST_EFFORT, False, 0)
         except rospy.ServiceException:
             success = False
 
