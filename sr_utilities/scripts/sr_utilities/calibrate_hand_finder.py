@@ -55,8 +55,8 @@ class CalibrateHand(object):
         for hand in mapping:
             prefix = mapping[hand]
             for joint in joints[prefix]:
-                if not (joint[3:5].lower() == 'th' or joint[3:5].lower() == 'wr'
-                        or (joint[6] != '1' and joint[6] != '2')):
+                if not (joint[3:5].lower() == 'th' or joint[3:5].lower() == 'wr' or
+                        (joint[6] != '1' and joint[6] != '2')):
                     joint = joint[:6] + '0'
 
                 joint_reset_service = joint[:2] + '/reset_motor_' + joint[3:].upper()
