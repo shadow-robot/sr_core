@@ -1,21 +1,22 @@
 /*
-* File:  sf_arm_finder.cpp
-* Author: Andriy Petlovanyy <andriy@shadowrobot.com>
 * Copyright 2015 Shadow Robot Company Ltd.
 *
 * This program is free software: you can redistribute it and/or modify it
 * under the terms of the GNU General Public License as published by the Free
-* Software Foundation, either version 2 of the License, or (at your option)
-* any later version.
+* Software Foundation version 2 of the License.
 *
 * This program is distributed in the hope that it will be useful, but WITHOUT
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-* FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
 * more details.
 *
 * You should have received a copy of the GNU General Public License along
-* with this program.  If not, see <http://www.gnu.org/licenses/>.
-*
+* with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
+
+/*
+* File:  sf_arm_finder.cpp
+* Author: Andriy Petlovanyy <andriy@shadowrobot.com>
 * @brief see README.md
 */
 
@@ -31,9 +32,6 @@
 #include <utility>
 #include <vector>
 #include <string>
-
-using urdf::ModelInterface;
-using urdf::Joint;
 
 namespace shadow_robot
 {
@@ -51,13 +49,14 @@ SrArmFinder::SrArmFinder()
                                                       default_hand_joints_vector.end());
       std::string robot_description;
       ros::param::get("robot_description", robot_description);
-      const boost::shared_ptr<ModelInterface> hand_urdf = urdf::parseURDF(robot_description);
+      const urdf::ModelInterfaceSharedPtr hand_urdf = urdf::parseURDF(robot_description);
 
-      std::pair<std::string, boost::shared_ptr<Joint> > joint;
+      std::pair<std::string, urdf::JointSharedPtr> joint;
       BOOST_FOREACH(joint, hand_urdf->joints_)
       {
         const std::string joint_name = joint.first;
-        if ((Joint::FIXED != joint.second->type) && (hand_default_joints.end() == hand_default_joints.find(joint_name)))
+        if ((urdf::Joint::FIXED != joint.second->type) &&
+            (hand_default_joints.end() == hand_default_joints.find(joint_name)))
         {
           bool found_suffix = false;
           BOOST_FOREACH(std::string default_joint_name, hand_default_joints)

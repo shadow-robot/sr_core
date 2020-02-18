@@ -49,7 +49,7 @@ PLUGINLIB_EXPORT_CLASS(sr_mechanism_model::NullTransmission, Transmission)
 namespace sr_mechanism_model
 {
 
-  bool NullTransmission::initXml(TiXmlElement *elt, RobotState *robot)
+  bool NullTransmission::initXml(tinyxml2::XMLElement *elt, RobotState *robot)
   {
     if (!Transmission::initXml(elt, robot))
     {
@@ -57,14 +57,14 @@ namespace sr_mechanism_model
     }
 
     // reading the joint name
-    TiXmlElement *jel = elt->FirstChildElement("joint");
+    tinyxml2::XMLElement *jel = elt->FirstChildElement("joint");
     if (!jel || !jel->Attribute("name"))
     {
       ROS_ERROR_STREAM("Joint name not specified in transmission " << name_);
       return false;
     }
 
-    TiXmlElement *ael = elt->FirstChildElement("actuator");
+    tinyxml2::XMLElement *ael = elt->FirstChildElement("actuator");
     if (!ael || !ael->Attribute("name"))
     {
       ROS_ERROR_STREAM("Transmission " << name_ << " has no actuator in configuration");

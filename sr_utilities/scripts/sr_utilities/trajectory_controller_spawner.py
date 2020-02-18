@@ -1,20 +1,19 @@
 #!/usr/bin/env python
-#
+
 # Copyright 2015 Shadow Robot Company Ltd.
 #
 # This program is free software: you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the Free
-# Software Foundation, either version 2 of the License, or (at your option)
-# any later version.
+# Software Foundation version 2 of the License.
 #
 # This program is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
 # more details.
 #
 # You should have received a copy of the GNU General Public License along
-# with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
+# with this program. If not, see <http://www.gnu.org/licenses/>.
+
 import rospy
 import yaml
 import rospkg
@@ -139,7 +138,7 @@ class TrajectoryControllerSpawner(object):
             rospy.wait_for_service('controller_manager/switch_controller', self.service_timeout)
             switch_controllers = rospy.ServiceProxy('controller_manager/switch_controller', SwitchController)
             switched_controllers = switch_controllers(controllers_to_start, None,
-                                                      SwitchController._request_class.BEST_EFFORT)
+                                                      SwitchController._request_class.BEST_EFFORT, False, 0)
         except rospy.ServiceException:
             success = False
 
