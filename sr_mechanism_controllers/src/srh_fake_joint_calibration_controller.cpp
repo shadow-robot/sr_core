@@ -130,7 +130,6 @@ namespace controller
         break;
       case BEGINNING:
         initialize_pids();
-        joint_->calibrated_ = true;
         calibration_state_ = CALIBRATED;
         // We add the following line to delay for some time the first publish and allow the
         // correct initialization of the subscribers in calibrate.py

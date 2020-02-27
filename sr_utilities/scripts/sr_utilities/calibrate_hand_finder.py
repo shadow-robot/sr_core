@@ -88,6 +88,8 @@ def main():
 
     rospy.init_node('calibration', anonymous=True)
     calibrate_class = CalibrateHand()
+    calibrate_class.pub_calibrated.publish(True)
+
     services = calibrate_class.generate_reset_services_list()
 
     calibrate_class.pub_calibrated.publish(False)

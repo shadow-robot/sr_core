@@ -158,7 +158,7 @@ namespace controller
 
   void SrhEffortJointController::update(const ros::Time &time, const ros::Duration &period)
   {
-    if (!has_j2 && !joint_state_->calibrated_)
+    if (!has_j2)
     {
       return;
     }
