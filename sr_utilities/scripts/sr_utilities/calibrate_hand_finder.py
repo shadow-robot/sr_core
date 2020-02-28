@@ -43,6 +43,7 @@ class CalibrateHand(object):
             rospy.sleep(0.5)
             service_list = rosservice.get_service_list()
             reset_service_list = [srv for srv in service_list if '/reset_motor_' in srv]
+            print("reset service list: ", reset_service_list)
             if not reset_service_list:
                 rospy.loginfo("Waiting for motor reset services")
 
@@ -73,8 +74,8 @@ class CalibrateHand(object):
         success = True
         for srv in services:
             rospy.wait_for_service(srv, timeout=4.0)
-            reset_motor = rospy.ServiceProxy(srv, Empty)
             try:
+                reset_motor = rospy.ServiceProxy(srv, Empty)
                 reset_motor()
             except rospy.ServiceException as exc:
                 success = False
@@ -88,7 +89,6 @@ def main():
 
     rospy.init_node('calibration', anonymous=True)
     calibrate_class = CalibrateHand()
-    calibrate_class.pub_calibrated.publish(True)
 
     services = calibrate_class.generate_reset_services_list()
 
