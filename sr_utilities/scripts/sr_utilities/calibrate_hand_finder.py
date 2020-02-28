@@ -44,7 +44,6 @@ class CalibrateHand(object):
             rospy.sleep(0.5)
             service_list = rosservice.get_service_list()
             reset_service_list = [srv for srv in service_list if '/reset_motor_' in srv]
-            print("reset service list: ", reset_service_list)
             if not reset_service_list:
                 rospy.loginfo("Waiting for motor reset services")
 
