@@ -131,7 +131,6 @@ namespace sr_gazebo_sim
       if (this->isHandJoint(transmissions, it->first))
       {
         this->fake_state_.joint_states_[it->first].joint_ = it->second;
-        this->fake_state_.joint_states_[it->first].calibrated_ = true;
       }
     }
 

@@ -101,15 +101,6 @@ namespace controller
         ROS_ERROR("SrhVelocityController could not find the second joint relevant to \"%s\"\n", joint_name_.c_str());
         return false;
       }
-      if (!joint_state_2->calibrated_)
-      {
-        ROS_ERROR("Joint %s not calibrated for SrhVelocityController", joint_name_.c_str());
-        return false;
-      }
-      else
-      {
-        joint_state_->calibrated_ = true;
-      }
     }
     else
     {
@@ -117,11 +108,6 @@ namespace controller
       if (!joint_state_)
       {
         ROS_ERROR("SrhVelocityController could not find joint named \"%s\"\n", joint_name_.c_str());
-        return false;
-      }
-      if (!joint_state_->calibrated_)
-      {
-        ROS_ERROR("Joint %s not calibrated for SrhJointVelocityController", joint_name_.c_str());
         return false;
       }
     }
@@ -199,11 +185,6 @@ namespace controller
 
   void SrhJointVelocityController::update(const ros::Time &time, const ros::Duration &period)
   {
-    if (!has_j2 && !joint_state_->calibrated_)
-    {
-      return;
-    }
-
     ROS_ASSERT(robot_);
     ROS_ASSERT(joint_state_->joint_);
 

@@ -2,8 +2,8 @@
     <name>sr_mechanism_controllers</name>
     <version>1.4.0</version>
     <description>The sr_mechanism_controllers package contains different types of
-        controllers for the etherCAT hand:(fake) calibration controllers,
-        position controllers, velocity controllers, force controllers, ...
+        controllers for the etherCAT hand: position controllers,
+        velocity controllers, force controllers, ...
     </description>
     <maintainer email="software@shadowrobot.com">Shadow Robot's software team</maintainer>
 

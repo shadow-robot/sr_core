@@ -83,11 +83,6 @@ namespace controller
                 joint_name_.c_str());
       return false;
     }
-    if (!joint_state_->calibrated_)
-    {
-      ROS_ERROR("Joint %s not calibrated for SrhSyntouchController", joint_name_.c_str());
-      return false;
-    }
 
     // init the pointer to the biotacs data, updated at 1kHz
     actuator_ = static_cast<sr_actuator::SrMotorActuator *>(robot_->getActuator(joint_name_));
@@ -106,11 +101,6 @@ namespace controller
 
   void SrhSyntouchController::update(const ros::Time &time, const ros::Duration &period)
   {
-    if (!joint_state_->calibrated_)
-    {
-      return;
-    }
-
     ROS_ASSERT(robot_);
     ROS_ASSERT(joint_state_->joint_);
 
