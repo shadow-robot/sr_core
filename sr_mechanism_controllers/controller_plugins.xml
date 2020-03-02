@@ -1,9 +1,4 @@
 <library path="lib/libsr_mechanism_controllers">
-
-    <class name="sr_mechanism_controllers/SrhFakeJointCalibrationController"
-           type="controller::SrhFakeJointCalibrationController"
-           base_class_type="controller_interface::ControllerBase"/>
-
     <class name="sr_mechanism_controllers/SrhJointPositionController"
            type="controller::SrhJointPositionController"
            base_class_type="controller_interface::ControllerBase"/>
