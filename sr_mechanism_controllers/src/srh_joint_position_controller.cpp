@@ -122,6 +122,8 @@ namespace controller
     serve_set_gains_ = node_.advertiseService("set_gains", &SrhJointPositionController::setGains, this);
     serve_reset_gains_ = node_.advertiseService("reset_gains", &SrhJointPositionController::resetGains, this);
 
+    read_parameters();
+
     after_init();
     return true;
   }
@@ -130,7 +132,6 @@ namespace controller
   {
     resetJointState();
     pid_controller_position_->reset();
-    read_parameters();
 
     if (has_j2)
       ROS_WARN_STREAM(
