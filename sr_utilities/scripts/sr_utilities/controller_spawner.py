@@ -22,18 +22,17 @@ from controller_manager_msgs.srv import SwitchController, LoadController
 from std_msgs.msg import Bool
 
 
-class GraspControllerSpawner(object):
-    def __init__(self, service_timeout):
+class ControllerSpawner(object):
+    def __init__(self, controller_to_start, service_timeout):
+        self.controller_to_start = controller_to_start
         self.service_timeout = service_timeout
 
     def set_controller(self):
-        controller_to_start = 'sh_rh_grasp_controller'
         success = True
-
         try:
             rospy.wait_for_service('controller_manager/load_controller', self.service_timeout)
             load_controllers = rospy.ServiceProxy('controller_manager/load_controller', LoadController)
-            loaded_controllers = load_controllers(controller_to_start)
+            loaded_controllers = load_controllers(self.controller_to_start)
         except rospy.ServiceException:
             success = False
         if not loaded_controllers.ok:
@@ -42,7 +41,7 @@ class GraspControllerSpawner(object):
         try:
             rospy.wait_for_service('controller_manager/switch_controller', self.service_timeout)
             switch_controllers = rospy.ServiceProxy('controller_manager/switch_controller', SwitchController)
-            switched_controllers = switch_controllers([controller_to_start], None,
+            switched_controllers = switch_controllers([self.controller_to_start], None,
                                                       SwitchController._request_class.BEST_EFFORT, False, 0)
         except rospy.ServiceException:
             success = False
@@ -94,7 +93,8 @@ if __name__ == "__main__":
     wait_for_topic = rospy.get_param("~wait_for", "")
     timeout = rospy.get_param("~timeout", 30.0)
     service_timeout = rospy.get_param("~service_timeout", 60.0)
+    controller_to_start = rospy.get_param("~controller_to_start", "sh_rh_grasp_controller")
 
-    grasp_spawner = GraspControllerSpawner(service_timeout=service_timeout)
-    if grasp_spawner.wait_for_topic(wait_for_topic, timeout):
-        grasp_spawner.set_controller()
+    controller_spawner = ControllerSpawner(controller_to_start=controller_to_start, service_timeout=service_timeout)
+    if controller_spawner.wait_for_topic(wait_for_topic, timeout):
+        controller_spawner.set_controller()
