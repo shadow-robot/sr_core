@@ -1,5 +1,5 @@
 <launch>
-  <!-- DO NOT USE ROBOT DESCRIPTION IF NOT NEEDED  <param name="robot_description" command="xacro --inorder '$(find sr_description)/robots/arm_and_hand_motor.urdf.xacro'" /> -->
+  <!-- DO NOT USE ROBOT DESCRIPTION IF NOT NEEDED  <param name="robot_description" command="xacro '$(find sr_description)/robots/arm_and_hand_motor.urdf.xacro'" /> -->
   <include file="$(find sr_description)/loaders/load_arm_model.launch" />
   <!--
            shadowarm
