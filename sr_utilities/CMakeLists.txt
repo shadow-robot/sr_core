@@ -1,21 +1,31 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(sr_utilities)
-find_package(catkin REQUIRED COMPONENTS sensor_msgs sr_robot_msgs rospy roscpp tf urdf)
+
+add_compile_options(-std=c++11)
+
+find_package(catkin REQUIRED COMPONENTS sensor_msgs sr_robot_msgs rospy roscpp tf urdf moveit_ros_planning_interface)
 find_package(Boost REQUIRED COMPONENTS thread system)
 find_package(rostest REQUIRED)
+find_package(Eigen3 REQUIRED)
 
 catkin_python_setup()
 
-include_directories(include ${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
+include_directories(include ${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS} ${Eigen_INCLUDE_DIRS})
 
 add_service_files(FILES getJointState.srv)
 generate_messages(DEPENDENCIES std_msgs sensor_msgs)
 
 catkin_package(
         DEPENDS
-        CATKIN_DEPENDS sensor_msgs sr_robot_msgs rospy roscpp tf urdf urdfdom_py ros_ethercat_model
+        CATKIN_DEPENDS sensor_msgs sr_robot_msgs rospy roscpp tf urdf urdfdom_py ros_ethercat_model moveit_ros_planning_interface moveit_ros_manipulation moveit_ros_move_group
         INCLUDE_DIRS include
         LIBRARIES sr_calibration
+)
+
+include_directories(
+  include
+  ${catkin_INCLUDE_DIRS}
+  ${Eigen_INCLUDE_DIRS}
 )
 
 add_library(sr_calibration src/calibration.cpp)
@@ -23,6 +33,13 @@ add_dependencies(sr_calibration sr_utilities_gencpp ${catkin_EXPORTED_TARGETS})
 add_library(sr_hand_finder src/sr_hand_finder.cpp)
 add_library(sr_arm_finder src/sr_arm_finder.cpp)
 add_dependencies(sr_arm_finder sr_hand_finder ${catkin_EXPORTED_TARGETS})
+
+add_executable(jacobian_tests scripts/${PROJECT_NAME}/jacobian_tests.cpp)
+add_dependencies(jacobian_tests ${catkin_EXPORTED_TARGETS})
+target_link_libraries(jacobian_tests
+   ${catkin_LIBRARIES}
+   ${Eigen_LIBRARIES}
+ )
 
 catkin_add_gtest(test_calibration test/test_calibration.cpp src/calibration.cpp)
 target_link_libraries(test_calibration ${catkin_LIBRARIES})
