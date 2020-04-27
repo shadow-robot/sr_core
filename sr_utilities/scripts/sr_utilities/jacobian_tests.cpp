@@ -97,17 +97,17 @@ int main(int argc, char** argv)
   desired_force(5) = des_force_yaw;
 
 
-  double desired_torque_direction_0 = constrain_angle(desired_force(3));
-  double desired_torque_remainder_0 = desired_force(3) - desired_torque_direction_0;
-  double desired_torque_direction_1 = constrain_angle(desired_force(4));
-  double desired_torque_remainder_1 = desired_force(4) - desired_torque_direction_1;
-  double desired_torque_direction_2 = constrain_angle(desired_force(5));
-  double desired_torque_remainder_2 = desired_force(5) - desired_torque_direction_2;
+  // double desired_torque_direction_0 = constrain_angle(desired_force(3));
+  // double desired_torque_remainder_0 = desired_force(3) - desired_torque_direction_0;
+  // double desired_torque_direction_1 = constrain_angle(desired_force(4));
+  // double desired_torque_remainder_1 = desired_force(4) - desired_torque_direction_1;
+  // double desired_torque_direction_2 = constrain_angle(desired_force(5));
+  // double desired_torque_remainder_2 = desired_force(5) - desired_torque_direction_2;
   
 Eigen::Quaternionf q;
-q = Eigen::AngleAxisf(desired_torque_direction_0, Eigen::Vector3f::UnitX())
-    * Eigen::AngleAxisf(desired_torque_direction_1, Eigen::Vector3f::UnitY())
-    * Eigen::AngleAxisf(desired_torque_direction_2, Eigen::Vector3f::UnitZ());
+q = Eigen::AngleAxisf(desired_force(3), Eigen::Vector3f::UnitX())
+    * Eigen::AngleAxisf(desired_force(4), Eigen::Vector3f::UnitY())
+    * Eigen::AngleAxisf(desired_force(5), Eigen::Vector3f::UnitZ());
 
   tf2_ros::Buffer tfBuffer;
   tf2_ros::TransformListener tf2_listener(tfBuffer);
@@ -142,7 +142,11 @@ q = Eigen::AngleAxisf(desired_torque_direction_0, Eigen::Vector3f::UnitX())
   ROS_WARN_STREAM(tf_desired_force_in_palm_orientation.transform.translation.y);
   ROS_WARN_STREAM(tf_desired_force_in_palm_orientation.transform.translation.z);
 
-  auto rrr = q.toRotationMatrix();
+  Eigen::Quaternionf q_res(tf_desired_force_in_palm_orientation.transform.rotation.w,
+                                tf_desired_force_in_palm_orientation.transform.rotation.x,
+                                tf_desired_force_in_palm_orientation.transform.rotation.y,
+                                tf_desired_force_in_palm_orientation.transform.rotation.z);
+  auto rrr = q_res.toRotationMatrix();
   tf::Matrix3x3 rot_mat;
 
   for (int i = 0; i<3; i++)
@@ -153,30 +157,44 @@ q = Eigen::AngleAxisf(desired_torque_direction_0, Eigen::Vector3f::UnitX())
     }
   }
 
-  Eigen::Vector3d euler;
-  rot_mat.getRPY(euler[0], euler[1], euler[2]);
-  // Eigen::AngleAxisd aa(rrr);    // RotationMatrix to AxisAngle
-  // rrr = aa.toRotationMatrix();  // AxisAngle      to RotationMatrix
-  // auto euler = rrr.eulerAngles(0, 1, 2);
 
-  ROS_WARN_STREAM(euler[0] + desired_torque_remainder_0);
-  ROS_WARN_STREAM(euler[1] + desired_torque_remainder_1);
-  ROS_WARN_STREAM(euler[2] + desired_torque_remainder_2);
+  Eigen::Quaternionf q_res2(transform_tip_to_palm.transform.rotation.w,
+                                transform_tip_to_palm.transform.rotation.x,
+                                transform_tip_to_palm.transform.rotation.y,
+                                transform_tip_to_palm.transform.rotation.z);
+  auto ppp = q_res2.toRotationMatrix();
+  tf::Matrix3x3 rot_mat2;
+
+  for (int i = 0; i<3; i++)
+  {
+    for(int j =0; j<3; j++)
+    {
+      rot_mat2[i][j] = ppp(i,j);
+    }
+  }
+
+  Eigen::Vector3d euler;
+  Eigen::Vector3d tip_palm_rot;
+  rot_mat.getRPY(euler[0], euler[1], euler[2]);
+  rot_mat2.getRPY(tip_palm_rot[0], tip_palm_rot[1], tip_palm_rot[2]);
+
+  ROS_WARN_STREAM(euler[0] + tip_palm_rot[0]);
+  ROS_WARN_STREAM(euler[1] + tip_palm_rot[1]);
+  ROS_WARN_STREAM(euler[2] + tip_palm_rot[2]);
 
   Eigen::VectorXd desired_force_from_palm(6);
   desired_force_from_palm(0) = tf_desired_force_in_palm_orientation.transform.translation.x;
   desired_force_from_palm(1) = tf_desired_force_in_palm_orientation.transform.translation.y;
   desired_force_from_palm(2) = tf_desired_force_in_palm_orientation.transform.translation.z;
 
-  // THIS DOESNT WORK - returns non normalized value so euler is all whacked
-  desired_force_from_palm(3) = euler[0] + desired_torque_remainder_0;
-  desired_force_from_palm(4) = euler[1] + desired_torque_remainder_1;
-  desired_force_from_palm(5) = euler[2] + desired_torque_remainder_2;
+  // THIS DOESNT WORK - rtransform it with tf insread of adding!!!!
+  desired_force_from_palm(3) = euler[0]  + tip_palm_rot[0];
+  desired_force_from_palm(4) = euler[1]  + tip_palm_rot[1];
+  desired_force_from_palm(5) = euler[2]  + tip_palm_rot[2];
 
     kinematic_state->setVariableValues(joints_states);
     Eigen::MatrixXd jacobian = kinematic_state->getJacobian(joint_model_group);
     Eigen::VectorXd needed_torques = jacobian.transpose() * desired_force_from_palm;
-    ROS_INFO_STREAM(std::endl << joints_states);
     ROS_INFO_STREAM(std::endl << desired_force);
     ROS_INFO_STREAM(std::endl << jacobian.transpose());
     ROS_INFO_STREAM(std::endl << needed_torques);
