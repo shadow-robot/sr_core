@@ -13,6 +13,7 @@
 #include <math.h>
 #include <Eigen/Geometry>
 #include <tf/transform_datatypes.h>
+#include <cmath>
 
 sensor_msgs::JointState joints_states;
 
@@ -28,10 +29,10 @@ void jointsCB(const sensor_msgs::JointStateConstPtr& msg)
 }
 
 double constrain_angle(double x){
-    x = fmod(x + 3.14, 6.28);
+    x = fmod(x + M_PI/2, M_PI);
     if (x < 0)
-        x += 6.28;
-    return x - 3.14;
+        x += M_PI;
+    return x - M_PI/2;
 }
 
 int main(int argc, char** argv)
@@ -88,21 +89,24 @@ int main(int argc, char** argv)
   kinematic_state->setToDefaultValues();
   const robot_state::JointModelGroup* joint_model_group = kinematic_model->getJointModelGroup("rh_first_finger");
 
+  bool rot_scaled = false;
+  double scaling_factor = 1;
+
   Eigen::VectorXd desired_force(6);
+
+  if (des_force_roll > 1 || des_force_pitch > 1 || des_force_yaw > 1)
+  {
+    rot_scaled= true;
+    scaling_factor = std::max(std::max(des_force_roll, des_force_pitch), des_force_yaw);
+  }
+
+    desired_force(3) = des_force_roll / scaling_factor;
+    desired_force(4) = des_force_pitch / scaling_factor;
+    desired_force(5) = des_force_yaw / scaling_factor;
+
   desired_force(0) = des_force_x;
   desired_force(1) = des_force_y;
   desired_force(2) = des_force_z;
-  desired_force(3) = des_force_roll;
-  desired_force(4) = des_force_pitch;
-  desired_force(5) = des_force_yaw;
-
-
-  // double desired_torque_direction_0 = constrain_angle(desired_force(3));
-  // double desired_torque_remainder_0 = desired_force(3) - desired_torque_direction_0;
-  // double desired_torque_direction_1 = constrain_angle(desired_force(4));
-  // double desired_torque_remainder_1 = desired_force(4) - desired_torque_direction_1;
-  // double desired_torque_direction_2 = constrain_angle(desired_force(5));
-  // double desired_torque_remainder_2 = desired_force(5) - desired_torque_direction_2;
   
 Eigen::Quaternionf q;
 q = Eigen::AngleAxisf(desired_force(3), Eigen::Vector3f::UnitX())
@@ -178,10 +182,6 @@ q = Eigen::AngleAxisf(desired_force(3), Eigen::Vector3f::UnitX())
   rot_mat.getRPY(euler[0], euler[1], euler[2]);
   rot_mat2.getRPY(tip_palm_rot[0], tip_palm_rot[1], tip_palm_rot[2]);
 
-  ROS_WARN_STREAM(euler[0] + tip_palm_rot[0]);
-  ROS_WARN_STREAM(euler[1] + tip_palm_rot[1]);
-  ROS_WARN_STREAM(euler[2] + tip_palm_rot[2]);
-
   Eigen::VectorXd desired_force_from_palm(6);
   desired_force_from_palm(0) = tf_desired_force_in_palm_orientation.transform.translation.x;
   desired_force_from_palm(1) = tf_desired_force_in_palm_orientation.transform.translation.y;
@@ -191,6 +191,18 @@ q = Eigen::AngleAxisf(desired_force(3), Eigen::Vector3f::UnitX())
   desired_force_from_palm(3) = euler[0]  + tip_palm_rot[0];
   desired_force_from_palm(4) = euler[1]  + tip_palm_rot[1];
   desired_force_from_palm(5) = euler[2]  + tip_palm_rot[2];
+
+  if (rot_scaled)
+  {
+    desired_force_from_palm(3) *= scaling_factor;
+    desired_force_from_palm(4) *= scaling_factor;
+    desired_force_from_palm(5) *= scaling_factor;
+  }
+
+
+  ROS_WARN_STREAM(desired_force_from_palm(3));
+  ROS_WARN_STREAM(desired_force_from_palm(4));
+  ROS_WARN_STREAM(desired_force_from_palm(5));
 
     kinematic_state->setVariableValues(joints_states);
     Eigen::MatrixXd jacobian = kinematic_state->getJacobian(joint_model_group);
