@@ -14,6 +14,7 @@
 #include <Eigen/Geometry>
 #include <tf/transform_datatypes.h>
 #include <cmath>
+#include <boost/shared_ptr.hpp>
 
 sensor_msgs::JointState joints_states;
 
@@ -79,7 +80,7 @@ int main(int argc, char** argv)
   ros::AsyncSpinner spinner(1);
   spinner.start();
 
-  ros::Subscriber joints_sub = nh.subscribe("/joint_states", 1, jointsCB);
+  // ros::Subscriber joints_sub = nh.subscribe("/joint_states", 1, jointsCB);
 
   robot_model_loader::RobotModelLoaderPtr robot_model_loader_;
   robot_model_loader_.reset(new robot_model_loader::RobotModelLoader("robot_description"));
@@ -204,7 +205,9 @@ q = Eigen::AngleAxisf(desired_force(3), Eigen::Vector3f::UnitX())
   ROS_WARN_STREAM(desired_force_from_palm(4));
   ROS_WARN_STREAM(desired_force_from_palm(5));
 
-    kinematic_state->setVariableValues(joints_states);
+    boost::shared_ptr<sensor_msgs::JointState const> joint_states_ptr;
+    joint_states_ptr = ros::topic::waitForMessage<sensor_msgs::JointState>("/joint_states");
+    kinematic_state->setVariableValues(*joint_states_ptr);
     Eigen::MatrixXd jacobian = kinematic_state->getJacobian(joint_model_group);
     Eigen::VectorXd needed_torques = jacobian.transpose() * desired_force_from_palm;
     ROS_INFO_STREAM(std::endl << desired_force);
