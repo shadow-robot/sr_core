@@ -36,6 +36,9 @@ private:
   void setup_kinematic_state();
   Eigen::VectorXd transform_force_vector_to_base_frame(Eigen::VectorXd);
 
+  // geometry_msgs::Vector3Stamped des_force, des_torque;
+  // geometry_msgs::Vector3Stamped des_force-base_frame, des_torque_base_frame;
+
 
 };
 }  // namespace shadow_robot
