@@ -20,17 +20,23 @@ namespace shadow_robot
 class SrJacobianUtils
 {
 public:
-  SrJacobianUtils(std::string, std::string);
+  SrJacobianUtils(std::string, std::string, std::string);
   ~SrJacobianUtils();
+  Eigen::VectorXd calculate_torques_given_force_vector(Eigen::VectorXd);
 
-  std::string robot_description_name;
-  std::string model_group_name;
+  const std::string robot_description_name;
+  const std::string model_group_name;
   std::string ee_frame_name;
+
+  // move to private
+  robot_state::RobotStatePtr kinematic_state_;
+  robot_state::JointModelGroup* joint_model_group_;
 
 private:
   void setup_kinematic_state();
+  Eigen::VectorXd transform_force_vector_to_base_frame(Eigen::VectorXd);
 
-  robot_state::RobotStatePtr kinematic_state;
+
 };
 }  // namespace shadow_robot
 

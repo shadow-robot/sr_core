@@ -36,7 +36,7 @@ add_library(jacobian_utils src/jacobian_utils.cpp)
 add_dependencies(sr_arm_finder sr_hand_finder ${catkin_EXPORTED_TARGETS})
 add_dependencies(jacobian_utils jacobian_utils ${catkin_EXPORTED_TARGETS})
 
-add_executable(jacobian_tests scripts/${PROJECT_NAME}/jacobian_tests.cpp)
+add_executable(jacobian_tests scripts/${PROJECT_NAME}/jacobian_tests.cpp src/jacobian_utils.cpp)
 add_dependencies(jacobian_tests ${catkin_EXPORTED_TARGETS})
 target_link_libraries(jacobian_tests
    ${catkin_LIBRARIES}
