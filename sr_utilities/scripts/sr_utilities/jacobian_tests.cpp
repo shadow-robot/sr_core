@@ -65,36 +65,30 @@ int main(int argc, char** argv)
   ros::AsyncSpinner spinner(1);
   spinner.start();
 
-  geometry_msgs::WrenchStamped des_wrench;
+  ju.desired_wrench_.wrench.force.x = des_force_x;
+  ju.desired_wrench_.wrench.force.y = des_force_y;
+  ju.desired_wrench_.wrench.force.z = des_force_z;
+  ju.desired_wrench_.wrench.torque.x = des_force_roll;
+  ju.desired_wrench_.wrench.torque.y = des_force_pitch;
+  ju.desired_wrench_.wrench.torque.z = des_force_yaw;
+  ju.desired_wrench_.header.frame_id = "rh_fftip";
 
-  des_wrench.wrench.force.x = des_force_x;
-  des_wrench.wrench.force.y = des_force_y;
-  des_wrench.wrench.force.z = des_force_z;
-  des_wrench.wrench.torque.x = des_force_roll;
-  des_wrench.wrench.torque.y = des_force_pitch;
-  des_wrench.wrench.torque.z = des_force_yaw;
-  des_wrench.header.frame_id = "rh_fftip";
+  ju.transform_desired_wrench_to_base_frame();
 
-  tf2_ros::Buffer tfBuffer;
-  tf2_ros::TransformListener tf2_listener(tfBuffer);
-  tfBuffer.lookupTransform("world", "rh_palm", ros::Time(0), ros::Duration(1.0) );
-
-  des_wrench = tfBuffer.transform(des_wrench, "rh_palm");
-
-  ROS_WARN_STREAM(des_wrench.wrench.force.x);
-  ROS_WARN_STREAM(des_wrench.wrench.force.y);
-  ROS_WARN_STREAM(des_wrench.wrench.force.z);
-  ROS_WARN_STREAM(des_wrench.wrench.torque.x);
-  ROS_WARN_STREAM(des_wrench.wrench.torque.y);
-  ROS_WARN_STREAM(des_wrench.wrench.torque.z);
+  ROS_WARN_STREAM(ju.desired_wrench_in_base_frame_.wrench.force.x);
+  ROS_WARN_STREAM(ju.desired_wrench_in_base_frame_.wrench.force.y);
+  ROS_WARN_STREAM(ju.desired_wrench_in_base_frame_.wrench.force.z);
+  ROS_WARN_STREAM(ju.desired_wrench_in_base_frame_.wrench.torque.x);
+  ROS_WARN_STREAM(ju.desired_wrench_in_base_frame_.wrench.torque.y);
+  ROS_WARN_STREAM(ju.desired_wrench_in_base_frame_.wrench.torque.z);
 
   Eigen::VectorXd desired_force_from_palm(6);
-  desired_force_from_palm(0) = des_wrench.wrench.force.x;
-  desired_force_from_palm(1) = des_wrench.wrench.force.y;
-  desired_force_from_palm(2) = des_wrench.wrench.force.z;
-  desired_force_from_palm(3) = des_wrench.wrench.torque.x;
-  desired_force_from_palm(4) = des_wrench.wrench.torque.y;
-  desired_force_from_palm(5) = des_wrench.wrench.torque.z;
+  desired_force_from_palm(0) = ju.desired_wrench_in_base_frame_.wrench.force.x;
+  desired_force_from_palm(1) = ju.desired_wrench_in_base_frame_.wrench.force.y;
+  desired_force_from_palm(2) = ju.desired_wrench_in_base_frame_.wrench.force.z;
+  desired_force_from_palm(3) = ju.desired_wrench_in_base_frame_.wrench.torque.x;
+  desired_force_from_palm(4) = ju.desired_wrench_in_base_frame_.wrench.torque.y;
+  desired_force_from_palm(5) = ju.desired_wrench_in_base_frame_.wrench.torque.z;
 
     boost::shared_ptr<sensor_msgs::JointState const> joint_states_ptr;
     joint_states_ptr = ros::topic::waitForMessage<sensor_msgs::JointState>("/joint_states");

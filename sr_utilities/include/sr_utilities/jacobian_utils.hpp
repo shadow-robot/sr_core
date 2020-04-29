@@ -22,23 +22,23 @@ class SrJacobianUtils
 public:
   SrJacobianUtils(std::string, std::string, std::string);
   ~SrJacobianUtils();
-  Eigen::VectorXd calculate_torques_given_force_vector(Eigen::VectorXd);
+  Eigen::MatrixXd get_jacobian();
+  Eigen::VectorXd get_torques_given_wrench(geometry_msgs::WrenchStamped);
 
-  const std::string robot_description_name;
-  const std::string model_group_name;
-  std::string ee_frame_name;
+  const std::string robot_description_name_;
+  const std::string model_group_name_;
+  std::string ee_frame_name_;
 
   // move to private
+  void transform_desired_wrench_to_base_frame();
+
   robot_state::RobotStatePtr kinematic_state_;
   robot_state::JointModelGroup* joint_model_group_;
+  geometry_msgs::WrenchStamped desired_wrench_;
+  geometry_msgs::WrenchStamped desired_wrench_in_base_frame_;
 
 private:
   void setup_kinematic_state();
-  Eigen::VectorXd transform_force_vector_to_base_frame(Eigen::VectorXd);
-
-  // geometry_msgs::Vector3Stamped des_force, des_torque;
-  // geometry_msgs::Vector3Stamped des_force-base_frame, des_torque_base_frame;
-
 
 };
 }  // namespace shadow_robot
