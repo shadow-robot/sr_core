@@ -20,25 +20,26 @@ namespace shadow_robot
 class SrJacobianUtils
 {
 public:
-  SrJacobianUtils(std::string, std::string, std::string);
+  SrJacobianUtils(std::string, std::string);
   ~SrJacobianUtils();
   Eigen::MatrixXd get_jacobian();
+  Eigen::MatrixXd get_jacobian(sensor_msgs::JointState);
   Eigen::VectorXd get_torques_given_wrench(geometry_msgs::WrenchStamped);
+  Eigen::VectorXd get_torques_given_wrench(geometry_msgs::WrenchStamped,
+                                           sensor_msgs::JointState);
 
   const std::string robot_description_name_;
   const std::string model_group_name_;
-  std::string ee_frame_name_;
-
-  // move to private
-  void transform_desired_wrench_to_base_frame();
-
-  robot_state::RobotStatePtr kinematic_state_;
-  robot_state::JointModelGroup* joint_model_group_;
-  geometry_msgs::WrenchStamped desired_wrench_;
-  geometry_msgs::WrenchStamped desired_wrench_in_base_frame_;
 
 private:
   void setup_kinematic_state();
+  geometry_msgs::WrenchStamped transform_wrench_to_base_frame(geometry_msgs::WrenchStamped);
+  Eigen::VectorXd wrench_to_eigen_vector(geometry_msgs::WrenchStamped);
+  Eigen::VectorXd get_torques_given_wrench_and_jacobian(geometry_msgs::WrenchStamped,
+                                                        Eigen::MatrixXd);
+
+  robot_state::RobotStatePtr kinematic_state_;
+  robot_state::JointModelGroup* joint_model_group_;
 
 };
 }  // namespace shadow_robot

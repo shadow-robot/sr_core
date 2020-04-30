@@ -29,7 +29,10 @@ int main(int argc, char** argv)
   double des_force_z;
   double des_force_roll, des_force_pitch, des_force_yaw;
 
-  shadow_robot::SrJacobianUtils ju("robot_description", "rh_first_finger", "rh_fftip");
+  geometry_msgs::WrenchStamped desired_wrench_;
+  geometry_msgs::WrenchStamped desired_wrench_in_base_frame_;
+
+  shadow_robot::SrJacobianUtils ju("robot_description", "rh_first_finger");
 
   if(!nh_priv.getParam("des_force_x", des_force_x))
   {
@@ -65,36 +68,14 @@ int main(int argc, char** argv)
   ros::AsyncSpinner spinner(1);
   spinner.start();
 
-  ju.desired_wrench_.wrench.force.x = des_force_x;
-  ju.desired_wrench_.wrench.force.y = des_force_y;
-  ju.desired_wrench_.wrench.force.z = des_force_z;
-  ju.desired_wrench_.wrench.torque.x = des_force_roll;
-  ju.desired_wrench_.wrench.torque.y = des_force_pitch;
-  ju.desired_wrench_.wrench.torque.z = des_force_yaw;
-  ju.desired_wrench_.header.frame_id = "rh_fftip";
+  desired_wrench_.wrench.force.x = des_force_x;
+  desired_wrench_.wrench.force.y = des_force_y;
+  desired_wrench_.wrench.force.z = des_force_z;
+  desired_wrench_.wrench.torque.x = des_force_roll;
+  desired_wrench_.wrench.torque.y = des_force_pitch;
+  desired_wrench_.wrench.torque.z = des_force_yaw;
+  desired_wrench_.header.frame_id = "rh_fftip";
 
-  ju.transform_desired_wrench_to_base_frame();
-
-  ROS_WARN_STREAM(ju.desired_wrench_in_base_frame_.wrench.force.x);
-  ROS_WARN_STREAM(ju.desired_wrench_in_base_frame_.wrench.force.y);
-  ROS_WARN_STREAM(ju.desired_wrench_in_base_frame_.wrench.force.z);
-  ROS_WARN_STREAM(ju.desired_wrench_in_base_frame_.wrench.torque.x);
-  ROS_WARN_STREAM(ju.desired_wrench_in_base_frame_.wrench.torque.y);
-  ROS_WARN_STREAM(ju.desired_wrench_in_base_frame_.wrench.torque.z);
-
-  Eigen::VectorXd desired_force_from_palm(6);
-  desired_force_from_palm(0) = ju.desired_wrench_in_base_frame_.wrench.force.x;
-  desired_force_from_palm(1) = ju.desired_wrench_in_base_frame_.wrench.force.y;
-  desired_force_from_palm(2) = ju.desired_wrench_in_base_frame_.wrench.force.z;
-  desired_force_from_palm(3) = ju.desired_wrench_in_base_frame_.wrench.torque.x;
-  desired_force_from_palm(4) = ju.desired_wrench_in_base_frame_.wrench.torque.y;
-  desired_force_from_palm(5) = ju.desired_wrench_in_base_frame_.wrench.torque.z;
-
-    boost::shared_ptr<sensor_msgs::JointState const> joint_states_ptr;
-    joint_states_ptr = ros::topic::waitForMessage<sensor_msgs::JointState>("/joint_states");
-    ju.kinematic_state_->setVariableValues(*joint_states_ptr);
-    Eigen::MatrixXd jacobian = ju.kinematic_state_->getJacobian(ju.joint_model_group_);
-    Eigen::VectorXd needed_torques = jacobian.transpose() * desired_force_from_palm;
-    ROS_INFO_STREAM(std::endl << jacobian.transpose());
-    ROS_INFO_STREAM(std::endl << needed_torques);
+  Eigen::VectorXd needed_torques = ju.get_torques_given_wrench(desired_wrench_);
+  ROS_INFO_STREAM(std::endl << needed_torques);
 }
