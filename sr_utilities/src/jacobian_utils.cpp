@@ -6,23 +6,36 @@ namespace shadow_robot
 SrJacobianUtils::SrJacobianUtils(std::string robot_description_name,
                                  std::string model_group_name) :
   robot_description_name_(robot_description_name),
-  model_group_name_(model_group_name)
+  model_group_name_(model_group_name),
+  kinematic_model_(get_kinematic_model()),
+  kinematic_state_(set_kinematic_state())
 {
-  setup_kinematic_state();
+  setup_variables();
 }
 
 SrJacobianUtils::~SrJacobianUtils()
 {
 }
 
-void SrJacobianUtils::setup_kinematic_state()
+void SrJacobianUtils::setup_variables()
+{
+  joint_model_group_ = kinematic_model_->getJointModelGroup(model_group_name_);
+  model_group_base_link_name_ = joint_model_group_->getJointModels()[0]->getParentLinkModel()->getName();
+}
+
+robot_state::RobotStatePtr SrJacobianUtils::set_kinematic_state()
+{
+  robot_state::RobotStatePtr kinematic_state;
+  kinematic_state = std::make_shared<robot_state::RobotState>(kinematic_model_);
+  kinematic_state->setToDefaultValues();
+  return kinematic_state;
+}
+
+robot_model::RobotModelPtr SrJacobianUtils::get_kinematic_model()
 {
   robot_model_loader::RobotModelLoaderPtr robot_model_loader;
   robot_model_loader.reset(new robot_model_loader::RobotModelLoader(robot_description_name_));
-  const robot_model::RobotModelPtr& kinematic_model = robot_model_loader->getModel();
-  joint_model_group_ = kinematic_model->getJointModelGroup(model_group_name_);
-  kinematic_state_ = std::make_shared<robot_state::RobotState>(kinematic_model);
-  kinematic_state_->setToDefaultValues();
+  return robot_model_loader->getModel();
 }
 
 Eigen::VectorXd SrJacobianUtils::get_torques_given_wrench(geometry_msgs::WrenchStamped wrench)
@@ -46,12 +59,6 @@ Eigen::VectorXd SrJacobianUtils::get_torques_given_wrench_and_jacobian(geometry_
   return jacobian.transpose() * wrench_in_base_frame_vector;
 }
 
-Eigen::MatrixXd SrJacobianUtils::get_jacobian(sensor_msgs::JointState joint_states)
-{
-  kinematic_state_->setVariableValues(joint_states);
-  return kinematic_state_->getJacobian(joint_model_group_);
-}
-
 Eigen::MatrixXd SrJacobianUtils::get_jacobian()
 {
   boost::shared_ptr<sensor_msgs::JointState const> joint_states_ptr;
@@ -59,12 +66,18 @@ Eigen::MatrixXd SrJacobianUtils::get_jacobian()
   return get_jacobian(*joint_states_ptr);
 }
 
+Eigen::MatrixXd SrJacobianUtils::get_jacobian(sensor_msgs::JointState joint_states)
+{
+  kinematic_state_->setVariableValues(joint_states);
+  return kinematic_state_->getJacobian(joint_model_group_);
+}
+
 geometry_msgs::WrenchStamped SrJacobianUtils::transform_wrench_to_base_frame(geometry_msgs::WrenchStamped wrench)
 {
   tf2_ros::Buffer tf2_buffer;
   tf2_ros::TransformListener tf2_listener(tf2_buffer);
-  tf2_buffer.lookupTransform("world", "rh_palm", ros::Time(0), ros::Duration(1.0));
-  return tf2_buffer.transform(wrench, "rh_palm");
+  tf2_buffer.lookupTransform("world", model_group_base_link_name_, ros::Time(0), ros::Duration(1.0));
+  return tf2_buffer.transform(wrench, model_group_base_link_name_);
 }
 
 Eigen::VectorXd SrJacobianUtils::wrench_to_eigen_vector(geometry_msgs::WrenchStamped wrench)
