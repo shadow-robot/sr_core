@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(sr_utilities)
-find_package(catkin REQUIRED COMPONENTS sensor_msgs sr_robot_msgs rospy roscpp tf urdf)
+find_package(catkin REQUIRED COMPONENTS sensor_msgs sr_robot_msgs rospy roscpp tf urdf message_generation std_msgs)
 find_package(Boost REQUIRED COMPONENTS thread system)
 find_package(rostest REQUIRED)
 
@@ -13,7 +13,7 @@ generate_messages(DEPENDENCIES std_msgs sensor_msgs)
 
 catkin_package(
         DEPENDS
-        CATKIN_DEPENDS sensor_msgs sr_robot_msgs rospy roscpp tf urdf urdfdom_py ros_ethercat_model std_msgs
+        CATKIN_DEPENDS sensor_msgs sr_robot_msgs rospy roscpp tf urdf urdfdom_py ros_ethercat_model std_msgs message_generation
         INCLUDE_DIRS include
         LIBRARIES sr_calibration
 )
