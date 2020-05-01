@@ -13,7 +13,7 @@ generate_messages(DEPENDENCIES std_msgs sensor_msgs)
 
 catkin_package(
         DEPENDS
-        CATKIN_DEPENDS sensor_msgs sr_robot_msgs rospy roscpp tf urdf urdfdom_py ros_ethercat_model std_msgs message_generation
+        CATKIN_DEPENDS sensor_msgs sr_robot_msgs rospy roscpp tf urdf urdfdom_py ros_ethercat_model std_msgs message_generation message_runtime
         INCLUDE_DIRS include
         LIBRARIES sr_calibration
 )
