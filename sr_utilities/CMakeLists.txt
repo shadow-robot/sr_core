@@ -7,13 +7,13 @@ find_package(TinyXML2 REQUIRED)
 
 catkin_python_setup()
 
-include_directories(include ${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
+include_directories(include ${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS} ${TinyXML2_INCLUDE_DIRS})
 
 add_service_files(FILES getJointState.srv)
 generate_messages(DEPENDENCIES std_msgs sensor_msgs)
 
 catkin_package(
-        DEPENDS
+        DEPENDS TinyXML2
         CATKIN_DEPENDS sensor_msgs sr_robot_msgs rospy roscpp tf urdf urdfdom_py ros_ethercat_model std_msgs message_runtime
         INCLUDE_DIRS include
         LIBRARIES sr_calibration
