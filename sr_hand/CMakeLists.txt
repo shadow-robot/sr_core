@@ -149,12 +149,13 @@ add_dependencies(HandCommander ${catkin_EXPORTED_TARGETS})
 target_link_libraries(HandCommander ${Boost_LIBRARIES} ${catkin_LIBRARIES})
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 
-
-if (COMMAND add_rostest_gtest)
+if (CATKIN_ENABLE_TESTING)
+  if (COMMAND add_rostest_gtest)
     add_rostest_gtest(hand_commander_test test/hand_commander_test.test test/hand_commander_test.cpp)
     add_dependencies(hand_commander_test ${catkin_EXPORTED_TARGETS})
     target_link_libraries(hand_commander_test HandCommander ${GTEST_LIBRARIES} ${catkin_LIBRARIES})
-endif (COMMAND add_rostest_gtest)
+  endif (COMMAND add_rostest_gtest)
+endif()
 
 if (valves)
     install(TARGETS shadowhand_virtual shadowarm_virtual SrVirtual shadowhand_ethercat HandCommander sr_valves
