@@ -3,6 +3,7 @@ project(sr_utilities)
 find_package(catkin REQUIRED COMPONENTS sensor_msgs sr_robot_msgs rospy roscpp tf urdf message_generation std_msgs)
 find_package(Boost REQUIRED COMPONENTS thread system)
 find_package(rostest REQUIRED)
+find_package(TinyXML2 REQUIRED)
 
 catkin_python_setup()
 
@@ -13,7 +14,7 @@ generate_messages(DEPENDENCIES std_msgs sensor_msgs)
 
 catkin_package(
         DEPENDS
-        CATKIN_DEPENDS sensor_msgs sr_robot_msgs rospy roscpp tf urdf urdfdom_py ros_ethercat_model std_msgs message_generation message_runtime
+        CATKIN_DEPENDS sensor_msgs sr_robot_msgs rospy roscpp tf urdf urdfdom_py ros_ethercat_model std_msgs message_runtime
         INCLUDE_DIRS include
         LIBRARIES sr_calibration
 )
