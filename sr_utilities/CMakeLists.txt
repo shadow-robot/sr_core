@@ -21,9 +21,14 @@ catkin_package(
 
 add_library(sr_calibration src/calibration.cpp)
 add_dependencies(sr_calibration sr_utilities_gencpp ${catkin_EXPORTED_TARGETS})
+target_link_libraries(sr_calibration ${TinyXML2_LIBRARIES} ${catkin_LIBRARIES})
+
 add_library(sr_hand_finder src/sr_hand_finder.cpp)
+target_link_libraries(sr_hand_finder ${TinyXML2_LIBRARIES} ${catkin_LIBRARIES})
+
 add_library(sr_arm_finder src/sr_arm_finder.cpp)
 add_dependencies(sr_arm_finder sr_hand_finder ${catkin_EXPORTED_TARGETS})
+target_link_libraries(sr_arm_finder ${TinyXML2_LIBRARIES} ${catkin_LIBRARIES})
 
 if (CATKIN_ENABLE_TESTING)
   catkin_add_gtest(test_calibration test/test_calibration.cpp src/calibration.cpp)
