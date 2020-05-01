@@ -21,7 +21,6 @@
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "jacobian_tests");
-  ros::NodeHandle nh;
 
   ros::NodeHandle nh_priv("~");
   double des_force_x;
@@ -64,9 +63,6 @@ int main(int argc, char** argv)
     ROS_INFO_STREAM(des_force_roll);
     ROS_INFO_STREAM(des_force_pitch);
     ROS_INFO_STREAM(des_force_yaw);
-
-  ros::AsyncSpinner spinner(1);
-  spinner.start();
 
   desired_wrench_.wrench.force.x = des_force_x;
   desired_wrench_.wrench.force.y = des_force_y;

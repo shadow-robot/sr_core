@@ -27,23 +27,21 @@ public:
   Eigen::VectorXd get_torques_given_wrench(geometry_msgs::WrenchStamped);
   Eigen::VectorXd get_torques_given_wrench(geometry_msgs::WrenchStamped,
                                            sensor_msgs::JointState);
-
-  const std::string robot_description_name_;
-  const std::string model_group_name_;
-  std::string model_group_base_link_name_;
+  std::string get_robot_description_name();
+  std::string get_model_group_name();
+  std::string get_model_group_base_link_name();
 
 private:
-  void setup_variables();
-  robot_model::RobotModelPtr get_kinematic_model();
-  robot_state::RobotStatePtr set_kinematic_state();
   geometry_msgs::WrenchStamped transform_wrench_to_base_frame(geometry_msgs::WrenchStamped);
   Eigen::VectorXd wrench_to_eigen_vector(geometry_msgs::WrenchStamped);
   Eigen::VectorXd get_torques_given_wrench_and_jacobian(geometry_msgs::WrenchStamped,
                                                         Eigen::MatrixXd);
 
+  std::string robot_description_name_;
+  std::string model_group_name_;
+  std::string model_group_base_link_name_;
   robot_state::RobotStatePtr kinematic_state_;
   robot_state::JointModelGroup* joint_model_group_;
-  robot_model::RobotModelPtr kinematic_model_;
 
 };
 }  // namespace shadow_robot

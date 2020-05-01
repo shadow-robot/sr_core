@@ -62,6 +62,10 @@ if (CATKIN_ENABLE_TESTING)
     add_rostest_gtest(test_arm_finder test/test_arm_finder.test test/test_arm_finder.cpp)
     add_dependencies(test_arm_finder sr_utilities_gencpp ${catkin_EXPORTED_TARGETS})
     target_link_libraries(test_arm_finder sr_arm_finder sr_hand_finder ${catkin_LIBRARIES})
+
+    add_rostest_gtest(test_jacobian_utils test/test_jacobian_utils.test test/test_jacobian_utils.cpp)
+    add_dependencies(test_jacobian_utils sr_utilities_gencpp ${catkin_EXPORTED_TARGETS})
+    target_link_libraries(test_jacobian_utils jacobian_utils ${catkin_LIBRARIES})
 endif ()
 install(DIRECTORY include/${PROJECT_NAME}/
         DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}

@@ -6,36 +6,19 @@ namespace shadow_robot
 SrJacobianUtils::SrJacobianUtils(std::string robot_description_name,
                                  std::string model_group_name) :
   robot_description_name_(robot_description_name),
-  model_group_name_(model_group_name),
-  kinematic_model_(get_kinematic_model()),
-  kinematic_state_(set_kinematic_state())
+  model_group_name_(model_group_name)
 {
-  setup_variables();
+  robot_model_loader::RobotModelLoaderPtr robot_model_loader;
+  robot_model_loader.reset(new robot_model_loader::RobotModelLoader(robot_description_name_));
+  const robot_model::RobotModelPtr kinematic_model = robot_model_loader->getModel();
+  joint_model_group_ = kinematic_model->getJointModelGroup(model_group_name_);
+  model_group_base_link_name_ = joint_model_group_->getJointModels()[0]->getParentLinkModel()->getName();
+  kinematic_state_ = std::make_shared<robot_state::RobotState>(kinematic_model);
+  kinematic_state_->setToDefaultValues();
 }
 
 SrJacobianUtils::~SrJacobianUtils()
 {
-}
-
-void SrJacobianUtils::setup_variables()
-{
-  joint_model_group_ = kinematic_model_->getJointModelGroup(model_group_name_);
-  model_group_base_link_name_ = joint_model_group_->getJointModels()[0]->getParentLinkModel()->getName();
-}
-
-robot_state::RobotStatePtr SrJacobianUtils::set_kinematic_state()
-{
-  robot_state::RobotStatePtr kinematic_state;
-  kinematic_state = std::make_shared<robot_state::RobotState>(kinematic_model_);
-  kinematic_state->setToDefaultValues();
-  return kinematic_state;
-}
-
-robot_model::RobotModelPtr SrJacobianUtils::get_kinematic_model()
-{
-  robot_model_loader::RobotModelLoaderPtr robot_model_loader;
-  robot_model_loader.reset(new robot_model_loader::RobotModelLoader(robot_description_name_));
-  return robot_model_loader->getModel();
 }
 
 Eigen::VectorXd SrJacobianUtils::get_torques_given_wrench(geometry_msgs::WrenchStamped wrench)
@@ -90,6 +73,21 @@ Eigen::VectorXd SrJacobianUtils::wrench_to_eigen_vector(geometry_msgs::WrenchSta
   wrench_in_vector_form(4) = wrench.wrench.torque.y;
   wrench_in_vector_form(5) = wrench.wrench.torque.z;
   return wrench_in_vector_form;
+}
+
+std::string SrJacobianUtils::get_robot_description_name()
+{
+  return robot_description_name_;
+}
+
+std::string SrJacobianUtils::get_model_group_name()
+{
+  return model_group_name_;
+}
+
+std::string SrJacobianUtils::get_model_group_base_link_name()
+{
+  return model_group_base_link_name_;
 }
 
 }  // namespace shadow_robot
