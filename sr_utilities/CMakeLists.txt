@@ -36,13 +36,6 @@ add_library(jacobian_utils src/jacobian_utils.cpp)
 add_dependencies(sr_arm_finder sr_hand_finder ${catkin_EXPORTED_TARGETS})
 add_dependencies(jacobian_utils jacobian_utils ${catkin_EXPORTED_TARGETS})
 
-add_executable(jacobian_tests scripts/${PROJECT_NAME}/jacobian_tests.cpp src/jacobian_utils.cpp)
-add_dependencies(jacobian_tests ${catkin_EXPORTED_TARGETS})
-target_link_libraries(jacobian_tests
-   ${catkin_LIBRARIES}
-   ${Eigen_LIBRARIES}
- )
-
 catkin_add_gtest(test_calibration test/test_calibration.cpp src/calibration.cpp)
 target_link_libraries(test_calibration ${catkin_LIBRARIES})
 add_dependencies(test_calibration sr_utilities_gencpp ${catkin_EXPORTED_TARGETS})
