@@ -73,5 +73,7 @@ int main(int argc, char** argv)
   desired_wrench_.header.frame_id = "rh_fftip";
 
   Eigen::VectorXd needed_torques = ju.get_torques_given_wrench(desired_wrench_);
+  Eigen::MatrixXd jacobian = ju.get_jacobian();
+  ROS_INFO_STREAM(std::endl << jacobian);
   ROS_INFO_STREAM(std::endl << needed_torques);
 }

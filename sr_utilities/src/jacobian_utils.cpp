@@ -15,6 +15,7 @@ SrJacobianUtils::SrJacobianUtils(std::string robot_description_name,
   model_group_base_link_name_ = joint_model_group_->getJointModels()[0]->getParentLinkModel()->getName();
   kinematic_state_ = std::make_shared<robot_state::RobotState>(kinematic_model);
   kinematic_state_->setToDefaultValues();
+  ros::NodeHandle nh_;
 }
 
 SrJacobianUtils::~SrJacobianUtils()

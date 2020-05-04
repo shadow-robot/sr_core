@@ -42,6 +42,7 @@ private:
   std::string model_group_base_link_name_;
   robot_state::RobotStatePtr kinematic_state_;
   robot_state::JointModelGroup* joint_model_group_;
+  ros::NodeHandle nh_;
 
 };
 }  // namespace shadow_robot
