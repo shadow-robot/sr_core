@@ -15,6 +15,7 @@
 */
 
 #include "sr_utilities/jacobian_utils.hpp"
+#include <string>
 
 namespace shadow_robot
 {

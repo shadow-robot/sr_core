@@ -18,8 +18,10 @@
 #include "ros/ros.h"
 #include "sr_utilities/jacobian_utils.hpp"
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+#include <string>
+#include <vector>
 
-void wait_for_param(std::string param_name, double timeout_in_secs=30.0)
+void wait_for_param(std::string param_name, double timeout_in_secs = 30.0)
 {
   ros::NodeHandle nh;
   ros::Time start_time = ros::Time::now();
@@ -45,11 +47,11 @@ TEST(SrJacobianUtils, test_get_torque_given_wrench)
 
   wait_for_param("robot_description");
   wait_for_param("robot_description_semantic");
-  
+
   shadow_robot::SrJacobianUtils ju("robot_description", "rh_first_finger");
   Eigen::VectorXd calculated_torques = ju.get_torques_given_wrench(desired_wrench);
 
-  for (int i=0; i<torques_vector_dimension; i++)
+  for (int i=0; i < torques_vector_dimension; i++)
   {
     ASSERT_NEAR(calculated_torques[i], expected_torques[i], 0.001);
   }
