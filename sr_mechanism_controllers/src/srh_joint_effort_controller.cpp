@@ -158,11 +158,6 @@ namespace controller
 
   void SrhEffortJointController::update(const ros::Time &time, const ros::Duration &period)
   {
-    if (!has_j2)
-    {
-      return;
-    }
-
     ROS_ASSERT(robot_);
     ROS_ASSERT(joint_state_->joint_);
 
