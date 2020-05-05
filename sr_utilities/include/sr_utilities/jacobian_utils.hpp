@@ -4,15 +4,9 @@
 #include <ros/ros.h>
 #include <moveit/robot_model_loader/robot_model_loader.h>
 #include <moveit/robot_state/robot_state.h>
-#include <moveit/robot_state/conversions.h>
 #include <sensor_msgs/JointState.h>
-#include <geometry_msgs/Pose.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <tf2_ros/transform_listener.h>
-#include <math.h>
-#include <Eigen/Geometry>
-#include <tf/transform_datatypes.h>
-#include <cmath>
 #include <string>
 
 namespace shadow_robot
