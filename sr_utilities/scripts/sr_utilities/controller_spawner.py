@@ -185,16 +185,18 @@ class ControllerSpawner(object):
 
     @staticmethod
     def remove_joints(config, joints=[]):
+        joints_lower = [joint.lower() for joint in joints]
         for key in config.keys():
-            if key in joints:
+            if key.lower() in joints_lower:
                 del config[key]
                 continue
             if isinstance(config[key], dict):
                 ControllerSpawner.remove_joints(config[key], joints)
             if isinstance(config[key], list):
-                for joint in joints:
-                    if joint in config[key]:
-                        config[key].remove(joint)
+                for joint in joints_lower:
+                    match_indices = [i for i, item in enumerate(config[key]) if joint in item.lower()]
+                    for index in sorted(match_indices, reverse=True):
+                        del config[key][index]
 
 
 if __name__ == "__main__":
