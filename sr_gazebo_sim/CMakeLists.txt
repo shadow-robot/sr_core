@@ -10,7 +10,7 @@ include_directories(include ${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS} ${TinyXM
 add_compile_options(${GAZEBO_CXX_FLAGS})
 
 catkin_package(
-        DEPENDS tinyxml2
+        DEPENDS TinyXML2
         CATKIN_DEPENDS roscpp sr_hardware_interface ros_ethercat_model gazebo_ros_control
         INCLUDE_DIRS include
         LIBRARIES sr_gazebo_sim
