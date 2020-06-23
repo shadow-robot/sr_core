@@ -41,7 +41,7 @@ class ControllerSpawner(object):
         for side in self._joints:
             for joint in self._joints[side]:
                 if joint in self._nonpresent_joints:
-                self._nonpresent_joints.remove(joint)
+                    self._nonpresent_joints.remove(joint)
         if (exclude_wrist):
             self._nonpresent_joints = list(set(self._nonpresent_joints) | set(["rh_WRJ1", "rh_WRJ2",
                                                                                "lh_WRJ1", "lh_WRJ2"]))
