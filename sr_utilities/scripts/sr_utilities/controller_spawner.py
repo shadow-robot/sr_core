@@ -42,9 +42,12 @@ class ControllerSpawner(object):
             for joint in self._joints[side]:
                 if joint in self._nonpresent_joints:
                     self._nonpresent_joints.remove(joint)
+        self._excluded_joints = []
         if (exclude_wrist):
-            self._nonpresent_joints = list(set(self._nonpresent_joints) | set(["rh_WRJ1", "rh_WRJ2",
-                                                                               "lh_WRJ1", "lh_WRJ2"]))
+            # These joints will not get controllers, unless their controllers are listed as 'necessary_if_joint_present'
+            # in in the spawner config
+            self._excluded_joints = ["rh_WRJ1", "rh_WRJ2", "lh_WRJ1", "lh_WRJ2"]
+        self._excluded_joints = list(set(self._excluded_joints) | set(self._nonpresent_joints))
 
     def load_config(self):
         try:
@@ -71,7 +74,7 @@ class ControllerSpawner(object):
                         with open(os.path.join(os.path.dirname(self._config_file_path),
                                   side_config[controller])) as controller_config_yaml:
                             controller_config = yaml.load(controller_config_yaml)
-                            ControllerSpawner.remove_joints(controller_config, self._nonpresent_joints)
+                            ControllerSpawner.remove_joints(controller_config, self._excluded_joints)
                             for key in controller_config:
                                 rospy.set_param(key, controller_config[key])
                     except EnvironmentError as error:
@@ -95,11 +98,14 @@ class ControllerSpawner(object):
                 side_controllers = self._config["controller_groups"][controller_group_name][side]
                 if side not in self._joints:
                     continue
+                necessary_if_joint_present = []
+                if "necessary_if_joint_present" in side_controllers:
+                    necessary_if_joint_present = side_controllers["necessary_if_joint_present"]
                 for joint_name in self._joints[side]:
                     if "common" in side_controllers:
                         for controller_raw in side_controllers["common"]:
                             controller = controller_raw.replace("%joint_name%", joint_name.lower())
-                            if joint_name not in self._nonpresent_joints:
+                            if (joint_name not in self._excluded_joints) or (controller in necessary_if_joint_present):
                                 if controller not in controller_group:
                                     controller_group.append(controller)
                             if controller not in self._all_controllers:
@@ -107,15 +113,15 @@ class ControllerSpawner(object):
                     if joint_name in side_controllers:
                         for controller_raw in side_controllers[joint_name]:
                             controller = controller_raw.replace("%joint_name%", joint_name.lower())
-                            if joint_name not in self._nonpresent_joints:
+                            if (joint_name not in self._excluded_joints) or (controller in necessary_if_joint_present):
                                 if controller not in controller_group:
                                     controller_group.append(controller)
                             if controller not in self._all_controllers:
                                 self._all_controllers.append(controller)
-                    elif("default" in side_controllers):
+                    elif "default" in side_controllers:
                         for controller_raw in side_controllers["default"]:
                             controller = controller_raw.replace("%joint_name%", joint_name.lower())
-                            if joint_name not in self._nonpresent_joints:
+                            if (joint_name not in self._excluded_joints) or (controller in necessary_if_joint_present):
                                 if controller not in controller_group:
                                     controller_group.append(controller)
                             if controller not in self._all_controllers:
