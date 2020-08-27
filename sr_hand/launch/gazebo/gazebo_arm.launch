@@ -11,11 +11,11 @@
   <!-- spawn the arm model -->
   <group if="$(optenv MUSCLE 0)">
     <param name="robot_description"
-    command="xacro --inorder '$(find sr_description)/robots/sr_arm_muscle.urdf.xacro'" />
+    command="xacro '$(find sr_description)/robots/sr_arm_muscle.urdf.xacro'" />
   </group>
   <group unless="$(optenv MUSCLE 0)">
     <param name="robot_description"
-    command="xacro --inorder '$(find sr_description)/robots/sr_arm_motor.urdf.xacro'" />
+    command="xacro '$(find sr_description)/robots/sr_arm_motor.urdf.xacro'" />
   </group>
   <node name="spawn_hand" pkg="gazebo_ros" type="spawn_model"
   args="-urdf -param robot_description -z 0.0 -model shadow_model -J ShoulderJSwing 0.78 -J ElbowJSwing 2.0"
