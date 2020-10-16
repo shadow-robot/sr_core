@@ -4,6 +4,7 @@ project(sr_utilities)
 add_compile_options(-std=c++11)
 
 find_package(catkin REQUIRED COMPONENTS sensor_msgs sr_robot_msgs rospy roscpp tf urdf moveit_ros_planning_interface)
+
 find_package(Boost REQUIRED COMPONENTS thread system)
 find_package(rostest REQUIRED)
 find_package(Eigen3 REQUIRED)
@@ -17,7 +18,7 @@ generate_messages(DEPENDENCIES std_msgs sensor_msgs)
 
 catkin_package(
         DEPENDS
-        CATKIN_DEPENDS sensor_msgs sr_robot_msgs rospy roscpp tf urdf urdfdom_py ros_ethercat_model moveit_ros_planning_interface moveit_ros_manipulation moveit_ros_move_group
+        CATKIN_DEPENDS sensor_msgs sr_robot_msgs rospy roscpp tf urdf urdfdom_py ros_ethercat_model moveit_ros_planning_interface moveit_ros_manipulation moveit_ros_move_group std_msgs message_runtime
         INCLUDE_DIRS include
         LIBRARIES sr_calibration
 )
@@ -34,18 +35,19 @@ add_library(sr_hand_finder src/sr_hand_finder.cpp)
 add_library(sr_arm_finder src/sr_arm_finder.cpp)
 add_dependencies(sr_arm_finder sr_hand_finder ${catkin_EXPORTED_TARGETS})
 
-catkin_add_gtest(test_calibration test/test_calibration.cpp src/calibration.cpp)
-target_link_libraries(test_calibration ${catkin_LIBRARIES})
-add_dependencies(test_calibration sr_utilities_gencpp ${catkin_EXPORTED_TARGETS})
-
-catkin_add_gtest(test_thread_safe_map test/test_thread_safe_map.cpp)
-add_dependencies(test_thread_safe_map sr_utilities_gencpp ${catkin_EXPORTED_TARGETS})
-target_link_libraries(test_thread_safe_map ${catkin_LIBRARIES} pthread)
-
-catkin_add_gtest(test_math_utils test/test_math_utils.cpp)
-add_dependencies(test_math_utils sr_utilities_gencpp ${catkin_EXPORTED_TARGETS})
-target_link_libraries(test_math_utils ${catkin_LIBRARIES} pthread)
 if (CATKIN_ENABLE_TESTING)
+    catkin_add_gtest(test_calibration test/test_calibration.cpp src/calibration.cpp)
+    target_link_libraries(test_calibration ${catkin_LIBRARIES})
+    add_dependencies(test_calibration sr_utilities_gencpp ${catkin_EXPORTED_TARGETS})
+
+    catkin_add_gtest(test_thread_safe_map test/test_thread_safe_map.cpp)
+    add_dependencies(test_thread_safe_map sr_utilities_gencpp ${catkin_EXPORTED_TARGETS})
+    target_link_libraries(test_thread_safe_map ${catkin_LIBRARIES} pthread)
+
+    catkin_add_gtest(test_math_utils test/test_math_utils.cpp)
+    add_dependencies(test_math_utils sr_utilities_gencpp ${catkin_EXPORTED_TARGETS})
+    target_link_libraries(test_math_utils ${catkin_LIBRARIES} pthread)
+
     add_rostest_gtest(test_hand_finder test/test_hand_finder.test test/test_hand_finder.cpp)
     add_dependencies(test_hand_finder sr_utilities_gencpp ${catkin_EXPORTED_TARGETS})
     target_link_libraries(test_hand_finder sr_hand_finder ${catkin_LIBRARIES})

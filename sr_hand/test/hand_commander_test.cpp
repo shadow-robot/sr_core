@@ -64,12 +64,12 @@ TEST(HandCommander, min_max)
   HandCommander handcmd = HandCommander();
 
   std::pair<double, double> min_max = handcmd.get_min_max("rh_FFJ3");
-  EXPECT_DOUBLE_EQ(min_max.first, 0.0);
+  EXPECT_DOUBLE_EQ(min_max.first, -0.26179938779900003);
   EXPECT_DOUBLE_EQ(min_max.second, 1.57079632679);
 
   // also works for lower case
   min_max = handcmd.get_min_max("rh_FFJ3");
-  EXPECT_DOUBLE_EQ(min_max.first, 0.0);
+  EXPECT_DOUBLE_EQ(min_max.first, -0.26179938779900003);
   EXPECT_DOUBLE_EQ(min_max.second, 1.57079632679);
 
   // j0 should be 0, 180
