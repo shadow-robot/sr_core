@@ -15,6 +15,7 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import os
+import re
 import rospkg
 import rospy
 import yaml
@@ -64,15 +65,18 @@ class ControllerSpawner(object):
         return True
 
     def load_controller_configs(self):
+        success = True
         if "controller_configs" in self._config.keys():
             for side in self._config["controller_configs"]:
                 if side not in self._joints:
                     continue
                 side_config = self._config["controller_configs"][side]
+                rospy.logwarn(side_config)
                 for controller in side_config:
                     try:
-                        with open(os.path.join(os.path.dirname(self._config_file_path),
-                                  side_config[controller])) as controller_config_yaml:
+                        resolved_config_path = self.resolve_path(side_config[controller],
+                                                                 local_path=os.path.dirname(self._config_file_path))
+                        with open(resolved_config_path) as controller_config_yaml:
                             controller_config = yaml.load(controller_config_yaml)
                             ControllerSpawner.remove_joints(controller_config, self._excluded_joints)
                             for key in controller_config:
@@ -82,8 +86,32 @@ class ControllerSpawner(object):
                                      self._config_file_path))
                         rospy.logerr(error)
                         rospy.logerr("This path is defined in {}".format(self._config_file_path))
-                        return False
-        return True
+                        success = False
+        return success
+
+    def resolve_path(self, path, joint_name=None, local_path=None):
+        path = self.resolve_string(path, joint_name=joint_name)
+        matches = re.findall(r'%rospack_find_(.+)%', path)
+        if matches:
+            package_name = matches[0]
+            ros_pack = rospkg.RosPack()
+            try:
+                package_path = ros_pack.get_path(package_name)
+                path = re.sub(r'%rospack_find_(.+)%', package_path, path)
+            except rospkg.common.ResourceNotFound as e:
+                rospy.logerr("Package '{}' referenced in controller spawner config does not exist.".format(package_name))
+        if path.startswith('/'):
+            return path
+        else:
+            if local_path is None:
+                return path
+            else:
+                return "{}/{}".format(local_path, path)
+    
+    def resolve_string(self, string, joint_name=None):
+        if joint_name is not None:
+            string = re.sub(r'%joint_name%', joint_name, string)
+        return string
 
     def parse_controllers(self):
         if "controller_groups" not in self._config.keys():
@@ -104,7 +132,7 @@ class ControllerSpawner(object):
                 for joint_name in self._joints[side]:
                     if "common" in side_controllers:
                         for controller_raw in side_controllers["common"]:
-                            controller = controller_raw.replace("%joint_name%", joint_name.lower())
+                            controller = self.resolve_string(controller_raw, joint_name=joint_name.lower())
                             if (joint_name not in self._excluded_joints) or (controller in necessary_if_joint_present):
                                 if controller not in controller_group:
                                     controller_group.append(controller)
@@ -112,7 +140,7 @@ class ControllerSpawner(object):
                                 self._all_controllers.append(controller)
                     if joint_name in side_controllers:
                         for controller_raw in side_controllers[joint_name]:
-                            controller = controller_raw.replace("%joint_name%", joint_name.lower())
+                            controller = self.resolve_string(controller_raw, joint_name=joint_name.lower())
                             if (joint_name not in self._excluded_joints) or (controller in necessary_if_joint_present):
                                 if controller not in controller_group:
                                     controller_group.append(controller)
@@ -120,7 +148,7 @@ class ControllerSpawner(object):
                                 self._all_controllers.append(controller)
                     elif "default" in side_controllers:
                         for controller_raw in side_controllers["default"]:
-                            controller = controller_raw.replace("%joint_name%", joint_name.lower())
+                            controller = self.resolve_string(controller_raw, joint_name=joint_name.lower())
                             if (joint_name not in self._excluded_joints) or (controller in necessary_if_joint_present):
                                 if controller not in controller_group:
                                     controller_group.append(controller)
