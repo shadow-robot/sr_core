@@ -3,8 +3,7 @@ project(sr_utilities)
 
 add_compile_options(-std=c++11)
 
-find_package(catkin REQUIRED COMPONENTS sensor_msgs sr_robot_msgs rospy roscpp tf urdf moveit_ros_planning_interface)
-
+find_package(catkin REQUIRED COMPONENTS sensor_msgs sr_robot_msgs rospy roscpp tf urdf moveit_ros_planning_interface message_generation std_msgs)
 find_package(Boost REQUIRED COMPONENTS thread system)
 find_package(rostest REQUIRED)
 find_package(Eigen3 REQUIRED)
