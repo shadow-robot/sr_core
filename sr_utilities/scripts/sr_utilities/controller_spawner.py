@@ -99,7 +99,7 @@ class ControllerSpawner(object):
                 package_path = ros_pack.get_path(package_name)
                 path = re.sub(r'%rospack_find_(.+)%', package_path, path)
             except rospkg.common.ResourceNotFound as e:
-                rospy.logerr("Package '{}' referenced in controller spawner config does not exist.".format(package_name))
+                rospy.logerr("Package '{}' in controller spawner config doesn't exist.".format(package_name))
         if path.startswith('/'):
             return path
         else:
@@ -107,7 +107,7 @@ class ControllerSpawner(object):
                 return path
             else:
                 return "{}/{}".format(local_path, path)
-    
+
     def resolve_string(self, string, joint_name=None):
         if joint_name is not None:
             string = re.sub(r'%joint_name%', joint_name, string)
