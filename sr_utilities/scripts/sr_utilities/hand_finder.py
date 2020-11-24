@@ -158,24 +158,14 @@ class HandFinder(object):
         """
         Parses the parameter server to extract the necessary information.
         """
-
         hand_parameters = {}
-        if rospy.has_param("/hand"):
-            self._hand_e = True
-            hand_parameters = rospy.get_param("/hand")
-        else:
-            self._hand_e = False
-            hand_parameters = {'joint_prefix': {}, 'mapping': {}}
+        self._hand_e = False
+        hand_parameters = {'joint_prefix': {}, 'mapping': {}}
+        self._hand_h = False
+        self._hand_h_parameters = {}
 
-        if rospy.has_param("/fh_hand"):
-            self._hand_h = True
-            self._hand_h_parameters = rospy.get_param("/fh_hand")
-        else:
-            self._hand_h = False
-            self._hand_h_parameters = {}
-
-        if not (self._hand_e or self._hand_h):
-            rospy.logerr("No hand is detected")
+        TIMEOUT_WAIT_FOR_PARAMS_IN_SECS = 60.0
+        self.wait_for_hand_params(TIMEOUT_WAIT_FOR_PARAMS_IN_SECS)
 
         self.hand_config = HandConfig(hand_parameters["mapping"],
                                       hand_parameters["joint_prefix"])
@@ -183,6 +173,21 @@ class HandFinder(object):
         self.calibration_path = HandCalibration(self.hand_config.mapping).calibration_path
         self.hand_control_tuning = HandControllerTuning(self.hand_config.mapping)
 
+    def wait_for_hand_params(self, timeout_in_secs):
+        start_time = rospy.get_time()
+        while not rospy.has_param("/hand") and not rospy.has_param("/fh_hand"):
+            if (rospy.get_time() - start_time > timeout_in_secs):
+                rospy.logerr("No hand is detected")
+                break
+        if rospy.has_param("/hand"):
+            rospy.loginfo("Found hand E")
+            self._hand_e = True
+            hand_parameters = rospy.get_param("/hand")
+        elif rospy.has_param("/fh_hand"):
+            rospy.loginfo("Found hand H")
+            self._hand_h = True
+            self._hand_h_parameters = rospy.get_param("/fh_hand")
+        
     def get_calibration_path(self):
         if not self._hand_e:
             rospy.logerr("No Hand E present - can't get calibration path")
