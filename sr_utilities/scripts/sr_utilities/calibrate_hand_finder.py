@@ -30,7 +30,7 @@ class CalibrateHand(object):
     """
 
     def __init__(self):
-        rospy.wait_for_service("controller_manager/load_controller", timeout=10.0)
+        rospy.wait_for_service("controller_manager/load_controller", timeout=120.0)
         self.pub_calibrated = rospy.Publisher('calibrated', Bool, queue_size=1, latch=True)
 
     def generate_reset_services_list(self):
