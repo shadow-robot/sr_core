@@ -159,17 +159,16 @@ class HandFinder(object):
         """
         Parses the parameter server to extract the necessary information.
         """
-        hand_parameters = {}
         self._hand_e = False
-        hand_parameters = {'joint_prefix': {}, 'mapping': {}}
+        self._hand_parameters = {'joint_prefix': {}, 'mapping': {}}
         self._hand_h = False
         self._hand_h_parameters = {}
 
         TIMEOUT_WAIT_FOR_PARAMS_IN_SECS = 60.0
         self.wait_for_hand_params(TIMEOUT_WAIT_FOR_PARAMS_IN_SECS)
 
-        self.hand_config = HandConfig(hand_parameters["mapping"],
-                                      hand_parameters["joint_prefix"])
+        self.hand_config = HandConfig(self._hand_parameters["mapping"],
+                                      self._hand_parameters["joint_prefix"])
         self.hand_joints = HandJoints(self.hand_config.mapping, self.hand_config.joint_prefix).joints
         self.calibration_path = HandCalibration(self.hand_config.mapping).calibration_path
         self.hand_control_tuning = HandControllerTuning(self.hand_config.mapping)
@@ -183,7 +182,7 @@ class HandFinder(object):
         if rospy.has_param("/hand"):
             rospy.loginfo("Found hand E")
             self._hand_e = True
-            hand_parameters = rospy.get_param("/hand")
+            self._hand_parameters = rospy.get_param("/hand")
         elif rospy.has_param("/fh_hand"):
             rospy.loginfo("Found hand H")
             self._hand_h = True
