@@ -104,7 +104,7 @@ class HandJoints(object):
                 rospy.logwarn("No robot_description found on parameter server."
                               "Joint names are loaded for 5 finger hand")
                 break
-    
+
         robot_description = rospy.get_param('robot_description')
 
         # concatenate all the joints with prefixes
@@ -187,7 +187,7 @@ class HandFinder(object):
             rospy.loginfo("Found hand H")
             self._hand_h = True
             self._hand_h_parameters = rospy.get_param("/fh_hand")
-        
+
     def get_calibration_path(self):
         if not self._hand_e:
             rospy.logerr("No Hand E present - can't get calibration path")
