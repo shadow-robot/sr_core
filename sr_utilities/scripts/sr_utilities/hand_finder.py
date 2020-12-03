@@ -99,6 +99,7 @@ class HandJoints(object):
         hand_joints = []
         joints = self.get_default_joints()
         TIMEOUT_WAIT_FOR_PARAMS_IN_SECS = 60.0
+        start_time = rospy.get_time()
         while not rospy.has_param("/robot_description"):
             if (rospy.get_time() - start_time > TIMEOUT_WAIT_FOR_PARAMS_IN_SECS):
                 rospy.logwarn("No robot_description found on parameter server."
