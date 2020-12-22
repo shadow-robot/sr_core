@@ -104,17 +104,17 @@ class HandJoints(object):
             if (rospy.get_time() - start_time > TIMEOUT_WAIT_FOR_PARAMS_IN_SECS):
                 rospy.logwarn("No robot_description found on parameter server."
                               "Joint names are loaded for 5 finger hand")
-            # concatenate all the joints with prefixes
-            for hand in mapping:
-                hand_joints = []
-                if hand in joint_prefix:
-                    for joint in joints:
-                        hand_joints.append(joint_prefix[hand] + joint)
-                else:
-                    rospy.logwarn("Cannot find serial " + hand +
-                                  "in joint_prefix parameters")
-                self.joints[mapping[hand]] = hand_joints
-            return
+                # concatenate all the joints with prefixes
+                for hand in mapping:
+                    hand_joints = []
+                    if hand in joint_prefix:
+                        for joint in joints:
+                            hand_joints.append(joint_prefix[hand] + joint)
+                    else:
+                        rospy.logwarn("Cannot find serial " + hand +
+                                      "in joint_prefix parameters")
+                    self.joints[mapping[hand]] = hand_joints
+                return
 
         robot_description = rospy.get_param('robot_description')
 
