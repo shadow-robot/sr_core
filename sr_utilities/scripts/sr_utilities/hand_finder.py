@@ -146,7 +146,7 @@ class HandJoints(object):
             else:
                 rospy.logwarn("Cannot find serial " + hand +
                               "in joint_prefix parameters")
-            self.joints[mapping[hand]] = hand_joints
+            # self.joints[mapping[hand]] = hand_joints
 
 
 class HandFinder(object):
