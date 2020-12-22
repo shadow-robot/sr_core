@@ -114,7 +114,7 @@ class HandJoints(object):
                     rospy.logwarn("Cannot find serial " + hand +
                                   "in joint_prefix parameters")
                 self.joints[mapping[hand]] = hand_joints
-                break
+            return
 
         robot_description = rospy.get_param('robot_description')
 
