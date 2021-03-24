@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.0.2)
 project(sr_mechanism_controllers)
-add_compile_options(-std=c++11)
+add_compile_options(-std=c++17)
 find_package(catkin REQUIRED COMPONENTS rostest std_msgs std_srvs roscpp actionlib controller_manager_msgs sr_robot_msgs
         sr_utilities controller_interface ros_ethercat_model realtime_tools velocity_controllers
         pluginlib rosconsole angles control_toolbox sr_hardware_interface xmlrpcpp cmake_modules)
