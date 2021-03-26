@@ -50,7 +50,7 @@ class ControllerSpawner(object):
     def load_config(self):
         try:
             with open(self._config_file_path, 'r') as config_yaml:
-                self._config = yaml.load(config_yaml)
+                self._config = yaml.safe_load(config_yaml)
         except EnvironmentError as error:
             rospy.logerr("Failed to load controller spawner configuration from '{}'".format(self._config_file_path))
             rospy.logerr(error)
@@ -74,7 +74,7 @@ class ControllerSpawner(object):
                         resolved_config_path = self.resolve_path(side_config[controller],
                                                                  local_path=os.path.dirname(self._config_file_path))
                         with open(resolved_config_path) as controller_config_yaml:
-                            controller_config = yaml.load(controller_config_yaml)
+                            controller_config = yaml.safe_load(controller_config_yaml)
                             ControllerSpawner.remove_joints(controller_config, self._excluded_joints)
                             for key in controller_config:
                                 rospy.set_param(key, controller_config[key])
