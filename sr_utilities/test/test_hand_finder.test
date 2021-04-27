@@ -4,6 +4,10 @@
   <param name="right_hand_description_no_prefix" textfile="$(find sr_utilities)/test/urdf/right_hand_description_no_prefix.urdf" />
   <param name="two_hands_description" textfile="$(find sr_utilities)/test/urdf/two_hands_description.urdf" />
 
-  <test test-name="test_hand_finder_cpp" pkg="sr_utilities" type="test_hand_finder"/>
+  <test test-name="test_hand_finder_cpp" pkg="sr_utilities" type="test_hand_finder" />
   <test test-name="test_hand_finder_py" pkg="sr_utilities" type="test_hand_finder.py" />
+  <group ns="mynamespace">
+    <test test-name="namespaced_test_hand_finder_cpp" pkg="sr_utilities" type="test_hand_finder" />
+    <test test-name="namespaced_test_hand_finder_py" pkg="sr_utilities" type="test_hand_finder.py" />
+  </group>
 </launch>

@@ -54,9 +54,9 @@ void ASSERT_MAP_HAS_VALUE(const map<string, string> &map, const string &value)
 
 TEST(SrHandFinder, hand_absent_test)
 {
-  if (ros::param::has("hand"))
+  if (ros::param::has("/hand"))
   {
-    ros::param::del("hand");
+    ros::param::del("/hand");
   }
 
   if (ros::param::has("robot_description"))
@@ -77,9 +77,9 @@ TEST(SrHandFinder, hand_absent_test)
 
 TEST(SrHandFinder, one_hand_no_robot_description_finder_test)
 {
-  if (ros::param::has("hand"))
+  if (ros::param::has("/hand"))
   {
-    ros::param::del("hand");
+    ros::param::del("/hand");
   }
 
   if (ros::param::has("robot_description"))
@@ -87,8 +87,8 @@ TEST(SrHandFinder, one_hand_no_robot_description_finder_test)
     ros::param::del("robot_description");
   }
 
-  ros::param::set("hand/mapping/1", "right");
-  ros::param::set("hand/joint_prefix/1", "rh_");
+  ros::param::set("/hand/mapping/1", "right");
+  ros::param::set("/hand/joint_prefix/1", "rh_");
 
   string ethercat_path = ros::package::getPath("sr_ethercat_hand_config");
   const string joint_names[] =
@@ -166,9 +166,9 @@ TEST(SrHandFinder, one_hand_no_robot_description_finder_test)
 
 TEST(SrHandFinder, one_hand_no_mapping_no_robot_description_finder_test)
 {
-  if (ros::param::has("hand"))
+  if (ros::param::has("/hand"))
   {
-    ros::param::del("hand");
+    ros::param::del("/hand");
   }
 
   if (ros::param::has("robot_description"))
@@ -176,8 +176,8 @@ TEST(SrHandFinder, one_hand_no_mapping_no_robot_description_finder_test)
     ros::param::del("robot_description");
   }
 
-  ros::param::set("hand/mapping/1", "");
-  ros::param::set("hand/joint_prefix/1", "rh_");
+  ros::param::set("/hand/mapping/1", "");
+  ros::param::set("/hand/joint_prefix/1", "rh_");
 
   string ethercat_path = ros::package::getPath("sr_ethercat_hand_config");
   const string joint_names[] =
@@ -254,9 +254,9 @@ TEST(SrHandFinder, one_hand_no_mapping_no_robot_description_finder_test)
 
 TEST(SrHandFinder, one_hand_no_prefix_no_robot_description_finder_test)
 {
-  if (ros::param::has("hand"))
+  if (ros::param::has("/hand"))
   {
-    ros::param::del("hand");
+    ros::param::del("/hand");
   }
 
   if (ros::param::has("robot_description"))
@@ -264,8 +264,8 @@ TEST(SrHandFinder, one_hand_no_prefix_no_robot_description_finder_test)
     ros::param::del("robot_description");
   }
 
-  ros::param::set("hand/mapping/1", "rh");
-  ros::param::set("hand/joint_prefix/1", "");
+  ros::param::set("/hand/mapping/1", "rh");
+  ros::param::set("/hand/joint_prefix/1", "");
 
   string ethercat_path = ros::package::getPath("sr_ethercat_hand_config");
   const string joint_names[] =
@@ -342,9 +342,9 @@ TEST(SrHandFinder, one_hand_no_prefix_no_robot_description_finder_test)
 
 TEST(SrHandFinder, one_hand_no_mapping_no_prefix_no_robot_description_finder_test)
 {
-  if (ros::param::has("hand"))
+  if (ros::param::has("/hand"))
   {
-    ros::param::del("hand");
+    ros::param::del("/hand");
   }
 
   if (ros::param::has("robot_description"))
@@ -352,8 +352,8 @@ TEST(SrHandFinder, one_hand_no_mapping_no_prefix_no_robot_description_finder_tes
     ros::param::del("robot_description");
   }
 
-  ros::param::set("hand/mapping/1", "");
-  ros::param::set("hand/joint_prefix/1", "");
+  ros::param::set("/hand/mapping/1", "");
+  ros::param::set("/hand/joint_prefix/1", "");
 
   string ethercat_path = ros::package::getPath("sr_ethercat_hand_config");
   const string joint_names[] =
@@ -430,9 +430,9 @@ TEST(SrHandFinder, one_hand_no_mapping_no_prefix_no_robot_description_finder_tes
 
 TEST(SrHandFinder, one_hand_robot_description_exists_finger_test)
 {
-  if (ros::param::has("hand"))
+  if (ros::param::has("/hand"))
   {
-    ros::param::del("hand");
+    ros::param::del("/hand");
   }
 
   if (ros::param::has("robot_description"))
@@ -441,11 +441,11 @@ TEST(SrHandFinder, one_hand_robot_description_exists_finger_test)
   }
 
   string right_hand_description;
-  ros::param::get("right_hand_description", right_hand_description);
+  ros::param::get("/right_hand_description", right_hand_description);
   ros::param::set("robot_description", right_hand_description);
 
-  ros::param::set("hand/mapping/1", "right");
-  ros::param::set("hand/joint_prefix/1", "rh_");
+  ros::param::set("/hand/mapping/1", "right");
+  ros::param::set("/hand/joint_prefix/1", "rh_");
   string ethercat_path = ros::package::getPath("sr_ethercat_hand_config");
   const string joint_names[] =
   {
@@ -519,9 +519,9 @@ TEST(SrHandFinder, one_hand_robot_description_exists_finger_test)
 
 TEST(SrHandFinder, two_hand_robot_description_exists_finder_test)
 {
-  if (ros::param::has("hand"))
+  if (ros::param::has("/hand"))
   {
-    ros::param::del("hand");
+    ros::param::del("/hand");
   }
 
   if (ros::param::has("robot_description"))
@@ -529,13 +529,13 @@ TEST(SrHandFinder, two_hand_robot_description_exists_finder_test)
     ros::param::del("robot_description");
   }
 
-  ros::param::set("hand/mapping/1", "right");
-  ros::param::set("hand/joint_prefix/1", "rh_");
-  ros::param::set("hand/mapping/2", "left");
-  ros::param::set("hand/joint_prefix/2", "lh_");
+  ros::param::set("/hand/mapping/1", "right");
+  ros::param::set("/hand/joint_prefix/1", "rh_");
+  ros::param::set("/hand/mapping/2", "left");
+  ros::param::set("/hand/joint_prefix/2", "lh_");
 
   string two_hands_description;
-  ros::param::get("two_hands_description", two_hands_description);
+  ros::param::get("/two_hands_description", two_hands_description);
   ros::param::set("robot_description", two_hands_description);
 
   const string joint_names[] =
