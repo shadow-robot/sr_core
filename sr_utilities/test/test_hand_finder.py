@@ -38,13 +38,13 @@ class TestHandFinder(unittest.TestCase):
     ethercat_path = rospack.get_path('sr_ethercat_hand_config')
 
     def test_no_hand_no_robot_description_finder(self):
-        if rospy.has_param("hand"):
-            rospy.delete_param("hand")
+        if rospy.has_param("/hand"):
+            rospy.delete_param("/hand")
 
         if rospy.has_param("robot_description"):
             rospy.delete_param("robot_description")
 
-        hand_finder = HandFinder()
+        hand_finder = HandFinder(1.0)
 
         self.assertEqual(len(hand_finder.get_hand_parameters().joint_prefix), 0, "correct parameters without a hand")
         self.assertEqual(len(hand_finder.get_hand_parameters().mapping), 0, "correct parameters without a hand")
@@ -57,16 +57,16 @@ class TestHandFinder(unittest.TestCase):
                          "correct tuning without a hands")
 
     def test_one_hand_no_robot_description_finder(self):
-        if rospy.has_param("hand"):
-            rospy.delete_param("hand")
+        if rospy.has_param("/hand"):
+            rospy.delete_param("/hand")
 
         if rospy.has_param("robot_description"):
             rospy.delete_param("robot_description")
 
-        rospy.set_param("hand/joint_prefix/1", "rh_")
-        rospy.set_param("hand/mapping/1", "right")
+        rospy.set_param("/hand/joint_prefix/1", "rh_")
+        rospy.set_param("/hand/mapping/1", "right")
 
-        hand_finder = HandFinder()
+        hand_finder = HandFinder(1.0)
         # hand params
         self.assertIsNotNone(hand_finder.get_hand_parameters(), "Parameters extracted.")
         self.assertEqual(len(hand_finder.get_hand_parameters().mapping), 1, "It should be only one mapping")
@@ -102,16 +102,16 @@ class TestHandFinder(unittest.TestCase):
                              "incorrect controller config file")
 
     def test_one_hand_no_mapping_no_robot_description_finder(self):
-        if rospy.has_param("hand"):
-            rospy.delete_param("hand")
+        if rospy.has_param("/hand"):
+            rospy.delete_param("/hand")
 
         if rospy.has_param("robot_description"):
             rospy.delete_param("robot_description")
 
-        rospy.set_param("hand/joint_prefix/1", "rh_")
-        rospy.set_param("hand/mapping/1", "")
+        rospy.set_param("/hand/joint_prefix/1", "rh_")
+        rospy.set_param("/hand/mapping/1", "")
 
-        hand_finder = HandFinder()
+        hand_finder = HandFinder(1.0)
         # hand params
         self.assertIsNotNone(hand_finder.get_hand_parameters(), "Parameters extracted.")
         self.assertEqual(len(hand_finder.get_hand_parameters().mapping), 1, "It should be only one mapping")
@@ -148,16 +148,16 @@ class TestHandFinder(unittest.TestCase):
                              "incorrect controller config file")
 
     def test_one_hand_no_prefix_no_robot_description_finder(self):
-        if rospy.has_param("hand"):
-            rospy.delete_param("hand")
+        if rospy.has_param("/hand"):
+            rospy.delete_param("/hand")
 
         if rospy.has_param("robot_description"):
             rospy.delete_param("robot_description")
 
-        rospy.set_param("hand/joint_prefix/1", "")
-        rospy.set_param("hand/mapping/1", "rh")
+        rospy.set_param("/hand/joint_prefix/1", "")
+        rospy.set_param("/hand/mapping/1", "rh")
 
-        hand_finder = HandFinder()
+        hand_finder = HandFinder(1.0)
         # hand params
         self.assertIsNotNone(hand_finder.get_hand_parameters(), "Parameters extracted.")
         self.assertEqual(len(hand_finder.get_hand_parameters().mapping), 1, "It should be only one mapping")
@@ -193,16 +193,16 @@ class TestHandFinder(unittest.TestCase):
                              "incorrect controller config file")
 
     def test_one_hand_no_prefix_no_mapping_no_robot_description_finder(self):
-        if rospy.has_param("hand"):
-            rospy.delete_param("hand")
+        if rospy.has_param("/hand"):
+            rospy.delete_param("/hand")
 
         if rospy.has_param("robot_description"):
             rospy.delete_param("robot_description")
 
-        rospy.set_param("hand/joint_prefix/1", "")
-        rospy.set_param("hand/mapping/1", "")
+        rospy.set_param("/hand/joint_prefix/1", "")
+        rospy.set_param("/hand/mapping/1", "")
 
-        hand_finder = HandFinder()
+        hand_finder = HandFinder(1.0)
         # hand params
         self.assertIsNotNone(hand_finder.get_hand_parameters(), "Parameters extracted.")
         self.assertEqual(len(hand_finder.get_hand_parameters().mapping), 1, "It should be only one mapping")
@@ -238,18 +238,18 @@ class TestHandFinder(unittest.TestCase):
                              "incorrect controller config file")
 
     def test_two_hand_no_robot_description_finder(self):
-        if rospy.has_param("hand"):
-            rospy.delete_param("hand")
+        if rospy.has_param("/hand"):
+            rospy.delete_param("/hand")
 
         if rospy.has_param("robot_description"):
             rospy.delete_param("robot_description")
 
-        rospy.set_param("hand/joint_prefix/1", "rh_")
-        rospy.set_param("hand/mapping/1", "right")
-        rospy.set_param("hand/joint_prefix/2", "lh_")
-        rospy.set_param("hand/mapping/2", "left")
+        rospy.set_param("/hand/joint_prefix/1", "rh_")
+        rospy.set_param("/hand/mapping/1", "right")
+        rospy.set_param("/hand/joint_prefix/2", "lh_")
+        rospy.set_param("/hand/mapping/2", "left")
 
-        hand_finder = HandFinder()
+        hand_finder = HandFinder(1.0)
 
         # hand params
         self.assertIsNotNone(hand_finder.get_hand_parameters(), "Parameters extracted.")
@@ -312,15 +312,15 @@ class TestHandFinder(unittest.TestCase):
                              "incorrect controller config file")
 
     def test_no_hand_robot_description_exists_finder(self):
-        if rospy.has_param("hand"):
-            rospy.delete_param("hand")
+        if rospy.has_param("/hand"):
+            rospy.delete_param("/hand")
 
         if rospy.has_param("robot_description"):
             rospy.delete_param("robot_description")
 
-        rospy.set_param("robot_description", rospy.get_param("two_hands_description"))
+        rospy.set_param("robot_description", rospy.get_param("/two_hands_description"))
 
-        hand_finder = HandFinder()
+        hand_finder = HandFinder(1.0)
 
         self.assertEqual(len(hand_finder.get_hand_parameters().joint_prefix), 0, "correct parameters without a hand")
         self.assertEqual(len(hand_finder.get_hand_parameters().mapping), 0, "correct parameters without a hand")
@@ -333,17 +333,17 @@ class TestHandFinder(unittest.TestCase):
                          "correct tuning without a hands")
 
     def test_one_hand_robot_description_exists_finder(self):
-        if rospy.has_param("hand"):
-            rospy.delete_param("hand")
+        if rospy.has_param("/hand"):
+            rospy.delete_param("/hand")
 
         if rospy.has_param("robot_description"):
             rospy.delete_param("robot_description")
 
-        rospy.set_param("hand/joint_prefix/1", "rh_")
-        rospy.set_param("hand/mapping/1", "right")
-        rospy.set_param("robot_description", rospy.get_param("right_hand_description"))
+        rospy.set_param("/hand/joint_prefix/1", "rh_")
+        rospy.set_param("/hand/mapping/1", "right")
+        rospy.set_param("robot_description", rospy.get_param("/right_hand_description"))
 
-        hand_finder = HandFinder()
+        hand_finder = HandFinder(1.0)
         # hand params
         self.assertIsNotNone(hand_finder.get_hand_parameters(), "Parameters extracted.")
         self.assertEqual(len(hand_finder.get_hand_parameters().mapping), 1, "It should be only one mapping")
@@ -381,17 +381,17 @@ class TestHandFinder(unittest.TestCase):
                              "incorrect controller config file")
 
     def test_one_hand_no_mapping_robot_description_exists_finder(self):
-        if rospy.has_param("hand"):
-            rospy.delete_param("hand")
+        if rospy.has_param("/hand"):
+            rospy.delete_param("/hand")
 
         if rospy.has_param("robot_description"):
             rospy.delete_param("robot_description")
 
-        rospy.set_param("hand/joint_prefix/1", "rh_")
-        rospy.set_param("hand/mapping/1", "")
-        rospy.set_param("robot_description", rospy.get_param("right_hand_description"))
+        rospy.set_param("/hand/joint_prefix/1", "rh_")
+        rospy.set_param("/hand/mapping/1", "")
+        rospy.set_param("robot_description", rospy.get_param("/right_hand_description"))
 
-        hand_finder = HandFinder()
+        hand_finder = HandFinder(1.0)
         # hand params
         self.assertIsNotNone(hand_finder.get_hand_parameters(), "Parameters extracted.")
         self.assertEqual(len(hand_finder.get_hand_parameters().mapping), 1, "It should be only one mapping")
@@ -428,17 +428,17 @@ class TestHandFinder(unittest.TestCase):
                              "incorrect controller config file")
 
     def test_one_hand_no_prefix_robot_description_exists_finder(self):
-        if rospy.has_param("hand"):
-            rospy.delete_param("hand")
+        if rospy.has_param("/hand"):
+            rospy.delete_param("/hand")
 
         if rospy.has_param("robot_description"):
             rospy.delete_param("robot_description")
 
-        rospy.set_param("hand/joint_prefix/1", "")
-        rospy.set_param("hand/mapping/1", "rh")
-        rospy.set_param("robot_description", rospy.get_param("right_hand_description_no_prefix"))
+        rospy.set_param("/hand/joint_prefix/1", "")
+        rospy.set_param("/hand/mapping/1", "rh")
+        rospy.set_param("robot_description", rospy.get_param("/right_hand_description_no_prefix"))
 
-        hand_finder = HandFinder()
+        hand_finder = HandFinder(1.0)
         # hand params
         self.assertIsNotNone(hand_finder.get_hand_parameters(), "Parameters extracted.")
         self.assertEqual(len(hand_finder.get_hand_parameters().mapping), 1, "It should be only one mapping")
@@ -475,17 +475,17 @@ class TestHandFinder(unittest.TestCase):
                              "incorrect controller config file")
 
     def test_one_hand_no_prefix_no_ns_robot_description_exists_finder(self):
-        if rospy.has_param("hand"):
-            rospy.delete_param("hand")
+        if rospy.has_param("/hand"):
+            rospy.delete_param("/hand")
 
         if rospy.has_param("robot_description"):
             rospy.delete_param("robot_description")
 
-        rospy.set_param("hand/joint_prefix/1", "")
-        rospy.set_param("hand/mapping/1", "")
-        rospy.set_param("robot_description", rospy.get_param("right_hand_description_no_prefix"))
+        rospy.set_param("/hand/joint_prefix/1", "")
+        rospy.set_param("/hand/mapping/1", "")
+        rospy.set_param("robot_description", rospy.get_param("/right_hand_description_no_prefix"))
 
-        hand_finder = HandFinder()
+        hand_finder = HandFinder(1.0)
         # hand params
         self.assertIsNotNone(hand_finder.get_hand_parameters(), "Parameters extracted.")
         self.assertEqual(len(hand_finder.get_hand_parameters().mapping), 1, "It should be only one mapping")
@@ -522,19 +522,19 @@ class TestHandFinder(unittest.TestCase):
                              "incorrect controller config file")
 
     def test_two_hand_robot_description_exists_finder(self):
-        if rospy.has_param("hand"):
-            rospy.delete_param("hand")
+        if rospy.has_param("/hand"):
+            rospy.delete_param("/hand")
 
         if rospy.has_param("robot_description"):
             rospy.delete_param("robot_description")
 
-        rospy.set_param("hand/joint_prefix/1", "rh_")
-        rospy.set_param("hand/mapping/1", "right")
-        rospy.set_param("hand/joint_prefix/2", "lh_")
-        rospy.set_param("hand/mapping/2", "left")
-        rospy.set_param("robot_description", rospy.get_param("two_hands_description"))
+        rospy.set_param("/hand/joint_prefix/1", "rh_")
+        rospy.set_param("/hand/mapping/1", "right")
+        rospy.set_param("/hand/joint_prefix/2", "lh_")
+        rospy.set_param("/hand/mapping/2", "left")
+        rospy.set_param("robot_description", rospy.get_param("/two_hands_description"))
 
-        hand_finder = HandFinder()
+        hand_finder = HandFinder(1.0)
         # hand params
         self.assertIsNotNone(hand_finder.get_hand_parameters(), "Parameters extracted.")
         self.assertEqual(len(hand_finder.get_hand_parameters().mapping), 2, "It should be two mappings")

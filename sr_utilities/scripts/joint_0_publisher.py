@@ -21,7 +21,7 @@ from sensor_msgs.msg import JointState
 class Joint0Publisher:
     def __init__(self):
         rospy.init_node('joint_0_publisher', anonymous=True)
-        rospy.wait_for_message("/joint_states", JointState)
+        rospy.wait_for_message("joint_states", JointState)
         self.sub = rospy.Subscriber("joint_states", JointState, self.callback)
         self.pub = rospy.Publisher("joint_0s/joint_states", JointState, queue_size=1)
         self.joint_state_msg = JointState()
