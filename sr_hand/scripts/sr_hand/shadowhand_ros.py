@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import, division
 import time
 import os
 import math
@@ -516,7 +517,7 @@ class ShadowHand_ROS(object):
             try:
                 rospy.wait_for_message(
                     topic, control_msgs.msg.JointControllerState, timeout=0.2)
-            except:
+            except Exception:
                 try:
                     self.topic_ending = "_mixed_position_velocity_controller"
                     topic = "sh_" + \
