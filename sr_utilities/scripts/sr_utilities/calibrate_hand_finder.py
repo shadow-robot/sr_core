@@ -102,5 +102,6 @@ def main():
     print("Hand calibration complete")
     rospy.spin()
 
+
 if __name__ == '__main__':
     main()

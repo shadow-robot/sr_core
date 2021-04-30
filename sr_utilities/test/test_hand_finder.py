@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import
 import rospy
 import rospkg
 import rostest
@@ -598,6 +599,7 @@ class TestHandFinder(unittest.TestCase):
         for controller_path, controller_param in zip(ctrl_tun_host_control_paths, controller_params):
             self.assertEqual(controller_path, self.ethercat_path + "/controls/host/left/" + controller_param,
                              "incorrect controller config file")
+
 
 if __name__ == "__main__":
     rospy.init_node("test_hand_finder")

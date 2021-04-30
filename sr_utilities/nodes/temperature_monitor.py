@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import
 import rospy
 from diagnostic_msgs.msg import DiagnosticArray
 
@@ -68,7 +69,7 @@ class TemperatureMonitor(object):
     def __init__(self, screen=None):
         try:
             curses.curs_set(0)
-        except:
+        except Exception:
             pass
         self.screen = screen
         self.pad = curses.newpad(self.MAX_Y, self.MAX_X)
@@ -141,5 +142,5 @@ if __name__ == '__main__':
     rospy.init_node("temperature_monitor", anonymous=True)
     try:
         curses.wrapper(TemperatureMonitor)
-    except:
+    except Exception:
         traceback.print_exc()

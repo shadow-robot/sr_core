@@ -53,5 +53,6 @@ class Joint0Publisher:
 
         self.pub.publish(self.joint_state_msg)
 
+
 if __name__ == '__main__':
     j0_pub = Joint0Publisher()

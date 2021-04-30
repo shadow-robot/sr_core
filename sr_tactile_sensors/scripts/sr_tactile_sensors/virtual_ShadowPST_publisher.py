@@ -16,6 +16,7 @@
 
 # This node combines 5 virtual touch sensors into a ShadowPST message compatible with etherCAT hand
 
+from __future__ import absolute_import
 import rospy
 from std_msgs.msg import Float64
 from sr_robot_msgs.msg import ShadowPST
@@ -73,6 +74,7 @@ class MergeMessages(object):
 
         pst_state_msg.header.stamp = rospy.Time.now()
         self.pub.publish(pst_state_msg)
+
 
 if __name__ == '__main__':
     merger = MergeMessages()

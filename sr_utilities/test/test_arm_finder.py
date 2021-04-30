@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import
 import rospy
 import rostest
 import unittest
@@ -156,6 +157,7 @@ class TestArmFinder(unittest.TestCase):
         self.assertIn("la", list(arm_finder.get_arm_parameters().mapping.values()), "It should be la mapping")
         self.assertIn("la_", list(arm_finder.get_arm_parameters().joint_prefix.values()), "It should be la_ prefix")
         self.assertIn("la", arm_finder.get_arm_joints(), "Maping should be in the joints result")
+
 
 if __name__ == "__main__":
     rospy.init_node("test_arm_finder")
