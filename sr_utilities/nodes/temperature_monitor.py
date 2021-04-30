@@ -17,6 +17,7 @@
 from __future__ import absolute_import
 import rospy
 from diagnostic_msgs.msg import DiagnosticArray
+from builtins import round
 
 import curses
 import traceback
