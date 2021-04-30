@@ -44,8 +44,8 @@ class GraspParser():
         # parse the xml tree
         try:
             self.xml_tree = ET.parse(xml_filename)
-        except Exception, inst:
-            print "Unexpected error opening %s: %s" % (xml_filename, inst)
+        except Exception as inst:
+            print("Unexpected error opening %s: %s" % (xml_filename, inst))
             return
 
         self.xml_path = xml_filename
@@ -57,14 +57,14 @@ class GraspParser():
             grasp_tmp = Grasp()
             grasp_tmp.grasp_name = grasp.attrib.get("name")
             if DEBUG >= 2:
-                print "Grasp " + grasp_tmp.grasp_name
+                print("Grasp " + grasp_tmp.grasp_name)
 
             joints = grasp.findall("joint")
             for j in joints:
                 joint_name = j.attrib.get("name")
                 joint_position = float(j.text)
                 if DEBUG >= 2:
-                    print "  " + joint_name + ": " + str(joint_position)
+                    print("  " + joint_name + ": " + str(joint_position))
 
                 grasp_tmp.joints_and_positions.update(
                     {joint_name: joint_position})

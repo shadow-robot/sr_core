@@ -166,8 +166,8 @@ class Commander(object):
         """
         rospy.logdebug(
             "Call prune from thread %s", threading.current_thread().name)
-        for thread_id in self.grasp_interpolators.keys():
-            for joint_name in joints.keys():
+        for thread_id in list(self.grasp_interpolators.keys()):
+            for joint_name in list(joints.keys()):
                 self.grasp_interpolators[
                     thread_id].grasp_to.joints_and_positions.pop(joint_name, None)
                 rospy.logdebug(

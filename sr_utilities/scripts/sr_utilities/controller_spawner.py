@@ -63,7 +63,7 @@ class ControllerSpawner(object):
 
     def load_controller_configs(self):
         success = True
-        if "controller_configs" in self._config.keys():
+        if "controller_configs" in list(self._config.keys()):
             for side in self._config["controller_configs"]:
                 if side not in self._joints:
                     continue
@@ -111,7 +111,7 @@ class ControllerSpawner(object):
         return string
 
     def parse_controllers(self):
-        if "controller_groups" not in self._config.keys():
+        if "controller_groups" not in list(self._config.keys()):
             rospy.logwarn("No controller groups specified in controller spawner config ({})".format(
                 self._config_file_path))
             return False
@@ -218,7 +218,7 @@ class ControllerSpawner(object):
     @staticmethod
     def remove_joints(config, joints=[]):
         joints_lower = [joint.lower() for joint in joints]
-        for key in config.keys():
+        for key in list(config.keys()):
             if key.lower() in joints_lower:
                 del config[key]
                 continue

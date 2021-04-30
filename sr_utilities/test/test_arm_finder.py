@@ -38,7 +38,7 @@ class TestArmFinder(unittest.TestCase):
 
         self.assertEqual(len(arm_finder.get_arm_parameters().mapping), 0, "It should be zero mapping")
         self.assertEqual(len(arm_finder.get_arm_parameters().joint_prefix), 0, "It should be zero joint_prefix")
-        self.assertEqual(len(arm_finder.get_arm_joints().keys()), 0, "It should be zero arm joints")
+        self.assertEqual(len(list(arm_finder.get_arm_joints().keys())), 0, "It should be zero arm joints")
 
     def test_one_hand_no_arm_finder(self):
         if rospy.has_param("arm"):
@@ -56,7 +56,7 @@ class TestArmFinder(unittest.TestCase):
 
         self.assertEqual(len(arm_finder.get_arm_parameters().mapping), 0, "It should be zero mapping")
         self.assertEqual(len(arm_finder.get_arm_parameters().joint_prefix), 0, "It should be zero joint_prefix")
-        self.assertEqual(len(arm_finder.get_arm_joints().keys()), 0, "It should be zero arm joints")
+        self.assertEqual(len(list(arm_finder.get_arm_joints().keys())), 0, "It should be zero arm joints")
 
     def test_no_hand_one_arm_finder(self):
         if rospy.has_param("arm"):
@@ -80,10 +80,10 @@ class TestArmFinder(unittest.TestCase):
 
         self.assertEqual(len(arm_finder.get_arm_parameters().mapping), 1, "It should be one mapping")
         self.assertEqual(len(arm_finder.get_arm_parameters().joint_prefix), 1, "It should be one joint_prefix")
-        self.assertEqual(len(arm_finder.get_arm_joints().keys()), 1, "It should be one arm joints")
+        self.assertEqual(len(list(arm_finder.get_arm_joints().keys())), 1, "It should be one arm joints")
 
-        self.assertIn("la", arm_finder.get_arm_parameters().mapping.values(), "It should be la mapping")
-        self.assertIn("la_", arm_finder.get_arm_parameters().joint_prefix.values(), "It should be la_ prefix")
+        self.assertIn("la", list(arm_finder.get_arm_parameters().mapping.values()), "It should be la mapping")
+        self.assertIn("la_", list(arm_finder.get_arm_parameters().joint_prefix.values()), "It should be la_ prefix")
         self.assertIn("la", arm_finder.get_arm_joints(), "Maping should be in the joints result")
 
     def test_one_hand_two_arms_finder(self):
@@ -114,15 +114,15 @@ class TestArmFinder(unittest.TestCase):
 
         self.assertEqual(len(arm_finder.get_arm_parameters().mapping), 2, "It should be two mappings")
         self.assertEqual(len(arm_finder.get_arm_parameters().joint_prefix), 2, "It should be two joint_prefixes")
-        self.assertEqual(len(arm_finder.get_arm_joints().keys()), 2, "It should be two arm joints mappings")
+        self.assertEqual(len(list(arm_finder.get_arm_joints().keys())), 2, "It should be two arm joints mappings")
 
-        self.assertIn("ra", arm_finder.get_arm_parameters().mapping.values(), "It should be ra mapping")
-        self.assertIn("ra_", arm_finder.get_arm_parameters().joint_prefix.values(), "It should be ra_ prefix")
+        self.assertIn("ra", list(arm_finder.get_arm_parameters().mapping.values()), "It should be ra mapping")
+        self.assertIn("ra_", list(arm_finder.get_arm_parameters().joint_prefix.values()), "It should be ra_ prefix")
         self.assertIn("ra", arm_finder.get_arm_joints(), "Maping should be in the joints result")
         self.assertEqual(len(arm_finder.get_arm_joints()["ra"]), 1, "It should be one arm joint for mapping")
 
-        self.assertIn("la", arm_finder.get_arm_parameters().mapping.values(), "It should be la mapping")
-        self.assertIn("la_", arm_finder.get_arm_parameters().joint_prefix.values(), "It should be la_ prefix")
+        self.assertIn("la", list(arm_finder.get_arm_parameters().mapping.values()), "It should be la mapping")
+        self.assertIn("la_", list(arm_finder.get_arm_parameters().joint_prefix.values()), "It should be la_ prefix")
         self.assertIn("la", arm_finder.get_arm_joints(), "Maping should be in the joints result")
         self.assertEqual(len(arm_finder.get_arm_joints()["la"]), 1, "It should be one arm joint for mapping")
 
@@ -151,10 +151,10 @@ class TestArmFinder(unittest.TestCase):
 
         self.assertEqual(len(arm_finder.get_arm_parameters().mapping), 1, "It should be one mapping")
         self.assertEqual(len(arm_finder.get_arm_parameters().joint_prefix), 1, "It should be one joint_prefix")
-        self.assertEqual(len(arm_finder.get_arm_joints().keys()), 1, "It should be one arm joints")
+        self.assertEqual(len(list(arm_finder.get_arm_joints().keys())), 1, "It should be one arm joints")
 
-        self.assertIn("la", arm_finder.get_arm_parameters().mapping.values(), "It should be la mapping")
-        self.assertIn("la_", arm_finder.get_arm_parameters().joint_prefix.values(), "It should be la_ prefix")
+        self.assertIn("la", list(arm_finder.get_arm_parameters().mapping.values()), "It should be la mapping")
+        self.assertIn("la_", list(arm_finder.get_arm_parameters().joint_prefix.values()), "It should be la_ prefix")
         self.assertIn("la", arm_finder.get_arm_joints(), "Maping should be in the joints result")
 
 if __name__ == "__main__":

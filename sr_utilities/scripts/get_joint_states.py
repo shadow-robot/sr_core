@@ -16,8 +16,8 @@
 
 import rospy
 from sensor_msgs.msg import JointState
-from sr_utilities.srv import getJointState
-import thread
+from .sr_utilities.srv import getJointState
+import _thread
 
 RATE = 100
 
@@ -31,7 +31,7 @@ class GetJointState(object):
 
         self.joint_state_msg = JointState()
 
-        self.mutex = thread.allocate_lock()
+        self.mutex = _thread.allocate_lock()
 
         r = rospy.Rate(RATE)
         while not rospy.is_shutdown():
