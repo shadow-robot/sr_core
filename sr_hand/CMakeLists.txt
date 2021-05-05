@@ -16,6 +16,10 @@ catkin_package(
         LIBRARIES HandCommander SrVirtual
 )
 
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+target_link_libraries(my_app PRIVATE Threads::Threads)
+
 ###################
 #  CONFIGURATION  #
 ###################
