@@ -106,7 +106,7 @@ endif (real_hand)
 add_executable(shadowhand_ethercat src/hand/sr_articulated_robot.cpp src/hand/etherCAT_compatibility_hand.cpp src/sr_publisher.cpp
         src/sr_subscriber.cpp src/hand/etherCAT_compatibility_hand_node.cpp src/sr_diagnosticer.cpp)
 add_dependencies(shadowhand_ethercat ${catkin_EXPORTED_TARGETS})
-target_link_libraries(shadowhand_ethercat ${Boost_LIBRARIES} ${catkin_LIBRARIES})
+target_link_libraries(shadowhand_ethercat ${Boost_LIBRARIES} ${catkin_LIBRARIES} pthread)
 message(STATUS " [x] EtherCAT compatibility interface.")
 
 ###################################
