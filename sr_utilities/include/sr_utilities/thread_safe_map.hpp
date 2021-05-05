@@ -47,8 +47,8 @@ class Map
 public:
   Map()
   {
-    mutex_ = boost::shared_ptr<boost::shared_mutex>(new boost::shared_mutex());
-    map_ = boost::shared_ptr<InternalMap>(new InternalMap());
+    mutex_ = std::shared_ptr<boost::shared_mutex>(new boost::shared_mutex());
+    map_ = std::shared_ptr<InternalMap>(new InternalMap());
   };
 
   ~Map()
@@ -101,9 +101,9 @@ private:
 
   typedef std::map<std::string, T> InternalMap;
 
-  boost::shared_ptr<InternalMap> map_;
+  std::shared_ptr<InternalMap> map_;
 
-  boost::shared_ptr<boost::shared_mutex> mutex_;
+  std::shared_ptr<boost::shared_mutex> mutex_;
   std::vector<std::string> keys_;
 };
 }  // namespace threadsafe
