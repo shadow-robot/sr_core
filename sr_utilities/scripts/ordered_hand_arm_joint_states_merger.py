@@ -17,7 +17,7 @@
 from __future__ import absolute_import
 import rospy
 from sensor_msgs.msg import JointState
-from .sr_utilities.srv import getJointState
+from sr_utilities.srv import getJointState
 import _thread
 
 RATE = 100
