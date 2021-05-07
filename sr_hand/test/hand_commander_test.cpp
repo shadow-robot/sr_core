@@ -64,23 +64,23 @@ TEST(HandCommander, min_max)
   HandCommander handcmd = HandCommander();
 
   std::pair<double, double> min_max = handcmd.get_min_max("rh_FFJ3");
-  EXPECT_DOUBLE_EQ(min_max.first, -0.26179938779900003);
-  EXPECT_DOUBLE_EQ(min_max.second, 1.57079632679);
+  EXPECT_NEAR(min_max.first, -0.26179938779900003, 1e-10);
+  EXPECT_NEAR(min_max.second, 1.57079632679, 1e-10);
 
   // also works for lower case
   min_max = handcmd.get_min_max("rh_FFJ3");
-  EXPECT_DOUBLE_EQ(min_max.first, -0.26179938779900003);
-  EXPECT_DOUBLE_EQ(min_max.second, 1.57079632679);
+  EXPECT_NEAR(min_max.first, -0.26179938779900003, 1e-10);
+  EXPECT_NEAR(min_max.second, 1.57079632679, 1e-10);
 
   // j0 should be 0, 180
   min_max = handcmd.get_min_max("rh_FFJ0");
-  EXPECT_DOUBLE_EQ(min_max.first, 0.0);
-  EXPECT_DOUBLE_EQ(min_max.second, 3.14159265358);
+  EXPECT_NEAR(min_max.first, 0.0, 1e-10);
+  EXPECT_NEAR(min_max.second, 3.14159265358, 1e-10);
 
   // returns 0, 0 if joint not found
   min_max = handcmd.get_min_max("unknown joint");
-  EXPECT_DOUBLE_EQ(min_max.first, 0.0);
-  EXPECT_DOUBLE_EQ(min_max.second, 0.0);
+  EXPECT_NEAR(min_max.first, 0.0, 1e-10);
+  EXPECT_NEAR(min_max.second, 0.0, 1e-10);
 
   // Check that we can get the min and max for each joint
   std::vector<std::string> all_joints = handcmd.get_all_joints();

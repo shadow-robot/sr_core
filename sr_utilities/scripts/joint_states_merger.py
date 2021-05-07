@@ -14,9 +14,10 @@
 # You should have received a copy of the GNU General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import
 import rospy
 from sensor_msgs.msg import JointState
-import thread
+import _thread
 
 
 class MergeMessages:
@@ -32,7 +33,7 @@ class MergeMessages:
 
         self.joint_state_msg = JointState()
 
-        self.mutex = thread.allocate_lock()
+        self.mutex = _thread.allocate_lock()
 
         rospy.spin()
 

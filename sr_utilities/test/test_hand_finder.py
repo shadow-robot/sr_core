@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import
 import rospy
 import rospkg
 import rostest
@@ -75,7 +76,7 @@ class TestHandFinder(unittest.TestCase):
         self.assertEqual(hand_finder.get_hand_parameters().joint_prefix['1'], "rh_", "It should be only rh_ prefix")
         # hand joints
         self.assertIsNotNone(hand_finder.get_hand_joints(), "Joints extracted.")
-        self.assertEqual(len(hand_finder.get_hand_joints().keys()), 1, "It should be only one mapping")
+        self.assertEqual(len(list(hand_finder.get_hand_joints().keys())), 1, "It should be only one mapping")
         self.assertIn("right", hand_finder.get_hand_joints(), "Mapping should be in the joints result")
         joints = hand_finder.get_hand_joints()['right']
         self.assertEqual(len(joints), 24, "Joint number should be 24")
@@ -120,8 +121,8 @@ class TestHandFinder(unittest.TestCase):
         self.assertEqual(hand_finder.get_hand_parameters().joint_prefix['1'], "rh_", "It should be only rh_ prefix")
         # hand joints
         self.assertIsNotNone(hand_finder.get_hand_joints(), "Joints extracted.")
-        self.assertEqual(len(hand_finder.get_hand_joints().keys()), 1, "It should be only one mapping")
-        print hand_finder.get_hand_joints()
+        self.assertEqual(len(list(hand_finder.get_hand_joints().keys())), 1, "It should be only one mapping")
+        print(hand_finder.get_hand_joints())
         self.assertIn("1", hand_finder.get_hand_joints(), "Serial should be in the joints result")
         joints = hand_finder.get_hand_joints()['1']  # use serial
         self.assertEqual(len(joints), 24, "Joint number should be 24")
@@ -166,7 +167,7 @@ class TestHandFinder(unittest.TestCase):
         self.assertEqual(hand_finder.get_hand_parameters().joint_prefix['1'], "", "It should be only an empty prefix")
         # hand joints
         self.assertIsNotNone(hand_finder.get_hand_joints(), "Joints extracted.")
-        self.assertEqual(len(hand_finder.get_hand_joints().keys()), 1, "It should be only one mapping")
+        self.assertEqual(len(list(hand_finder.get_hand_joints().keys())), 1, "It should be only one mapping")
         self.assertIn("rh", hand_finder.get_hand_joints(), "Mapping should be in the joints result")
         joints = hand_finder.get_hand_joints()['rh']
         self.assertEqual(len(joints), 24, "Joint number should be 24")
@@ -211,7 +212,7 @@ class TestHandFinder(unittest.TestCase):
         self.assertEqual(hand_finder.get_hand_parameters().joint_prefix['1'], "", "It should be only an empty prefix")
         # hand joints
         self.assertIsNotNone(hand_finder.get_hand_joints(), "Joints extracted.")
-        self.assertEqual(len(hand_finder.get_hand_joints().keys()), 1, "It should be only one mapping")
+        self.assertEqual(len(list(hand_finder.get_hand_joints().keys())), 1, "It should be only one mapping")
         self.assertIn("1", hand_finder.get_hand_joints(), "Serial should be in the joints result")
         joints = hand_finder.get_hand_joints()['1']
         self.assertEqual(len(joints), 24, "Joint number should be 24")
@@ -254,16 +255,16 @@ class TestHandFinder(unittest.TestCase):
         # hand params
         self.assertIsNotNone(hand_finder.get_hand_parameters(), "Parameters extracted.")
         self.assertEqual(len(hand_finder.get_hand_parameters().mapping), 2, "It should be two mappings")
-        self.assertIn("right", hand_finder.get_hand_parameters().mapping.values(), "It should be right mapping")
-        self.assertIn("left", hand_finder.get_hand_parameters().mapping.values(), "It should be left mapping")
+        self.assertIn("right", list(hand_finder.get_hand_parameters().mapping.values()), "It should be right mapping")
+        self.assertIn("left", list(hand_finder.get_hand_parameters().mapping.values()), "It should be left mapping")
         self.assertEqual(len(hand_finder.get_hand_parameters().joint_prefix), 2, "It should be two joint_prefixes")
 
-        self.assertIn("rh_", hand_finder.get_hand_parameters().joint_prefix.values(), "It should be rh_ prefix")
-        self.assertIn("lh_", hand_finder.get_hand_parameters().joint_prefix.values(), "It should be rh_ prefix")
+        self.assertIn("rh_", list(hand_finder.get_hand_parameters().joint_prefix.values()), "It should be rh_ prefix")
+        self.assertIn("lh_", list(hand_finder.get_hand_parameters().joint_prefix.values()), "It should be rh_ prefix")
 
         # hand joints
         self.assertIsNotNone(hand_finder.get_hand_joints(), "Joints extracted.")
-        self.assertEqual(len(hand_finder.get_hand_joints().keys()), 2, "It should be two mappings")
+        self.assertEqual(len(list(hand_finder.get_hand_joints().keys())), 2, "It should be two mappings")
         self.assertIn("right", hand_finder.get_hand_joints(), "Mapping should be in the joints result")
         joints = hand_finder.get_hand_joints()['right']
         self.assertEqual(len(joints), 24, "Joint number should be 24")
@@ -352,7 +353,7 @@ class TestHandFinder(unittest.TestCase):
         self.assertEqual(hand_finder.get_hand_parameters().joint_prefix['1'], "rh_", "It should be only rh_ prefix")
         # hand joints
         self.assertIsNotNone(hand_finder.get_hand_joints(), "Joints extracted.")
-        self.assertEqual(len(hand_finder.get_hand_joints().keys()), 1, "It should be only one mapping")
+        self.assertEqual(len(list(hand_finder.get_hand_joints().keys())), 1, "It should be only one mapping")
         self.assertIn("right", hand_finder.get_hand_joints(), "Mapping should be in the joints result")
         joints = hand_finder.get_hand_joints()['right']
         self.assertEqual(len(joints), 1, "Joint number should be 1")
@@ -400,7 +401,7 @@ class TestHandFinder(unittest.TestCase):
         self.assertEqual(hand_finder.get_hand_parameters().joint_prefix['1'], "rh_", "It should be only rh_ prefix")
         # hand joints
         self.assertIsNotNone(hand_finder.get_hand_joints(), "Joints extracted.")
-        self.assertEqual(len(hand_finder.get_hand_joints().keys()), 1, "It should be only one mapping")
+        self.assertEqual(len(list(hand_finder.get_hand_joints().keys())), 1, "It should be only one mapping")
         self.assertIn("1", hand_finder.get_hand_joints(), "Mapping should be in the joints result")
         joints = hand_finder.get_hand_joints()['1']
         self.assertEqual(len(joints), 1, "Joint number should be 1")
@@ -447,7 +448,7 @@ class TestHandFinder(unittest.TestCase):
         self.assertEqual(hand_finder.get_hand_parameters().joint_prefix['1'], "", "It should be only an empty prefix")
         # hand joints
         self.assertIsNotNone(hand_finder.get_hand_joints(), "Joints extracted.")
-        self.assertEqual(len(hand_finder.get_hand_joints().keys()), 1, "It should be only one mapping")
+        self.assertEqual(len(list(hand_finder.get_hand_joints().keys())), 1, "It should be only one mapping")
         self.assertIn("rh", hand_finder.get_hand_joints(), "Mapping should be in the joints result")
         joints = hand_finder.get_hand_joints()['rh']
         self.assertEqual(len(joints), 1, "Joint number should be 1")
@@ -494,7 +495,7 @@ class TestHandFinder(unittest.TestCase):
         self.assertEqual(hand_finder.get_hand_parameters().joint_prefix['1'], "", "It should be only an empty prefix")
         # hand joints
         self.assertIsNotNone(hand_finder.get_hand_joints(), "Joints extracted.")
-        self.assertEqual(len(hand_finder.get_hand_joints().keys()), 1, "It should be only one mapping")
+        self.assertEqual(len(list(hand_finder.get_hand_joints().keys())), 1, "It should be only one mapping")
         self.assertIn("1", hand_finder.get_hand_joints(), "Mapping should be in the joints result")
         joints = hand_finder.get_hand_joints()['1']
         self.assertEqual(len(joints), 1, "Joint number should be 1")
@@ -538,16 +539,16 @@ class TestHandFinder(unittest.TestCase):
         # hand params
         self.assertIsNotNone(hand_finder.get_hand_parameters(), "Parameters extracted.")
         self.assertEqual(len(hand_finder.get_hand_parameters().mapping), 2, "It should be two mappings")
-        self.assertIn("right", hand_finder.get_hand_parameters().mapping.values(), "It should be right mapping")
-        self.assertIn("left", hand_finder.get_hand_parameters().mapping.values(), "It should be left mapping")
+        self.assertIn("right", list(hand_finder.get_hand_parameters().mapping.values()), "It should be right mapping")
+        self.assertIn("left", list(hand_finder.get_hand_parameters().mapping.values()), "It should be left mapping")
         self.assertEqual(len(hand_finder.get_hand_parameters().joint_prefix), 2, "It should be two joint_prefixes")
 
-        self.assertIn("rh_", hand_finder.get_hand_parameters().joint_prefix.values(), "It should be rh_ prefix")
-        self.assertIn("lh_", hand_finder.get_hand_parameters().joint_prefix.values(), "It should be rh_ prefix")
+        self.assertIn("rh_", list(hand_finder.get_hand_parameters().joint_prefix.values()), "It should be rh_ prefix")
+        self.assertIn("lh_", list(hand_finder.get_hand_parameters().joint_prefix.values()), "It should be rh_ prefix")
 
         # hand joints
         self.assertIsNotNone(hand_finder.get_hand_joints(), "Joints extracted.")
-        self.assertEqual(len(hand_finder.get_hand_joints().keys()), 2, "It should be two mappings")
+        self.assertEqual(len(list(hand_finder.get_hand_joints().keys())), 2, "It should be two mappings")
         self.assertIn("right", hand_finder.get_hand_joints(), "Mapping should be in the joints result")
         joints = hand_finder.get_hand_joints()['right']
         self.assertEqual(len(joints), 1, "Joint number should be 1")
@@ -598,6 +599,7 @@ class TestHandFinder(unittest.TestCase):
         for controller_path, controller_param in zip(ctrl_tun_host_control_paths, controller_params):
             self.assertEqual(controller_path, self.ethercat_path + "/controls/host/left/" + controller_param,
                              "incorrect controller config file")
+
 
 if __name__ == "__main__":
     rospy.init_node("test_hand_finder")

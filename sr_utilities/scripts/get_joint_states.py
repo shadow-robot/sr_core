@@ -14,10 +14,11 @@
 # You should have received a copy of the GNU General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import
 import rospy
 from sensor_msgs.msg import JointState
 from sr_utilities.srv import getJointState
-import thread
+import _thread
 
 RATE = 100
 
@@ -31,7 +32,7 @@ class GetJointState(object):
 
         self.joint_state_msg = JointState()
 
-        self.mutex = thread.allocate_lock()
+        self.mutex = _thread.allocate_lock()
 
         r = rospy.Rate(RATE)
         while not rospy.is_shutdown():
@@ -43,6 +44,7 @@ class GetJointState(object):
     def getJointStateCB(self, req):
         res = self.joint_state_msg
         return res
+
 
 if __name__ == '__main__':
     service = GetJointState()

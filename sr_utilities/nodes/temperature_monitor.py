@@ -14,8 +14,10 @@
 # You should have received a copy of the GNU General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import
 import rospy
 from diagnostic_msgs.msg import DiagnosticArray
+from builtins import round
 
 import curses
 import traceback
@@ -68,7 +70,7 @@ class TemperatureMonitor(object):
     def __init__(self, screen=None):
         try:
             curses.curs_set(0)
-        except:
+        except Exception:
             pass
         self.screen = screen
         self.pad = curses.newpad(self.MAX_Y, self.MAX_X)
@@ -133,7 +135,7 @@ class TemperatureMonitor(object):
         self.pad_pos_y_ = min(max(self.pad_pos_y_, 0), self.MAX_Y - 1)
         self.pad.refresh(self.pad_pos_y_, self.pad_pos_x_, 0, 0, y - 1, x - 1)
         self.pad.border(0)
-        for monitor in self.joint_monitors.values():
+        for monitor in list(self.joint_monitors.values()):
             monitor.refresh()
 
 
@@ -141,5 +143,5 @@ if __name__ == '__main__':
     rospy.init_node("temperature_monitor", anonymous=True)
     try:
         curses.wrapper(TemperatureMonitor)
-    except:
+    except Exception:
         traceback.print_exc()

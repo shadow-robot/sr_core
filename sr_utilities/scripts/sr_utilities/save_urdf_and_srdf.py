@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import
 import rospy
 
 
@@ -28,7 +29,7 @@ class SaveUrdfAndSrdf(object):
             urdf_file = open(path, "w")
             urdf_file.write(urdf_str)
             urdf_file.close()
-            print ("urdf saved successfully:" + path)
+            print("urdf saved successfully:" + path)
             return path
         else:
             rospy.logerr("Parameter server does not have /robot_description param")
@@ -40,7 +41,7 @@ class SaveUrdfAndSrdf(object):
             srdf_file = open(path, "w")
             srdf_file.write(srdf_str)
             srdf_file.close()
-            print ("srdf saved successfully:" + path)
+            print("srdf saved successfully:" + path)
             return path
         else:
             rospy.logerr("Parameter server does not have /robot_description_semantics param")

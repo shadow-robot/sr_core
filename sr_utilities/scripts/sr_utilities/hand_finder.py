@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import
 import rospy
 import rospkg
 from urdf_parser_py.urdf import URDF
@@ -136,9 +137,9 @@ class HandJoints(object):
                 if joint.type != 'fixed':
                     prefix = joint.name[:3]
                     # is there an empty prefix ?
-                    if "" in joint_prefix.values():
+                    if "" in list(joint_prefix.values()):
                         joints_tmp.append(joint.name)
-                    elif prefix not in joint_prefix.values():
+                    elif prefix not in list(joint_prefix.values()):
                         rospy.logdebug("joint " + joint.name + " has invalid "
                                        "prefix:" + prefix)
                     elif prefix == joint_prefix[hand]:
