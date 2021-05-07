@@ -32,15 +32,12 @@
 #include <boost/smart_ptr.hpp>
 #include <boost/thread/shared_mutex.hpp>
 #include <boost/thread/mutex.hpp>
-#include <boost/date_time/posix_time/posix_time/posix_time_types.hpp>
 
 #include <map>
 #include <vector>
 #include <iostream>
 #include <utility>
 #include <string>
-
-using boost::posix_time t;
 
 namespace threadsafe
 {
@@ -71,7 +68,7 @@ public:
 
   bool insert(const std::string &first, const T &value)
   {
-    if (!mutex_->timed_lock(boost::system_time 0.0001))
+    if (!mutex_->timed_lock(boost::posix_time::microseconds(lock_wait_time)))
     {
       return false;
     }
@@ -84,7 +81,7 @@ public:
 
   bool update(const std::string &first, const T &value)
   {
-    if (!mutex_->timed_lock(boost::system_time 0.0001))
+    if (!mutex_->timed_lock(boost::posix_time::microseconds(lock_wait_time)))
     {
       return false;
     }
