@@ -106,6 +106,10 @@ private:
   boost::shared_ptr<boost::shared_mutex> mutex_;
   std::vector<std::string> keys_;
 };
+
+template<class T>
+const int Map<T>::lock_wait_time;
+
 }  // namespace threadsafe
 
 /* For the emacs weenies in the crowd.
