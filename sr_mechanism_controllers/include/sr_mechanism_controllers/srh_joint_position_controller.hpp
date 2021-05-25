@@ -57,6 +57,8 @@ public:
 private:
   /// Internal PID controller for the position loop.
   boost::scoped_ptr<control_toolbox::Pid> pid_controller_position_;
+  
+  bool first_run;
 
   /// the position deadband value used in the hysteresis_deadband
   double position_deadband;

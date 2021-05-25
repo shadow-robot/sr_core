@@ -51,7 +51,7 @@ namespace controller
   bool SrhJointPositionController::init(ros_ethercat_model::RobotStateInterface *robot, ros::NodeHandle &n)
   {
     ROS_ASSERT(robot);
-
+    first_run = true;
     std::string robot_state_name;
     node_.param<std::string>("robot_state_name", robot_state_name, "unique_robot_hw");
 
@@ -132,7 +132,7 @@ namespace controller
   {
     resetJointState();
     pid_controller_position_->reset();
-
+    std::cout << "starting j: " << joint_name_;
     if (has_j2)
       ROS_WARN_STREAM(
               "Reseting PID for joints " << joint_state_->joint_->name << " and " << joint_state_2->joint_->name);
@@ -148,12 +148,13 @@ namespace controller
                     req.max_force << ", friction deadband: " << req.friction_deadband <<
                     " pos deadband: " << req.deadband);
 
-    pid_controller_position_->setGains(req.p, req.i, req.d, req.i_clamp, -req.i_clamp);
+    // pid_controller_position_->setGains(req.p, req.i, req.d, req.i_clamp, -req.i_clamp);
     max_force_demand = req.max_force;
     friction_deadband = req.friction_deadband;
     position_deadband = req.deadband;
 
     // Setting the new parameters in the parameter server
+    /*
     node_.setParam("pid/p", req.p);
     node_.setParam("pid/i", req.i);
     node_.setParam("pid/d", req.d);
@@ -161,27 +162,28 @@ namespace controller
     node_.setParam("pid/max_force", max_force_demand);
     node_.setParam("pid/position_deadband", position_deadband);
     node_.setParam("pid/friction_deadband", friction_deadband);
-
+    */
     return true;
   }
 
   bool SrhJointPositionController::resetGains(std_srvs::Empty::Request &req, std_srvs::Empty::Response &resp)
   {
     resetJointState();
+    std::cout << "resetgain j: " << joint_name_;
 
-    if (!pid_controller_position_->init(ros::NodeHandle(node_, "pid")))
-    {
-      return false;
-    }
+    //if (!pid_controller_position_->init(ros::NodeHandle(node_, "pid")))
+    //{
+    //  return false;
+    //}
 
-    read_parameters();
-
+    // read_parameters();
+/*
     if (has_j2)
       ROS_WARN_STREAM(
               "Reseting controller gains: " << joint_state_->joint_->name << " and " << joint_state_2->joint_->name);
     else
       ROS_WARN_STREAM("Reseting controller gains: " << joint_state_->joint_->name);
-
+*/
     return true;
   }
 
@@ -192,6 +194,11 @@ namespace controller
 
   void SrhJointPositionController::update(const ros::Time &time, const ros::Duration &period)
   {
+    if (first_run){
+      std::cout << "first run\n";
+      first_run = false;
+    }
+
     ROS_ASSERT(robot_);
     ROS_ASSERT(joint_state_->joint_);
 
