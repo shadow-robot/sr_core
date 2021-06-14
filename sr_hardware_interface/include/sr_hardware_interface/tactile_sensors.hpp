@@ -74,15 +74,33 @@ public:
   int software_version_server;
   bool software_version_modified;
 
+  std::string git_revision;
+
   /**
    * Parses the version string received
    *  from the tactiles and fill in the
    *  variables.
    *
-   * @version The raw version string.
+   * @param raw_version The raw version string.
    */
-  void set_software_version(std::string version)
+  void set_software_version(char* raw_version)
   {
+    // New Git format: \n\n 20 bytes Git revision
+    if (raw_version[0] == '\n' && raw_version[1] == '\n')
+    {
+      // Convert Git revision to hexadecimal long hash
+      std::stringstream git_revision;
+      for (int i = 2; i < 22; i++)
+      {
+        git_revision << std::setfill('0') << std::setw(2) << std::hex <<
+          static_cast<int>(static_cast<uint8_t>(raw_version[i]));
+      }
+      this->git_revision = git_revision.str();
+      return;
+    }
+
+    // Old Subversion format: number \n number \n Yes/No
+    std::string version = raw_version;
     // split the string to fill the different versions
     std::vector<std::string> splitted_string;
     boost::split(splitted_string, version, boost::is_any_of("\n"));
