@@ -55,7 +55,7 @@ public:
   ~SimpleTransmission()
   {
     ROS_DEBUG_STREAM("Destroying simple transmission");
-  }  // added degub stream line because empty destructor make sr-ros-interface-interface unit test fail blblblblblblblblbl
+  }  // added degub stream line because empty destructor make sr-ros-interface-interface unit test fail
 
   bool initXml(tinyxml2::XMLElement *config, ros_ethercat_model::RobotState *robot);
 
