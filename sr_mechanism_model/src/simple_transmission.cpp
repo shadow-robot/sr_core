@@ -90,8 +90,9 @@ namespace sr_mechanism_model
   {
     SrMotorActuator *act = static_cast<SrMotorActuator *>(actuator_);
     act->command_.enable_ = true;
-    act->command_.effort_ = joint_->commanded_effort_;
-    act->command_.type_ = joint_->actuator_command_type_;
+    act->command_.set_effort_command(
+      joint_->commanded_effort_,
+      joint_->effort_command_type_);
   }
 
 }  // namespace sr_mechanism_model
