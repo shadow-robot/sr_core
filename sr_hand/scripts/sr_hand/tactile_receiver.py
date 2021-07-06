@@ -59,25 +59,23 @@ class TactileReceiver(object):
                 self._prefix + "tactile", ShadowPST, timeout=5.0)
             return "PST"
         except (rospy.ROSException, rospy.ROSInterruptException):
-            rospy.logwarn(
-                "No PST tactile topic found. This is normal for a simulated hand")
+            pass
 
         try:
             rospy.wait_for_message(
                 self._prefix + "tactile", BiotacAll, timeout=5.0)
             return "biotac"
         except (rospy.ROSException, rospy.ROSInterruptException):
-            rospy.logwarn(
-                "No biotac tactile topic found. This is normal for a simulated hand")
+            pass
 
         try:
             rospy.wait_for_message(
                 self._prefix + "tactile", UBI0All, timeout=5.0)
             return "UBI0"
         except (rospy.ROSException, rospy.ROSInterruptException):
-            rospy.logwarn(
-                "No URI0 tactile topic found. This is normal for a simulated hand")
+            pass
 
+        rospy.logwarn("No supported tactile topic found. This is normal for a simulated hand")
         return None
 
     def tactile_callback(self, tactile_msg):
