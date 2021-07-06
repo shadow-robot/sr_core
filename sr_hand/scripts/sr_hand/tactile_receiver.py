@@ -63,14 +63,14 @@ class TactileReceiver(object):
 
         try:
             rospy.wait_for_message(
-                self._prefix + "tactile", BiotacAll, timeout=5.0)
+                self._prefix + "tactile", BiotacAll, timeout=1.0)
             return "biotac"
         except (rospy.ROSException, rospy.ROSInterruptException):
             pass
 
         try:
             rospy.wait_for_message(
-                self._prefix + "tactile", UBI0All, timeout=5.0)
+                self._prefix + "tactile", UBI0All, timeout=1.0)
             return "UBI0"
         except (rospy.ROSException, rospy.ROSInterruptException):
             pass
