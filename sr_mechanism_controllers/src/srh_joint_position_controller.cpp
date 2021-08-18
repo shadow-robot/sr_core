@@ -257,12 +257,12 @@ namespace controller
     }
 
 
-    if (commanded_effort > 0)
-        commanded_effort = commanded_effort + 60.0;
+    if ((commanded_effort > 0) && (commanded_effort < 60))
+        commanded_effort = 60.0;
 
 
-    if (commanded_effort < 0)
-        commanded_effort = commanded_effort - 60.0;
+    if ((commanded_effort < 0) && (commanded_effort > -60))
+        commanded_effort = -60.0;
 
 
     joint_state_->commanded_effort_ = commanded_effort;
