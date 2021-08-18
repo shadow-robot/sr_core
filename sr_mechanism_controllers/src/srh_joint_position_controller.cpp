@@ -258,8 +258,8 @@ namespace controller
 
     joint_state_->commanded_effort_ = commanded_effort;
 
-    if (loop_count_ % 10 == 0)
-    {
+    //if (loop_count_ % 10 == 0)
+    //{
       if (controller_state_publisher_ && controller_state_publisher_->trylock())
       {
         controller_state_publisher_->msg_.header.stamp = time;
@@ -287,7 +287,7 @@ namespace controller
                  dummy);
         controller_state_publisher_->unlockAndPublish();
       }
-    }
+    //}
     loop_count_++;
   }
 
