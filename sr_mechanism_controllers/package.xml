@@ -40,6 +40,7 @@
     <build_depend>cmake_modules</build_depend>
     <build_depend>tinyxml2</build_depend>
     <build_depend>ros_ethercat_model</build_depend>
+<build_depend>dynamic_reconfigure</build_depend>
 
     <!-- Dependencies needed after this package is compiled. -->
     <run_depend>std_msgs</run_depend>
@@ -60,6 +61,9 @@
     <run_depend>sr_hardware_interface</run_depend>
     <run_depend>xmlrpcpp</run_depend>
     <run_depend>ros_ethercat_model</run_depend>
+<run_depend>dynamic_reconfigure</run_depend>
+
+
 
     <!-- Dependencies needed only for running tests. -->
     <test_depend>gtest</test_depend>

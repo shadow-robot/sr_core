@@ -32,6 +32,8 @@
 #include <algorithm>
 #include <math.h>
 #include "sr_utilities/sr_math_utils.hpp"
+#include <dynamic_reconfigure/server.h>
+#include <sr_mechanism_controllers/TendonsConfig.h>
 
 #include <std_msgs/Float64.h>
 
@@ -46,6 +48,11 @@ namespace controller
   SrhJointPositionController::SrhJointPositionController()
           : position_deadband(0.015)
   {
+  }
+
+  void SrhJointPositionController::callback(sr_mechanism_controllers::TendonsConfig &config, uint32_t level) {
+    ROS_INFO("Reconfigure Request: %d", config.ignore_threshold);
+    this->ignore_threshold = config.ignore_threshold;
   }
 
   bool SrhJointPositionController::init(ros_ethercat_model::RobotStateInterface *robot, ros::NodeHandle &n)
@@ -258,11 +265,11 @@ namespace controller
 
 
     if ((commanded_effort > 0))
-        commanded_effort = commanded_effort + 60.0;
+        commanded_effort = commanded_effort + float(this->ignore_threshold);
 
 
     if ((commanded_effort < 0))
-        commanded_effort = commanded_effort - 60.0;
+        commanded_effort = commanded_effort - float(this->ignore_threshold);
 
 
     joint_state_->commanded_effort_ = commanded_effort;
