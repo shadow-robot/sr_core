@@ -171,6 +171,8 @@ namespace controller
     node_.setParam("pid/max_force", max_force_demand);
     node_.setParam("pid/position_deadband", position_deadband);
     node_.setParam("pid/friction_deadband", friction_deadband);
+    node_.setParam("pid/positive_threshold", positive_threshold);
+    node_.setParam("pid/negative_threshold", negative_threshold);
 
     return true;
   }
