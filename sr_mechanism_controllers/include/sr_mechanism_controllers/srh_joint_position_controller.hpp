@@ -63,6 +63,10 @@ private:
   /// the position deadband value used in the hysteresis_deadband
   double position_deadband;
 
+  double positive_threshold;
+
+  double negative_threshold;
+
   /// We're using an hysteresis deadband.
   sr_deadband::HysteresisDeadband<double> hysteresis_deadband;
 

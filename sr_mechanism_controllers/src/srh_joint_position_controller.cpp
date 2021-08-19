@@ -153,12 +153,15 @@ namespace controller
     ROS_INFO_STREAM("Setting new PID parameters. P:" << req.p << " / I:" << req.i <<
                     " / D:" << req.d << " / IClamp:" << req.i_clamp << ", max force: " <<
                     req.max_force << ", friction deadband: " << req.friction_deadband <<
-                    " pos deadband: " << req.deadband);
+                    " pos deadband: " << req.deadband << ", negative_threshold: " <<
+                    req.negative_threshold << ", positive_threshold: " << req.positive_threshold);
 
     pid_controller_position_->setGains(req.p, req.i, req.d, req.i_clamp, -req.i_clamp);
     max_force_demand = req.max_force;
     friction_deadband = req.friction_deadband;
     position_deadband = req.deadband;
+    positive_threshold = req.positive_threshold;
+    negative_threshold = req.negative_threshold;
 
     // Setting the new parameters in the parameter server
     node_.setParam("pid/p", req.p);
@@ -312,6 +315,9 @@ namespace controller
     node_.param<double>("pid/max_force", max_force_demand, 1023.0);
     node_.param<double>("pid/position_deadband", position_deadband, 0.015);
     node_.param<int>("pid/friction_deadband", friction_deadband, 5);
+    node_.param<double>("pid/negative_threshold", negative_threshold, 0);
+    node_.param<double>("pid/positive_threshold", positive_threshold, 0);
+
   }
 
   void SrhJointPositionController::setCommandCB(const std_msgs::Float64ConstPtr &msg)
