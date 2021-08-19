@@ -52,7 +52,7 @@ namespace controller
 
   void SrhJointPositionController::callback(sr_mechanism_controllers::TendonsConfig &config, uint32_t level) {
     ROS_INFO("Reconfigure Request: %d", config.ignore_threshold);
-    controller::SrhJointPositionController::ignore_threshold = config.ignore_threshold;
+    // controller::SrhJointPositionController::ignore_threshold = config.ignore_threshold;
   }
 
   bool SrhJointPositionController::init(ros_ethercat_model::RobotStateInterface *robot, ros::NodeHandle &n)
@@ -265,11 +265,11 @@ namespace controller
 
 
     if ((commanded_effort > 0))
-        commanded_effort = commanded_effort + float(controller::SrhJointPositionController::ignore_threshold);
+        commanded_effort = commanded_effort + 100.0;
 
 
     if ((commanded_effort < 0))
-        commanded_effort = commanded_effort - float(controller::SrhJointPositionController::ignore_threshold);
+        commanded_effort = commanded_effort - 100.0;
 
 
     joint_state_->commanded_effort_ = commanded_effort;
