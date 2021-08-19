@@ -34,6 +34,12 @@ else(DEFINED debug)
     message(STATUS " [ ] Debug publisher")
 endif (DEFINED debug)
 
+
+
+# make sure configure headers are built before any node using them
+add_dependencies(sr_mechanism_controllers ${PROJECT_NAME}_gencfg)
+
+
 add_executable(joint_trajectory_action_controller src/joint_trajectory_action_controller.cpp)
 add_dependencies(joint_trajectory_action_controller ${catkin_EXPORTED_TARGETS})
 target_link_libraries(joint_trajectory_action_controller ${catkin_LIBRARIES})
@@ -69,10 +75,6 @@ target_link_libraries(simple_trajectory ${catkin_LIBRARIES})
 add_executable(simple_trajectory_compare example/simple_trajectory_compare.cpp)
 add_dependencies(simple_trajectory_compare ${catkin_EXPORTED_TARGETS})
 target_link_libraries(simple_trajectory_compare ${catkin_LIBRARIES})
-
-
-# make sure configure headers are built before any node using them
-add_dependencies(sr_mechanism_controllers ${PROJECT_NAME}_gencfg)
 
 
 #if(COMMAND add_rostest_gtest)
