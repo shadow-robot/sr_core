@@ -78,7 +78,9 @@ private:
 
   void resetJointState();
 
-  int ignore_threshold;
+  int positive_threshold;
+
+  int negative_threshold;
 };
 }  // namespace controller
 

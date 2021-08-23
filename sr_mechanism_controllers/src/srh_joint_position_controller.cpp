@@ -48,14 +48,12 @@ namespace controller
   SrhJointPositionController::SrhJointPositionController()
           : position_deadband(0.015)
   {
-    dynamic_reconfigure_server_.reset(new dynamic_reconfigure::Server<sr_mechanism_controllers::TendonsConfig>());
-    function_cb_ = boost::bind(&SrhJointPositionController::dynamic_reconfigure_cb, this, _1, _2);
-    dynamic_reconfigure_server_->setCallback(function_cb_);
   }
 
   void SrhJointPositionController::dynamic_reconfigure_cb(sr_mechanism_controllers::TendonsConfig &config, uint32_t level) {
-    ROS_INFO("Reconfigure Request: %d", config.ignore_threshold);
-    this->ignore_threshold = config.ignore_threshold;
+    ROS_INFO("Reconfigure Request: %d %d", config.positive_threshold, config.negative_threshold);
+    this->positive_threshold = config.positive_threshold;
+    this->negative_threshold = config.negative_threshold;
   }
 
   bool SrhJointPositionController::init(ros_ethercat_model::RobotStateInterface *robot, ros::NodeHandle &n)
@@ -95,6 +93,12 @@ namespace controller
 
     ROS_DEBUG(" --------- ");
     ROS_DEBUG_STREAM("Init: " << joint_name_);
+
+    dynamic_reconfigure_server_.reset(new dynamic_reconfigure::Server<sr_mechanism_controllers::TendonsConfig>
+                                              //(node_, "conf", 1));
+                                              (node_));
+    function_cb_ = boost::bind(&SrhJointPositionController::dynamic_reconfigure_cb, this, _1, _2);
+    dynamic_reconfigure_server_->setCallback(function_cb_);
 
     // joint 0s e.g. FFJ0
     has_j2 = is_joint_0();
@@ -268,11 +272,11 @@ namespace controller
 
 
     if ((commanded_effort > 0))
-        commanded_effort = commanded_effort + float(this->ignore_threshold);
+        commanded_effort = commanded_effort + float(this->positive_threshold);
 
 
     if ((commanded_effort < 0))
-        commanded_effort = commanded_effort - float(this->ignore_threshold);
+        commanded_effort = commanded_effort + float(this->negative_threshold);
 
 
     joint_state_->commanded_effort_ = commanded_effort;
