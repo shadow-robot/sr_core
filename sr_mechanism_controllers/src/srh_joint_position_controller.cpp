@@ -293,8 +293,8 @@ namespace controller
     joint_state_->commanded_effort_ = commanded_effort;
 
 
-   // if (loop_count_ % 200 == 0)
-   //   std::cout << joint_state_->joint_->name << "+: " << this->positive_threshold << ", -: " << this->negative_threshold << "\n";
+   if (loop_count_ % 200 == 0)
+     std::cout << joint_state_->joint_->name << "+: " << this->in_max << ", -: " << this->out_max << "\n";
 
     //if (loop_count_ % 10 == 0)
     //{
