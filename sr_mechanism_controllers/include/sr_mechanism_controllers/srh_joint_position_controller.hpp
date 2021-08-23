@@ -43,6 +43,7 @@ public:
 
   void dynamic_reconfigure_cb(sr_mechanism_controllers::TendonsConfig &config, uint32_t level);
 
+  double map(double x, double in_min, double in_max, double out_min, double out_max);
 
   virtual void starting(const ros::Time &time);
 
@@ -78,9 +79,9 @@ private:
 
   void resetJointState();
 
-  int positive_threshold;
+  int in_max;
 
-  int negative_threshold;
+  int out_max;
 };
 }  // namespace controller
 

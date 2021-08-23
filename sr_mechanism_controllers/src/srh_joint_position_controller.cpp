@@ -51,9 +51,9 @@ namespace controller
   }
 
   void SrhJointPositionController::dynamic_reconfigure_cb(sr_mechanism_controllers::TendonsConfig &config, uint32_t level) {
-    ROS_INFO("Reconfigure Request: %d %d", config.positive_threshold, config.negative_threshold);
-    this->positive_threshold = config.positive_threshold;
-    this->negative_threshold = config.negative_threshold;
+    ROS_INFO("Reconfigure Request: %d %d", config.in_max, config.out_max);
+    this->in_max = config.in_max;
+    this->out_max = config.out_max;
   }
 
   bool SrhJointPositionController::init(ros_ethercat_model::RobotStateInterface *robot, ros::NodeHandle &n)
@@ -199,6 +199,23 @@ namespace controller
     return true;
   }
 
+  double SrhJointPositionController::map(double x, double in_min, double in_max, double out_min, double out_max)
+  {
+    bool xs = false;
+    if (x < 0)
+      xs = true;
+    x = abs(x);
+    if ((x > 0) && ( x < in_max ))
+    {
+      x = (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+    } else {
+      x = x - (in_max - out_max);
+    }
+    if (xs)
+      x = x * -1.0;
+    return x;
+  }
+
   void SrhJointPositionController::getGains(double &p, double &i, double &d, double &i_max, double &i_min)
   {
     pid_controller_position_->getGains(p, i, d, i_max, i_min);
@@ -271,19 +288,13 @@ namespace controller
     }
 
 
-    if ((commanded_effort > 0))
-        commanded_effort = commanded_effort + float(this->positive_threshold);
-
-
-    if ((commanded_effort < 0))
-        commanded_effort = commanded_effort + float(this->negative_threshold);
-
+    commanded_effort = SrhJointPositionController::map(commanded_effort, 0, this->in_max, 0, this->out_max);
 
     joint_state_->commanded_effort_ = commanded_effort;
 
 
-    if (loop_count_ % 200 == 0)
-      std::cout << joint_state_->joint_->name << "+: " << this->positive_threshold << ", -: " << this->negative_threshold << "\n";
+   // if (loop_count_ % 200 == 0)
+   //   std::cout << joint_state_->joint_->name << "+: " << this->positive_threshold << ", -: " << this->negative_threshold << "\n";
 
     //if (loop_count_ % 10 == 0)
     //{
