@@ -48,9 +48,12 @@ namespace controller
   SrhJointPositionController::SrhJointPositionController()
           : position_deadband(0.015)
   {
+    dynamic_reconfigure_server_.reset(new dynamic_reconfigure::Server<sr_mechanism_controllers::TendonsConfig>());
+    function_cb_ = boost::bind(&SrhJointPositionController::dynamic_reconfigure_cb, this, _1, _2);
+    dynamic_reconfigure_server_->setCallback(function_cb_);
   }
 
-  void SrhJointPositionController::callback(sr_mechanism_controllers::TendonsConfig &config, uint32_t level) {
+  void SrhJointPositionController::dynamic_reconfigure_cb(sr_mechanism_controllers::TendonsConfig &config, uint32_t level) {
     ROS_INFO("Reconfigure Request: %d", config.ignore_threshold);
     this->ignore_threshold = config.ignore_threshold;
   }
@@ -273,6 +276,10 @@ namespace controller
 
 
     joint_state_->commanded_effort_ = commanded_effort;
+
+
+    if (loop_count_ % 200 == 0)
+      std::cout << joint_state_->joint_->name << ": " << this->ignore_threshold << "\n";
 
     //if (loop_count_ % 10 == 0)
     //{

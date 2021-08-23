@@ -41,6 +41,9 @@ public:
 
   bool init(ros_ethercat_model::RobotStateInterface *robot, ros::NodeHandle &n);
 
+  void dynamic_reconfigure_cb(sr_mechanism_controllers::TendonsConfig &config, uint32_t level);
+
+
   virtual void starting(const ros::Time &time);
 
   /*!
@@ -58,7 +61,8 @@ private:
   /// Internal PID controller for the position loop.
   boost::scoped_ptr<control_toolbox::Pid> pid_controller_position_;
 
-  void callback(sr_mechanism_controllers::TendonsConfig &config, uint32_t level);
+  boost::scoped_ptr<dynamic_reconfigure::Server<sr_mechanism_controllers::TendonsConfig> > dynamic_reconfigure_server_;
+  dynamic_reconfigure::Server<sr_mechanism_controllers::TendonsConfig>::CallbackType function_cb_;
 
   /// the position deadband value used in the hysteresis_deadband
   double position_deadband;
