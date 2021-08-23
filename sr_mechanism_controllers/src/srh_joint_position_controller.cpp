@@ -283,7 +283,7 @@ namespace controller
 
 
     if (loop_count_ % 200 == 0)
-      std::cout << joint_state_->joint_->name << ": " << this->ignore_threshold << "\n";
+      std::cout << joint_state_->joint_->name << "+: " << this->positive_threshold << ", -: " << this->negative_threshold << "\n";
 
     //if (loop_count_ % 10 == 0)
     //{
