@@ -38,11 +38,12 @@ class CalibrateHand(object):
         generated_reset_service_list = []
         service_list = []
 
-        # We first read the list of available motor reset services
+        # We first read the list of available motor reset services in this namespace
         # this will allow us to avoid having to know the name of the robot driver node
+        ns = rospy.get_namespace()
         while not reset_service_list:
             rospy.sleep(0.5)
-            service_list = rosservice.get_service_list()
+            service_list = rosservice.get_service_list(namespace=ns)
             reset_service_list = [srv for srv in service_list if '/reset_motor_' in srv]
             if not reset_service_list:
                 rospy.loginfo("Waiting for motor reset services")
