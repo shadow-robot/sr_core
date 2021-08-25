@@ -79,6 +79,8 @@ private:
 
   void resetJointState();
 
+  bool bypass;
+
   int in_max;
 
   int out_max;

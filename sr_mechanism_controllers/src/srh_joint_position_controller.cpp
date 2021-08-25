@@ -54,6 +54,7 @@ namespace controller
     ROS_INFO("Reconfigure Request: %d %d", config.in_max, config.out_max);
     this->in_max = config.in_max;
     this->out_max = config.out_max;
+    this->bypass = config.bypass;
   }
 
   bool SrhJointPositionController::init(ros_ethercat_model::RobotStateInterface *robot, ros::NodeHandle &n)
@@ -291,8 +292,8 @@ namespace controller
       }
     }
 
-
-    commanded_effort = SrhJointPositionController::map(commanded_effort, 0, this->in_max, 0, this->out_max);
+    if (this->bypass == false)
+      commanded_effort = SrhJointPositionController::map(commanded_effort, 0, this->in_max, 0, this->out_max);
 
     joint_state_->commanded_effort_ = commanded_effort;
 
