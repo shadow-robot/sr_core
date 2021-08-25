@@ -201,6 +201,8 @@ namespace controller
 
   double SrhJointPositionController::map(double x, double in_min, double in_max, double out_min, double out_max)
   {
+    if (x == 0)
+      return 0.0;
     bool xs = false;
     if (x < 0)
       xs = true;
@@ -211,6 +213,8 @@ namespace controller
     } else {
       x = x - (in_max - out_max);
     }
+    if (x < 2)
+      x = 0.0;
     if (xs)
       x = x * -1.0;
     return x;
