@@ -45,6 +45,8 @@ public:
 
   double map(double x, double in_min, double in_max, double out_min, double out_max);
 
+  double corrects(double x);
+
   virtual void starting(const ros::Time &time);
 
   /*!
@@ -80,6 +82,8 @@ private:
   void resetJointState();
 
   bool bypass;
+
+  bool correct;
 
   int in_max;
 

@@ -55,6 +55,7 @@ namespace controller
     this->in_max = config.in_max;
     this->out_max = config.out_max;
     this->bypass = config.bypass;
+    this->correct = config.correct;
   }
 
   bool SrhJointPositionController::init(ros_ethercat_model::RobotStateInterface *robot, ros::NodeHandle &n)
@@ -221,6 +222,15 @@ namespace controller
     return x;
   }
 
+  double SrhJointPositionController::corrects(double x)
+  {
+    double x2 = x*x;
+    double x3 = x2*x;
+    double corrected_val = 44.32656663379388 + 1.3212189376511323*x - 0.007179873277987306*x2 + 0.00002310811007344227*x3;
+    return corrected_val;
+
+  }
+
   void SrhJointPositionController::getGains(double &p, double &i, double &d, double &i_max, double &i_min)
   {
     pid_controller_position_->getGains(p, i, d, i_max, i_min);
@@ -294,6 +304,9 @@ namespace controller
 
     if (this->bypass == false)
       commanded_effort = SrhJointPositionController::map(commanded_effort, 0, this->in_max, 0, this->out_max);
+
+    if (this->correct == true)
+      commanded_effort = SrhJointPositionController::corrects(commanded_effort);
 
     joint_state_->commanded_effort_ = commanded_effort;
 
