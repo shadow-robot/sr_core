@@ -17,7 +17,7 @@
 from __future__ import absolute_import
 import rospy
 from urdf_parser_py.urdf import URDF
-from hand_finder import HandJoints
+from .hand_finder import HandJoints
 
 
 class ArmConfig(object):
