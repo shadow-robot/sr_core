@@ -45,7 +45,7 @@ public:
 
   double map(double x, double in_min, double in_max, double out_min, double out_max);
 
-  double corrects(double x);
+  double corrects(double in_x);
 
   virtual void starting(const ros::Time &time);
 

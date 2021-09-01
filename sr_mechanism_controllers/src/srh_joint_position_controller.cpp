@@ -222,11 +222,15 @@ namespace controller
     return x;
   }
 
-  double SrhJointPositionController::corrects(double x)
+  double SrhJointPositionController::corrects(double in_x)
   {
+    bool negative = ( x < 0.0) ? true : false;
+    double x = abs(in_x);
     double x2 = x*x;
     double x3 = x2*x;
-    double corrected_val = 44.32656663379388 + 1.3212189376511323*x - 0.007179873277987306*x2 + 0.00002310811007344227*x3;
+    double corrected_val = 44.32656663379388 + 1.3212189376511323*in_x - 0.007179873277987306*x2 + 0.00002310811007344227*x3;
+    if (negative)
+      corrected_val = corrected_val * -1.0;
     return corrected_val;
 
   }
