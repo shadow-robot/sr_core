@@ -224,7 +224,7 @@ namespace controller
 
   double SrhJointPositionController::corrects(double in_x)
   {
-    bool negative = ( x < 0.0) ? true : false;
+    bool negative = ( in_x < 0.0) ? true : false;
     double x = abs(in_x);
     double x2 = x*x;
     double x3 = x2*x;
