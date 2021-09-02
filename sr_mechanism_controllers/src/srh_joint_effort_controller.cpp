@@ -164,11 +164,12 @@ namespace controller
 
   double SrhEffortJointController::interpolate(double input, double input_start, double input_end, double output_start, double output_end)
   {
-    double output_offset = 0;
-    if (input > input_end)
-        output_offset = output_end - input_end;
+    if (input > input_end){
+        double output_offset = output_end - input_end;
+        return input - output_offset;
+    }
     double slope = 1.0 * (output_end - output_start) / (input_end - input_start);
-    return output_start + SrhEffortJointController::round(slope * (input - input_start)) - output_offset;
+    return output_start + SrhEffortJointController::round(slope * (input - input_start));
   }
 
   void SrhEffortJointController::update(const ros::Time &time, const ros::Duration &period)
@@ -210,7 +211,7 @@ namespace controller
       commanded_effort = SrhEffortJointController::interpolate(commanded_effort, 0, 80, 0, 20);
 
     if (commanded_effort < 0)
-      commanded_effort = SrhEffortJointController::interpolate(commanded_effort, -80, 0, -20, 0);
+      commanded_effort = (-1.0)*SrhEffortJointController::interpolate((commanded_effort*-1.0), 0, 80, 0, 20);
 
     joint_state_->commanded_effort_ = commanded_effort;
 
