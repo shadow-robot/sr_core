@@ -166,7 +166,7 @@ namespace controller
   {
     if (input > input_end){
         double output_offset = output_end - input_end;
-        return input - output_offset;
+        return input + output_offset;
     }
     double slope = 1.0 * (output_end - output_start) / (input_end - input_start);
     return output_start + SrhEffortJointController::round(slope * (input - input_start));
@@ -208,10 +208,10 @@ namespace controller
 
 
     if (commanded_effort > 0)
-      commanded_effort = SrhEffortJointController::interpolate(commanded_effort, 0, 80, 0, 20);
+      commanded_effort = SrhEffortJointController::interpolate(commanded_effort, 0, 20, 0, 80);
 
     if (commanded_effort < 0)
-      commanded_effort = (-1.0)*SrhEffortJointController::interpolate((commanded_effort*-1.0), 0, 80, 0, 20);
+      commanded_effort = (-1.0)*SrhEffortJointController::interpolate((commanded_effort*-1.0), 0, 20, 0, 80);
 
     joint_state_->commanded_effort_ = commanded_effort;
 

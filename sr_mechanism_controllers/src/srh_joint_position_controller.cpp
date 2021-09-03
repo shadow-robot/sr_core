@@ -235,6 +235,22 @@ namespace controller
 
   }
 
+  double SrhJointPositionController::round(double d)
+  {
+    return floor(d + 0.5);
+  }
+
+  double SrhJointPositionController::interpolate(double input, double input_start, double input_end, double output_start, double output_end)
+  {
+    if (input > input_end){
+        double output_offset = output_end - input_end;
+        return input + output_offset;
+    }
+    double slope = 1.0 * (output_end - output_start) / (input_end - input_start);
+    return output_start + SrhJointPositionController::round(slope * (input - input_start));
+  }
+
+
   void SrhJointPositionController::getGains(double &p, double &i, double &d, double &i_max, double &i_min)
   {
     pid_controller_position_->getGains(p, i, d, i_max, i_min);
@@ -306,11 +322,21 @@ namespace controller
       }
     }
 
-    if (this->bypass == false)
-      commanded_effort = SrhJointPositionController::map(commanded_effort, 0, this->in_max, 0, this->out_max);
+    //if (this->bypass == false)
+    //  commanded_effort = SrhJointPositionController::map(commanded_effort, 0, this->in_max, 0, this->out_max);
 
-    if (this->correct == true)
-      commanded_effort = SrhJointPositionController::corrects(commanded_effort);
+    //if (this->correct == true)
+    //  commanded_effort = SrhJointPositionController::corrects(commanded_effort);
+
+
+    if (this->correct == true){
+      if (commanded_effort > 0)
+        commanded_effort = SrhJointPositionController::interpolate(commanded_effort, 0, 20, 0, 80);
+
+      if (commanded_effort < 0)
+        commanded_effort = (-1.0)*SrhJointPositionController::interpolate((commanded_effort*-1.0), 0, 20, 0, 80);
+    }
+
 
     joint_state_->commanded_effort_ = commanded_effort;
 

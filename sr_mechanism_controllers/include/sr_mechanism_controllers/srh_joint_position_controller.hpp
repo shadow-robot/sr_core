@@ -45,6 +45,10 @@ public:
 
   double map(double x, double in_min, double in_max, double out_min, double out_max);
 
+  double interpolate(double input, double input_start, double input_end, double output_start, double output_end);
+
+  double round(double d);
+
   double corrects(double in_x);
 
   virtual void starting(const ros::Time &time);
