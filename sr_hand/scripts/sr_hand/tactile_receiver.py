@@ -55,12 +55,13 @@ class TactileReceiver(object):
 
     def find_tactile_type(self):
         message_type = rostopic.get_topic_type("/" + self._prefix + "tactile")[0]
-        if "ShadowPST" in message_type:
-            return "PST"
-        elif "BiotacAll" in message_type:
-            return "biotac"
-        elif "UBI0All" in message_type:
-            return "UBI0"
+        if message_type:
+            if "ShadowPST" in message_type:
+                return "PST"
+            elif "BiotacAll" in message_type:
+                return "biotac"
+            elif "UBI0All" in message_type:
+                return "UBI0"
 
         rospy.logwarn("No supported tactile topic found. This is normal for a simulated hand")
         return None
