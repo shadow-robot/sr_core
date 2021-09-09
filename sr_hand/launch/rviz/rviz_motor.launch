@@ -1,6 +1,6 @@
 <launch>
   <node pkg="rviz" name="rviz_visualizer" type="rviz" />
-  <include file="$(find sr_hand)/launch/load_hand_model.launch" />
+  <include file="$(find sr_description)/loaders/load_hand_model.launch" />
   <param name="sa_description"
   command="xacro --inorder '$(find sr_description)/robots/sr_arm_motor.urdf.xacro'" />
 </launch>
