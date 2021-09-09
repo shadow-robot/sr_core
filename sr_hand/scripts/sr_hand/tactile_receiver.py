@@ -61,8 +61,8 @@ class TactileReceiver(object):
             return "biotac"
         elif "UBI0All" in message_type:
             return "UBI0"
-        else:
-            rospy.logwarn("No supported tactile topic found. This is normal for a simulated hand")
+
+        rospy.logwarn("No supported tactile topic found. This is normal for a simulated hand")
         return None
 
     def tactile_callback(self, tactile_msg):
