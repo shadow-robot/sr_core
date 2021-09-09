@@ -16,7 +16,7 @@
 
 from __future__ import absolute_import
 import rospy
-
+import rostopic
 from sr_robot_msgs.msg import BiotacAll, ShadowPST, UBI0All
 
 
@@ -54,28 +54,15 @@ class TactileReceiver(object):
                 prefix + "tactile", UBI0All, self.tactile_callback, queue_size=1)
 
     def find_tactile_type(self):
-        try:
-            rospy.wait_for_message(
-                self._prefix + "tactile", ShadowPST, timeout=5.0)
+        message_type = rostopic.get_topic_type("/" + self._prefix + "tactile")[0]
+        if "ShadowPST" in message_type:
             return "PST"
-        except (rospy.ROSException, rospy.ROSInterruptException):
-            pass
-
-        try:
-            rospy.wait_for_message(
-                self._prefix + "tactile", BiotacAll, timeout=1.0)
+        elif "BiotacAll" in message_type:
             return "biotac"
-        except (rospy.ROSException, rospy.ROSInterruptException):
-            pass
-
-        try:
-            rospy.wait_for_message(
-                self._prefix + "tactile", UBI0All, timeout=1.0)
+        elif "UBI0All" in message_type:
             return "UBI0"
-        except (rospy.ROSException, rospy.ROSInterruptException):
-            pass
-
-        rospy.logwarn("No supported tactile topic found. This is normal for a simulated hand")
+        else:
+            rospy.logwarn("No supported tactile topic found. This is normal for a simulated hand")
         return None
 
     def tactile_callback(self, tactile_msg):
