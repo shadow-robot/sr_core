@@ -43,6 +43,8 @@ public:
 
   void dynamic_reconfigure_cb(sr_mechanism_controllers::TendonsConfig &config, uint32_t level);
 
+  void setDefaults(void);
+
   double map(double x, double in_min, double in_max, double out_min, double out_max);
 
   double interpolate(double input, double input_start, double input_end, double output_start, double output_end);
@@ -89,9 +91,13 @@ private:
 
   bool correct;
 
-  int in_max;
+  int j0_smol_num;
 
-  int out_max;
+  int j0_lorg_num;
+
+  int j3_smol_num;
+
+  int j3_lorg_num;
 };
 }  // namespace controller
 

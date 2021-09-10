@@ -75,6 +75,7 @@ bool PlainPid::initParam(const std::string& prefix, const bool quiet)
 
 bool PlainPid::init(const ros::NodeHandle &node, const bool quiet)
 {
+  ROS_ERROR("OHNOOHNOOHNOOHNO\n");
   ros::NodeHandle nh(node);
 
   Gains gains;
@@ -193,6 +194,8 @@ double PlainPid::updatePid(double error, ros::Duration dt)
 
 double PlainPid::computeCommand(double error, double error_dot, ros::Duration dt)
 {
+  ROS_ERROR("OHNOOHNOOHNOOHNO\n");
+
   double p_term, d_term, i_term;
   p_error_ = error;  // this is error = target - state
   d_error_ = error_dot;

@@ -206,13 +206,13 @@ namespace controller
                                                                       friction_deadband);
     }
 
-
+/*
     if (commanded_effort > 0)
       commanded_effort = SrhEffortJointController::interpolate(commanded_effort, 0, 20, 0, 80);
 
     if (commanded_effort < 0)
       commanded_effort = (-1.0)*SrhEffortJointController::interpolate((commanded_effort*-1.0), 0, 20, 0, 80);
-
+*/
     joint_state_->commanded_effort_ = commanded_effort;
 
 

@@ -38,6 +38,7 @@
 #include <std_msgs/Float64.h>
 #include <std_srvs/Empty.h>
 #include <control_msgs/JointControllerState.h>
+#include <boost/algorithm/string/predicate.hpp>
 
 #include <utility>
 #include <string>
@@ -48,6 +49,9 @@
 
 #include <sr_mechanism_controllers/sr_friction_compensation.hpp>
 
+#include <dynamic_reconfigure/IntParameter.h>
+#include <dynamic_reconfigure/Reconfigure.h>
+#include <dynamic_reconfigure/Config.h>
 
 namespace controller
 {

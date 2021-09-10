@@ -51,9 +51,11 @@ namespace controller
   }
 
   void SrhJointPositionController::dynamic_reconfigure_cb(sr_mechanism_controllers::TendonsConfig &config, uint32_t level) {
-    ROS_INFO("Reconfigure Request: %d %d", config.in_max, config.out_max);
-    this->in_max = config.in_max;
-    this->out_max = config.out_max;
+    ROS_INFO("Reconfigure Request: j0-j3 smol,lorge: %d %d %d %d", config.j0_smol_num, config.j0_lorg_num, config.j3_smol_num, config.j3_lorg_num);
+    this->j0_smol_num = config.j0_smol_num;
+    this->j0_lorg_num = config.j0_lorg_num;
+    this->j3_smol_num = config.j3_smol_num;
+    this->j3_lorg_num = config.j3_lorg_num;
     this->bypass = config.bypass;
     this->correct = config.correct;
   }
@@ -148,12 +150,16 @@ namespace controller
   {
     resetJointState();
     pid_controller_position_->reset();
-
+    //setDefaults();
     if (has_j2)
       ROS_WARN_STREAM(
               "Reseting PID for joints " << joint_state_->joint_->name << " and " << joint_state_2->joint_->name);
     else
       ROS_WARN_STREAM("Reseting PID for joint  " << joint_state_->joint_->name);
+
+    bool did = pid_controller_position_->init(ros::NodeHandle(node_, "pid"));
+
+
   }
 
   bool SrhJointPositionController::setGains(sr_robot_msgs::SetPidGains::Request &req,
@@ -177,6 +183,7 @@ namespace controller
     node_.setParam("pid/max_force", max_force_demand);
     node_.setParam("pid/position_deadband", position_deadband);
     node_.setParam("pid/friction_deadband", friction_deadband);
+    //SrhJointPositionController::setDefaults();
 
     return true;
   }
@@ -248,6 +255,55 @@ namespace controller
     }
     double slope = 1.0 * (output_end - output_start) / (input_end - input_start);
     return output_start + SrhJointPositionController::round(slope * (input - input_start));
+  }
+
+  void SrhJointPositionController::setDefaults(void)
+  {
+    bool do_stuff = false;
+    int smol_num;
+    int lorg_num;
+    std::string joint = joint_state_->joint_->name;
+    if (boost::algorithm::istarts_with(joint, "rh_ff") || boost::algorithm::istarts_with(joint, "rh_mf") || boost::algorithm::istarts_with(joint, "rh_rf"))
+    {
+      if (has_j2)
+      {
+        if (boost::algorithm::iends_with(joint, "0"))
+        {
+          smol_num = 5;
+          lorg_num = 30;
+          do_stuff = true;
+        }
+      } else if (boost::algorithm::iends_with(joint, "3")){
+        smol_num = 20;
+        lorg_num = 80;
+        do_stuff = true;
+      } else {
+        smol_num = 1;
+        lorg_num = 4;
+      }
+    }
+    dynamic_reconfigure::ReconfigureRequest srv_req;
+    dynamic_reconfigure::ReconfigureResponse srv_resp;
+    dynamic_reconfigure::IntParameter int_param;
+    dynamic_reconfigure::Config conf;
+
+    int_param.name = "smol_num";
+    int_param.value = smol_num;
+    conf.ints.push_back(int_param);
+
+    int_param.name = "lorg_num";
+    int_param.value = lorg_num;
+    conf.ints.push_back(int_param);
+
+    srv_req.config = conf;
+    std::string ns = node_.getNamespace();
+    if (do_stuff){
+      ROS_WARN_STREAM("calling: " << ns << "/set_parameters... JOINT: " << joint);
+      ros::service::call(ns + "/set_parameters", srv_req, srv_resp);
+    } else {
+      ROS_WARN_STREAM("NOT calling: " << ns << "/set_parameters... JOINT: " << joint);
+    }
+
   }
 
 
@@ -327,22 +383,56 @@ namespace controller
 
     //if (this->correct == true)
     //  commanded_effort = SrhJointPositionController::corrects(commanded_effort);
+std::string joint = joint_state_->joint_->name;
+if (this->correct == true)
+{
+  if (has_j2)
+  {
+    if (boost::algorithm::istarts_with(joint, "rh_ff") || boost::algorithm::istarts_with(joint, "rh_mf") || boost::algorithm::istarts_with(joint, "rh_rf"))
+    {
 
-
-    if (this->correct == true){
       if (commanded_effort > 0)
-        commanded_effort = SrhJointPositionController::interpolate(commanded_effort, 0, 20, 0, 80);
+        commanded_effort = SrhJointPositionController::interpolate(commanded_effort, 0, this->j0_smol_num, 0, this->j0_lorg_num);
 
       if (commanded_effort < 0)
-        commanded_effort = (-1.0)*SrhJointPositionController::interpolate((commanded_effort*-1.0), 0, 20, 0, 80);
-    }
+        commanded_effort = (-1.0)*SrhJointPositionController::interpolate((commanded_effort*-1.0), 0, this->j0_smol_num, 0, this->j0_lorg_num);
 
+      if (loop_count_ % 500 == 0)
+        std::cout << joint_state_->joint_->name << " == " << joint << ", starts with ff|mf|rf, DOES have J2\n";
+    } else {
+        std::cout << joint_state_->joint_->name << " == " << joint << ", DOESN'T start with ff|mf|rf, DOES have J2\n";
+    }
+  }
+  if (boost::algorithm::iends_with(joint, "3"))
+  {
+    if (boost::algorithm::istarts_with(joint, "rh_ff") || boost::algorithm::istarts_with(joint, "rh_mf") || boost::algorithm::istarts_with(joint, "rh_rf"))
+    {
+
+      if (commanded_effort > 0)
+        commanded_effort = SrhJointPositionController::interpolate(commanded_effort, 0, this->j3_smol_num, 0, this->j3_lorg_num);
+
+      if (commanded_effort < 0)
+        commanded_effort = (-1.0)*SrhJointPositionController::interpolate((commanded_effort*-1.0), 0, this->j3_smol_num, 0, this->j3_lorg_num);
+
+      if (loop_count_ % 500 == 0)
+        std::cout << joint_state_->joint_->name << " == " << joint << ", starts with ff|mf|rf, DOES NOT have J2, DOES END WITH 3\n";
+
+    } else {
+      if (loop_count_ % 500 == 0)
+        std::cout << joint_state_->joint_->name << " == " << joint << ", DOESN'T start with ff|mf|rf, DOES END WITH 3\n";
+    }
+  } else {
+      if (loop_count_ % 500 == 0)
+        std::cout << joint_state_->joint_->name << " == " << joint << ", DOESN'T END WITH 3\n";
+  }
+
+}
 
     joint_state_->commanded_effort_ = commanded_effort;
 
 
-   if (loop_count_ % 200 == 0)
-     std::cout << joint_state_->joint_->name << "+: " << this->in_max << ", -: " << this->out_max << "\n";
+   //if (loop_count_ % 200 == 0)
+   //  std::cout << joint_state_->joint_->name << "+: " << this->in_max << ", -: " << this->out_max << "\n";
 
     //if (loop_count_ % 10 == 0)
     //{
