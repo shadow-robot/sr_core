@@ -98,6 +98,8 @@ private:
   int j3_smol_num;
 
   int j3_lorg_num;
+
+  sr_math_utils::filters::LowPassFilter pos_filter;
 };
 }  // namespace controller
 
