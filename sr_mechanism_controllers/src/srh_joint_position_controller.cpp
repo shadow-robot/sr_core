@@ -103,9 +103,9 @@ namespace controller
     function_cb_ = boost::bind(&SrhJointPositionController::dynamic_reconfigure_cb, this, _1, _2);
     dynamic_reconfigure_server_->setCallback(function_cb_);
 
-    double tau = 0.05;
+    //double tau = 0.05;
 
-    pos_filter = sr_math_utils::filters::LowPassFilter(tau);
+    //pos_filter = sr_math_utils::filters::LowPassFilter(tau);
 
     // joint 0s e.g. FFJ0
     has_j2 = is_joint_0();
@@ -357,35 +357,19 @@ namespace controller
     }
 
 
-    double timestamp = period.toSec();
-    std::pair<double, double> pos_and_velocity = pos_filter.compute(error_position, timestamp);
-
-    double error_dot = std::get<1>(pos_and_velocity);
-
-    commanded_effort = pid_controller_position_->computeCommand(-error_position, -error_dot, period);
-
+/*
+    if ((!in_deadband) || (error_position != 0.0)){
+      double timestamp = period.toSec();
+      std::cout << "t: " << timestamp << "\n";
+      std::pair<double, double> pos_and_velocity = pos_filter.compute(error_position, timestamp);
+      std::cout << "p: " << pos_and_velocity.first << ", v: " << pos_and_velocity.second << " \n";
+      double error_dot = pos_and_velocity.second;
+      commanded_effort = pid_controller_position_->computeCommand(-error_position, -error_dot, period);
+    } else {
+      commanded_effort = pid_controller_position_->computeCommand(-error_position, period);
+    }*/
     // clamp the result to max force
-    commanded_effort = min(commanded_effort, (max_force_demand * max_force_factor_));
-    commanded_effort = max(commanded_effort, -(max_force_demand * max_force_factor_));
 
-    if (!in_deadband)
-    {
-      if (has_j2)
-      {
-        commanded_effort += friction_compensator->friction_compensation(
-                joint_state_->position_ + joint_state_2->position_,
-                joint_state_->velocity_ + joint_state_2->velocity_,
-                static_cast<int>(commanded_effort),
-                friction_deadband);
-      }
-      else
-      {
-        commanded_effort += friction_compensator->friction_compensation(joint_state_->position_,
-                                                                        joint_state_->velocity_,
-                                                                        static_cast<int>(commanded_effort),
-                                                                        friction_deadband);
-      }
-    }
 
     //if (this->bypass == false)
     //  commanded_effort = SrhJointPositionController::map(commanded_effort, 0, this->in_max, 0, this->out_max);
@@ -436,6 +420,34 @@ if (this->correct == true)
   }
 
 }
+
+
+
+    commanded_effort = min(commanded_effort, (max_force_demand * max_force_factor_));
+    commanded_effort = max(commanded_effort, -(max_force_demand * max_force_factor_));
+
+    if (!in_deadband)
+    {
+      if (has_j2)
+      {
+        commanded_effort += friction_compensator->friction_compensation(
+                joint_state_->position_ + joint_state_2->position_,
+                joint_state_->velocity_ + joint_state_2->velocity_,
+                static_cast<int>(commanded_effort),
+                friction_deadband);
+      }
+      else
+      {
+        commanded_effort += friction_compensator->friction_compensation(joint_state_->position_,
+                                                                        joint_state_->velocity_,
+                                                                        static_cast<int>(commanded_effort),
+                                                                        friction_deadband);
+      }
+    }
+
+
+
+
 
     joint_state_->commanded_effort_ = commanded_effort;
 
