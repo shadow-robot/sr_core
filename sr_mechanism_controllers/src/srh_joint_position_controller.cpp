@@ -103,9 +103,9 @@ namespace controller
     function_cb_ = boost::bind(&SrhJointPositionController::dynamic_reconfigure_cb, this, _1, _2);
     dynamic_reconfigure_server_->setCallback(function_cb_);
 
-    double tau = 0.05;
+   // double tau = 0.05;
 
-    pos_filter = sr_math_utils::filters::LowPassFilter(tau);
+   // pos_filter = sr_math_utils::filters::LowPassFilter(tau);
 
     // joint 0s e.g. FFJ0
     has_j2 = is_joint_0();
@@ -356,13 +356,13 @@ namespace controller
       error_position = 0.0;
     }
 
-
+/*
     double timestamp = period.toSec();
     std::pair<double, double> pos_and_velocity = pos_filter.compute(error_position, timestamp);
 
     double error_dot = std::get<1>(pos_and_velocity);
-
-    commanded_effort = pid_controller_position_->computeCommand(-error_position, -error_dot, period);
+*/
+    commanded_effort = pid_controller_position_->computeCommand(-error_position, period);
 
     // clamp the result to max force
     commanded_effort = min(commanded_effort, (max_force_demand * max_force_factor_));
