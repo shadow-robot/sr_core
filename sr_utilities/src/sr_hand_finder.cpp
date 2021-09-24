@@ -78,7 +78,6 @@ SrHandFinder::SrHandFinder()
 
     generate_joints_with_prefix();
     generate_calibration_path();
-    generate_hand_controller_tuning_path();
   }
   else
   {
@@ -162,39 +161,6 @@ void SrHandFinder::generate_calibration_path()
   }
 }
 
-void SrHandFinder::generate_hand_controller_tuning_path()
-{
-  std::string ethercat_path = ros::package::getPath("sr_ethercat_hand_config");
-  for (std::map<std::string, std::string>::const_iterator mapping_iter = hand_config_.mapping_.begin();
-       mapping_iter != hand_config_.mapping_.end(); ++mapping_iter)
-  {
-    hand_controller_tuning_.friction_compensation_[mapping_iter->second] =
-            ethercat_path + "/controls/" + "friction_compensation.yaml";
-    hand_controller_tuning_.motor_control_[mapping_iter->second] =
-            ethercat_path + "/controls/motors/" + mapping_iter->second + "/motor_board_effort_controllers.yaml";
-    std::string host_path(ethercat_path + "/controls/host/" + mapping_iter->second + "/");
-    hand_controller_tuning_.host_control_[mapping_iter->second].push_back(
-            host_path + "sr_edc_calibration_controllers.yaml");
-    hand_controller_tuning_.host_control_[mapping_iter->second].push_back(
-            host_path + "sr_edc_joint_velocity_controllers_PWM.yaml");
-    hand_controller_tuning_.host_control_[mapping_iter->second].push_back(
-            host_path + "sr_edc_effort_controllers_PWM.yaml");
-    hand_controller_tuning_.host_control_[mapping_iter->second].push_back(
-            host_path + "sr_edc_joint_velocity_controllers.yaml");
-    hand_controller_tuning_.host_control_[mapping_iter->second].push_back(
-            host_path + "sr_edc_effort_controllers.yaml");
-
-    hand_controller_tuning_.host_control_[mapping_iter->second].push_back(
-            host_path + "sr_edc_mixed_position_velocity_joint_controllers_PWM.yaml");
-    hand_controller_tuning_.host_control_[mapping_iter->second].push_back(
-            host_path + "sr_edc_joint_position_controllers_PWM.yaml");
-    hand_controller_tuning_.host_control_[mapping_iter->second].push_back(
-            host_path + "sr_edc_mixed_position_velocity_joint_controllers.yaml");
-    hand_controller_tuning_.host_control_[mapping_iter->second].push_back(
-            host_path + "sr_edc_joint_position_controllers.yaml");
-  }
-}
-
 std::map<std::string, std::vector<std::string> > SrHandFinder::get_joints()
 {
   return joints_;
@@ -205,8 +171,4 @@ std::map<std::string, std::string> SrHandFinder::get_calibration_path()
   return calibration_path_;
 }
 
-HandControllerTuning SrHandFinder::get_hand_controller_tuning()
-{
-  return hand_controller_tuning_;
-}
 } /* namespace shadow_robot */

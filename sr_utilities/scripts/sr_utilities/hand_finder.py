@@ -20,38 +20,6 @@ import rospkg
 from urdf_parser_py.urdf import URDF
 
 
-class HandControllerTuning(object):
-    def __init__(self, mapping):
-        """
-
-        """
-        ros_pack = rospkg.RosPack()
-        ethercat_path = ros_pack.get_path('sr_ethercat_hand_config')
-        self.friction_compensation = {}
-        self.host_control = {}
-        self.motor_control = {}
-        for hand in mapping:
-            self.friction_compensation[mapping[hand]] = \
-                ethercat_path + '/controls/' + 'friction_compensation.yaml'
-            host_path = ethercat_path + '/controls/host/' + mapping[hand] + '/'
-            self.host_control[mapping[hand]] = \
-                [host_path + 'sr_edc_calibration_controllers.yaml',
-                 host_path + 'sr_edc_joint_velocity_controllers_PWM.yaml',
-                 host_path + 'sr_edc_effort_controllers_PWM.yaml',
-                 host_path + 'sr_edc_joint_velocity_controllers.yaml',
-                 host_path + 'sr_edc_effort_controllers.yaml',
-                 host_path + 'sr_edc_mixed_position_velocity_'
-                             'joint_controllers_PWM.yaml',
-                 host_path + 'sr_edc_joint_position_controllers_PWM.yaml',
-                 host_path + 'sr_edc_mixed_position_velocity_'
-                             'joint_controllers.yaml',
-                 host_path + 'sr_edc_joint_position_controllers.yaml']
-
-            self.motor_control[mapping[hand]] = \
-                ethercat_path + '/controls/motors/' +\
-                mapping[hand] + '/motor_board_effort_controllers.yaml'
-
-
 class HandCalibration(object):
     def __init__(self, mapping):
         """
@@ -172,7 +140,6 @@ class HandFinder(object):
                                       self._hand_parameters["joint_prefix"])
         self.hand_joints = HandJoints(self.hand_config.mapping, self.hand_config.joint_prefix).joints
         self.calibration_path = HandCalibration(self.hand_config.mapping).calibration_path
-        self.hand_control_tuning = HandControllerTuning(self.hand_config.mapping)
 
     def wait_for_hand_params(self, timeout_in_secs):
         start_time = rospy.get_time()
@@ -204,11 +171,6 @@ class HandFinder(object):
         if not self._hand_e:
             rospy.logerr("No Hand E present - can't get hand parameters")
         return self.hand_config
-
-    def get_hand_control_tuning(self):
-        if not self._hand_e:
-            rospy.logerr("No Hand E present - can't get hand control_tuning")
-        return self.hand_control_tuning
 
     def hand_e_available(self):
         return self._hand_e

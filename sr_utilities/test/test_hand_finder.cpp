@@ -69,10 +69,6 @@ TEST(SrHandFinder, hand_absent_test)
   ASSERT_EQ(hand_joints.size(), 0);
   map<string, string> calibration_path(hand_finder.get_calibration_path());
   ASSERT_EQ(calibration_path.size(), 0);
-  shadow_robot::HandControllerTuning controller_tuning(hand_finder.get_hand_controller_tuning());
-  ASSERT_EQ(controller_tuning.friction_compensation_.size(), 0);
-  ASSERT_EQ(controller_tuning.host_control_.size(), 0);
-  ASSERT_EQ(controller_tuning.motor_control_.size(), 0);
 }
 
 TEST(SrHandFinder, one_hand_no_robot_description_finder_test)
@@ -121,47 +117,6 @@ TEST(SrHandFinder, one_hand_no_robot_description_finder_test)
   const string calibration_path = hand_finder.get_calibration_path().at("right");
   ROS_DEBUG_STREAM(calibration_path.c_str());
   ASSERT_STREQ(calibration_path.c_str(), (ethercat_path + "/calibrations/right/" + "calibration.yaml").c_str());
-
-  // tuning
-  shadow_robot::HandControllerTuning controller_tuning(hand_finder.get_hand_controller_tuning());
-
-  for (map<string, string>::const_iterator iter = controller_tuning.friction_compensation_.begin();
-       iter != controller_tuning.friction_compensation_.end(); ++iter)
-  {
-    ASSERT_STREQ(iter->second.c_str(), (ethercat_path + "/controls/friction_compensation.yaml").c_str());
-    ROS_DEBUG_STREAM(iter->second);
-  }
-  for (map<string, string>::const_iterator iter = controller_tuning.motor_control_.begin();
-       iter != controller_tuning.motor_control_.end(); ++iter)
-  {
-    ASSERT_STREQ(iter->second.c_str(),
-                 (ethercat_path + "/controls/motors/right/motor_board_effort_controllers.yaml").c_str());
-    ROS_DEBUG_STREAM(iter->second);
-  }
-  for (map<string, vector<string> >::const_iterator iter = controller_tuning.host_control_.begin();
-       iter != controller_tuning.host_control_.end(); ++iter)
-  {
-    string host_array[] =
-    {
-      "sr_edc_calibration_controllers.yaml",
-      "sr_edc_joint_velocity_controllers_PWM.yaml",
-      "sr_edc_effort_controllers_PWM.yaml",
-      "sr_edc_joint_velocity_controllers.yaml",
-      "sr_edc_effort_controllers.yaml",
-      "sr_edc_mixed_position_velocity_joint_controllers_PWM.yaml",
-      "sr_edc_joint_position_controllers_PWM.yaml",
-      "sr_edc_mixed_position_velocity_joint_controllers.yaml",
-      "sr_edc_joint_position_controllers.yaml"
-    };
-    vector<string> host_controller_files(host_array, host_array + 9);
-    ASSERT_EQ(host_controller_files.size(), iter->second.size());
-    for (size_t i = 0; i != iter->second.size(); ++i)
-    {
-      ASSERT_STREQ(iter->second[i].c_str(), (ethercat_path + "/controls/host/right/" +
-                                             host_controller_files[i]).c_str());
-      ROS_DEBUG_STREAM(iter->second[i]);
-    }
-  }
 }
 
 TEST(SrHandFinder, one_hand_no_mapping_no_robot_description_finder_test)
@@ -210,46 +165,6 @@ TEST(SrHandFinder, one_hand_no_mapping_no_robot_description_finder_test)
   const string calibration_path = hand_finder.get_calibration_path().at("1");
   ROS_DEBUG_STREAM(calibration_path.c_str());
   ASSERT_STREQ(calibration_path.c_str(), (ethercat_path + "/calibrations/1/" + "calibration.yaml").c_str());
-
-  // tuning
-  shadow_robot::HandControllerTuning controller_tuning(hand_finder.get_hand_controller_tuning());
-
-  for (map<string, string>::const_iterator iter = controller_tuning.friction_compensation_.begin();
-       iter != controller_tuning.friction_compensation_.end(); ++iter)
-  {
-    ASSERT_STREQ(iter->second.c_str(), (ethercat_path + "/controls/friction_compensation.yaml").c_str());
-    ROS_DEBUG_STREAM(iter->second);
-  }
-  for (map<string, string>::const_iterator iter = controller_tuning.motor_control_.begin();
-       iter != controller_tuning.motor_control_.end(); ++iter)
-  {
-    ASSERT_STREQ(iter->second.c_str(),
-                 (ethercat_path + "/controls/motors/1/motor_board_effort_controllers.yaml").c_str());
-    ROS_DEBUG_STREAM(iter->second);
-  }
-  for (map<string, vector<string> >::const_iterator iter = controller_tuning.host_control_.begin();
-       iter != controller_tuning.host_control_.end(); ++iter)
-  {
-    string host_array[] =
-    {
-      "sr_edc_calibration_controllers.yaml",
-      "sr_edc_joint_velocity_controllers_PWM.yaml",
-      "sr_edc_effort_controllers_PWM.yaml",
-      "sr_edc_joint_velocity_controllers.yaml",
-      "sr_edc_effort_controllers.yaml",
-      "sr_edc_mixed_position_velocity_joint_controllers_PWM.yaml",
-      "sr_edc_joint_position_controllers_PWM.yaml",
-      "sr_edc_mixed_position_velocity_joint_controllers.yaml",
-      "sr_edc_joint_position_controllers.yaml"
-    };
-    vector<string> host_controller_files(host_array, host_array + 9);
-    ASSERT_EQ(host_controller_files.size(), iter->second.size());
-    for (size_t i = 0; i != iter->second.size(); ++i)
-    {
-      ASSERT_STREQ(iter->second[i].c_str(), (ethercat_path + "/controls/host/1/" + host_controller_files[i]).c_str());
-      ROS_DEBUG_STREAM(iter->second[i]);
-    }
-  }
 }
 
 TEST(SrHandFinder, one_hand_no_prefix_no_robot_description_finder_test)
@@ -298,46 +213,6 @@ TEST(SrHandFinder, one_hand_no_prefix_no_robot_description_finder_test)
   const string calibration_path = hand_finder.get_calibration_path().at("rh");
   ROS_DEBUG_STREAM(calibration_path.c_str());
   ASSERT_STREQ(calibration_path.c_str(), (ethercat_path + "/calibrations/rh/" + "calibration.yaml").c_str());
-
-  // tuning
-  shadow_robot::HandControllerTuning controller_tuning(hand_finder.get_hand_controller_tuning());
-
-  for (map<string, string>::const_iterator iter = controller_tuning.friction_compensation_.begin();
-       iter != controller_tuning.friction_compensation_.end(); ++iter)
-  {
-    ASSERT_STREQ(iter->second.c_str(), (ethercat_path + "/controls/friction_compensation.yaml").c_str());
-    ROS_DEBUG_STREAM(iter->second);
-  }
-  for (map<string, string>::const_iterator iter = controller_tuning.motor_control_.begin();
-       iter != controller_tuning.motor_control_.end(); ++iter)
-  {
-    ASSERT_STREQ(iter->second.c_str(),
-                 (ethercat_path + "/controls/motors/rh/motor_board_effort_controllers.yaml").c_str());
-    ROS_DEBUG_STREAM(iter->second);
-  }
-  for (map<string, vector<string> >::const_iterator iter = controller_tuning.host_control_.begin();
-       iter != controller_tuning.host_control_.end(); ++iter)
-  {
-    string host_array[] =
-    {
-      "sr_edc_calibration_controllers.yaml",
-      "sr_edc_joint_velocity_controllers_PWM.yaml",
-      "sr_edc_effort_controllers_PWM.yaml",
-      "sr_edc_joint_velocity_controllers.yaml",
-      "sr_edc_effort_controllers.yaml",
-      "sr_edc_mixed_position_velocity_joint_controllers_PWM.yaml",
-      "sr_edc_joint_position_controllers_PWM.yaml",
-      "sr_edc_mixed_position_velocity_joint_controllers.yaml",
-      "sr_edc_joint_position_controllers.yaml"
-    };
-    vector<string> host_controller_files(host_array, host_array + 9);
-    ASSERT_EQ(host_controller_files.size(), iter->second.size());
-    for (size_t i = 0; i != iter->second.size(); ++i)
-    {
-      ASSERT_STREQ(iter->second[i].c_str(), (ethercat_path + "/controls/host/rh/" + host_controller_files[i]).c_str());
-      ROS_DEBUG_STREAM(iter->second[i]);
-    }
-  }
 }
 
 TEST(SrHandFinder, one_hand_no_mapping_no_prefix_no_robot_description_finder_test)
@@ -386,46 +261,6 @@ TEST(SrHandFinder, one_hand_no_mapping_no_prefix_no_robot_description_finder_tes
   const string calibration_path = hand_finder.get_calibration_path().at("1");
   ROS_DEBUG_STREAM(calibration_path.c_str());
   ASSERT_STREQ(calibration_path.c_str(), (ethercat_path + "/calibrations/1/" + "calibration.yaml").c_str());
-
-  // tuning
-  shadow_robot::HandControllerTuning controller_tuning(hand_finder.get_hand_controller_tuning());
-
-  for (map<string, string>::const_iterator iter = controller_tuning.friction_compensation_.begin();
-       iter != controller_tuning.friction_compensation_.end(); ++iter)
-  {
-    ASSERT_STREQ(iter->second.c_str(), (ethercat_path + "/controls/friction_compensation.yaml").c_str());
-    ROS_DEBUG_STREAM(iter->second);
-  }
-  for (map<string, string>::const_iterator iter = controller_tuning.motor_control_.begin();
-       iter != controller_tuning.motor_control_.end(); ++iter)
-  {
-    ASSERT_STREQ(iter->second.c_str(),
-                 (ethercat_path + "/controls/motors/1/motor_board_effort_controllers.yaml").c_str());
-    ROS_DEBUG_STREAM(iter->second);
-  }
-  for (map<string, vector<string> >::const_iterator iter = controller_tuning.host_control_.begin();
-       iter != controller_tuning.host_control_.end(); ++iter)
-  {
-    string host_array[] =
-    {
-      "sr_edc_calibration_controllers.yaml",
-      "sr_edc_joint_velocity_controllers_PWM.yaml",
-      "sr_edc_effort_controllers_PWM.yaml",
-      "sr_edc_joint_velocity_controllers.yaml",
-      "sr_edc_effort_controllers.yaml",
-      "sr_edc_mixed_position_velocity_joint_controllers_PWM.yaml",
-      "sr_edc_joint_position_controllers_PWM.yaml",
-      "sr_edc_mixed_position_velocity_joint_controllers.yaml",
-      "sr_edc_joint_position_controllers.yaml"
-    };
-    vector<string> host_controller_files(host_array, host_array + 9);
-    ASSERT_EQ(host_controller_files.size(), iter->second.size());
-    for (size_t i = 0; i != iter->second.size(); ++i)
-    {
-      ASSERT_STREQ(iter->second[i].c_str(), (ethercat_path + "/controls/host/1/" + host_controller_files[i]).c_str());
-      ROS_DEBUG_STREAM(iter->second[i]);
-    }
-  }
 }
 
 TEST(SrHandFinder, one_hand_robot_description_exists_finger_test)
@@ -474,47 +309,6 @@ TEST(SrHandFinder, one_hand_robot_description_exists_finger_test)
   const string calibration_path = hand_finder.get_calibration_path().at("right");
   ROS_DEBUG_STREAM(calibration_path.c_str());
   ASSERT_STREQ(calibration_path.c_str(), (ethercat_path + "/calibrations/right/" + "calibration.yaml").c_str());
-
-  // tuning
-  shadow_robot::HandControllerTuning controller_tuning(hand_finder.get_hand_controller_tuning());
-
-  for (map<string, string>::const_iterator iter = controller_tuning.friction_compensation_.begin();
-       iter != controller_tuning.friction_compensation_.end(); ++iter)
-  {
-    ASSERT_STREQ(iter->second.c_str(), (ethercat_path + "/controls/friction_compensation.yaml").c_str());
-    ROS_DEBUG_STREAM(iter->second);
-  }
-  for (map<string, string>::const_iterator iter = controller_tuning.motor_control_.begin();
-       iter != controller_tuning.motor_control_.end(); ++iter)
-  {
-    ASSERT_STREQ(iter->second.c_str(),
-                 (ethercat_path + "/controls/motors/right/motor_board_effort_controllers.yaml").c_str());
-    ROS_DEBUG_STREAM(iter->second);
-  }
-  for (map<string, vector<string> >::const_iterator iter = controller_tuning.host_control_.begin();
-       iter != controller_tuning.host_control_.end(); ++iter)
-  {
-    string host_array[] =
-    {
-      "sr_edc_calibration_controllers.yaml",
-      "sr_edc_joint_velocity_controllers_PWM.yaml",
-      "sr_edc_effort_controllers_PWM.yaml",
-      "sr_edc_joint_velocity_controllers.yaml",
-      "sr_edc_effort_controllers.yaml",
-      "sr_edc_mixed_position_velocity_joint_controllers_PWM.yaml",
-      "sr_edc_joint_position_controllers_PWM.yaml",
-      "sr_edc_mixed_position_velocity_joint_controllers.yaml",
-      "sr_edc_joint_position_controllers.yaml"
-    };
-    vector<string> host_controller_files(host_array, host_array + 9);
-    ASSERT_EQ(host_controller_files.size(), iter->second.size());
-    for (size_t i = 0; i != iter->second.size(); ++i)
-    {
-      ASSERT_STREQ(iter->second[i].c_str(), (ethercat_path + "/controls/host/right/"
-                                             + host_controller_files[i]).c_str());
-      ROS_DEBUG_STREAM(iter->second[i]);
-    }
-  }
 }
 
 TEST(SrHandFinder, two_hand_robot_description_exists_finder_test)
@@ -579,51 +373,6 @@ TEST(SrHandFinder, two_hand_robot_description_exists_finder_test)
     ROS_DEBUG_STREAM(iter->first << ":" << iter->second);
     ASSERT_STREQ(iter->second.c_str(), (ethercat_path + "/calibrations/"
                                         + dir[idx] + "/" + "calibration.yaml").c_str());
-    idx++;
-  }
-  shadow_robot::HandControllerTuning controller_tuning(hand_finder.get_hand_controller_tuning());
-
-  for (map<string, string>::const_iterator iter = controller_tuning.friction_compensation_.begin();
-       iter != controller_tuning.friction_compensation_.end(); ++iter)
-  {
-    ASSERT_STREQ(iter->second.c_str(), (ethercat_path + "/controls/friction_compensation.yaml").c_str());
-    ROS_DEBUG_STREAM(iter->second);
-  }
-
-  idx = 0;
-  for (map<string, string>::const_iterator iter = controller_tuning.motor_control_.begin();
-       iter != controller_tuning.motor_control_.end(); ++iter)
-  {
-    ASSERT_STREQ(iter->second.c_str(),
-                 (ethercat_path + "/controls/motors/" + dir[idx] + "/motor_board_effort_controllers.yaml").c_str());
-    ROS_DEBUG_STREAM(iter->second);
-    idx++;
-  }
-
-  idx = 0;
-  for (map<string, vector<string> >::const_iterator iter = controller_tuning.host_control_.begin();
-       iter != controller_tuning.host_control_.end(); ++iter)
-  {
-    string host_array[] =
-    {
-      "sr_edc_calibration_controllers.yaml",
-      "sr_edc_joint_velocity_controllers_PWM.yaml",
-      "sr_edc_effort_controllers_PWM.yaml",
-      "sr_edc_joint_velocity_controllers.yaml",
-      "sr_edc_effort_controllers.yaml",
-      "sr_edc_mixed_position_velocity_joint_controllers_PWM.yaml",
-      "sr_edc_joint_position_controllers_PWM.yaml",
-      "sr_edc_mixed_position_velocity_joint_controllers.yaml",
-      "sr_edc_joint_position_controllers.yaml"
-    };
-    vector<string> host_controller_files(host_array, host_array + 9);
-    ASSERT_EQ(host_controller_files.size(), iter->second.size());
-    for (size_t i = 0; i != iter->second.size(); ++i)
-    {
-      ASSERT_STREQ(iter->second[i].c_str(), (ethercat_path + "/controls/host/"
-                                             + dir[idx] + "/" + host_controller_files[i]).c_str());
-      ROS_DEBUG_STREAM(iter->second[i]);
-    }
     idx++;
   }
 }
