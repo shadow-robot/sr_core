@@ -67,8 +67,6 @@ TEST(SrHandFinder, hand_absent_test)
   shadow_robot::SrHandFinder hand_finder;
   map<string, vector<string> > hand_joints(hand_finder.get_joints());
   ASSERT_EQ(hand_joints.size(), 0);
-  map<string, string> calibration_path(hand_finder.get_calibration_path());
-  ASSERT_EQ(calibration_path.size(), 0);
 }
 
 TEST(SrHandFinder, one_hand_no_robot_description_finder_test)
@@ -111,12 +109,6 @@ TEST(SrHandFinder, one_hand_no_robot_description_finder_test)
     ROS_DEBUG_STREAM(rh_joints[i]);
     ASSERT_STREQ(rh_joints[i].c_str(), ("rh_" + joint_names[i]).c_str());
   }
-
-  // calibration
-  ASSERT_GT(hand_finder.get_calibration_path().size(), 0);
-  const string calibration_path = hand_finder.get_calibration_path().at("right");
-  ROS_DEBUG_STREAM(calibration_path.c_str());
-  ASSERT_STREQ(calibration_path.c_str(), (ethercat_path + "/calibrations/right/" + "calibration.yaml").c_str());
 }
 
 TEST(SrHandFinder, one_hand_no_mapping_no_robot_description_finder_test)
@@ -159,12 +151,6 @@ TEST(SrHandFinder, one_hand_no_mapping_no_robot_description_finder_test)
     ROS_DEBUG_STREAM(rh_joints[i]);
     ASSERT_STREQ(rh_joints[i].c_str(), ("rh_" + joint_names[i]).c_str());
   }
-
-  // calibration
-  ASSERT_GT(hand_finder.get_calibration_path().size(), 0);
-  const string calibration_path = hand_finder.get_calibration_path().at("1");
-  ROS_DEBUG_STREAM(calibration_path.c_str());
-  ASSERT_STREQ(calibration_path.c_str(), (ethercat_path + "/calibrations/1/" + "calibration.yaml").c_str());
 }
 
 TEST(SrHandFinder, one_hand_no_prefix_no_robot_description_finder_test)
@@ -207,12 +193,6 @@ TEST(SrHandFinder, one_hand_no_prefix_no_robot_description_finder_test)
     ROS_DEBUG_STREAM(rh_joints[i]);
     ASSERT_STREQ(rh_joints[i].c_str(), (joint_names[i]).c_str());
   }
-
-  // calibration
-  ASSERT_GT(hand_finder.get_calibration_path().size(), 0);
-  const string calibration_path = hand_finder.get_calibration_path().at("rh");
-  ROS_DEBUG_STREAM(calibration_path.c_str());
-  ASSERT_STREQ(calibration_path.c_str(), (ethercat_path + "/calibrations/rh/" + "calibration.yaml").c_str());
 }
 
 TEST(SrHandFinder, one_hand_no_mapping_no_prefix_no_robot_description_finder_test)
@@ -255,12 +235,6 @@ TEST(SrHandFinder, one_hand_no_mapping_no_prefix_no_robot_description_finder_tes
     ROS_DEBUG_STREAM(rh_joints[i]);
     ASSERT_STREQ(rh_joints[i].c_str(), (joint_names[i]).c_str());
   }
-
-  // calibration
-  ASSERT_GT(hand_finder.get_calibration_path().size(), 0);
-  const string calibration_path = hand_finder.get_calibration_path().at("1");
-  ROS_DEBUG_STREAM(calibration_path.c_str());
-  ASSERT_STREQ(calibration_path.c_str(), (ethercat_path + "/calibrations/1/" + "calibration.yaml").c_str());
 }
 
 TEST(SrHandFinder, one_hand_robot_description_exists_finger_test)
@@ -303,12 +277,6 @@ TEST(SrHandFinder, one_hand_robot_description_exists_finger_test)
   ASSERT_EQ(rh_joints.size(), 1);  // only RFJ4 is there
   ASSERT_EQ(std::find(rh_joints.begin(), rh_joints.end(), "rh_FFJ3"), rh_joints.end());
   ASSERT_NE(std::find(rh_joints.begin(), rh_joints.end(), "rh_RFJ4"), rh_joints.end());
-
-  // calibration
-  ASSERT_GT(hand_finder.get_calibration_path().size(), 0);
-  const string calibration_path = hand_finder.get_calibration_path().at("right");
-  ROS_DEBUG_STREAM(calibration_path.c_str());
-  ASSERT_STREQ(calibration_path.c_str(), (ethercat_path + "/calibrations/right/" + "calibration.yaml").c_str());
 }
 
 TEST(SrHandFinder, two_hand_robot_description_exists_finder_test)
@@ -347,7 +315,6 @@ TEST(SrHandFinder, two_hand_robot_description_exists_finder_test)
   ASSERT_EQ(hand_finder.get_hand_parameters().mapping_.size(), 2);
   ASSERT_EQ(hand_finder.get_hand_parameters().joint_prefix_.size(), 2);
   ASSERT_EQ(hand_finder.get_joints().size(), 2);
-  ASSERT_GT(hand_finder.get_calibration_path().size(), 0);
 
   ASSERT_MAP_HAS_VALUE(hand_finder.get_hand_parameters().mapping_, "right");
   ASSERT_MAP_HAS_VALUE(hand_finder.get_hand_parameters().mapping_, "left");
@@ -364,17 +331,6 @@ TEST(SrHandFinder, two_hand_robot_description_exists_finder_test)
   const vector<string> lh_joints = hand_finder.get_joints().at("left");
   ASSERT_EQ(std::find(lh_joints.begin(), lh_joints.end(), "lh_FFJ1"), lh_joints.end());
   ASSERT_NE(std::find(lh_joints.begin(), lh_joints.end(), "lh_LFJ4"), lh_joints.end());
-
-  string ethercat_path = ros::package::getPath("sr_ethercat_hand_config");
-  map<string, string> calibration_path(hand_finder.get_calibration_path());
-  idx = 0;
-  for (map<string, string>::const_iterator iter = calibration_path.begin(); iter != calibration_path.end(); ++iter)
-  {
-    ROS_DEBUG_STREAM(iter->first << ":" << iter->second);
-    ASSERT_STREQ(iter->second.c_str(), (ethercat_path + "/calibrations/"
-                                        + dir[idx] + "/" + "calibration.yaml").c_str());
-    idx++;
-  }
 }
 
 

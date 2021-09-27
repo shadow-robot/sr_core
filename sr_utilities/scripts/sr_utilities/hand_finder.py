@@ -20,20 +20,6 @@ import rospkg
 from urdf_parser_py.urdf import URDF
 
 
-class HandCalibration(object):
-    def __init__(self, mapping):
-        """
-
-        """
-        ros_pack = rospkg.RosPack()
-        ethercat_path = ros_pack.get_path('sr_ethercat_hand_config')
-        self.calibration_path = {}
-        for hand in mapping:
-            self.calibration_path[mapping[hand]] = \
-                ethercat_path + '/calibrations/' + mapping[hand] + '/' \
-                + "calibration.yaml"
-
-
 class HandConfig(object):
 
     def __init__(self, mapping, joint_prefix):
@@ -139,7 +125,6 @@ class HandFinder(object):
         self.hand_config = HandConfig(self._hand_parameters["mapping"],
                                       self._hand_parameters["joint_prefix"])
         self.hand_joints = HandJoints(self.hand_config.mapping, self.hand_config.joint_prefix).joints
-        self.calibration_path = HandCalibration(self.hand_config.mapping).calibration_path
 
     def wait_for_hand_params(self, timeout_in_secs):
         start_time = rospy.get_time()
@@ -155,11 +140,6 @@ class HandFinder(object):
             rospy.loginfo("Found hand H")
             self._hand_h = True
             self._hand_h_parameters = rospy.get_param("/fh_hand")
-
-    def get_calibration_path(self):
-        if not self._hand_e:
-            rospy.logerr("No Hand E present - can't get calibration path")
-        return self.calibration_path
 
     def get_hand_joints(self):
         # TODO(@anyone): update HandJoints to work with Hand H. Didn't seem necessary yet, so left for now - dg

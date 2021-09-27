@@ -77,7 +77,6 @@ SrHandFinder::SrHandFinder()
     }
 
     generate_joints_with_prefix();
-    generate_calibration_path();
   }
   else
   {
@@ -150,25 +149,8 @@ void SrHandFinder::generate_joints_with_prefix()
   }
 }
 
-void SrHandFinder::generate_calibration_path()
-{
-  std::string ethercat_path = ros::package::getPath("sr_ethercat_hand_config");
-  for (std::map<std::string, std::string>::const_iterator mapping_iter = hand_config_.mapping_.begin();
-       mapping_iter != hand_config_.mapping_.end(); ++mapping_iter)
-  {
-    calibration_path_[mapping_iter->second] = ethercat_path + "/calibrations/"
-                                              + mapping_iter->second + "/" + "calibration.yaml";
-  }
-}
-
 std::map<std::string, std::vector<std::string> > SrHandFinder::get_joints()
 {
   return joints_;
 }
-
-std::map<std::string, std::string> SrHandFinder::get_calibration_path()
-{
-  return calibration_path_;
-}
-
 } /* namespace shadow_robot */

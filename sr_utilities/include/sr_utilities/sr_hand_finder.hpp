@@ -45,8 +45,6 @@ public:
 
   HandConfig get_hand_parameters();
 
-  std::map<std::string, std::string> get_calibration_path();
-
   SrHandFinder();
 
   virtual ~SrHandFinder()
@@ -61,8 +59,6 @@ private:
   std::map<std::string, std::string> calibration_path_;
 
   void generate_joints_with_prefix();
-
-  void generate_calibration_path();
 
   void generate_hand_controller_tuning_path();
 };
