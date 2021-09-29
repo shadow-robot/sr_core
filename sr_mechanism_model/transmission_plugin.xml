@@ -1,4 +1,4 @@
-<library path="lib/libsr_mechanism_model">
+<library path="libsr_mechanism_model">
     <class name="sr_mechanism_model/J0Transmission" type="sr_mechanism_model::J0Transmission"
            base_class_type="ros_ethercat_model::Transmission">
         <description>
