@@ -56,6 +56,8 @@ namespace controller
     this->j0_lorg_num = config.j0_lorg_num;
     this->j3_smol_num = config.j3_smol_num;
     this->j3_lorg_num = config.j3_lorg_num;
+    this->j4_smol_num = config.j4_smol_num;
+    this->j4_lorg_num = config.j4_lorg_num;
     this->bypass = config.bypass;
     this->correct = config.correct;
   }
@@ -102,10 +104,6 @@ namespace controller
                                               (node_));
     function_cb_ = boost::bind(&SrhJointPositionController::dynamic_reconfigure_cb, this, _1, _2);
     dynamic_reconfigure_server_->setCallback(function_cb_);
-
-   // double tau = 0.05;
-
-   // pos_filter = sr_math_utils::filters::LowPassFilter(tau);
 
     // joint 0s e.g. FFJ0
     has_j2 = is_joint_0();
@@ -325,6 +323,11 @@ namespace controller
       resetJointState();
       initialized_ = true;
     }
+
+//    if (loop_count_ % 8 == 0)
+ //   {
+
+
     if (has_j2)
     {
       command_ = joint_state_->commanded_position_ + joint_state_2->commanded_position_;
@@ -348,7 +351,15 @@ namespace controller
       error_position = joint_state_->position_ - command_;
     }
 
-    bool in_deadband = hysteresis_deadband.is_in_deadband(command_, error_position, position_deadband);
+/*    bool in_deadband = hysteresis_deadband.is_in_deadband(command_, error_position, position_deadband);
+  bool is_in_deadband(T demand, T error, T deadband,
+                      double deadband_multiplicator = 5.0,
+                      unsigned int nb_errors_for_avg = 50)*/
+    //bool in_deadband = hysteresis_deadband.is_in_deadband(command_, error_position, position_deadband, 5.0, 1);
+    //bool in_deadband = hysteresis_deadband.is_in_deadband(command_, error_position, position_deadband);
+
+    bool in_deadband = false; //hysteresis_deadband.is_in_deadband(command_, error_position, position_deadband);
+
 
     // don't compute the error if we're in the deadband.
     if (in_deadband)
@@ -356,13 +367,19 @@ namespace controller
       error_position = 0.0;
     }
 
-/*
-    double timestamp = period.toSec();
-    std::pair<double, double> pos_and_velocity = pos_filter.compute(error_position, timestamp);
 
-    double error_dot = std::get<1>(pos_and_velocity);
+/*    if (loop_count_ % 8 == 0)
+    {
+      ros::Duration larg_p(period.toSec() * 8.0);
+      commanded_effort = pid_controller_position_->computeCommand(-error_position, larg_p);
+      last_commanded_effort = commanded_effort;
+
+    } else {
+      commanded_effort = last_commanded_effort;
+
+    }
 */
-    commanded_effort = pid_controller_position_->computeCommand(-error_position, period);
+      commanded_effort = pid_controller_position_->computeCommand(-error_position, period);
 
     // clamp the result to max force
     commanded_effort = min(commanded_effort, (max_force_demand * max_force_factor_));
@@ -435,6 +452,19 @@ if (this->correct == true)
         std::cout << joint_state_->joint_->name << " == " << joint << ", DOESN'T END WITH 3\n";
   }
 
+  if (boost::algorithm::iends_with(joint, "4"))
+  {
+    if (boost::algorithm::istarts_with(joint, "rh_ff") || boost::algorithm::istarts_with(joint, "rh_mf") || boost::algorithm::istarts_with(joint, "rh_rf"))
+    {
+
+      if (commanded_effort > 0)
+        commanded_effort = SrhJointPositionController::interpolate(commanded_effort, 0, this->j4_smol_num, 0, this->j4_lorg_num);
+
+      if (commanded_effort < 0)
+        commanded_effort = (-1.0)*SrhJointPositionController::interpolate((commanded_effort*-1.0), 0, this->j4_smol_num, 0, this->j4_lorg_num);
+    }
+  }
+
 }
 
     joint_state_->commanded_effort_ = commanded_effort;
@@ -472,7 +502,7 @@ if (this->correct == true)
                  dummy);
         controller_state_publisher_->unlockAndPublish();
       }
-    //}
+   // }
     loop_count_++;
   }
 

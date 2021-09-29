@@ -91,6 +91,8 @@ private:
 
   bool correct;
 
+  double last_commanded_effort;
+
   int j0_smol_num;
 
   int j0_lorg_num;
@@ -99,7 +101,11 @@ private:
 
   int j3_lorg_num;
 
-  sr_math_utils::filters::LowPassFilter pos_filter;
+  int j4_smol_num;
+
+  int j4_lorg_num;
+
+
 };
 }  // namespace controller
 
