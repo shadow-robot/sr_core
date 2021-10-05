@@ -16,6 +16,7 @@
     <buildtool_depend>catkin</buildtool_depend>
 
     <!-- Dependencies needed to compile this package. -->
+    <build_depend>eigen</build_depend>
     <build_depend>rostest</build_depend>
     <build_depend>sensor_msgs</build_depend>
     <build_depend>sr_robot_msgs</build_depend>

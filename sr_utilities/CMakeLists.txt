@@ -10,7 +10,7 @@ find_package(Eigen3 REQUIRED)
 
 catkin_python_setup()
 
-include_directories(include ${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS} ${Eigen_INCLUDE_DIRS})
+include_directories(include ${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIRS})
 
 add_service_files(FILES getJointState.srv)
 generate_messages(DEPENDENCIES std_msgs sensor_msgs)
@@ -25,7 +25,7 @@ catkin_package(
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
-  ${Eigen_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIRS}
 )
 
 add_library(sr_calibration src/calibration.cpp)
