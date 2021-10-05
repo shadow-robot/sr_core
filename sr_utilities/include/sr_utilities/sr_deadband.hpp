@@ -85,6 +85,9 @@ public:
                       double deadband_multiplicator = 5.0,
                       unsigned int nb_errors_for_avg = 50)
   {
+    if (deadband <= T(0))
+      return false;  // early return
+
     bool is_in_deadband = false;
 
     last_errors.push_back(error);
