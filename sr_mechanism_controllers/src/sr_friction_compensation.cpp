@@ -56,6 +56,9 @@ namespace sr_friction_compensation
 
   double SrFrictionCompensator::friction_compensation(double position, double velocity, int force_demand, int deadband)
   {
+    if (deadband <= 0)
+      return 0.0;
+
     double compensation = 0.0;
 
     if (force_demand > 0.0)
@@ -226,5 +229,3 @@ namespace sr_friction_compensation
    c-basic-offset: 2
    End:
  */
-
-
