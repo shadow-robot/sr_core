@@ -19,6 +19,7 @@ catkin_package(
 ###################
 #  CONFIGURATION  #
 ###################
+#catkin_lint: ignore env_var
 
 # Real Hand
 set(real_hand $ENV{REAL_HAND})
@@ -90,6 +91,7 @@ target_link_libraries(SrVirtual ${Boost_LIBRARIES} ${catkin_LIBRARIES})
 #    REAL HAND   #
 ##################
 if (real_hand)
+    #catkin_lint: ignore_once external_directory missing_directory
     include_directories(/usr/realtime/include/)
     add_library(robot STATIC IMPORTED)
     add_dependencies(robot ${catkin_EXPORTED_TARGETS})
@@ -123,6 +125,7 @@ endif (can_compat)
 #    REAL ARM    #
 ##################
 if (real_arm)
+    #catkin_lint: ignore_once external_directory missing_directory
     include_directories(/usr/realtime/include/)
     add_executable(shadowarm_real src/hand/sr_articulated_robot.cpp src/hand/real_arm.cpp src/sr_publisher.cpp src/sr_subscriber.cpp
             src/hand/real_arm_node.cpp src/sr_diagnosticer.cpp)
@@ -134,6 +137,7 @@ endif (real_arm)
 #     VALVES     #
 ##################
 if (valves)
+    #catkin_lint: ignore_once external_directory missing_directory
     include_directories(/usr/realtime/include/)
     add_executable(sr_valves src/hand/valves.cpp src/hand/valves_node.cpp)
     add_dependencies(sr_valves ${catkin_EXPORTED_TARGETS})
@@ -147,14 +151,13 @@ add_definitions(-fPIC)
 add_library(HandCommander src/hand_commander.cpp)
 add_dependencies(HandCommander ${catkin_EXPORTED_TARGETS})
 target_link_libraries(HandCommander ${Boost_LIBRARIES} ${catkin_LIBRARIES})
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+add_compile_options("-pthread")
 
-
-if (COMMAND add_rostest_gtest)
+if(CATKIN_ENABLE_TESTING)
     add_rostest_gtest(hand_commander_test test/hand_commander_test.test test/hand_commander_test.cpp)
     add_dependencies(hand_commander_test ${catkin_EXPORTED_TARGETS})
     target_link_libraries(hand_commander_test HandCommander ${GTEST_LIBRARIES} ${catkin_LIBRARIES})
-endif (COMMAND add_rostest_gtest)
+endif()
 
 if (valves)
     install(TARGETS shadowhand_virtual shadowarm_virtual SrVirtual shadowhand_ethercat HandCommander sr_valves
