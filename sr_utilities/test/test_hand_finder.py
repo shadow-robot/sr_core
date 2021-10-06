@@ -26,9 +26,6 @@ joint_names = ["FFJ1", "FFJ2", "FFJ3", "FFJ4", "MFJ1", "MFJ2", "MFJ3", "MFJ4",
 
 
 class TestHandFinder(unittest.TestCase):
-    rospack = rospkg.RosPack()
-    ethercat_path = rospack.get_path('sr_ethercat_hand_config')
-
     def test_no_hand_no_robot_description_finder(self):
         if rospy.has_param("hand"):
             rospy.delete_param("hand")

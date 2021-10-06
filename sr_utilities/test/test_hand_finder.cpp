@@ -84,7 +84,6 @@ TEST(SrHandFinder, one_hand_no_robot_description_finder_test)
   ros::param::set("hand/mapping/1", "right");
   ros::param::set("hand/joint_prefix/1", "rh_");
 
-  string ethercat_path = ros::package::getPath("sr_ethercat_hand_config");
   const string joint_names[] =
   {
     "FFJ1", "FFJ2", "FFJ3", "FFJ4", "MFJ1", "MFJ2", "MFJ3", "MFJ4",
@@ -126,7 +125,6 @@ TEST(SrHandFinder, one_hand_no_mapping_no_robot_description_finder_test)
   ros::param::set("hand/mapping/1", "");
   ros::param::set("hand/joint_prefix/1", "rh_");
 
-  string ethercat_path = ros::package::getPath("sr_ethercat_hand_config");
   const string joint_names[] =
   {
     "FFJ1", "FFJ2", "FFJ3", "FFJ4", "MFJ1", "MFJ2", "MFJ3", "MFJ4",
@@ -168,7 +166,6 @@ TEST(SrHandFinder, one_hand_no_prefix_no_robot_description_finder_test)
   ros::param::set("hand/mapping/1", "rh");
   ros::param::set("hand/joint_prefix/1", "");
 
-  string ethercat_path = ros::package::getPath("sr_ethercat_hand_config");
   const string joint_names[] =
   {
     "FFJ1", "FFJ2", "FFJ3", "FFJ4", "MFJ1", "MFJ2", "MFJ3", "MFJ4",
@@ -210,7 +207,6 @@ TEST(SrHandFinder, one_hand_no_mapping_no_prefix_no_robot_description_finder_tes
   ros::param::set("hand/mapping/1", "");
   ros::param::set("hand/joint_prefix/1", "");
 
-  string ethercat_path = ros::package::getPath("sr_ethercat_hand_config");
   const string joint_names[] =
   {
     "FFJ1", "FFJ2", "FFJ3", "FFJ4", "MFJ1", "MFJ2", "MFJ3", "MFJ4",
@@ -255,7 +251,7 @@ TEST(SrHandFinder, one_hand_robot_description_exists_finger_test)
 
   ros::param::set("hand/mapping/1", "right");
   ros::param::set("hand/joint_prefix/1", "rh_");
-  string ethercat_path = ros::package::getPath("sr_ethercat_hand_config");
+
   const string joint_names[] =
   {
     "FFJ1", "FFJ2", "FFJ3", "FFJ4", "MFJ1", "MFJ2", "MFJ3", "MFJ4",
