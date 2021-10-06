@@ -60,7 +60,6 @@ private:
 
   void generate_joints_with_prefix();
 
-  void generate_hand_controller_tuning_path();
 };
 
 } /* namespace shadow_robot */
