@@ -59,7 +59,6 @@ private:
   std::map<std::string, std::string> calibration_path_;
 
   void generate_joints_with_prefix();
-
 };
 
 } /* namespace shadow_robot */
