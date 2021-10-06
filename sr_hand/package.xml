@@ -47,6 +47,7 @@
     <run_depend>std_srvs</run_depend>
     <run_depend>sensor_msgs</run_depend>
     <run_depend>sr_robot_msgs</run_depend>
+    <run_depend>sr_description</run_depend>
     <run_depend>sr_description_common</run_depend>
     <run_depend>control_msgs</run_depend>
     <run_depend>controller_manager</run_depend>
