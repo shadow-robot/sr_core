@@ -35,7 +35,6 @@
     <build_depend>self_test</build_depend>
     <build_depend>urdf</build_depend>
     <build_depend>gazebo_msgs</build_depend>
-    <build_depend>gazebo</build_depend>
 
     <!-- Dependencies needed to test this package. -->
     <test_depend>rostest</test_depend>

@@ -3,13 +3,11 @@ project(sr_hand)
 
 find_package(catkin REQUIRED COMPONENTS rostest roslib roscpp rospy std_msgs std_srvs sensor_msgs sr_robot_msgs control_msgs controller_manager_msgs
         sr_utilities diagnostic_msgs dynamic_reconfigure self_test urdf gazebo_msgs)
-find_package(gazebo REQUIRED)
-include_directories(include ${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS} ${GAZEBO_INCLUDE_DIRS} ${SDFormat_INCLUDE_DIRS})
+include_directories(include ${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS} ${SDFormat_INCLUDE_DIRS})
 
 catkin_python_setup()
 
 catkin_package(
-        DEPENDS gazebo
         CATKIN_DEPENDS roslib roscpp rospy std_msgs std_srvs sensor_msgs sr_robot_msgs control_msgs controller_manager_msgs sr_utilities
         diagnostic_msgs dynamic_reconfigure self_test urdf gazebo_msgs ros_ethercat_model position_controllers
         INCLUDE_DIRS include
