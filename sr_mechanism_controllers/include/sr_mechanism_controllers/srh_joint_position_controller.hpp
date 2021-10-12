@@ -29,7 +29,7 @@
 #define _SRH_JOINT_POSITION_CONTROLLER_HPP_
 
 #include <sr_mechanism_controllers/sr_controller.hpp>
-
+#include <sr_mechanism_controllers/TendonsConfig.h>
 
 namespace controller
 {
@@ -40,6 +40,18 @@ public:
   SrhJointPositionController();
 
   bool init(ros_ethercat_model::RobotStateInterface *robot, ros::NodeHandle &n);
+
+  void dynamic_reconfigure_cb(sr_mechanism_controllers::TendonsConfig &config, uint32_t level);
+
+  void setDefaults(void);
+
+  double map(double x, double in_min, double in_max, double out_min, double out_max);
+
+  double interpolate(double input, double input_start, double input_end, double output_start, double output_end);
+
+  double round(double d);
+
+  double corrects(double in_x);
 
   virtual void starting(const ros::Time &time);
 
@@ -58,6 +70,9 @@ private:
   /// Internal PID controller for the position loop.
   boost::scoped_ptr<control_toolbox::Pid> pid_controller_position_;
 
+  boost::scoped_ptr<dynamic_reconfigure::Server<sr_mechanism_controllers::TendonsConfig> > dynamic_reconfigure_server_;
+  dynamic_reconfigure::Server<sr_mechanism_controllers::TendonsConfig>::CallbackType function_cb_;
+
   /// the position deadband value used in the hysteresis_deadband
   double position_deadband;
 
@@ -71,6 +86,26 @@ private:
   void setCommandCB(const std_msgs::Float64ConstPtr &msg);
 
   void resetJointState();
+
+  bool bypass;
+
+  bool correct;
+
+  double last_commanded_effort;
+
+  int j0_smol_num;
+
+  int j0_lorg_num;
+
+  int j3_smol_num;
+
+  int j3_lorg_num;
+
+  int j4_smol_num;
+
+  int j4_lorg_num;
+
+
 };
 }  // namespace controller
 

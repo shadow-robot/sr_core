@@ -156,6 +156,22 @@ namespace controller
   {
   }
 
+
+  double SrhEffortJointController::round(double d)
+  {
+    return floor(d + 0.5);
+  }
+
+  double SrhEffortJointController::interpolate(double input, double input_start, double input_end, double output_start, double output_end)
+  {
+    if (input > input_end){
+        double output_offset = output_end - input_end;
+        return input + output_offset;
+    }
+    double slope = 1.0 * (output_end - output_start) / (input_end - input_start);
+    return output_start + SrhEffortJointController::round(slope * (input - input_start));
+  }
+
   void SrhEffortJointController::update(const ros::Time &time, const ros::Duration &period)
   {
     ROS_ASSERT(robot_);
@@ -190,7 +206,17 @@ namespace controller
                                                                       friction_deadband);
     }
 
+/*
+    if (commanded_effort > 0)
+      commanded_effort = SrhEffortJointController::interpolate(commanded_effort, 0, 20, 0, 80);
+
+    if (commanded_effort < 0)
+      commanded_effort = (-1.0)*SrhEffortJointController::interpolate((commanded_effort*-1.0), 0, 20, 0, 80);
+*/
     joint_state_->commanded_effort_ = commanded_effort;
+
+
+//  double SrhEffortJointController::interpolate(double input, double input_start, double input_end, double output_start, double output_end)
 
     if (loop_count_ % 10 == 0)
     {

@@ -1,15 +1,22 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(sr_mechanism_controllers)
 add_compile_options(-std=c++17)
-find_package(catkin REQUIRED COMPONENTS rostest std_msgs std_srvs roscpp actionlib controller_manager_msgs sr_robot_msgs
+find_package(catkin REQUIRED COMPONENTS rostest std_msgs std_srvs dynamic_reconfigure roscpp actionlib controller_manager_msgs sr_robot_msgs
         sr_utilities controller_interface ros_ethercat_model realtime_tools velocity_controllers
         pluginlib rosconsole angles control_toolbox sr_hardware_interface xmlrpcpp cmake_modules)
 find_package(TinyXML2 REQUIRED)
 include_directories(include ${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS} ${TinyXML2_INCLUDE_DIRS})
 
+#add dynamic reconfigure api
+#find_package(catkin REQUIRED dynamic_reconfigure)
+generate_dynamic_reconfigure_options(
+  cfg/Tendons.cfg
+  #...
+)
+
 catkin_package(
         DEPENDS xmlrpcpp
-        CATKIN_DEPENDS std_msgs std_srvs roscpp actionlib controller_manager_msgs sr_robot_msgs sr_utilities controller_interface ros_ethercat_model
+        CATKIN_DEPENDS std_msgs std_srvs roscpp actionlib dynamic_reconfigure controller_manager_msgs sr_robot_msgs sr_utilities controller_interface ros_ethercat_model
         realtime_tools velocity_controllers pluginlib rosconsole angles control_toolbox sr_hardware_interface
         INCLUDE_DIRS include
         LIBRARIES sr_mechanism_controllers
@@ -26,6 +33,7 @@ if (DEFINED debug)
 else(DEFINED debug)
     message(STATUS " [ ] Debug publisher")
 endif (DEFINED debug)
+
 
 add_executable(joint_trajectory_action_controller src/joint_trajectory_action_controller.cpp)
 add_dependencies(joint_trajectory_action_controller ${catkin_EXPORTED_TARGETS})
@@ -62,6 +70,10 @@ target_link_libraries(simple_trajectory ${catkin_LIBRARIES})
 add_executable(simple_trajectory_compare example/simple_trajectory_compare.cpp)
 add_dependencies(simple_trajectory_compare ${catkin_EXPORTED_TARGETS})
 target_link_libraries(simple_trajectory_compare ${catkin_LIBRARIES})
+
+
+# make sure configure headers are built before any node using them
+add_dependencies(sr_mechanism_controllers ${PROJECT_NAME}_gencfg)
 
 
 #if(COMMAND add_rostest_gtest)

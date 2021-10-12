@@ -48,6 +48,10 @@ public:
    */
   virtual void update(const ros::Time &time, const ros::Duration &period);
 
+  double round(double d);
+  double interpolate(double input, double input_start, double input_end, double output_start, double output_end);
+
+
   virtual void getGains(double &p, double &i, double &d, double &i_max, double &i_min);
 
   virtual bool resetGains(std_srvs::Empty::Request &req, std_srvs::Empty::Response &resp);
