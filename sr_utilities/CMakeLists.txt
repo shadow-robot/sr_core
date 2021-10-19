@@ -19,7 +19,7 @@ catkin_package(
         DEPENDS
         CATKIN_DEPENDS sensor_msgs sr_robot_msgs rospy roscpp tf urdf urdfdom_py ros_ethercat_model moveit_ros_planning_interface moveit_ros_manipulation moveit_ros_move_group std_msgs message_runtime
         INCLUDE_DIRS include
-        LIBRARIES sr_calibration
+        LIBRARIES sr_calibration sr_trajectory_command_publisher
 )
 
 include_directories(
@@ -33,6 +33,8 @@ add_dependencies(sr_calibration sr_utilities_gencpp ${catkin_EXPORTED_TARGETS})
 add_library(sr_hand_finder src/sr_hand_finder.cpp)
 add_library(sr_arm_finder src/sr_arm_finder.cpp)
 add_dependencies(sr_arm_finder sr_hand_finder ${catkin_EXPORTED_TARGETS})
+add_library(sr_trajectory_command_publisher src/sr_trajectory_command_publisher.cpp)
+add_dependencies(sr_trajectory_command_publisher ${catkin_EXPORTED_TARGETS})
 
 if (CATKIN_ENABLE_TESTING)
     catkin_add_gtest(test_calibration test/test_calibration.cpp src/calibration.cpp)
@@ -61,6 +63,10 @@ install(DIRECTORY include/${PROJECT_NAME}/
 )
 
 install(TARGETS sr_calibration
+        LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+)
+
+install(TARGETS sr_trajectory_command_publisher
         LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 )
 
