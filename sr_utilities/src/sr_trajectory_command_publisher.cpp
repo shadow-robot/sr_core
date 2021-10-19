@@ -14,8 +14,11 @@
 * with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <memory>
 #include <sr_utilities/sr_trajectory_command_publisher.hpp>
+#include <string>
 #include <unordered_map>
+#include <utility>
 
 void SrTrajectoryCommandPublisher::publish(trajectory_msgs::JointTrajectory joint_trajectory)
 {
