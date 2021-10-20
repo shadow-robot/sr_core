@@ -22,6 +22,7 @@
 #include <ros/ros.h>
 #include <string>
 #include <trajectory_msgs/JointTrajectory.h>
+#include <utility>
 
 class SrTrajectoryCommandPublisher
 {
