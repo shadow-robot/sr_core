@@ -57,8 +57,8 @@ void SrTrajectoryCommandPublisher::publish(trajectory_msgs::JointTrajectory join
 
 std::shared_ptr<ros::Publisher> SrTrajectoryCommandPublisher::get_publisher_for_joint(std::string joint_name)
 {
-  auto it = joint_to_publisher.find(joint_name);
-  if (it != joint_to_publisher.end())
+  auto it = joint_to_publisher_.find(joint_name);
+  if (it != joint_to_publisher_.end())
   {
     return it->second;
   }
@@ -78,7 +78,7 @@ std::shared_ptr<ros::Publisher> SrTrajectoryCommandPublisher::get_publisher_for_
           nh.advertise<trajectory_msgs::JointTrajectory>("/" + controller_name + "/command", 1));
         for (int k = 0; k < joints.size(); k++)
         {
-          joint_to_publisher.insert(std::make_pair(joints[k], publisher));
+          joint_to_publisher_.insert(std::make_pair(joints[k], publisher));
         }
         return publisher;
       }
