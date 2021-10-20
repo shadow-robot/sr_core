@@ -22,33 +22,32 @@
 
 void SrTrajectoryCommandPublisher::publish(trajectory_msgs::JointTrajectory joint_trajectory)
 {
-  if (!initialised)
-  {
-    initialise();
-  }
   std::unordered_map<std::shared_ptr<ros::Publisher>,
     std::shared_ptr<trajectory_msgs::JointTrajectory>> publisher_to_msg;
   for (int i = 0; i < joint_trajectory.joint_names.size(); i++)
   {
     std::string joint_name = joint_trajectory.joint_names[i];
     double position = joint_trajectory.points[0].positions[i];
-    std::shared_ptr<ros::Publisher> publisher = joint_to_publisher[joint_name];
-    auto it = publisher_to_msg.find(publisher);
-    std::shared_ptr<trajectory_msgs::JointTrajectory> msg;
-    if (it == publisher_to_msg.end())
+    std::shared_ptr<ros::Publisher> publisher = get_publisher_for_joint(joint_name);
+    if (publisher)
     {
-      msg = std::make_shared<trajectory_msgs::JointTrajectory>();
-      msg->header.stamp = joint_trajectory.header.stamp;
-      msg->points.resize(1);
-      msg->points[0].time_from_start = joint_trajectory.points[0].time_from_start;
-      publisher_to_msg.insert(std::make_pair(publisher, msg));
+      auto it = publisher_to_msg.find(publisher);
+      std::shared_ptr<trajectory_msgs::JointTrajectory> msg;
+      if (it == publisher_to_msg.end())
+      {
+        msg = std::make_shared<trajectory_msgs::JointTrajectory>();
+        msg->header.stamp = joint_trajectory.header.stamp;
+        msg->points.resize(1);
+        msg->points[0].time_from_start = joint_trajectory.points[0].time_from_start;
+        publisher_to_msg.insert(std::make_pair(publisher, msg));
+      }
+      else
+      {
+        msg = it->second;
+      }
+      msg->joint_names.push_back(joint_name);
+      msg->points[0].positions.push_back(position);
     }
-    else
-    {
-      msg = it->second;
-    }
-    msg->joint_names.push_back(joint_name);
-    msg->points[0].positions.push_back(position);
   }
   for (auto& entry : publisher_to_msg)
   {
@@ -56,8 +55,13 @@ void SrTrajectoryCommandPublisher::publish(trajectory_msgs::JointTrajectory join
   }
 }
 
-void SrTrajectoryCommandPublisher::SrTrajectoryCommandPublisher::initialise()
+std::shared_ptr<ros::Publisher> SrTrajectoryCommandPublisher::get_publisher_for_joint(std::string joint_name)
 {
+  auto it = joint_to_publisher.find(joint_name);
+  if (it != joint_to_publisher.end())
+  {
+    return it->second;
+  }
   ros::NodeHandle nh;
   XmlRpc::XmlRpcValue controller_list;
   ros::param::get("/move_group/controller_list", controller_list);
@@ -65,14 +69,20 @@ void SrTrajectoryCommandPublisher::SrTrajectoryCommandPublisher::initialise()
   {
     XmlRpc::XmlRpcValue controller = controller_list[i];
     std::string controller_name = controller["name"];
-    std::shared_ptr<ros::Publisher> publisher = std::make_shared<ros::Publisher>(
-      nh.advertise<trajectory_msgs::JointTrajectory>("/" + controller_name + "/command", 1));
     XmlRpc::XmlRpcValue joints = controller["joints"];
     for (int j = 0; j < joints.size(); j++)
     {
-      std::string joint_name = joints[j];
-      joint_to_publisher.insert(std::make_pair(joint_name, publisher));
+      if (joints[j] == joint_name)
+      {
+        std::shared_ptr<ros::Publisher> publisher = std::make_shared<ros::Publisher>(
+          nh.advertise<trajectory_msgs::JointTrajectory>("/" + controller_name + "/command", 1));
+        for (int k = 0; k < joints.size(); k++)
+        {
+          joint_to_publisher.insert(std::make_pair(joints[k], publisher));
+        }
+        return publisher;
+      }
     }
   }
-  initialised = true;
+  return std::shared_ptr<ros::Publisher>();
 }

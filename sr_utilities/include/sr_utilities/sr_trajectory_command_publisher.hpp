@@ -28,9 +28,8 @@ class SrTrajectoryCommandPublisher
 public:
   void publish(trajectory_msgs::JointTrajectory joint_trajectory);
 private:
-  bool initialised = false;
   std::map<std::string, std::shared_ptr<ros::Publisher>> joint_to_publisher;
-  void initialise();
+  std::shared_ptr<ros::Publisher> get_publisher_for_joint(std::string joint_name);
 };
 
 #endif  // _SR_TRAJECTORY_COMMAND_PUBLISHER_HPP_
