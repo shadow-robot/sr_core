@@ -30,9 +30,9 @@ void SrTrajectoryCommandPublisher::publish(trajectory_msgs::JointTrajectory join
     std::string joint_name = joint_trajectory.joint_names[i];
     std::shared_ptr<std::pair<ros::Publisher, trajectory_msgs::JointTrajectory>>
       publisher_and_msg = get_publisher_and_msg(joint_name);
-    auto result = publishers_and_msgs.insert(publisher_and_msg);
-    if (result.second)
+    if (publishers_and_msgs.insert(publisher_and_msg).second)
     {
+      // New element was added to the set, reset cached message to the initial state
       publisher_and_msg->second.header.stamp = joint_trajectory.header.stamp;
       publisher_and_msg->second.joint_names.clear();
       publisher_and_msg->second.points[0].positions.clear();
