@@ -14,6 +14,7 @@
 * with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <exception>
 #include <memory>
 #include <sr_utilities/sr_trajectory_command_publisher.hpp>
 #include <string>
@@ -29,25 +30,22 @@ void SrTrajectoryCommandPublisher::publish(trajectory_msgs::JointTrajectory join
     std::string joint_name = joint_trajectory.joint_names[i];
     double position = joint_trajectory.points[0].positions[i];
     std::shared_ptr<ros::Publisher> publisher = get_publisher_for_joint(joint_name);
-    if (publisher)
+    auto it = publisher_to_msg.find(publisher);
+    std::shared_ptr<trajectory_msgs::JointTrajectory> msg;
+    if (it == publisher_to_msg.end())
     {
-      auto it = publisher_to_msg.find(publisher);
-      std::shared_ptr<trajectory_msgs::JointTrajectory> msg;
-      if (it == publisher_to_msg.end())
-      {
-        msg = std::make_shared<trajectory_msgs::JointTrajectory>();
-        msg->header.stamp = joint_trajectory.header.stamp;
-        msg->points.resize(1);
-        msg->points[0].time_from_start = joint_trajectory.points[0].time_from_start;
-        publisher_to_msg.insert(std::make_pair(publisher, msg));
-      }
-      else
-      {
-        msg = it->second;
-      }
-      msg->joint_names.push_back(joint_name);
-      msg->points[0].positions.push_back(position);
+      msg = std::make_shared<trajectory_msgs::JointTrajectory>();
+      msg->header.stamp = joint_trajectory.header.stamp;
+      msg->points.resize(1);
+      msg->points[0].time_from_start = joint_trajectory.points[0].time_from_start;
+      publisher_to_msg.insert(std::make_pair(publisher, msg));
     }
+    else
+    {
+      msg = it->second;
+    }
+    msg->joint_names.push_back(joint_name);
+    msg->points[0].positions.push_back(position);
   }
   for (auto& entry : publisher_to_msg)
   {
@@ -84,5 +82,6 @@ std::shared_ptr<ros::Publisher> SrTrajectoryCommandPublisher::get_publisher_for_
       }
     }
   }
-  return std::shared_ptr<ros::Publisher>();
+  throw std::runtime_error("There is no trajectory controller specified in /move_group/controller_list for joint " +
+    joint_name);
 }
