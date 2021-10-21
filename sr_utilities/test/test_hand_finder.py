@@ -38,11 +38,6 @@ class TestHandFinder(unittest.TestCase):
         self.assertEqual(len(hand_finder.get_hand_parameters().joint_prefix), 0, "correct parameters without a hand")
         self.assertEqual(len(hand_finder.get_hand_parameters().mapping), 0, "correct parameters without a hand")
         self.assertEqual(len(hand_finder.get_hand_joints()), 0, "correct joints without a hand")
-        self.assertEqual(len(hand_finder.get_hand_control_tuning(). friction_compensation), 0,
-                         "correct tuning without a hands")
-        self.assertEqual(len(hand_finder.get_hand_control_tuning(). host_control), 0, "correct tuning without a hands")
-        self.assertEqual(len(hand_finder.get_hand_control_tuning(). motor_control), 0,
-                         "correct tuning without a hands")
 
     def test_one_hand_no_robot_description_finder(self):
         if rospy.has_param("hand"):
@@ -195,11 +190,6 @@ class TestHandFinder(unittest.TestCase):
         self.assertEqual(len(hand_finder.get_hand_parameters().joint_prefix), 0, "correct parameters without a hand")
         self.assertEqual(len(hand_finder.get_hand_parameters().mapping), 0, "correct parameters without a hand")
         self.assertEqual(len(hand_finder.get_hand_joints()), 0, "correct joints without a hand")
-        self.assertEqual(len(hand_finder.get_hand_control_tuning(). friction_compensation), 0,
-                         "correct tuning without a hands")
-        self.assertEqual(len(hand_finder.get_hand_control_tuning(). host_control), 0, "correct tuning without a hands")
-        self.assertEqual(len(hand_finder.get_hand_control_tuning(). motor_control), 0,
-                         "correct tuning without a hands")
 
     def test_one_hand_robot_description_exists_finder(self):
         if rospy.has_param("hand"):
