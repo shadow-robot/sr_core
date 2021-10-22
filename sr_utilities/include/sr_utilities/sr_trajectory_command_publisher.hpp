@@ -27,12 +27,13 @@
 class SrTrajectoryCommandPublisher
 {
 public:
-  SrTrajectoryCommandPublisher();
+  SrTrajectoryCommandPublisher(const std::vector<std::string>& expected_joints = {});
   ~SrTrajectoryCommandPublisher();
-  void publish(trajectory_msgs::JointTrajectory joint_trajectory);
+  void publish(const trajectory_msgs::JointTrajectory& joint_trajectory);
 
 private:
-  void setup_publishers();
+  void setup_publishers(const std::vector<std::string>& expected_joints);
+  std::vector<std::string> xmlrpcvalue_to_vector(const XmlRpc::XmlRpcValue& xmlrpcvalue);
 
   std::map<std::string, std::shared_ptr<std::pair<ros::Publisher,
     trajectory_msgs::JointTrajectory>>> joint_to_publisher_and_msg_;

@@ -15,6 +15,7 @@
 */
 
 #include <exception>
+#include <algorithm>
 #include <memory>
 #include <sr_utilities/sr_trajectory_command_publisher.hpp>
 #include <string>
@@ -22,16 +23,16 @@
 #include <utility>
 #include <sr_utilities_common/wait_for_param.h>
 
-SrTrajectoryCommandPublisher::SrTrajectoryCommandPublisher()
+SrTrajectoryCommandPublisher::SrTrajectoryCommandPublisher(const std::vector<std::string>& expected_joints)
 {
-  setup_publishers();
+  setup_publishers(expected_joints);
 }
 
 SrTrajectoryCommandPublisher::~SrTrajectoryCommandPublisher()
 {
 }
 
-void SrTrajectoryCommandPublisher::setup_publishers()
+void SrTrajectoryCommandPublisher::setup_publishers(const std::vector<std::string>& expected_joints)
 {
   ros::NodeHandle nh;
   XmlRpc::XmlRpcValue controller_list;
@@ -42,7 +43,21 @@ void SrTrajectoryCommandPublisher::setup_publishers()
   {
     XmlRpc::XmlRpcValue controller = controller_list[i];
     std::string controller_name = controller["name"];
-    XmlRpc::XmlRpcValue joints = controller["joints"];
+    auto joints = xmlrpcvalue_to_vector(controller["joints"]);
+
+    if (expected_joints.size() > 0)
+    {
+      bool create_publisher = false;
+      for (const auto& expected_joint : expected_joints)
+      {
+        if (std::find(joints.begin(), joints.end(), expected_joint) != joints.end())
+        {
+            create_publisher = true;
+            break;
+        }
+      }
+      if (!create_publisher) continue;
+    }
 
     auto publisher_and_msg = std::make_shared<std::pair<ros::Publisher, trajectory_msgs::JointTrajectory>>(
         nh.advertise<trajectory_msgs::JointTrajectory>("/" + controller_name + "/command", 1),
@@ -50,12 +65,28 @@ void SrTrajectoryCommandPublisher::setup_publishers()
 
     for (int k = 0; k < joints.size(); k++)
     {
+      if (expected_joints.size() > 0 && !(std::find(expected_joints.begin(),
+                                                    expected_joints.end(),
+                                                    static_cast<std::string>(joints[k])) != expected_joints.end()))
+      {
+        continue;
+      }
       joint_to_publisher_and_msg_.insert(std::make_pair(joints[k], publisher_and_msg));
     }
   }
 }
 
-void SrTrajectoryCommandPublisher::publish(trajectory_msgs::JointTrajectory joint_trajectory)
+std::vector<std::string> SrTrajectoryCommandPublisher::xmlrpcvalue_to_vector(const XmlRpc::XmlRpcValue& xmlrpcvalue)
+{
+  std::vector<std::string> result;
+  for (int i = 0; i < xmlrpcvalue.size(); i++)
+  {
+    result.push_back(static_cast<std::string>(xmlrpcvalue[i]));
+  }
+  return result;
+}
+
+void SrTrajectoryCommandPublisher::publish(const trajectory_msgs::JointTrajectory& joint_trajectory)
 {
   std::unordered_set<std::shared_ptr<std::pair<ros::Publisher,
     trajectory_msgs::JointTrajectory>>> publishers_and_msgs;
@@ -85,7 +116,7 @@ void SrTrajectoryCommandPublisher::publish(trajectory_msgs::JointTrajectory join
     }
   }
 
-  for (auto& publisher_and_msg : publishers_and_msgs)
+  for (const auto& publisher_and_msg : publishers_and_msgs)
   {
     publisher_and_msg->first.publish(publisher_and_msg->second);
   }
