@@ -21,6 +21,7 @@
 #include <string>
 #include <unordered_set>
 #include <utility>
+#include <vector>
 #include <sr_utilities_common/wait_for_param.h>
 
 SrTrajectoryCommandPublisher::SrTrajectoryCommandPublisher(const std::vector<std::string>& expected_joints)
@@ -94,7 +95,6 @@ void SrTrajectoryCommandPublisher::check_for_unsupported_joints(const std::vecto
     throw std::runtime_error("There is no trajectory controller specified"
                                " in /move_group/controller_list for some of expected joints. Terminating... ");
   }
-
 }
 
 std::vector<std::string> SrTrajectoryCommandPublisher::xmlrpcvalue_to_vector(const XmlRpc::XmlRpcValue& xmlrpcvalue)
