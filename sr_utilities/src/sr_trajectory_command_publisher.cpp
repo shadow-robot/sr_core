@@ -74,6 +74,27 @@ void SrTrajectoryCommandPublisher::setup_publishers(const std::vector<std::strin
       joint_to_publisher_and_msg_.insert(std::make_pair(joints[k], publisher_and_msg));
     }
   }
+
+  check_for_unsupported_joints(expected_joints);
+}
+
+void SrTrajectoryCommandPublisher::check_for_unsupported_joints(const std::vector<std::string>& expected_joints)
+{
+  std::vector<std::string> unsupported_joints;
+  for (const auto& expected_joint : expected_joints)
+  {
+    if (joint_to_publisher_and_msg_.find(expected_joint) == joint_to_publisher_and_msg_.end())
+    {
+      unsupported_joints.push_back(expected_joint);
+      ROS_ERROR_STREAM("No trajectory controller specified for joint: " << expected_joint);
+    }
+  }
+  if (unsupported_joints.size() > 0)
+  {
+    throw std::runtime_error("There is no trajectory controller specified"
+                               " in /move_group/controller_list for some of expected joints. Terminating... ");
+  }
+
 }
 
 std::vector<std::string> SrTrajectoryCommandPublisher::xmlrpcvalue_to_vector(const XmlRpc::XmlRpcValue& xmlrpcvalue)
