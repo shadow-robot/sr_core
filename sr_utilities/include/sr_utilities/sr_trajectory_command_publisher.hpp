@@ -23,11 +23,12 @@
 #include <string>
 #include <trajectory_msgs/JointTrajectory.h>
 #include <utility>
+#include <vector>
 
 class SrTrajectoryCommandPublisher
 {
 public:
-  SrTrajectoryCommandPublisher(const std::vector<std::string>& expected_joints = {});
+  explicit SrTrajectoryCommandPublisher(const std::vector<std::string>& expected_joints = {});
   ~SrTrajectoryCommandPublisher();
   void publish(const trajectory_msgs::JointTrajectory& joint_trajectory);
 
