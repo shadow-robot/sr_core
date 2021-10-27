@@ -29,6 +29,7 @@
     <build_depend>moveit_ros_move_group</build_depend>
     <build_depend>std_msgs</build_depend>
     <build_depend>message_runtime</build_depend>
+    <build_depend>sr_utilities_common</build_depend>
 
     <!-- Dependencies needed after this package is compiled. -->
     <run_depend>sensor_msgs</run_depend>
@@ -45,6 +46,7 @@
     <run_depend>moveit_ros_move_group</run_depend>
     <run_depend>std_msgs</run_depend>
     <run_depend>message_runtime</run_depend>
+    <run_depend>sr_utilities_common</run_depend>
 
     <!-- Dependencies needed only for running tests. -->
     <test_depend>gtest</test_depend>

@@ -23,16 +23,22 @@
 #include <string>
 #include <trajectory_msgs/JointTrajectory.h>
 #include <utility>
+#include <vector>
 
 class SrTrajectoryCommandPublisher
 {
 public:
-  void publish(trajectory_msgs::JointTrajectory joint_trajectory);
+  explicit SrTrajectoryCommandPublisher(const std::vector<std::string>& expected_joints = {});
+  ~SrTrajectoryCommandPublisher();
+  void publish(const trajectory_msgs::JointTrajectory& joint_trajectory);
+
 private:
+  void setup_publishers(const std::vector<std::string>& expected_joints);
+  std::vector<std::string> xmlrpcvalue_to_vector(const XmlRpc::XmlRpcValue& xmlrpcvalue);
+  void check_for_unsupported_joints(const std::vector<std::string>& expected_joints);
+
   std::map<std::string, std::shared_ptr<std::pair<ros::Publisher,
     trajectory_msgs::JointTrajectory>>> joint_to_publisher_and_msg_;
-  std::shared_ptr<std::pair<ros::Publisher, trajectory_msgs::JointTrajectory>>
-    get_publisher_and_msg(std::string joint_name);
 };
 
 #endif  // _SR_TRAJECTORY_COMMAND_PUBLISHER_HPP_
