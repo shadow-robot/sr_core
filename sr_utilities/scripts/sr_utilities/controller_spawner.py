@@ -33,7 +33,7 @@ class ControllerSpawner(object):
                    "lh_MFJ1", "lh_MFJ2", "lh_MFJ3", "lh_MFJ4", "lh_RFJ1", "lh_RFJ2", "lh_RFJ3", "lh_RFJ4", "lh_THJ1",
                    "lh_THJ2", "lh_THJ3", "lh_THJ4", "lh_THJ5", "lh_WRJ1", "lh_WRJ2"]
 
-    def __init__(self, config_file_path, service_timeout):
+    def __init__(self, config_file_path, service_timeout, excluded_joints=[]):
         self._config_file_path = config_file_path
         self._service_timeout = service_timeout
         hand_finder = HandFinder()
@@ -44,9 +44,10 @@ class ControllerSpawner(object):
             for joint in self._joints[side]:
                 if joint in self._nonpresent_joints:
                     self._nonpresent_joints.remove(joint)
-        self._excluded_joints = []
-
+        self._excluded_joints = excluded_joints
         self._excluded_joints = list(set(self._excluded_joints) | set(self._nonpresent_joints))
+        rospy.logwarn("Excluded joints:")
+        rospy.logwarn(self._excluded_joints)
 
     def load_config(self):
         try:
@@ -241,7 +242,8 @@ if __name__ == "__main__":
     config_file_path = rospy.get_param("~config_file_path", "{}/config/controller_spawner.yaml".format(
         sr_robot_launch_path))
     service_timeout = rospy.get_param("~service_timeout", 60.0)
-    controller_spawner = ControllerSpawner(config_file_path, service_timeout)
+    excluded_joints = rospy.get_param("~excluded_joints", [])
+    controller_spawner = ControllerSpawner(config_file_path, service_timeout, excluded_joints)
     if not controller_spawner.load_config():
         rospy.logerr("Failed to load controller spawner config.")
         exit(1)
