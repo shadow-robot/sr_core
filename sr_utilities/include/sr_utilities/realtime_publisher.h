@@ -74,6 +74,8 @@ class RealtimePublisher
 public:
   /// The msg_ variable contains the data that will get published on the ROS topic.
   Msg msg_;
+  /// The msg_buffer_ contains the msgs that will be inserted in the outgoing_msg_buffer_
+  boost::scoped_ptr<boost::circular_buffer<Msg> > msg_buffer_;
 
   /**  \brief Constructor for the realtime publisher
    *
@@ -201,6 +203,8 @@ private:
   void construct(int queue_size, bool latched=false)
   {
     publisher_ = node_.advertise<Msg>(topic_, queue_size, latched);
+    msg_buffer_.reset(new boost::circular_buffer<Msg>(queue_size);
+    outgoing_msg_buffer_.reset(new boost::circular_buffer<Msg>(queue_size);
     keep_running_ = true;
     thread_ = std::thread(&RealtimePublisher::publishingLoop, this);
   }
@@ -235,14 +239,27 @@ private:
         lock();
 #endif
       }
-      outgoing = msg_;
+
+      while(!msg_buffer_->empty())
+      {
+          outgoing_msg_buffer_->push_back(*(msg_buffer_->front()));
+          msg_buffer_->pop_front()
+      }
+    //   outgoing = msg_;
       turn_ = REALTIME;
 
       unlock();
 
       // Sends the outgoing message
       if (keep_running_)
-        publisher_.publish(outgoing);
+      {
+        while(!outgoing_msg_buffer_->empty())
+        {
+            publisher_.publish(*(outgoing_msg_buffer_->front()));
+            outgoing_msg_buffer_->pop_front()
+        }
+      }
+        // publisher_.publish(outgoing);
     }
     is_running_ = false;
   }
@@ -263,6 +280,8 @@ private:
 
   enum {REALTIME, NON_REALTIME, LOOP_NOT_STARTED};
   std::atomic<int> turn_;  // Who's turn is it to use msg_?
+  /// The msg_buffer_ contains the data that will get published on the ROS topic.
+  boost::scoped_ptr<boost::circular_buffer<Msg> > outgoing_msg_buffer_;
 };
 
 template <class Msg>

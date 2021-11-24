@@ -28,6 +28,7 @@
 #define _SRH_CONTROLLER_HPP_
 
 #include <ros/node_handle.h>
+#include <boost/circular_buffer.hpp>
 
 #include <controller_interface/controller.h>
 #include <ros_ethercat_model/robot_state_interface.hpp>
@@ -147,6 +148,8 @@ protected:
 
   boost::scoped_ptr<sr_utilities::RealtimePublisher
           <control_msgs::JointControllerState> > controller_state_publisher_;
+  
+  boost::scoped_ptr<boost::circular_buffer<control_msgs::JointControllerState> > msg_buffer_;
 
   boost::scoped_ptr<sr_friction_compensation::SrFrictionCompensator> friction_compensator;
 
