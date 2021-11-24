@@ -70,9 +70,8 @@ namespace controller
       return false;
     }
 
-    controller_state_publisher_.reset(new realtime_tools::RealtimePublisher<control_msgs::JointControllerState>
+    controller_state_publisher_.reset(new sr_utilities::RealtimePublisher<control_msgs::JointControllerState>
                                               (node_, "state", 50));
-
     ROS_DEBUG(" --------- ");
     ROS_DEBUG_STREAM("Init: " << joint_name_);
 
