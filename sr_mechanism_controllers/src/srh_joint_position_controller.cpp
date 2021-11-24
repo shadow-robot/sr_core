@@ -351,13 +351,6 @@ namespace controller
       error_position = joint_state_->position_ - command_;
     }
 
-/*    bool in_deadband = hysteresis_deadband.is_in_deadband(command_, error_position, position_deadband);
-  bool is_in_deadband(T demand, T error, T deadband,
-                      double deadband_multiplicator = 5.0,
-                      unsigned int nb_errors_for_avg = 50)*/
-    //bool in_deadband = hysteresis_deadband.is_in_deadband(command_, error_position, position_deadband, 5.0, 1);
-    //bool in_deadband = hysteresis_deadband.is_in_deadband(command_, error_position, position_deadband);
-
     bool in_deadband = false; //hysteresis_deadband.is_in_deadband(command_, error_position, position_deadband);
 
 
@@ -367,18 +360,6 @@ namespace controller
       error_position = 0.0;
     }
 
-
-/*    if (loop_count_ % 8 == 0)
-    {
-      ros::Duration larg_p(period.toSec() * 8.0);
-      commanded_effort = pid_controller_position_->computeCommand(-error_position, larg_p);
-      last_commanded_effort = commanded_effort;
-
-    } else {
-      commanded_effort = last_commanded_effort;
-
-    }
-*/
       commanded_effort = pid_controller_position_->computeCommand(-error_position, period);
 
     // clamp the result to max force
@@ -423,11 +404,11 @@ if (this->correct == true)
       if (commanded_effort < 0)
         commanded_effort = (-1.0)*SrhJointPositionController::interpolate((commanded_effort*-1.0), 0, this->j0_smol_num, 0, this->j0_lorg_num);
 
-      if (loop_count_ % 500 == 0)
-        std::cout << joint_state_->joint_->name << " == " << joint << ", starts with ff|mf|rf, DOES have J2\n";
-    } else {
-        std::cout << joint_state_->joint_->name << " == " << joint << ", DOESN'T start with ff|mf|rf, DOES have J2\n";
-    }
+      //if (loop_count_ % 500 == 0)
+      // std::cout << joint_state_->joint_->name << " == " << joint << ", starts with ff|mf|rf, DOES have J2\n";
+    } //else {
+        //std::cout << joint_state_->joint_->name << " == " << joint << ", DOESN'T start with ff|mf|rf, DOES have J2\n";
+    //}
   }
   if (boost::algorithm::iends_with(joint, "3"))
   {
@@ -440,16 +421,8 @@ if (this->correct == true)
       if (commanded_effort < 0)
         commanded_effort = (-1.0)*SrhJointPositionController::interpolate((commanded_effort*-1.0), 0, this->j3_smol_num, 0, this->j3_lorg_num);
 
-      if (loop_count_ % 500 == 0)
-        std::cout << joint_state_->joint_->name << " == " << joint << ", starts with ff|mf|rf, DOES NOT have J2, DOES END WITH 3\n";
 
-    } else {
-      if (loop_count_ % 500 == 0)
-        std::cout << joint_state_->joint_->name << " == " << joint << ", DOESN'T start with ff|mf|rf, DOES END WITH 3\n";
     }
-  } else {
-      if (loop_count_ % 500 == 0)
-        std::cout << joint_state_->joint_->name << " == " << joint << ", DOESN'T END WITH 3\n";
   }
 
   if (boost::algorithm::iends_with(joint, "4"))
@@ -469,9 +442,6 @@ if (this->correct == true)
 
     joint_state_->commanded_effort_ = commanded_effort;
 
-
-   //if (loop_count_ % 200 == 0)
-   //  std::cout << joint_state_->joint_->name << "+: " << this->in_max << ", -: " << this->out_max << "\n";
 
     //if (loop_count_ % 10 == 0)
     //{

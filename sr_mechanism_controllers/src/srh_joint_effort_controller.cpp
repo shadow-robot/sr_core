@@ -71,7 +71,7 @@ namespace controller
     }
 
     controller_state_publisher_.reset(new realtime_tools::RealtimePublisher<control_msgs::JointControllerState>
-                                              (node_, "state", 1));
+                                              (node_, "state", 50));
 
     ROS_DEBUG(" --------- ");
     ROS_DEBUG_STREAM("Init: " << joint_name_);
@@ -218,8 +218,8 @@ namespace controller
 
 //  double SrhEffortJointController::interpolate(double input, double input_start, double input_end, double output_start, double output_end)
 
-    if (loop_count_ % 10 == 0)
-    {
+    //if (loop_count_ % 2 == 0)
+    //{
       if (controller_state_publisher_ && controller_state_publisher_->trylock())
       {
         controller_state_publisher_->msg_.header.stamp = time;
@@ -238,8 +238,10 @@ namespace controller
                  controller_state_publisher_->msg_.i_clamp,
                  dummy);
         controller_state_publisher_->unlockAndPublish();
+      } else {
+        ROS_ERROR_STREAM("LOCK FAILED FOR " << joint_state_->joint_->name << "\n");
       }
-    }
+    //}
     loop_count_++;
   }
 
