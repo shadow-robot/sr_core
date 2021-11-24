@@ -62,6 +62,8 @@
 #include <mutex>
 #include <string>
 #include <thread>
+#include <pthread.h>
+#include <sched.h>
 
 namespace sr_utilities {
 
@@ -208,6 +210,12 @@ private:
 
   void publishingLoop()
   {
+    // Set to realtime scheduler for this thread
+    struct sched_param thread_param;
+    int policy = SCHED_FIFO;
+    thread_param.sched_priority = sched_get_priority_max(policy) - 10;
+    pthread_setschedparam(pthread_self(), policy, &thread_param);
+    
     is_running_ = true;
     turn_ = REALTIME;
 
