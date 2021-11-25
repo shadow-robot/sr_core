@@ -5,5 +5,5 @@
   <param name="two_hands_description" textfile="$(find sr_utilities)/test/urdf/two_hands_description.urdf" />
 
   <test test-name="test_hand_finder_cpp" pkg="sr_utilities" type="test_hand_finder"/>
-  <test test-name="test_hand_finder_py" pkg="sr_utilities" type="test_hand_finder.py" />
+  <test test-name="test_hand_finder_py" pkg="sr_utilities" type="test_hand_finder.py" time-limit="500.0" />
 </launch>

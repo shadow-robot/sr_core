@@ -17,11 +17,11 @@ Other controller groups defined in the config file are also stored on the ROS pa
 
 Any controllers defined in the config file, relevant to the currently running hands, but not part of the requested controller group will be stopped.
 
-Wrist joints can be excluded from the launched controllers using the `exclude_wrist` parameter.
-
 How long the spawner waits for controller management services to come up is defined by the `service_timeout` parameter.
 
 The `wait_for` parameter can be used to specify the name of a topic that the spawner will wait for before attempting to spawn controllers.
+
+Joints can be excluded from the launched controllers using the `excluded_joints` parameter. If you want certain joint controllers to launch, even if other controllers relevant to those joints are excluded by `exclude_joints`, put the necessary controllers in a `necessary_if_joint_present` array. A historic example of this was when we wanted to (sometimes) exclude the wrist joints from e.g. `rh_trajectory_controller`, but needed the wrist joint position controllers to be running regardless. In this case, `rh_WRJ1` and `rh_WRJ2` were specified in `excluded joints`, which excluded them from `rh_trajectory_controller`, but `sh_rh_wrj1_position_controller` and `sh_rh_wrj2_position_controller` were included in a `necessary_if_joint_present` array, meaning they were launched anyway.
 
 *Examples:*  
 For trajectory and position controllers  
