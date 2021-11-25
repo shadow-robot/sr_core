@@ -150,6 +150,7 @@ protected:
           <control_msgs::JointControllerState> > controller_state_publisher_;
   
   boost::scoped_ptr<boost::circular_buffer<control_msgs::JointControllerState> > msg_buffer_;
+  control_msgs::JointControllerState msg_;
 
   boost::scoped_ptr<sr_friction_compensation::SrFrictionCompensator> friction_compensator;
 

@@ -72,7 +72,7 @@ class RealtimePublisher
 {
 
 public:
-  /// The msg_ variable contains the data that will get published on the ROS topic.
+  // TODO delete this field when all controllers have been adapted
   Msg msg_;
   /// The msg_buffer_ contains the msgs that will be inserted in the outgoing_msg_buffer_
   boost::scoped_ptr<boost::circular_buffer<Msg> > msg_buffer_;
@@ -203,8 +203,8 @@ private:
   void construct(int queue_size, bool latched=false)
   {
     publisher_ = node_.advertise<Msg>(topic_, queue_size, latched);
-    msg_buffer_.reset(new boost::circular_buffer<Msg>(queue_size);
-    outgoing_msg_buffer_.reset(new boost::circular_buffer<Msg>(queue_size);
+    msg_buffer_.reset(new boost::circular_buffer<Msg>(queue_size));
+    outgoing_msg_buffer_.reset(new boost::circular_buffer<Msg>(queue_size));
     keep_running_ = true;
     thread_ = std::thread(&RealtimePublisher::publishingLoop, this);
   }
@@ -242,8 +242,8 @@ private:
 
       while(!msg_buffer_->empty())
       {
-          outgoing_msg_buffer_->push_back(*(msg_buffer_->front()));
-          msg_buffer_->pop_front()
+          outgoing_msg_buffer_->push_back(msg_buffer_->front());
+          msg_buffer_->pop_front();
       }
     //   outgoing = msg_;
       turn_ = REALTIME;
@@ -255,8 +255,8 @@ private:
       {
         while(!outgoing_msg_buffer_->empty())
         {
-            publisher_.publish(*(outgoing_msg_buffer_->front()));
-            outgoing_msg_buffer_->pop_front()
+            publisher_.publish(outgoing_msg_buffer_->front());
+            outgoing_msg_buffer_->pop_front();
         }
       }
         // publisher_.publish(outgoing);
