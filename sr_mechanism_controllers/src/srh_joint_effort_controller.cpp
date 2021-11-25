@@ -70,7 +70,7 @@ namespace controller
       return false;
     }
 
-    int queue_size =50;
+    int queue_size = 50;
     controller_state_publisher_.reset(new sr_utilities::RealtimePublisher<control_msgs::JointControllerState>
                                               (node_, "state", queue_size));
     msg_buffer_.reset(new boost::circular_buffer<control_msgs::JointControllerState>(queue_size));
