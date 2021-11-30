@@ -194,7 +194,7 @@ namespace controller
 
     joint_state_->commanded_effort_ = commanded_effort;
 
-    if (loop_count_ % 10 == 0)
+    if (true) //(loop_count_ % 10 == 0)
     {
       msg_.header.stamp = time;
       msg_.set_point = command_;
