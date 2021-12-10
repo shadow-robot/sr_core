@@ -51,9 +51,9 @@
   <group if="$(arg set_hand_description)">
     <!-- Loads the robot description from the file passed as an argument -->
     <param name="sh_description"
-    command="xacro --inorder '$(arg hand_description)'" />
+    command="xacro '$(arg hand_description)'" />
     <param name="robot_description"
-    command="xacro --inorder '$(arg hand_description)'" />
+    command="xacro '$(arg hand_description)'" />
   </group>
   <node name="spawn_hand" pkg="gazebo_ros" type="spawn_model"
   args="-urdf -param sh_description -z 0.01 -model shadow_model"
