@@ -3,21 +3,21 @@ project(sr_utilities)
 
 add_compile_options(-std=c++17)
 
-find_package(catkin REQUIRED COMPONENTS sensor_msgs sr_robot_msgs rospy roscpp tf urdf moveit_ros_planning_interface message_generation std_msgs sr_utilities_common)
+find_package(catkin REQUIRED COMPONENTS sensor_msgs sr_robot_msgs rospy roscpp tf urdf message_generation message_runtime std_msgs sr_utilities_common)
 find_package(Boost REQUIRED COMPONENTS thread system)
 find_package(rostest REQUIRED)
 find_package(Eigen3 REQUIRED)
 
 catkin_python_setup()
 
-include_directories(include ${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS} ${Eigen_INCLUDE_DIRS})
+include_directories(include ${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIRS})
 
 add_service_files(FILES getJointState.srv)
 generate_messages(DEPENDENCIES std_msgs sensor_msgs)
 
 catkin_package(
         DEPENDS
-        CATKIN_DEPENDS sensor_msgs sr_robot_msgs rospy roscpp tf urdf urdfdom_py ros_ethercat_model moveit_ros_planning_interface moveit_ros_manipulation moveit_ros_move_group std_msgs message_runtime sr_utilities_common
+        CATKIN_DEPENDS sensor_msgs sr_robot_msgs rospy roscpp tf urdf std_msgs message_runtime sr_utilities_common
         INCLUDE_DIRS include
         LIBRARIES sr_calibration sr_trajectory_command_publisher
 )
@@ -25,7 +25,7 @@ catkin_package(
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
-  ${Eigen_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIRS}
 )
 
 add_library(sr_calibration src/calibration.cpp)
