@@ -32,6 +32,8 @@
 #include <algorithm>
 #include <math.h>
 #include "sr_utilities/sr_math_utils.hpp"
+#include <dynamic_reconfigure/server.h>
+#include <sr_mechanism_controllers/TendonsConfig.h>
 
 #include <std_msgs/Float64.h>
 
@@ -46,6 +48,11 @@ namespace controller
   SrhJointPositionController::SrhJointPositionController()
           : position_deadband(0.015)
   {
+  }
+
+  void SrhJointPositionController::callback(sr_mechanism_controllers::TendonsConfig &config, uint32_t level) {
+    ROS_INFO("Reconfigure Request: %d", config.ignore_threshold);
+    // controller::SrhJointPositionController::ignore_threshold = config.ignore_threshold;
   }
 
   bool SrhJointPositionController::init(ros_ethercat_model::RobotStateInterface *robot, ros::NodeHandle &n)
@@ -146,12 +153,15 @@ namespace controller
     ROS_INFO_STREAM("Setting new PID parameters. P:" << req.p << " / I:" << req.i <<
                     " / D:" << req.d << " / IClamp:" << req.i_clamp << ", max force: " <<
                     req.max_force << ", friction deadband: " << req.friction_deadband <<
-                    " pos deadband: " << req.deadband);
+                    " pos deadband: " << req.deadband << ", negative_threshold: " <<
+                    req.negative_threshold << ", positive_threshold: " << req.positive_threshold);
 
     pid_controller_position_->setGains(req.p, req.i, req.d, req.i_clamp, -req.i_clamp);
     max_force_demand = req.max_force;
     friction_deadband = req.friction_deadband;
     position_deadband = req.deadband;
+    positive_threshold = req.positive_threshold;
+    negative_threshold = req.negative_threshold;
 
     // Setting the new parameters in the parameter server
     node_.setParam("pid/p", req.p);
@@ -161,6 +171,8 @@ namespace controller
     node_.setParam("pid/max_force", max_force_demand);
     node_.setParam("pid/position_deadband", position_deadband);
     node_.setParam("pid/friction_deadband", friction_deadband);
+    node_.setParam("pid/positive_threshold", positive_threshold);
+    node_.setParam("pid/negative_threshold", negative_threshold);
 
     return true;
   }
@@ -256,10 +268,19 @@ namespace controller
       }
     }
 
+
+    if ((commanded_effort > 0))
+        commanded_effort = commanded_effort + 40.0;
+
+
+    if ((commanded_effort < 0))
+        commanded_effort = commanded_effort - 40.0;
+
+
     joint_state_->commanded_effort_ = commanded_effort;
 
-    if (loop_count_ % 10 == 0)
-    {
+    //if (loop_count_ % 10 == 0)
+    //{
       if (controller_state_publisher_ && controller_state_publisher_->trylock())
       {
         controller_state_publisher_->msg_.header.stamp = time;
@@ -287,7 +308,7 @@ namespace controller
                  dummy);
         controller_state_publisher_->unlockAndPublish();
       }
-    }
+    //}
     loop_count_++;
   }
 
@@ -296,6 +317,9 @@ namespace controller
     node_.param<double>("pid/max_force", max_force_demand, 1023.0);
     node_.param<double>("pid/position_deadband", position_deadband, 0.015);
     node_.param<int>("pid/friction_deadband", friction_deadband, 5);
+    node_.param<double>("pid/negative_threshold", negative_threshold, 0);
+    node_.param<double>("pid/positive_threshold", positive_threshold, 0);
+
   }
 
   void SrhJointPositionController::setCommandCB(const std_msgs::Float64ConstPtr &msg)

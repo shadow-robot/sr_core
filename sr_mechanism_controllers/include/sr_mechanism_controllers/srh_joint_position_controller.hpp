@@ -29,7 +29,7 @@
 #define _SRH_JOINT_POSITION_CONTROLLER_HPP_
 
 #include <sr_mechanism_controllers/sr_controller.hpp>
-
+#include <sr_mechanism_controllers/TendonsConfig.h>
 
 namespace controller
 {
@@ -58,8 +58,14 @@ private:
   /// Internal PID controller for the position loop.
   boost::scoped_ptr<control_toolbox::Pid> pid_controller_position_;
 
+  void callback(sr_mechanism_controllers::TendonsConfig &config, uint32_t level);
+
   /// the position deadband value used in the hysteresis_deadband
   double position_deadband;
+
+  double positive_threshold;
+
+  double negative_threshold;
 
   /// We're using an hysteresis deadband.
   sr_deadband::HysteresisDeadband<double> hysteresis_deadband;
@@ -71,6 +77,8 @@ private:
   void setCommandCB(const std_msgs::Float64ConstPtr &msg);
 
   void resetJointState();
+
+  int ignore_threshold;
 };
 }  // namespace controller
 
