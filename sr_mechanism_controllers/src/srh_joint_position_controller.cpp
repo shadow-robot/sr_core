@@ -222,8 +222,9 @@ namespace controller
     {
       error_position = joint_state_->position_ - command_;
     }
-
-    bool in_deadband = hysteresis_deadband.is_in_deadband(command_, error_position, position_deadband);
+    
+    # Only average over one sample to remove deadband delay 
+    bool in_deadband = hysteresis_deadband.is_in_deadband(command_, error_position, position_deadband, 5.0, 1);
 
     // don't compute the error if we're in the deadband.
     if (in_deadband)
