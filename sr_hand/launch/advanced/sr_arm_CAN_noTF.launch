@@ -1,7 +1,7 @@
 <launch>
   <!-- DO NOT USE ROBOT DESCRIPTION IF NOT NEEDED  <param name="robot_description" command="xacro '$(find sr_description)/robots/arm_and_hand_motor.urdf.xacro'" /> -->
   <param name="sa_description"
-  command="xacro --inorder '$(find sr_description)/robots/sr_arm_motor.urdf.xacro'" />
+  command="xacro '$(find sr_description)/robots/sr_arm_motor.urdf.xacro'" />
   <!--
            shadowarm
                         -->

@@ -116,6 +116,8 @@ namespace controller
     ROS_DEBUG_STREAM(" In Init: " << getJointName() << " This: " << this
                      << " joint_state: " << joint_state_);
 
+    read_parameters();
+
     after_init();
     return true;
   }
@@ -123,7 +125,6 @@ namespace controller
   void SrhEffortJointController::starting(const ros::Time &time)
   {
     command_ = 0.0;
-    read_parameters();
   }
 
   bool SrhEffortJointController::setGains(sr_robot_msgs::SetEffortControllerGains::Request &req,

@@ -13,6 +13,7 @@ catkin_package(
 )
 
 # Real Hand
+#catkin_lint: ignore_once env_var
 set(real_hand $ENV{REAL_HAND})
 if (real_hand)
     message(STATUS " [x] Real Hand.")
@@ -38,6 +39,7 @@ target_link_libraries(sr_tactile_virtual_gazebo ${Boost_LIBRARIES} ${catkin_LIBR
 # Uncomment the following lines if you want access to the real tactile sensors
 if (real_hand)
     include_directories(include ${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS})
+    #catkin_lint: ignore_once external_directory missing_directory
     include_directories(/usr/realtime/include/)
     add_library(robot STATIC IMPORTED)
     add_dependencies(robot ${catkin_EXPORTED_TARGETS})

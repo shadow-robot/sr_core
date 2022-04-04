@@ -9,7 +9,7 @@ settings:
     tag: focal-noetic
   template_project_name: template_unit_tests_and_code_coverage
   toolset:
-    branch: python3
+    branch: master
     modules:
       - check_cache
       - code_coverage
@@ -27,5 +27,51 @@ trunks:
       - name: install_check
         settings:
           toolset:
+            modules:
+              - check_install
+  - name: melodic-devel
+    jobs:
+      - name: code_coverage
+        settings:
+          machine_type: medium
+          ubuntu:
+            version: bionic
+          ros:
+            release: melodic
+          docker:
+            image: shadowrobot/build-tools
+            tag: bionic-melodic
+          toolset:
+            branch: master
+            modules:
+              - code_style_check
+              - check_license
+      - name: style_check
+        settings:
+          machine_type: medium
+          ubuntu:
+            version: bionic
+          ros:
+            release: melodic
+          docker:
+            image: shadowrobot/build-tools
+            tag: bionic-melodic
+          toolset:
+            branch: master
+            modules:
+              - code_style_check
+              - check_license
+      - name: install_check
+        settings:
+          machine_type: medium
+          ubuntu:
+            version: bionic
+          ros:
+            release: melodic
+          docker:
+            image: shadowrobot/build-tools
+            tag: bionic-melodic
+          toolset:
+            branch: master
             modules:
               - check_install
