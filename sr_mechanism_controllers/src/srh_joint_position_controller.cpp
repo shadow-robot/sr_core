@@ -225,7 +225,8 @@ namespace controller
       error_position = joint_state_->position_ - command_;
     }
 
-    bool in_deadband = hysteresis_deadband.is_in_deadband(command_, error_position, position_deadband);
+    // setting nb_errors_for_avg to 1:
+    bool in_deadband = hysteresis_deadband.is_in_deadband(command_, error_position, position_deadband, 5.0, 1);
 
     // don't compute the error if we're in the deadband.
     if (in_deadband)
