@@ -56,11 +56,11 @@ HandConfig SrHandFinder::get_hand_parameters()
 
 SrHandFinder::SrHandFinder()
 {
-  if (ros::param::has("hand"))
+  if (ros::param::has("/hand"))
   {
     std::map<std::string, std::string> mapping_map;
-    ros::param::get("hand/mapping", hand_config_.mapping_);
-    ros::param::get("hand/joint_prefix", hand_config_.joint_prefix_);
+    ros::param::get("/hand/mapping", hand_config_.mapping_);
+    ros::param::get("/hand/joint_prefix", hand_config_.joint_prefix_);
 
     std::pair<std::string, std::string> pair;
     BOOST_FOREACH(pair, hand_config_.mapping_)
