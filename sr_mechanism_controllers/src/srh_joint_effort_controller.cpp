@@ -169,33 +169,42 @@ namespace controller
       initialized_ = true;
       command_ = 0.0;
     }
-
-    // The commanded effort is the error directly:
-    // the PID loop for the force controller is running on the
-    // motorboard.
-    double commanded_effort = command_;  // clamp_command(command_) // do not use urdf effort limits;
-
-    // Clamps the effort
-    commanded_effort = min(commanded_effort, (max_force_demand * max_force_factor_));
-    commanded_effort = max(commanded_effort, -(max_force_demand * max_force_factor_));
-
-    // Friction compensation
-    if (has_j2)
+    int divisor = 1;
+    double commanded_effort = 0.0;
+    if (loop_count_ % divisor == 0)
     {
-      commanded_effort += friction_compensator->friction_compensation(
-              joint_state_->position_ + joint_state_2->position_, joint_state_->velocity_ + joint_state_2->velocity_,
-              static_cast<int>(commanded_effort), friction_deadband);
+      // The commanded effort is the error directly:
+      // the PID loop for the force controller is running on the
+      // motorboard.
+      commanded_effort = command_;  // clamp_command(command_) // do not use urdf effort limits;
+
+      // Clamps the effort
+      commanded_effort = min(commanded_effort, (max_force_demand * max_force_factor_));
+      commanded_effort = max(commanded_effort, -(max_force_demand * max_force_factor_));
+
+      // Friction compensation
+      if (has_j2)
+      {
+        commanded_effort += friction_compensator->friction_compensation(
+                joint_state_->position_ + joint_state_2->position_, joint_state_->velocity_ + joint_state_2->velocity_,
+                static_cast<int>(commanded_effort), friction_deadband);
+      }
+      else
+      {
+        commanded_effort += friction_compensator->friction_compensation(joint_state_->position_, joint_state_->velocity_,
+                                                                        static_cast<int>(commanded_effort),
+                                                                        friction_deadband);
+      }
+      last_commanded_effort = commanded_effort;
     }
     else
     {
-      commanded_effort += friction_compensator->friction_compensation(joint_state_->position_, joint_state_->velocity_,
-                                                                      static_cast<int>(commanded_effort),
-                                                                      friction_deadband);
+      commanded_effort = last_commanded_effort;
     }
 
     joint_state_->commanded_effort_ = commanded_effort;
 
-    if (true) //(loop_count_ % 10 == 0)
+    if (loop_count_ % divisor == 0)
     {
       msg_.header.stamp = time;
       msg_.set_point = command_;

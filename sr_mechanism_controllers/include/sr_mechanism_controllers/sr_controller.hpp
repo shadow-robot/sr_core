@@ -89,6 +89,7 @@ public:
   bool has_j2;
   /**< true if this is a joint 0. */
   double command_;                                /**< Last commanded position. */
+  double last_commanded_effort, last_error_position;
 
 protected:
   // true if this is joint 0

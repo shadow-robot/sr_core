@@ -202,66 +202,78 @@ namespace controller
       resetJointState();
       initialized_ = true;
     }
-    if (has_j2)
-    {
-      command_ = joint_state_->commanded_position_ + joint_state_2->commanded_position_;
-    }
-    else
-    {
-      command_ = joint_state_->commanded_position_;
-    }
-    command_ = clamp_command(command_);
-
     // Compute position demand from position error:
     double error_position = 0.0;
     double commanded_effort = 0.0;
-
-    if (has_j2)
-    {
-      error_position = (joint_state_->position_ + joint_state_2->position_) - command_;
-    }
-    else
-    {
-      error_position = joint_state_->position_ - command_;
-    }
-
-    // setting nb_errors_for_avg to 1:
-    bool in_deadband = hysteresis_deadband.is_in_deadband(command_, error_position, position_deadband, 5.0, 1);
-
-    // don't compute the error if we're in the deadband.
-    if (in_deadband)
-    {
-      error_position = 0.0;
-    }
-
-    commanded_effort = pid_controller_position_->computeCommand(-error_position, period);
-
-    // clamp the result to max force
-    commanded_effort = min(commanded_effort, (max_force_demand * max_force_factor_));
-    commanded_effort = max(commanded_effort, -(max_force_demand * max_force_factor_));
-
-    if (!in_deadband)
+    
+    int divisor = 1;
+    if (loop_count_ % divisor == 0)
     {
       if (has_j2)
       {
-        commanded_effort += friction_compensator->friction_compensation(
-                joint_state_->position_ + joint_state_2->position_,
-                joint_state_->velocity_ + joint_state_2->velocity_,
-                static_cast<int>(commanded_effort),
-                friction_deadband);
+        command_ = joint_state_->commanded_position_ + joint_state_2->commanded_position_;
       }
       else
       {
-        commanded_effort += friction_compensator->friction_compensation(joint_state_->position_,
-                                                                        joint_state_->velocity_,
-                                                                        static_cast<int>(commanded_effort),
-                                                                        friction_deadband);
+        command_ = joint_state_->commanded_position_;
       }
+      command_ = clamp_command(command_);
+
+
+      if (has_j2)
+      {
+        error_position = (joint_state_->position_ + joint_state_2->position_) - command_;
+      }
+      else
+      {
+        error_position = joint_state_->position_ - command_;
+      }
+
+      // setting nb_errors_for_avg to 1:
+      bool in_deadband = hysteresis_deadband.is_in_deadband(command_, error_position, position_deadband, 5.0, 1);
+
+      // don't compute the error if we're in the deadband.
+      if (in_deadband)
+      {
+        error_position = 0.0;
+      }
+
+      commanded_effort = pid_controller_position_->computeCommand(-error_position, period * divisor);
+
+      // clamp the result to max force
+      commanded_effort = min(commanded_effort, (max_force_demand * max_force_factor_));
+      commanded_effort = max(commanded_effort, -(max_force_demand * max_force_factor_));
+
+      if (!in_deadband)
+      {
+        if (has_j2)
+        {
+          commanded_effort += friction_compensator->friction_compensation(
+                  joint_state_->position_ + joint_state_2->position_,
+                  joint_state_->velocity_ + joint_state_2->velocity_,
+                  static_cast<int>(commanded_effort),
+                  friction_deadband);
+        }
+        else
+        {
+          commanded_effort += friction_compensator->friction_compensation(joint_state_->position_,
+                                                                          joint_state_->velocity_,
+                                                                          static_cast<int>(commanded_effort),
+                                                                          friction_deadband);
+        }
+      }
+      last_commanded_effort = commanded_effort;
+      last_error_position = error_position;
+    }
+    else
+    {
+      commanded_effort = last_commanded_effort;
+      error_position = last_error_position;
     }
 
     joint_state_->commanded_effort_ = commanded_effort;
 
-    if (true) // if (loop_count_ % 10 == 0)
+    if (loop_count_ % divisor == 0)
     {
       msg_.header.stamp = time;
       msg_.set_point = command_;
