@@ -93,7 +93,7 @@ namespace controller
     double dummy;
     pid_controller_position_->getGains(p_init_, i_init_, d_init_, i_clamp_, dummy);
 
-    controller_state_publisher_.reset(new realtime_tools::RealtimePublisher<control_msgs::JointControllerState>
+    controller_state_publisher_.reset(new sr_utilities::RealtimePublisher<control_msgs::JointControllerState>
                                               (node_, "state", 1));
 
     ROS_DEBUG(" --------- ");

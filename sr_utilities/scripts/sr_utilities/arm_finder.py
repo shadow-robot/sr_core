@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # Copyright 2015 Shadow Robot Company Ltd.
 #
@@ -14,9 +14,10 @@
 # You should have received a copy of the GNU General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import
 import rospy
 from urdf_parser_py.urdf import URDF
-from hand_finder import HandJoints
+from .hand_finder import HandJoints
 
 
 class ArmConfig(object):
@@ -71,7 +72,7 @@ class ArmFinder(object):
                     if not match_suffix:
                         possible_arm_joints.append(joint.name)
 
-            for arm_id, arm_mapping in self.arm_config.mapping.iteritems():
+            for arm_id, arm_mapping in self.arm_config.mapping.items():
                 self.arm_joints[arm_mapping] = []
                 arm_joint_prefix = self.arm_config.joint_prefix[arm_id]
                 for joint_name in possible_arm_joints:

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # Copyright 2011 Shadow Robot Company Ltd.
 #
@@ -16,10 +16,11 @@
 
 # This node combines 5 virtual touch sensors into a ShadowPST message compatible with etherCAT hand
 
+from __future__ import absolute_import
 import rospy
 from std_msgs.msg import Float64
 from sr_robot_msgs.msg import ShadowPST
-import thread
+import threading
 
 
 class MergeMessages(object):
@@ -33,7 +34,7 @@ class MergeMessages(object):
         self.rate = rospy.Rate(25.0)
         self.pub = rospy.Publisher("/tactile", ShadowPST)
         self.pst = [0.0, 0.0, 0.0, 0.0, 0.0]
-        self.mutex = thread.allocate_lock()
+        self.mutex = threading.allocate_lock()
 
     def ff_cb(self, msg):
         self.mutex.acquire()
@@ -73,6 +74,7 @@ class MergeMessages(object):
 
         pst_state_msg.header.stamp = rospy.Time.now()
         self.pub.publish(pst_state_msg)
+
 
 if __name__ == '__main__':
     merger = MergeMessages()

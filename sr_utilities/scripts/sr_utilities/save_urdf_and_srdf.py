@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # Copyright 2017 Shadow Robot Company Ltd.
 #
@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import
 import rospy
 
 
@@ -25,9 +26,10 @@ class SaveUrdfAndSrdf(object):
         if rospy.has_param('/robot_description'):
             urdf_str = rospy.get_param('/robot_description')
             path = path_to_save_files + "/" + file_name + ".urdf"
-            urdf_file = open(path, "wb")
+            urdf_file = open(path, "w")
             urdf_file.write(urdf_str)
             urdf_file.close()
+            print("urdf saved successfully:" + path)
             return path
         else:
             rospy.logerr("Parameter server does not have /robot_description param")
@@ -36,9 +38,10 @@ class SaveUrdfAndSrdf(object):
         if rospy.has_param('/robot_description_semantic'):
             srdf_str = rospy.get_param('/robot_description_semantic')
             path = path_to_save_files + "/" + file_name + ".srdf"
-            srdf_file = open(path, "wb")
+            srdf_file = open(path, "w")
             srdf_file.write(srdf_str)
             srdf_file.close()
+            print("srdf saved successfully:" + path)
             return path
         else:
             rospy.logerr("Parameter server does not have /robot_description_semantics param")

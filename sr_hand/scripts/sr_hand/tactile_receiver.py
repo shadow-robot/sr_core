@@ -1,6 +1,6 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
-# Copyright 2014 Shadow Robot Company Ltd.
+# Copyright 2014-2021 Shadow Robot Company Ltd.
 #
 # This program is free software: you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the Free
@@ -14,8 +14,9 @@
 # You should have received a copy of the GNU General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import
 import rospy
-
+import rostopic
 from sr_robot_msgs.msg import BiotacAll, ShadowPST, UBI0All
 
 
@@ -53,28 +54,16 @@ class TactileReceiver(object):
                 prefix + "tactile", UBI0All, self.tactile_callback, queue_size=1)
 
     def find_tactile_type(self):
-        try:
-            rospy.wait_for_message(
-                self._prefix + "tactile", ShadowPST, timeout=1.0)
-            return "PST"
-        except (rospy.ROSException, rospy.ROSInterruptException):
-            pass
+        message_type = rostopic.get_topic_type("/" + self._prefix + "tactile")[0]
+        if message_type:
+            if "ShadowPST" in message_type:
+                return "PST"
+            elif "BiotacAll" in message_type:
+                return "biotac"
+            elif "UBI0All" in message_type:
+                return "UBI0"
 
-        try:
-            rospy.wait_for_message(
-                self._prefix + "tactile", BiotacAll, timeout=1.0)
-            return "biotac"
-        except (rospy.ROSException, rospy.ROSInterruptException):
-            pass
-
-        try:
-            rospy.wait_for_message(
-                self._prefix + "tactile", UBI0All, timeout=1.0)
-            return "UBI0"
-        except (rospy.ROSException, rospy.ROSInterruptException):
-            rospy.logwarn(
-                "No tactile topic found. This is normal for a simulated hand")
-
+        rospy.logwarn("No supported tactile topic found. This is normal for a simulated hand")
         return None
 
     def tactile_callback(self, tactile_msg):

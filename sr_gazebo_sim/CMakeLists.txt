@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.0.2)
 project(sr_gazebo_sim)
 
 find_package(catkin REQUIRED COMPONENTS roscpp sr_hardware_interface cmake_modules ros_ethercat_model gazebo_ros_control)
@@ -7,7 +7,7 @@ find_package(gazebo REQUIRED)
 
 include_directories(include ${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS} ${TinyXML2_INCLUDE_DIRS} ${GAZEBO_INCLUDE_DIRS} ${SDFormat_INCLUDE_DIRS})
 
-add_compile_options(${GAZEBO_CXX_FLAGS})
+add_compile_options(-std=c++17)
 
 catkin_package(
         DEPENDS TinyXML2

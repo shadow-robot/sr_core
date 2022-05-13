@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # Copyright 2011 Shadow Robot Company Ltd.
 #
@@ -24,12 +24,12 @@ class Grasp(object):
         self.joints_and_positions = {}
 
     def display_grasp(self):
-        print self.grasp_name
-        print self.joints_and_positions
+        print(self.grasp_name)
+        print(self.joints_and_positions)
 
     def convert_to_xml(self):
         grasp = '	<grasp name="' + self.grasp_name + '">' + '\n'
-        for key, value in self.joints_and_positions.items():
+        for key, value in list(self.joints_and_positions.items()):
             grasp = grasp + '		<joint name="' + \
                 str(key) + '">' + str(value) + '</joint>\n'
         grasp = grasp + '	</grasp>' + '\n'

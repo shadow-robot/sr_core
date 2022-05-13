@@ -12,7 +12,8 @@
 # You should have received a copy of the GNU General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from distutils.core import setup
+from __future__ import absolute_import
+from setuptools import setup
 from catkin_pkg.python_setup import generate_distutils_setup
 
 # fetch values from package.xml

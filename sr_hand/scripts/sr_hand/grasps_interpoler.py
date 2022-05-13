@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # Copyright 2011 Shadow Robot Company Ltd.
 #
@@ -34,7 +34,7 @@ class GraspInterpoler(object):
         # [ starting_value, end_value ]
         self.from_grasp1_to_grasp2 = {}
 
-        for joint in self.grasp_from.joints_and_positions.keys():
+        for joint in list(self.grasp_from.joints_and_positions.keys()):
             # if joint in self.grasp_to.joints_and_positions.keys():
             self.from_grasp1_to_grasp2.update({
                 joint: [self.grasp_from.joints_and_positions.get(joint),
@@ -50,7 +50,7 @@ class GraspInterpoler(object):
         self.percentage = percentage
         positions_to_send = {}
 
-        for joint in self.from_grasp1_to_grasp2.iteritems():
+        for joint in self.from_grasp1_to_grasp2.items():
             new_target = percentage / 100.0 * (joint[1][1] - joint[1][0])
             positions_to_send.update({joint[0]: new_target})
 
@@ -58,8 +58,8 @@ class GraspInterpoler(object):
 
     def interpolate(self, percentage):
         position_to_send = {}
-        for name, position in self.grasp_to.joints_and_positions.items():
-            if name in self.grasp_from.joints_and_positions.keys():
+        for name, position in list(self.grasp_to.joints_and_positions.items()):
+            if name in list(self.grasp_from.joints_and_positions.keys()):
                 pos_from = self.grasp_from.joints_and_positions[name]
                 pos_to = position
                 position_to_send[name] = pos_from + (

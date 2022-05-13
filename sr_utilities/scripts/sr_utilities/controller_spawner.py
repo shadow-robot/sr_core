@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # Copyright 2020 Shadow Robot Company Ltd.
 #
@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import
 import os
 import re
 import rospkg
@@ -32,7 +33,7 @@ class ControllerSpawner(object):
                    "lh_MFJ1", "lh_MFJ2", "lh_MFJ3", "lh_MFJ4", "lh_RFJ1", "lh_RFJ2", "lh_RFJ3", "lh_RFJ4", "lh_THJ1",
                    "lh_THJ2", "lh_THJ3", "lh_THJ4", "lh_THJ5", "lh_WRJ1", "lh_WRJ2"]
 
-    def __init__(self, config_file_path, service_timeout):
+    def __init__(self, config_file_path, service_timeout, excluded_joints=[]):
         self._config_file_path = config_file_path
         self._service_timeout = service_timeout
         hand_finder = HandFinder()
@@ -43,14 +44,15 @@ class ControllerSpawner(object):
             for joint in self._joints[side]:
                 if joint in self._nonpresent_joints:
                     self._nonpresent_joints.remove(joint)
-        self._excluded_joints = []
-
+        self._excluded_joints = excluded_joints
         self._excluded_joints = list(set(self._excluded_joints) | set(self._nonpresent_joints))
+        rospy.logwarn("Excluded joints:")
+        rospy.logwarn(self._excluded_joints)
 
     def load_config(self):
         try:
             with open(self._config_file_path, 'r') as config_yaml:
-                self._config = yaml.load(config_yaml)
+                self._config = yaml.safe_load(config_yaml)
         except EnvironmentError as error:
             rospy.logerr("Failed to load controller spawner configuration from '{}'".format(self._config_file_path))
             rospy.logerr(error)
@@ -63,7 +65,7 @@ class ControllerSpawner(object):
 
     def load_controller_configs(self):
         success = True
-        if "controller_configs" in self._config.keys():
+        if "controller_configs" in list(self._config.keys()):
             for side in self._config["controller_configs"]:
                 if side not in self._joints:
                     continue
@@ -74,7 +76,7 @@ class ControllerSpawner(object):
                         resolved_config_path = self.resolve_path(side_config[controller],
                                                                  local_path=os.path.dirname(self._config_file_path))
                         with open(resolved_config_path) as controller_config_yaml:
-                            controller_config = yaml.load(controller_config_yaml)
+                            controller_config = yaml.safe_load(controller_config_yaml)
                             ControllerSpawner.remove_joints(controller_config, self._excluded_joints)
                             for key in controller_config:
                                 rospy.set_param(key, controller_config[key])
@@ -111,7 +113,7 @@ class ControllerSpawner(object):
         return string
 
     def parse_controllers(self):
-        if "controller_groups" not in self._config.keys():
+        if "controller_groups" not in list(self._config.keys()):
             rospy.logwarn("No controller groups specified in controller spawner config ({})".format(
                 self._config_file_path))
             return False
@@ -218,7 +220,7 @@ class ControllerSpawner(object):
     @staticmethod
     def remove_joints(config, joints=[]):
         joints_lower = [joint.lower() for joint in joints]
-        for key in config.keys():
+        for key in list(config.keys()):
             if key.lower() in joints_lower:
                 del config[key]
                 continue
@@ -240,7 +242,8 @@ if __name__ == "__main__":
     config_file_path = rospy.get_param("~config_file_path", "{}/config/controller_spawner.yaml".format(
         sr_robot_launch_path))
     service_timeout = rospy.get_param("~service_timeout", 60.0)
-    controller_spawner = ControllerSpawner(config_file_path, service_timeout)
+    excluded_joints = rospy.get_param("~excluded_joints", [])
+    controller_spawner = ControllerSpawner(config_file_path, service_timeout, excluded_joints)
     if not controller_spawner.load_config():
         rospy.logerr("Failed to load controller spawner config.")
         exit(1)

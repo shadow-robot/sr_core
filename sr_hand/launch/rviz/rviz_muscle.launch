@@ -1,7 +1,7 @@
 <launch>
   <param name="sh_description"
-  command="xacro --inorder '$(find sr_description)/robots/shadowhand_muscle.urdf.xacro'" />
+  command="xacro '$(find sr_description)/robots/shadowhand_muscle.urdf.xacro'" />
   <param name="sa_description"
-  command="xacro --inorder '$(find sr_description)/robots/sr_arm_muscle.urdf.xacro'" />
+  command="xacro '$(find sr_description)/robots/sr_arm_muscle.urdf.xacro'" />
   <node pkg="rviz" name="rviz_visualizer" type="rviz" />
 </launch>

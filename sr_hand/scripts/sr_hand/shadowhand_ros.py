@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # Copyright 2011 Shadow Robot Company Ltd.
 #
@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import, division
 import time
 import os
 import math
@@ -170,7 +171,7 @@ class ShadowHand_ROS(object):
         # self.dict_ethercat_joints
         self.lastMsg = joints_data()
 
-        for joint_name in self.dict_ethercat_joints.keys():
+        for joint_name in list(self.dict_ethercat_joints.keys()):
             self.lastMsg.joints_list.append(
                 self.dict_ethercat_joints[joint_name])
             # self.lastMsg.joints_list_length++
@@ -257,7 +258,7 @@ class ShadowHand_ROS(object):
         @param topic: The new topic to be set as the hand publishing topic
         Set the library to listen to a new topic
         """
-        print 'Changing subscriber to ' + topic
+        print('Changing subscriber to ' + topic)
         self.sub = rospy.Subscriber(topic, joints_data, self.callback)
 
     def set_sendupdate_topic(self, topic):
@@ -265,7 +266,7 @@ class ShadowHand_ROS(object):
         @param topic: The new topic to be set as the hand subscribing topic
         Set the library to publish to a new topic
         """
-        print 'Changing publisher to ' + topic
+        print('Changing publisher to ' + topic)
         self.pub = rospy.Publisher(topic, sendupdate, latch=True)
 
     def sendupdate_from_dict(self, dicti):
@@ -277,7 +278,7 @@ class ShadowHand_ROS(object):
         self.sendupdate_lock.acquire()
 
         if (self.hand_type == "etherCAT") or (self.hand_type == "gazebo"):
-            for join in dicti.keys():
+            for join in list(dicti.keys()):
 
                 if join not in self.eth_publishers:
                     topic = "sh_" + \
@@ -290,7 +291,7 @@ class ShadowHand_ROS(object):
                 self.eth_publishers[join].publish(msg_to_send)
         elif self.hand_type == "CANhand":
             message = []
-            for join in dicti.keys():
+            for join in list(dicti.keys()):
                 message.append(
                     joint(joint_name=join, joint_target=dicti[join]))
             self.pub.publish(sendupdate(len(message), message))
@@ -328,7 +329,7 @@ class ShadowHand_ROS(object):
         Sends new targets to the hand from a dictionnary
         """
         message = []
-        for join in dicti.keys():
+        for join in list(dicti.keys()):
             message.append(joint(joint_name=join, joint_target=dicti[join]))
         self.pub_arm.publish(sendupdate(len(message), message))
 
@@ -455,7 +456,7 @@ class ShadowHand_ROS(object):
         """
         Resend the targets read in the lastMsg to the hand
         """
-        for key, value in self.dict_tar.items():
+        for key, value in list(self.dict_tar.items()):
             self.sendupdate(jointName=key, angle=value)
 
     def callVisualisationService(self, callList=0, reset=0):
@@ -466,10 +467,10 @@ class ShadowHand_ROS(object):
         Calls a ROS service to display various information in Rviz
         """
         if reset == 0:
-            print 'no reset'
+            print('no reset')
 
         if reset == 1:
-            print 'reset'
+            print('reset')
 
     def check_etherCAT_hand_presence(self):
         """
@@ -516,7 +517,7 @@ class ShadowHand_ROS(object):
             try:
                 rospy.wait_for_message(
                     topic, control_msgs.msg.JointControllerState, timeout=0.2)
-            except:
+            except Exception:
                 try:
                     self.topic_ending = "_mixed_position_velocity_controller"
                     topic = "sh_" + \

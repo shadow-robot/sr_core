@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # Copyright 2014 Shadow Robot Company Ltd.
 #
@@ -14,58 +14,13 @@
 # You should have received a copy of the GNU General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import
 import rospy
 import rospkg
 from urdf_parser_py.urdf import URDF
 import time
 
 DEFAULT_TIMEOUT = 60.0
-
-
-class HandControllerTuning(object):
-    def __init__(self, mapping):
-        """
-
-        """
-        ros_pack = rospkg.RosPack()
-        ethercat_path = ros_pack.get_path('sr_ethercat_hand_config')
-        self.friction_compensation = {}
-        self.host_control = {}
-        self.motor_control = {}
-        for hand in mapping:
-            self.friction_compensation[mapping[hand]] = \
-                ethercat_path + '/controls/' + 'friction_compensation.yaml'
-            host_path = ethercat_path + '/controls/host/' + mapping[hand] + '/'
-            self.host_control[mapping[hand]] = \
-                [host_path + 'sr_edc_calibration_controllers.yaml',
-                 host_path + 'sr_edc_joint_velocity_controllers_PWM.yaml',
-                 host_path + 'sr_edc_effort_controllers_PWM.yaml',
-                 host_path + 'sr_edc_joint_velocity_controllers.yaml',
-                 host_path + 'sr_edc_effort_controllers.yaml',
-                 host_path + 'sr_edc_mixed_position_velocity_'
-                             'joint_controllers_PWM.yaml',
-                 host_path + 'sr_edc_joint_position_controllers_PWM.yaml',
-                 host_path + 'sr_edc_mixed_position_velocity_'
-                             'joint_controllers.yaml',
-                 host_path + 'sr_edc_joint_position_controllers.yaml']
-
-            self.motor_control[mapping[hand]] = \
-                ethercat_path + '/controls/motors/' +\
-                mapping[hand] + '/motor_board_effort_controllers.yaml'
-
-
-class HandCalibration(object):
-    def __init__(self, mapping):
-        """
-
-        """
-        ros_pack = rospkg.RosPack()
-        ethercat_path = ros_pack.get_path('sr_ethercat_hand_config')
-        self.calibration_path = {}
-        for hand in mapping:
-            self.calibration_path[mapping[hand]] = \
-                ethercat_path + '/calibrations/' + mapping[hand] + '/' \
-                + "calibration.yaml"
 
 
 class HandConfig(object):
@@ -141,9 +96,9 @@ class HandJoints(object):
                 if joint.type != 'fixed':
                     prefix = joint.name[:3]
                     # is there an empty prefix ?
-                    if "" in joint_prefix.values():
+                    if "" in list(joint_prefix.values()):
                         joints_tmp.append(joint.name)
-                    elif prefix not in joint_prefix.values():
+                    elif prefix not in list(joint_prefix.values()):
                         rospy.logdebug("joint " + joint.name + " has invalid "
                                        "prefix:" + prefix)
                     elif prefix == joint_prefix[hand]:
@@ -195,11 +150,6 @@ class HandFinder(object):
             self._hand_h = True
             self._hand_h_parameters = rospy.get_param("/fh_hand")
 
-    def get_calibration_path(self):
-        if not self._hand_e:
-            rospy.logerr("No Hand E present - can't get calibration path")
-        return self.calibration_path
-
     def get_hand_joints(self):
         # TODO(@anyone): update HandJoints to work with Hand H. Didn't seem necessary yet, so left for now - dg
         if not self._hand_e:
@@ -210,11 +160,6 @@ class HandFinder(object):
         if not self._hand_e:
             rospy.logerr("No Hand E present - can't get hand parameters")
         return self.hand_config
-
-    def get_hand_control_tuning(self):
-        if not self._hand_e:
-            rospy.logerr("No Hand E present - can't get hand control_tuning")
-        return self.hand_control_tuning
 
     def hand_e_available(self):
         return self._hand_e
