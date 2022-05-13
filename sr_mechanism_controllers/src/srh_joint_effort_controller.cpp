@@ -70,8 +70,10 @@ namespace controller
       return false;
     }
 
-    controller_state_publisher_.reset(new realtime_tools::RealtimePublisher<control_msgs::JointControllerState>
-                                              (node_, "state", 1));
+    int queue_size = 50;
+    controller_state_publisher_.reset(new sr_utilities::RealtimePublisher<control_msgs::JointControllerState>
+                                              (node_, "state", queue_size));
+    msg_buffer_.reset(new boost::circular_buffer<control_msgs::JointControllerState>(queue_size));
 
     ROS_DEBUG(" --------- ");
     ROS_DEBUG_STREAM("Init: " << joint_name_);
@@ -167,51 +169,67 @@ namespace controller
       initialized_ = true;
       command_ = 0.0;
     }
-
-    // The commanded effort is the error directly:
-    // the PID loop for the force controller is running on the
-    // motorboard.
-    double commanded_effort = command_;  // clamp_command(command_) // do not use urdf effort limits;
-
-    // Clamps the effort
-    commanded_effort = min(commanded_effort, (max_force_demand * max_force_factor_));
-    commanded_effort = max(commanded_effort, -(max_force_demand * max_force_factor_));
-
-    // Friction compensation
-    if (has_j2)
+    int divisor = 1;
+    double commanded_effort = 0.0;
+    if (loop_count_ % divisor == 0)
     {
-      commanded_effort += friction_compensator->friction_compensation(
-              joint_state_->position_ + joint_state_2->position_, joint_state_->velocity_ + joint_state_2->velocity_,
-              static_cast<int>(commanded_effort), friction_deadband);
+      // The commanded effort is the error directly:
+      // the PID loop for the force controller is running on the
+      // motorboard.
+      commanded_effort = command_;  // clamp_command(command_) // do not use urdf effort limits;
+
+      // Clamps the effort
+      commanded_effort = min(commanded_effort, (max_force_demand * max_force_factor_));
+      commanded_effort = max(commanded_effort, -(max_force_demand * max_force_factor_));
+
+      // Friction compensation
+      if (has_j2)
+      {
+        commanded_effort += friction_compensator->friction_compensation(
+                joint_state_->position_ + joint_state_2->position_, joint_state_->velocity_ + joint_state_2->velocity_,
+                static_cast<int>(commanded_effort), friction_deadband);
+      }
+      else
+      {
+        commanded_effort += friction_compensator->friction_compensation(joint_state_->position_, joint_state_->velocity_,
+                                                                        static_cast<int>(commanded_effort),
+                                                                        friction_deadband);
+      }
+      last_commanded_effort = commanded_effort;
     }
     else
     {
-      commanded_effort += friction_compensator->friction_compensation(joint_state_->position_, joint_state_->velocity_,
-                                                                      static_cast<int>(commanded_effort),
-                                                                      friction_deadband);
+      commanded_effort = last_commanded_effort;
     }
 
     joint_state_->commanded_effort_ = commanded_effort;
 
-    if (loop_count_ % 10 == 0)
+    if (loop_count_ % divisor == 0)
     {
+      msg_.header.stamp = time;
+      msg_.set_point = command_;
+      msg_.process_value = joint_state_->effort_;
+      // @todo compute the derivative of the effort.
+      msg_.process_value_dot = -1.0;
+      msg_.error = commanded_effort - joint_state_->effort_;
+      msg_.time_step = period.toSec();
+      msg_.command = commanded_effort;
+
+      double dummy;
+      getGains(msg_.p,
+                msg_.i,
+                msg_.d,
+                msg_.i_clamp,
+                dummy);
+      msg_buffer_->push_back(msg_);
+
       if (controller_state_publisher_ && controller_state_publisher_->trylock())
       {
-        controller_state_publisher_->msg_.header.stamp = time;
-        controller_state_publisher_->msg_.set_point = command_;
-        controller_state_publisher_->msg_.process_value = joint_state_->effort_;
-        // @todo compute the derivative of the effort.
-        controller_state_publisher_->msg_.process_value_dot = -1.0;
-        controller_state_publisher_->msg_.error = commanded_effort - joint_state_->effort_;
-        controller_state_publisher_->msg_.time_step = period.toSec();
-        controller_state_publisher_->msg_.command = commanded_effort;
-
-        double dummy;
-        getGains(controller_state_publisher_->msg_.p,
-                 controller_state_publisher_->msg_.i,
-                 controller_state_publisher_->msg_.d,
-                 controller_state_publisher_->msg_.i_clamp,
-                 dummy);
+        while(!msg_buffer_->empty())
+        {
+            controller_state_publisher_->msg_buffer_->push_back(msg_buffer_->front());
+            msg_buffer_->pop_front();
+        }
         controller_state_publisher_->unlockAndPublish();
       }
     }

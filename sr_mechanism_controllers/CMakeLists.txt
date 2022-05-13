@@ -49,6 +49,7 @@ add_library(sr_mechanism_controllers
         example/srh_syntouch_controllers.cpp
         src/sr_controller.cpp
         src/sr_plain_pid.cpp
+        src/joint_state_controller.cpp
 )
 add_dependencies(sr_mechanism_controllers ${catkin_EXPORTED_TARGETS})
 target_link_libraries(sr_mechanism_controllers ${catkin_LIBRARIES})
