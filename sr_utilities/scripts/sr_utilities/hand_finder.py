@@ -130,8 +130,6 @@ class HandFinder(object):
         self.hand_config = HandConfig(self._hand_parameters["mapping"],
                                       self._hand_parameters["joint_prefix"])
         self.hand_joints = HandJoints(self.hand_config.mapping, self.hand_config.joint_prefix, timeout).joints
-        self.calibration_path = HandCalibration(self.hand_config.mapping).calibration_path
-        self.hand_control_tuning = HandControllerTuning(self.hand_config.mapping)
 
     def wait_for_hand_params(self, timeout_in_secs):
         start_time = rospy.get_time()
