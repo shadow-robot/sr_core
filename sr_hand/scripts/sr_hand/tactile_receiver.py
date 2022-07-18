@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-# Copyright 2014-2021 Shadow Robot Company Ltd.
+# Copyright 2014-2022 Shadow Robot Company Ltd.
 #
 # This program is free software: you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the Free
@@ -43,6 +43,10 @@ class TactileReceiver(object):
         self.tactile_type = self.find_tactile_type()
         self.tactile_state = None
 
+        if prefix not in ["rh/", "lh/"]:  # Otherwise, Bimanual mode
+            rospy.logwarn("Not yet possible to initialize Tactile Sensor group for multiple hands simultaneously.")
+            rospy.logwarn("Define TactileReceiver(hand_side) for each hand individually, rh/ and/or lh/..")
+
         if self.tactile_type == "PST":
             self.tactile_listener = rospy.Subscriber(
                 prefix + "tactile", ShadowPST, self.tactile_callback, queue_size=1)
@@ -63,7 +67,8 @@ class TactileReceiver(object):
             elif "UBI0All" in message_type:
                 return "UBI0"
 
-        rospy.logwarn("No supported tactile topic found. This is normal for a simulated hand")
+        rospy.logwarn(f"No supported tactile topic found (/{self._prefix}tactile). \
+            This is normal for a simulated hand or bimanual mode")
         return None
 
     def tactile_callback(self, tactile_msg):
