@@ -55,12 +55,19 @@ public:
 
   bool setGains(sr_robot_msgs::SetPidGains::Request &req, sr_robot_msgs::SetPidGains::Response &resp);
 
+  bool setTau(sr_robot_msgs::SetTau::Request &req, sr_robot_msgs::SetTau::Response &resp);
+
 private:
   /// Internal PID controller for the velocity loop.
   boost::scoped_ptr<control_toolbox::Pid> pid_controller_velocity_;
 
+  /// filter to smooth noisy joint date (ML Data collection)
+  sr_math_utils::filters::LowPassFilter pos_filter;
+
   /// the velocity deadband value used in the hysteresis_deadband
   double velocity_deadband;
+
+  double filter_tau = 0.05;
 
   /// We're using an hysteresis deadband.
   sr_deadband::HysteresisDeadband<double> hysteresis_deadband;

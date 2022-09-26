@@ -159,6 +159,7 @@ namespace filters
 class LowPassFilter
 {
 public:
+double tau;
   explicit LowPassFilter(double tau = 0.05)
           : is_first(true), dt(0.0),
             timestamp_1(0.0), q_prev(0.0),
@@ -208,7 +209,7 @@ public:
 
 private:
   bool is_first;
-  double tau, dt, timestamp_1, q_prev;
+  double dt, timestamp_1, q_prev;
 
   std::pair<double, double> value_derivative;
 };

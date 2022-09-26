@@ -54,6 +54,7 @@ namespace controller
 
     std::string robot_state_name;
     node_.param<std::string>("robot_state_name", robot_state_name, "unique_robot_hw");
+    pos_filter = sr_math_utils::filters::LowPassFilter(0.00000000000005);
 
     try
     {
@@ -120,6 +121,9 @@ namespace controller
     serve_set_gains_ = node_.advertiseService("set_gains", &SrhJointVelocityController::setGains, this);
     serve_reset_gains_ = node_.advertiseService("reset_gains", &SrhJointVelocityController::resetGains, this);
 
+    serve_set_tau_ = node_.advertiseService("set_tau", &SrhJointVelocityController::setTau, this);
+
+
     after_init();
     return true;
   }
@@ -136,6 +140,15 @@ namespace controller
     else
       ROS_WARN_STREAM("Reseting PID for joint  " << joint_state_->joint_->name);
   }
+
+  
+  bool SrhJointVelocityController::setTau(sr_robot_msgs::SetTau::Request &req,
+                                          sr_robot_msgs::SetTau::Response &resp)
+  {
+    filter_tau = req.tau;
+    pos_filter.tau = filter_tau;
+    return true;
+  }                                          
 
   bool SrhJointVelocityController::setGains(sr_robot_msgs::SetPidGains::Request &req,
                                             sr_robot_msgs::SetPidGains::Response &resp)
@@ -205,14 +218,23 @@ namespace controller
 
     double error_velocity = 0.0;
     double commanded_effort = 0.0;
+    double current_velocity = 0.0;
+    double current_acceleration = 0.0;
+
 
     if (has_j2)
     {
-      error_velocity = (joint_state_->velocity_ + joint_state_2->velocity_) - command_;
+      std::pair<double, double> velocity_and_acceleration = pos_filter.compute(joint_state_->velocity_ + joint_state_2->velocity_,
+                                                                               time.toSec());
+      current_velocity = velocity_and_acceleration.first;
+      error_velocity = (current_velocity) - command_;
     }
     else
     {
-      error_velocity = joint_state_->velocity_ - command_;
+      std::pair<double, double> velocity_and_acceleration = pos_filter.compute(joint_state_->velocity_,
+                                                                               time.toSec());
+      current_velocity = velocity_and_acceleration.first;
+      error_velocity = current_velocity - command_;
     }
 
     bool in_deadband = hysteresis_deadband.is_in_deadband(command_, error_velocity, velocity_deadband);
@@ -226,7 +248,7 @@ namespace controller
         pid_controller_velocity_->reset();
       }
     }
-
+    
     // compute the effort demand using the velocity pid loop
     commanded_effort = pid_controller_velocity_->computeCommand(-error_velocity, period);
 
@@ -258,13 +280,21 @@ namespace controller
       {
         controller_state_publisher_->msg_.header.stamp = time;
         controller_state_publisher_->msg_.set_point = command_;
-        if (has_j2)
+        bool publish_filtered_velocity = true;
+        if (publish_filtered_velocity)
         {
-          controller_state_publisher_->msg_.process_value = joint_state_->velocity_ + joint_state_2->velocity_;
+          controller_state_publisher_->msg_.process_value = current_velocity;
         }
         else
         {
-          controller_state_publisher_->msg_.process_value = joint_state_->velocity_;
+          if (has_j2)
+          {
+            controller_state_publisher_->msg_.process_value = joint_state_->velocity_ + joint_state_2->velocity_;
+          }
+          else
+          {
+            controller_state_publisher_->msg_.process_value = joint_state_->velocity_;
+          }
         }
         controller_state_publisher_->msg_.error = error_velocity;
         controller_state_publisher_->msg_.time_step = period.toSec();

@@ -43,6 +43,7 @@
 #include <string>
 
 #include <sr_robot_msgs/SetPidGains.h>
+#include <sr_robot_msgs/SetTau.h>
 
 #include <sr_utilities/sr_deadband.hpp>
 
@@ -158,6 +159,7 @@ protected:
   ros::Subscriber sub_command_;
   ros::ServiceServer serve_set_gains_;
   ros::ServiceServer serve_reset_gains_;
+  ros::ServiceServer serve_set_tau_;
 
   /// clamps the force demand to this value
   double max_force_demand;

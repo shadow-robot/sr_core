@@ -231,7 +231,8 @@ namespace controller
       error_position = 0.0;
     }
 
-    commanded_effort = pid_controller_position_->computeCommand(-error_position, period);
+    commanded_effort = pid_controller_position_->computeCommandSmooth(-error_position, period);
+    // commanded_effort = pid_controller_position_->computeCommand(-error_position, period);
 
     // clamp the result to max force
     commanded_effort = min(commanded_effort, (max_force_demand * max_force_factor_));
@@ -258,7 +259,8 @@ namespace controller
 
     joint_state_->commanded_effort_ = commanded_effort;
 
-    if (loop_count_ % 10 == 0)
+    // if (loop_count_ % 10 == 0)
+    if (true)
     {
       if (controller_state_publisher_ && controller_state_publisher_->trylock())
       {
