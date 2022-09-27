@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# pylint: disable=C0103
 
 # Copyright 2011 Shadow Robot Company Ltd.
 #
@@ -17,7 +18,7 @@
 VERBOSE = 1
 
 
-class Grasp(object):
+class Grasp: # pylint disable:C0103
 
     def __init__(self):
         self.grasp_name = ""

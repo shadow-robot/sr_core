@@ -15,7 +15,7 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
-class GraspInterpoler(object):
+class GraspInterpoler:
 
     def __init__(self, grasp_from, grasp_to="current"):
         """

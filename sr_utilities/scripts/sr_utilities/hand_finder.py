@@ -16,11 +16,10 @@
 
 from __future__ import absolute_import
 import rospy
-import rospkg
 from urdf_parser_py.urdf import URDF
 
 
-class HandConfig(object):
+class HandConfig:
 
     def __init__(self, mapping, joint_prefix):
         """
@@ -36,7 +35,8 @@ class HandConfig(object):
         self.joint_prefix = joint_prefix
 
 
-class HandJoints(object):
+class HandJoints:
+    TIMEOUT_WAIT_FOR_PARAMS_IN_SECS = 60.0
 
     @classmethod
     def get_default_joints(cls):
@@ -53,10 +53,9 @@ class HandJoints(object):
         self.joints = {}
         hand_joints = []
         joints = self.get_default_joints()
-        TIMEOUT_WAIT_FOR_PARAMS_IN_SECS = 60.0
         start_time = rospy.get_time()
         while not rospy.has_param("/robot_description"):
-            if (rospy.get_time() - start_time > TIMEOUT_WAIT_FOR_PARAMS_IN_SECS):
+            if rospy.get_time() - start_time > self.TIMEOUT_WAIT_FOR_PARAMS_IN_SECS:
                 rospy.logwarn("No robot_description found on parameter server."
                               "Joint names are loaded for 5 finger hand")
                 # concatenate all the joints with prefixes
@@ -103,12 +102,13 @@ class HandJoints(object):
                     self.joints[mapping[hand]].append(joint_unordered)
 
 
-class HandFinder(object):
+class HandFinder:
     """
     The HandFinder is a utility library for detecting Shadow Hands running on
     the system. The idea is to make it easier to write generic code,
      using this library to handle prefixes, joint prefixes etc...
     """
+    TIMEOUT_WAIT_FOR_PARAMS_IN_SECS = 60.0
 
     def __init__(self):
         """
@@ -119,8 +119,8 @@ class HandFinder(object):
         self._hand_h = False
         self._hand_h_parameters = {}
 
-        TIMEOUT_WAIT_FOR_PARAMS_IN_SECS = 60.0
-        self.wait_for_hand_params(TIMEOUT_WAIT_FOR_PARAMS_IN_SECS)
+
+        self.wait_for_hand_params(self.TIMEOUT_WAIT_FOR_PARAMS_IN_SECS)
 
         self.hand_config = HandConfig(self._hand_parameters["mapping"],
                                       self._hand_parameters["joint_prefix"])
@@ -129,7 +129,7 @@ class HandFinder(object):
     def wait_for_hand_params(self, timeout_in_secs):
         start_time = rospy.get_time()
         while not rospy.has_param("/hand") and not rospy.has_param("/fh_hand"):
-            if (rospy.get_time() - start_time > timeout_in_secs):
+            if rospy.get_time() - start_time > timeout_in_secs:
                 rospy.logerr("No hand is detected")
                 break
         if rospy.has_param("/hand"):
@@ -180,7 +180,8 @@ class HandFinder(object):
             if serial is None:
                 serial = sorted(hand_parameters.mapping.keys())[number]
             return hand_parameters.joint_prefix[serial]
-        elif self._hand_h:
+        if self._hand_h:
             if name is None:
                 name = sorted(self._hand_h_parameters.keys())[number]
             return self._hand_h_parameters[name]['controller_prefix']
+        return None

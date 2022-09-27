@@ -15,9 +15,9 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import absolute_import
+import unittest
 import rospy
 import rostest
-import unittest
 from sr_utilities.arm_finder import ArmFinder
 
 

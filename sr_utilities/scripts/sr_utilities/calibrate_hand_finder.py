@@ -23,7 +23,7 @@ from std_msgs.msg import Bool
 from std_srvs.srv import Empty
 
 
-class CalibrateHand(object):
+class CalibrateHand:
     """
     This class resets all the motor boards of the Shadow Hand E present in the system.
     On reset, the motor board firmware causes a jiggle and zeroes the tendon strain gauges.
@@ -34,17 +34,18 @@ class CalibrateHand(object):
         rospy.wait_for_service("controller_manager/load_controller", timeout=120.0)
         self.pub_calibrated = rospy.Publisher('calibrated', Bool, queue_size=1, latch=True)
 
-    def generate_reset_services_list(self):
+    @staticmethod
+    def generate_reset_services_list():
         reset_service_list = []
         generated_reset_service_list = []
         service_list = []
 
         # We first read the list of available motor reset services in this namespace
         # this will allow us to avoid having to know the name of the robot driver node
-        ns = rospy.get_namespace()
+        namespace = rospy.get_namespace()
         while not reset_service_list:
             rospy.sleep(0.5)
-            service_list = rosservice.get_service_list(namespace=ns)
+            service_list = rosservice.get_service_list(namespace=namespace)
             reset_service_list = [srv for srv in service_list if '/reset_motor_' in srv]
             if not reset_service_list:
                 rospy.loginfo("Waiting for motor reset services")
@@ -72,7 +73,8 @@ class CalibrateHand(object):
 
         return reset_service_list
 
-    def calibrate(self, services):
+    @staticmethod
+    def calibrate(services):
         success = True
         for srv in services:
             rospy.wait_for_service(srv, timeout=4.0)

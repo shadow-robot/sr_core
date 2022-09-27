@@ -20,7 +20,7 @@ import rostopic
 from sr_robot_msgs.msg import BiotacAll, ShadowPST, UBI0All
 
 
-class TactileReceiver(object):
+class TactileReceiver:
 
     """
     Module that receives the tactile values.
@@ -58,9 +58,9 @@ class TactileReceiver(object):
         if message_type:
             if "ShadowPST" in message_type:
                 return "PST"
-            elif "BiotacAll" in message_type:
+            if "BiotacAll" in message_type:
                 return "biotac"
-            elif "UBI0All" in message_type:
+            if "UBI0All" in message_type:
                 return "UBI0"
 
         rospy.logwarn("No supported tactile topic found. This is normal for a simulated hand")

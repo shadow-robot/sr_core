@@ -19,7 +19,7 @@ import rospy
 from std_msgs.msg import Float64
 
 
-class FilterMessages(object):
+class FilterMessages:
     def __init__(self):
         rospy.init_node('mean_filter', anonymous=True)
 

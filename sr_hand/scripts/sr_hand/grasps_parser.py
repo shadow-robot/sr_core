@@ -76,16 +76,14 @@ class GraspParser():
         if xml_filename == "":
             xml_filename = self.xml_path
 
-        toWrite = grasp.convert_to_xml()
-        objFileRead = open(xml_filename, 'r')
-        previous = objFileRead.readlines()
-        objFileRead.close()
-        objFileWrite = open(xml_filename, 'w')
-        for index in range(0, len(previous) - 1):
-            objFileWrite.write(previous[index])
-        objFileWrite.write(toWrite)
-        objFileWrite.write('</root>')
-        objFileWrite.close()
+        to_write = grasp.convert_to_xml()
+        with open(xml_filename, 'r', encoding="utf-8") as obj_file_read:
+            previous = obj_file_read.readlines()
+        with open(xml_filename, 'w', encoding="utf-8") as obj_file_write:
+            for index in range(0, len(previous) - 1):
+                obj_file_write.write(previous[index])
+            obj_file_write.write(to_write)
+            obj_file_write.write('</root>')
 
         self.parse_tree(xml_filename)
 

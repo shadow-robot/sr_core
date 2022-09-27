@@ -15,12 +15,11 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import absolute_import
-import rospy
-from diagnostic_msgs.msg import DiagnosticArray
 from builtins import round
-
 import curses
 import traceback
+import rospy
+from diagnostic_msgs.msg import DiagnosticArray
 
 CASE_WIDTH = 20
 CASE_HEIGHT = 1
@@ -34,7 +33,7 @@ COOL = 50
 WARM = 55
 
 
-class Joint(object):
+class Joint:
     def __init__(self, screen, joint_name, x, y):
         self.screen = screen
         self.x = x
@@ -63,7 +62,7 @@ class Joint(object):
         # self.window.refresh()#0,0,0,0,1,15)
 
 
-class TemperatureMonitor(object):
+class TemperatureMonitor:
     MAX_X = 17
     MAX_Y = 21
 
@@ -97,7 +96,7 @@ class TemperatureMonitor(object):
             event = self.pad.getch()
             if event == ord("q"):
                 break
-            elif event == curses.KEY_RESIZE:
+            if event == curses.KEY_RESIZE:
                 self.resize_()
 
             elif event == ord("s"):

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# pylint: skip-file
 
 # Copyright 2011 Shadow Robot Company Ltd.
 #

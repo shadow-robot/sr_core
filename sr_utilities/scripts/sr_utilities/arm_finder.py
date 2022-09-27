@@ -20,7 +20,7 @@ from urdf_parser_py.urdf import URDF
 from .hand_finder import HandJoints
 
 
-class ArmConfig(object):
+class ArmConfig:
 
     def __init__(self, mapping, joint_prefix):
         """
@@ -30,7 +30,7 @@ class ArmConfig(object):
         self.joint_prefix = joint_prefix
 
 
-class ArmFinder(object):
+class ArmFinder:
     """
     The ArmFinder is a utility library for detecting arms running on
     the system. The idea is to make it easier to write generic code,

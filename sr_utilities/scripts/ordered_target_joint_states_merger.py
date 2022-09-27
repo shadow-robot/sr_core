@@ -15,9 +15,9 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import absolute_import
+import _thread
 import rospy
 from sensor_msgs.msg import JointState
-import _thread
 
 
 class MergeMessages:
