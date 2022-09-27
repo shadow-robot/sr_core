@@ -123,7 +123,7 @@ class ControllerSpawner:
             rospy.logwarn("No controller groups specified in controller spawner config ({})".format(
                 self._config_file_path))
             return False
-        for controller_group_name in self._config["controller_groups"]:
+        for controller_group_name in self._config["controller_groups"]:  # pylint: disable=R1702
             controller_group_ = []
             for side in self._config["controller_groups"][controller_group_name]:
                 side_controllers = self._config["controller_groups"][controller_group_name][side]
