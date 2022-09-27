@@ -144,13 +144,13 @@ class HandFinder(object):
     def is_type_hand_e(self):
         return self._hand_e
 
-    def get_hand_e_parameters:
+    def get_hand_e_parameters(self):
         return self._hand_parameters
 
     def is_type_hand_h(self):
         return self._hand_h
 
-    def get_hand_h_parameters(self)
+    def get_hand_h_parameters(self):
         return self._hand_h_parameters
 
     def get_hand_joints(self):
