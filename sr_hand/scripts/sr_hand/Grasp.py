@@ -18,7 +18,7 @@
 VERBOSE = 1
 
 
-class Grasp: # pylint disable:C0103
+class Grasp:  # pylint disable:C0103
 
     def __init__(self):
         self.grasp_name = ""

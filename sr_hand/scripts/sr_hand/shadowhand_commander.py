@@ -49,7 +49,6 @@ from sr_hand.Grasp import Grasp
 # See the examples directory in the package sr_examples.
 
 
-
 class Commander:
 
     def __init__(self):
@@ -105,7 +104,7 @@ class Commander:
             del joints['interpolation_time']
 
         if interpolation_time == 0.0:
-            self.mutex.acquire() # pylint: disable=R1732
+            self.mutex.acquire()  # pylint: disable=R1732
             self._prune_interpolators(joints)
             self.mutex.release()
             self.hand.sendupdate_from_dict(joints)
@@ -126,7 +125,7 @@ class Commander:
         rospy.logdebug("call interpolation")
         thread_name = threading.current_thread().name
         try:
-            self.mutex.acquire() # pylint: disable=R1732
+            self.mutex.acquire()  # pylint: disable=R1732
             self._prune_interpolators(joints)
             self.mutex.release()
 
@@ -143,7 +142,7 @@ class Commander:
             rate = rospy.Rate(1.0 / self.hand_interpolation_period)
 
             for interpolation in range(1, int(interpolation_time / self.hand_interpolation_period) + 1):
-                self.mutex.acquire() # pylint: disable=R1732
+                self.mutex.acquire()  # pylint: disable=R1732
                 targets_to_send = interpolator.interpolate(
                     100.0 * interpolation * self.hand_interpolation_period / interpolation_time)
                 self.mutex.release()
@@ -151,7 +150,7 @@ class Commander:
                 # rospy.loginfo("sent cmd n: %s" %(str(interpolation), ))
                 rate.sleep()
         finally:
-            self.mutex.acquire() # pylint: disable=R1732
+            self.mutex.acquire()  # pylint: disable=R1732
             self.grasp_interpolators.pop(thread_name, None)
             self.mutex.release()
             rospy.logdebug("end interpolation")

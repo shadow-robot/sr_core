@@ -119,7 +119,6 @@ class HandFinder:
         self._hand_h = False
         self._hand_h_parameters = {}
 
-
         self.wait_for_hand_params(self.TIMEOUT_WAIT_FOR_PARAMS_IN_SECS)
 
         self.hand_config = HandConfig(self._hand_parameters["mapping"],
