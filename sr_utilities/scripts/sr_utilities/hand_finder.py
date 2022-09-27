@@ -141,15 +141,6 @@ class HandFinder(object):
             self._hand_h = True
             self._hand_h_parameters = rospy.get_param("/fh_hand")
 
-    def is_type_hand_e(self):
-        return self._hand_e
-
-    def get_hand_e_parameters(self):
-        return self._hand_parameters
-
-    def is_type_hand_h(self):
-        return self._hand_h
-
     def get_hand_h_parameters(self):
         return self._hand_h_parameters
 
