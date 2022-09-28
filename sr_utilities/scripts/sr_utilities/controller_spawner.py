@@ -60,7 +60,7 @@ class ControllerSpawner:
             with open(self._config_file_path, 'r', encoding="utf-8") as config_yaml:
                 self._config = yaml.safe_load(config_yaml)
         except EnvironmentError as error:
-            rospy.logerr("Failed to load controller spawner configuration from '{}'".format(self._config_file_path))
+            rospy.logerr(f"Failed to load controller spawner configuration from '{self._config_file_path}'")
             rospy.logerr(error)
             return False
         if not self.load_controller_configs():
@@ -87,10 +87,9 @@ class ControllerSpawner:
                             for key in controller_config:
                                 rospy.set_param(key, controller_config[key])
                     except EnvironmentError as error:
-                        rospy.logerr("Failed to load {} controller configuration from '{}'".format(controller,
-                                     self._config_file_path))
+                        rospy.logerr(f"Failed to load {controller} controller configuration from '{self._config_file_path}'")
                         rospy.logerr(error)
-                        rospy.logerr("This path is defined in {}".format(self._config_file_path))
+                        rospy.logerr(f"This path is defined in {self._config_file_path}")
                         success = False
         return success
 
@@ -104,13 +103,13 @@ class ControllerSpawner:
                 package_path = ros_pack_.get_path(package_name)
                 path = re.sub(r'%rospack_find_(.+)%', package_path, path)
             except rospkg.common.ResourceNotFound as error:
-                rospy.logerr("Package '{}' in controller spawner config doesn't exist.".format(package_name))
+                rospy.logerr(f"Package '{package_name}' in controller spawner config doesn't exist.")
                 rospy.logerr(error)
         if path.startswith('/'):
             return path
         if local_path is None:
             return path
-        return "{}/{}".format(local_path, path)
+        return f"{local_path}/{path}"
 
     @staticmethod
     def resolve_string(string, joint_name=None):
@@ -120,8 +119,7 @@ class ControllerSpawner:
 
     def parse_controllers(self):
         if "controller_groups" not in list(self._config.keys()):
-            rospy.logwarn("No controller groups specified in controller spawner config ({})".format(
-                self._config_file_path))
+            rospy.logwarn(f"No controller groups specified in controller spawner config ({self._config_file_path})")
             return False
         for controller_group_name in self._config["controller_groups"]:  # pylint: disable=R1702
             controller_group_ = []
@@ -165,7 +163,7 @@ class ControllerSpawner:
 
     def switch_controllers(self, controller_group_name):
         if controller_group_name not in self._controller_groups:
-            rospy.logerr("There is no controller group named '{}'".format(controller_group_name))
+            rospy.logerr(f"There is no controller group named '{controller_group_name}'")
             return False
         desired_controllers = self._controller_groups[controller_group_name]
         try:
@@ -193,10 +191,10 @@ class ControllerSpawner:
                 load_controllers = rospy.ServiceProxy('controller_manager/load_controller', LoadController)
                 load_success = load_controllers(controller).ok
                 if not load_success:
-                    rospy.logerr("Failed to load controller '{}'".format(controller))
+                    rospy.logerr(f"Failed to load controller '{controller}'")
                     success = False
             except rospy.ServiceException as error:
-                rospy.logerr("Failed to load controller '{}'".format(controller))
+                rospy.logerr(f"Failed to load controller '{controller}'")
                 rospy.logerr(error)
                 success = False
 
@@ -207,12 +205,10 @@ class ControllerSpawner:
             start_success = switch_controllers(controllers_to_start, controllers_to_stop,
                                                SwitchControllerRequest.BEST_EFFORT, False, 0).ok
             if not start_success:
-                rospy.logerr("Failed to stop controllers {} and/or start controllers {}".format(controllers_to_stop,
-                                                                                                controllers_to_start))
+                rospy.logerr(f"Failed to stop controllers {controllers_to_stop} and/or start controllers {controllers_to_start}")
                 success = False
         except rospy.ServiceException as error:
-            rospy.logerr("Failed to stop controllers {} and/or start controllers {}".format(controllers_to_stop,
-                                                                                            controllers_to_start))
+            rospy.logerr(f"Failed to stop controllers {controllers_to_stop} and/or start controllers {controllers_to_start}")
             rospy.logerr(error)
             success = False
         if success:
@@ -245,8 +241,7 @@ if __name__ == "__main__":
     sr_robot_launch_path = ros_pack.get_path('sr_robot_launch')
     wait_for_topic = rospy.get_param("~wait_for", "")
     controller_group = rospy.get_param("~controller_group", "trajectory")
-    config_file_path = rospy.get_param("~config_file_path", "{}/config/controller_spawner.yaml".format(
-        sr_robot_launch_path))
+    config_file_path = rospy.get_param("~config_file_path", f"{sr_robot_launch_path}/config/controller_spawner.yaml")
     service_timeout = rospy.get_param("~service_timeout", 60.0)
     excluded_joints = rospy.get_param("~excluded_joints", [])
     controller_spawner = ControllerSpawner(config_file_path, service_timeout, excluded_joints)
@@ -254,6 +249,6 @@ if __name__ == "__main__":
         rospy.logerr("Failed to load controller spawner config.")
         sys.exit(1)
     if rospy.has_param("~wait_for"):
-        rospy.loginfo("Shadow controller spawner is waiting for topic '{}'...".format(rospy.get_param("~wait_for")))
+        rospy.loginfo(f"Shadow controller spawner is waiting for topic '{}'...".format(rospy.get_param("~wait_for")))
         rospy.wait_for_message(rospy.get_param("~wait_for"), rospy.AnyMsg)
     controller_spawner.switch_controllers(controller_group)
