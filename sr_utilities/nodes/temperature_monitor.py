@@ -36,8 +36,8 @@ WARM = 55
 class Joint:
     def __init__(self, screen, joint_name, x, y):
         self.screen = screen
-        self.x = x  # pylint: disable=C0103
-        self.y = y  # pylint: disable=C0103
+        self.x = x
+        self.y = y
         self.joint_name = joint_name
         self.temperature = -1
 
@@ -129,7 +129,7 @@ class TemperatureMonitor:
         self.refresh_()
 
     def refresh_(self):
-        y, x = self.screen.getmaxyx()  # pylint: disable=C0103
+        y, x = self.screen.getmaxyx()
         self.pad_pos_x_ = min(max(self.pad_pos_x_, 0), self.MAX_X - 1)
         self.pad_pos_y_ = min(max(self.pad_pos_y_, 0), self.MAX_Y - 1)
         self.pad.refresh(self.pad_pos_y_, self.pad_pos_x_, 0, 0, y - 1, x - 1)
