@@ -87,7 +87,8 @@ class ControllerSpawner:
                             for key in controller_config:
                                 rospy.set_param(key, controller_config[key])
                     except EnvironmentError as error:
-                        rospy.logerr(f"Failed to load {controller} controller configuration from '{self._config_file_path}'")
+                        rospy.logerr(f"Failed to load {controller} controller configuration from "
+                                     f"'{self._config_file_path}'")
                         rospy.logerr(error)
                         rospy.logerr(f"This path is defined in {self._config_file_path}")
                         success = False
@@ -205,10 +206,12 @@ class ControllerSpawner:
             start_success = switch_controllers(controllers_to_start, controllers_to_stop,
                                                SwitchControllerRequest.BEST_EFFORT, False, 0).ok
             if not start_success:
-                rospy.logerr(f"Failed to stop controllers {controllers_to_stop} and/or start controllers {controllers_to_start}")
+                rospy.logerr(f"Failed to stop controllers {controllers_to_stop} and/or "
+                             f"start controllers {controllers_to_start}")
                 success = False
         except rospy.ServiceException as error:
-            rospy.logerr(f"Failed to stop controllers {controllers_to_stop} and/or start controllers {controllers_to_start}")
+            rospy.logerr(f"Failed to stop controllers {controllers_to_stop} and/or "
+                         f"start controllers {controllers_to_start}")
             rospy.logerr(error)
             success = False
         if success:
