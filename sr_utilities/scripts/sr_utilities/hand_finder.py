@@ -20,7 +20,7 @@ import rospkg
 from urdf_parser_py.urdf import URDF
 
 
-class HandConfig(object):
+class HandConfig:
 
     def __init__(self, mapping, joint_prefix):
         """
@@ -36,7 +36,7 @@ class HandConfig(object):
         self.joint_prefix = joint_prefix
 
 
-class HandJoints(object):
+class HandJoints:
 
     @classmethod
     def get_default_joints(cls):
@@ -103,7 +103,7 @@ class HandJoints(object):
                     self.joints[mapping[hand]].append(joint_unordered)
 
 
-class HandFinder(object):
+class HandFinder:
     """
     The HandFinder is a utility library for detecting Shadow Hands running on
     the system. The idea is to make it easier to write generic code,
@@ -142,6 +142,8 @@ class HandFinder(object):
             self._hand_h_parameters = rospy.get_param("/fh_hand")
 
     def get_hand_h_parameters(self):
+        if not self._hand_h:
+            rospy.logerr("No Hand H present - can't get hand parameters")
         return self._hand_h_parameters
 
     def get_hand_joints(self):
