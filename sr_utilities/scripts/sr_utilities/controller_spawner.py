@@ -249,6 +249,6 @@ if __name__ == "__main__":
         rospy.logerr("Failed to load controller spawner config.")
         sys.exit(1)
     if rospy.has_param("~wait_for"):
-        rospy.loginfo(f"Shadow controller spawner is waiting for topic '{}'...".format(rospy.get_param("~wait_for")))
+        rospy.loginfo("Shadow controller spawner is waiting for topic '{}'...".format(rospy.get_param("~wait_for")))
         rospy.wait_for_message(rospy.get_param("~wait_for"), rospy.AnyMsg)
     controller_spawner.switch_controllers(controller_group)
