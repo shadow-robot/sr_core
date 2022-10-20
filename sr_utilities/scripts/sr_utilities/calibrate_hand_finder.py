@@ -90,7 +90,7 @@ def main():
         return
 
     rospy.init_node('calibration', anonymous=True)
-    ros_node_shutdown = rospy.get_param("~node_shutdown")  # By default should be enabled, except when shutting system down
+    ros_node_shutdown = rospy.get_param("~node_shutdown", True)  # By default should be enabled, except when shutting system down
     calibrate_class = CalibrateHand()
 
     services = calibrate_class.generate_reset_services_list()
