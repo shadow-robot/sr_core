@@ -1,0 +1,5 @@
+<launch>
+    <node name="calibrate_sr_edc" pkg="sr_utilities" type="calibrate_hand_finder.py" output="screen">
+        <param name="node_shutdown" value="true" type="bool" />
+    </node>
+</launch>
