@@ -91,7 +91,7 @@ def main():
 
     rospy.init_node('calibration', anonymous=True)
     # By default should be enabled, except when shutting system down
-    ros_node_shutdown = rospy.get_param("~node_shutdown", True)
+    ros_node_shutdown = rospy.get_param("~node_shutdown", False)
 
     calibrate_class = CalibrateHand()
 
@@ -105,7 +105,7 @@ def main():
     calibrate_class.pub_calibrated.publish(True)
 
     print("Hand calibration complete")
-    if ros_node_shutdown:  # Used to allow us to make the hand jiggle when closing everything.
+    if not ros_node_shutdown:  # Used to allow us to make the hand jiggle when closing everything.
         rospy.spin()
 
 

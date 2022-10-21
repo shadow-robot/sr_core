@@ -1,5 +1,5 @@
 <launch>
-    <arg name="node_shutdown" default="true" />
+    <arg name="node_shutdown" default="false" />
 
     <node name="calibrate_hand" pkg="sr_utilities" type="calibrate_hand_finder.py" output="screen">
         <param name="node_shutdown" value="$(arg node_shutdown)" />
