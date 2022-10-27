@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright 2014, 2020 Shadow Robot Company Ltd.
+# Copyright 2014, 2020, 2022 Shadow Robot Company Ltd.
 #
 # This program is free software: you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the Free
@@ -90,6 +90,9 @@ def main():
         return
 
     rospy.init_node('calibration', anonymous=True)
+    # By default should be enabled, except when shutting system down
+    ros_node_shutdown = rospy.get_param("~node_shutdown", False)
+
     calibrate_class = CalibrateHand()
 
     services = calibrate_class.generate_reset_services_list()
@@ -102,7 +105,8 @@ def main():
     calibrate_class.pub_calibrated.publish(True)
 
     print("Hand calibration complete")
-    rospy.spin()
+    if not ros_node_shutdown:  # Used to allow us to make the hand jiggle when closing everything.
+        rospy.spin()
 
 
 if __name__ == '__main__':
