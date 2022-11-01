@@ -12,3 +12,4 @@
     local-name: common_resources
     uri: https://github.com/shadow-robot/common_resources.git
     version: noetic-devel
+
