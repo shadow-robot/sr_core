@@ -91,7 +91,7 @@ class InteractiveConnectorSelector:
         selected_name = feedback.marker_name
 
         # we loop through all our interactive markers.
-        for name in self.object_controls.keys():
+        for name in self.object_controls:  # pylint: disable=C0206
             self.object_controls[name].markers.remove(self.object_markers[name])
 
             if name == selected_name:
