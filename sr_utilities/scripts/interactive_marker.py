@@ -91,7 +91,7 @@ class InteractiveConnectorSelector:
         selected_name = feedback.marker_name
 
         # we loop through all our interactive markers.
-        for name in self.object_controls:  # pylint: disable=C0206
+        for name in self.object_controls.keys():
             self.object_controls[name].markers.remove(self.object_markers[name])
 
             if name == selected_name:
@@ -124,12 +124,3 @@ class InteractiveConnectorSelector:
         # we update the interactive marker server
         self.server.applyChanges()
         self.callback_function(selected_name)
-
-
-# this is just used for debug
-if __name__ == "__main__":
-    rospy.init_node("simple_marker")
-
-    # Error here, file probably very depricated
-    int_mark = InteractiveConnectorSelector(["srh/position/palm"], None)  # pylint: disable=E1120
-    rospy.spin()
