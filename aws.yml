@@ -76,3 +76,4 @@ trunks:
             branch: master
             modules:
               - check_install
+
