@@ -77,3 +77,4 @@ install(PROGRAMS nodes/temperature_monitor.py
 install(DIRECTORY scripts/
         DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
         USE_SOURCE_PERMISSIONS)
+        PATTERN "interactive_marker.py" EXCLUDE)
