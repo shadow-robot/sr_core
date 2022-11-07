@@ -1,6 +1,4 @@
 #!/usr/bin/env python3
-# pylint: disable=C0103
-
 # Copyright 2011, 2022 Shadow Robot Company Ltd.
 #
 # This program is free software: you can redistribute it and/or modify it

@@ -15,7 +15,6 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import absolute_import
-import rospy
 
 from interactive_markers.interactive_marker_server import InteractiveMarker, InteractiveMarkerFeedback
 from visualization_msgs.msg import Marker, InteractiveMarkerControl
@@ -91,7 +90,7 @@ class InteractiveConnectorSelector:
         selected_name = feedback.marker_name
 
         # we loop through all our interactive markers.
-        for name in self.object_controls:  # pylint: disable=C0206
+        for name in self.object_controls.keys():  # pylint: disable=C0206
             self.object_controls[name].markers.remove(self.object_markers[name])
 
             if name == selected_name:
