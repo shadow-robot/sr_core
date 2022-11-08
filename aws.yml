@@ -38,7 +38,7 @@ trunks:
           ubuntu:
             version: bionic
           ros:
-            release: melodic
+            release: melodic 
           docker:
             image: shadowrobot/build-tools
             tag: bionic-melodic
