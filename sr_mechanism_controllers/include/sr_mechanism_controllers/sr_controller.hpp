@@ -28,13 +28,14 @@
 #define _SRH_CONTROLLER_HPP_
 
 #include <ros/node_handle.h>
+#include <boost/circular_buffer.hpp>
 
 #include <controller_interface/controller.h>
 #include <ros_ethercat_model/robot_state_interface.hpp>
 #include <control_toolbox/pid.h>
 #include <boost/scoped_ptr.hpp>
 #include <boost/thread/condition.hpp>
-#include <realtime_tools/realtime_publisher.h>
+#include <sr_utilities/realtime_publisher.h>
 #include <std_msgs/Float64.h>
 #include <std_srvs/Empty.h>
 #include <control_msgs/JointControllerState.h>
@@ -88,6 +89,7 @@ public:
   bool has_j2;
   /**< true if this is a joint 0. */
   double command_;                                /**< Last commanded position. */
+  double last_commanded_effort, last_error_position;
 
 protected:
   // true if this is joint 0
@@ -145,8 +147,11 @@ protected:
   ros::NodeHandle node_, n_tilde_;
   std::string joint_name_;
 
-  boost::scoped_ptr<realtime_tools::RealtimePublisher
+  boost::scoped_ptr<sr_utilities::RealtimePublisher
           <control_msgs::JointControllerState> > controller_state_publisher_;
+  
+  boost::scoped_ptr<boost::circular_buffer<control_msgs::JointControllerState> > msg_buffer_;
+  control_msgs::JointControllerState msg_;
 
   boost::scoped_ptr<sr_friction_compensation::SrFrictionCompensator> friction_compensator;
 

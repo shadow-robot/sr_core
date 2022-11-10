@@ -114,6 +114,8 @@ public:
 
   std::vector<int> raw_sensor_values_;
   std::vector<double> calibrated_sensor_values_;
+  std::vector<double> filtered_calibrated_position_values_;
+  std::vector<double> filtered_calibrated_velocity_values_;
 
   /**
    * a vector containing human readable flags:

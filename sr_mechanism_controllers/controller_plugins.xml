@@ -26,4 +26,7 @@
     <class name="sr_mechanism_controllers/SrhJointVariablePidPositionController"
            type="controller::SrhJointVariablePidPositionController"
            base_class_type="controller_interface::ControllerBase"/>
+    <class name="sr_mechanism_controllers/JointStateController"
+           type="controller::JointStateController"
+           base_class_type="controller_interface::ControllerBase"/>
 </library>
