@@ -80,8 +80,10 @@ namespace controller
       return false;
     }
 
-    controller_state_publisher_.reset(new realtime_tools::RealtimePublisher<control_msgs::JointControllerState>
-                                              (node_, "state", 1));
+    int queue_size = 50;
+    controller_state_publisher_.reset(new sr_utilities::RealtimePublisher<control_msgs::JointControllerState>
+                                              (node_, "state", queue_size));
+    msg_buffer_.reset(new boost::circular_buffer<control_msgs::JointControllerState>(queue_size));
 
     ROS_DEBUG(" --------- ");
     ROS_DEBUG_STREAM("Init: " << joint_name_);
@@ -200,91 +202,109 @@ namespace controller
       resetJointState();
       initialized_ = true;
     }
-    if (has_j2)
-    {
-      command_ = joint_state_->commanded_position_ + joint_state_2->commanded_position_;
-    }
-    else
-    {
-      command_ = joint_state_->commanded_position_;
-    }
-    command_ = clamp_command(command_);
-
     // Compute position demand from position error:
     double error_position = 0.0;
     double commanded_effort = 0.0;
-
-    if (has_j2)
-    {
-      error_position = (joint_state_->position_ + joint_state_2->position_) - command_;
-    }
-    else
-    {
-      error_position = joint_state_->position_ - command_;
-    }
-
-    bool in_deadband = hysteresis_deadband.is_in_deadband(command_, error_position, position_deadband);
-
-    // don't compute the error if we're in the deadband.
-    if (in_deadband)
-    {
-      error_position = 0.0;
-    }
-
-    commanded_effort = pid_controller_position_->computeCommand(-error_position, period);
-
-    // clamp the result to max force
-    commanded_effort = min(commanded_effort, (max_force_demand * max_force_factor_));
-    commanded_effort = max(commanded_effort, -(max_force_demand * max_force_factor_));
-
-    if (!in_deadband)
+    
+    int divisor = 1;
+    if (loop_count_ % divisor == 0)
     {
       if (has_j2)
       {
-        commanded_effort += friction_compensator->friction_compensation(
-                joint_state_->position_ + joint_state_2->position_,
-                joint_state_->velocity_ + joint_state_2->velocity_,
-                static_cast<int>(commanded_effort),
-                friction_deadband);
+        command_ = joint_state_->commanded_position_ + joint_state_2->commanded_position_;
       }
       else
       {
-        commanded_effort += friction_compensator->friction_compensation(joint_state_->position_,
-                                                                        joint_state_->velocity_,
-                                                                        static_cast<int>(commanded_effort),
-                                                                        friction_deadband);
+        command_ = joint_state_->commanded_position_;
       }
+      command_ = clamp_command(command_);
+
+
+      if (has_j2)
+      {
+        error_position = (joint_state_->position_ + joint_state_2->position_) - command_;
+      }
+      else
+      {
+        error_position = joint_state_->position_ - command_;
+      }
+
+      // setting nb_errors_for_avg to 1:
+      bool in_deadband = hysteresis_deadband.is_in_deadband(command_, error_position, position_deadband, 5.0, 1);
+
+      // don't compute the error if we're in the deadband.
+      if (in_deadband)
+      {
+        error_position = 0.0;
+      }
+
+      commanded_effort = pid_controller_position_->computeCommand(-error_position, period * divisor);
+
+      // clamp the result to max force
+      commanded_effort = min(commanded_effort, (max_force_demand * max_force_factor_));
+      commanded_effort = max(commanded_effort, -(max_force_demand * max_force_factor_));
+
+      if (!in_deadband)
+      {
+        if (has_j2)
+        {
+          commanded_effort += friction_compensator->friction_compensation(
+                  joint_state_->position_ + joint_state_2->position_,
+                  joint_state_->velocity_ + joint_state_2->velocity_,
+                  static_cast<int>(commanded_effort),
+                  friction_deadband);
+        }
+        else
+        {
+          commanded_effort += friction_compensator->friction_compensation(joint_state_->position_,
+                                                                          joint_state_->velocity_,
+                                                                          static_cast<int>(commanded_effort),
+                                                                          friction_deadband);
+        }
+      }
+      last_commanded_effort = commanded_effort;
+      last_error_position = error_position;
+    }
+    else
+    {
+      commanded_effort = last_commanded_effort;
+      error_position = last_error_position;
     }
 
     joint_state_->commanded_effort_ = commanded_effort;
 
-    if (loop_count_ % 10 == 0)
+    if (loop_count_ % divisor == 0)
     {
+      msg_.header.stamp = time;
+      msg_.set_point = command_;
+      if (has_j2)
+      {
+        msg_.process_value = joint_state_->position_ + joint_state_2->position_;
+        msg_.process_value_dot = joint_state_->velocity_ + joint_state_2->velocity_;
+      }
+      else
+      {
+        msg_.process_value = joint_state_->position_;
+        msg_.process_value_dot = joint_state_->velocity_;
+      }
+      msg_.error = error_position;
+      msg_.time_step = period.toSec();
+      msg_.command = commanded_effort;
+
+      double dummy;
+      getGains(msg_.p,
+                msg_.i,
+                msg_.d,
+                msg_.i_clamp,
+                dummy);
+      msg_buffer_->push_back(msg_);
       if (controller_state_publisher_ && controller_state_publisher_->trylock())
       {
-        controller_state_publisher_->msg_.header.stamp = time;
-        controller_state_publisher_->msg_.set_point = command_;
-        if (has_j2)
+        while(!msg_buffer_->empty())
         {
-          controller_state_publisher_->msg_.process_value = joint_state_->position_ + joint_state_2->position_;
-          controller_state_publisher_->msg_.process_value_dot = joint_state_->velocity_ + joint_state_2->velocity_;
+            controller_state_publisher_->msg_buffer_->push_back(msg_buffer_->front());
+            msg_buffer_->pop_front();
         }
-        else
-        {
-          controller_state_publisher_->msg_.process_value = joint_state_->position_;
-          controller_state_publisher_->msg_.process_value_dot = joint_state_->velocity_;
-        }
-
-        controller_state_publisher_->msg_.error = error_position;
-        controller_state_publisher_->msg_.time_step = period.toSec();
-        controller_state_publisher_->msg_.command = commanded_effort;
-
-        double dummy;
-        getGains(controller_state_publisher_->msg_.p,
-                 controller_state_publisher_->msg_.i,
-                 controller_state_publisher_->msg_.d,
-                 controller_state_publisher_->msg_.i_clamp,
-                 dummy);
         controller_state_publisher_->unlockAndPublish();
       }
     }

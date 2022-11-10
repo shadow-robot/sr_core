@@ -18,6 +18,9 @@ from __future__ import absolute_import
 import rospy
 import rospkg
 from urdf_parser_py.urdf import URDF
+import time
+
+DEFAULT_TIMEOUT = 60.0
 
 
 class HandConfig:
@@ -46,16 +49,16 @@ class HandJoints:
                   'THJ5', 'WRJ1', 'WRJ2']
         return joints
 
-    def __init__(self, mapping, joint_prefix):
+    def __init__(self, mapping, joint_prefix, timeout=DEFAULT_TIMEOUT):
         """
 
         """
         self.joints = {}
         hand_joints = []
         joints = self.get_default_joints()
-        TIMEOUT_WAIT_FOR_PARAMS_IN_SECS = 60.0
+        TIMEOUT_WAIT_FOR_PARAMS_IN_SECS = timeout
         start_time = rospy.get_time()
-        while not rospy.has_param("/robot_description"):
+        while not rospy.has_param("robot_description"):
             if (rospy.get_time() - start_time > TIMEOUT_WAIT_FOR_PARAMS_IN_SECS):
                 rospy.logwarn("No robot_description found on parameter server."
                               "Joint names are loaded for 5 finger hand")
@@ -70,6 +73,8 @@ class HandJoints:
                                       "in joint_prefix parameters")
                     self.joints[mapping[hand]] = hand_joints
                 return
+            else:
+                time.sleep(1)
 
         robot_description = rospy.get_param('robot_description')
 
@@ -110,7 +115,7 @@ class HandFinder:
      using this library to handle prefixes, joint prefixes etc...
     """
 
-    def __init__(self):
+    def __init__(self, timeout=DEFAULT_TIMEOUT):
         """
         Parses the parameter server to extract the necessary information.
         """
@@ -119,12 +124,12 @@ class HandFinder:
         self._hand_h = False
         self._hand_h_parameters = {}
 
-        TIMEOUT_WAIT_FOR_PARAMS_IN_SECS = 60.0
+        TIMEOUT_WAIT_FOR_PARAMS_IN_SECS = timeout
         self.wait_for_hand_params(TIMEOUT_WAIT_FOR_PARAMS_IN_SECS)
 
         self.hand_config = HandConfig(self._hand_parameters["mapping"],
                                       self._hand_parameters["joint_prefix"])
-        self.hand_joints = HandJoints(self.hand_config.mapping, self.hand_config.joint_prefix).joints
+        self.hand_joints = HandJoints(self.hand_config.mapping, self.hand_config.joint_prefix, timeout).joints
 
     def wait_for_hand_params(self, timeout_in_secs):
         start_time = rospy.get_time()
@@ -132,6 +137,8 @@ class HandFinder:
             if (rospy.get_time() - start_time > timeout_in_secs):
                 rospy.logerr("No hand is detected")
                 break
+            else:
+                time.sleep(1)
         if rospy.has_param("/hand"):
             rospy.loginfo("Found hand E")
             self._hand_e = True
