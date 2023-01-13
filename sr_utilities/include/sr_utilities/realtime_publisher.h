@@ -53,6 +53,8 @@
 #ifndef SR_UTILITIES__REALTIME_PUBLISHER_H_
 #define SR_UTILITIES__REALTIME_PUBLISHER_H_
 
+#define NON_POLLING
+
 #include <ros/node_handle.h>
 
 #include <atomic>
@@ -232,7 +234,8 @@ private:
       while (turn_ != NON_REALTIME && keep_running_)
       {
 #ifdef NON_POLLING
-        updated_cond_.wait(lock);
+        std::unique_lock<std::mutex> lck(msg_mutex_);
+        updated_cond_.wait(lck);
 #else
         unlock();
         std::this_thread::sleep_for(std::chrono::microseconds(500));
