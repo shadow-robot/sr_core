@@ -30,8 +30,8 @@ class CalibrateHand(object):
     Once the hands have been successfully reset, this class publishes True on the topic /calibrated
     """
 
-    def __init__(self):
-        rospy.wait_for_service("controller_manager/load_controller", timeout=120.0)
+    def __init__(self, timeout=120.0):
+        rospy.wait_for_service("controller_manager/load_controller", timeout=timeout)
         self.pub_calibrated = rospy.Publisher('calibrated', Bool, queue_size=1, latch=True)
 
     def generate_reset_services_list(self):
@@ -92,16 +92,17 @@ def main():
     rospy.init_node('calibration', anonymous=True)
     # By default should be enabled, except when shutting system down
     ros_node_shutdown = rospy.get_param("~node_shutdown", False)
-
-    calibrate_class = CalibrateHand()
-
+    ros_node_timeout = rospy.get_param("~node_timeout", False)
+    rospy.logerr("1")
+    calibrate_class = CalibrateHand(ros_node_timeout)
+    rospy.logerr("2")
     services = calibrate_class.generate_reset_services_list()
-
+    rospy.logerr("3")
     calibrate_class.pub_calibrated.publish(False)
-
+    rospy.logerr("4")
     if not calibrate_class.calibrate(services):
         sys.exit(3)
-
+    rospy.logerr("5")
     calibrate_class.pub_calibrated.publish(True)
 
     print("Hand calibration complete")
