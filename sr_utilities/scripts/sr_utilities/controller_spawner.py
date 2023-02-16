@@ -244,10 +244,11 @@ if __name__ == "__main__":
     sr_robot_launch_path = ros_pack.get_path('sr_robot_launch')
     wait_for_topic = rospy.get_param("~wait_for", "")
     controller_group = rospy.get_param("~controller_group", "trajectory")
-    _config_file_path = rospy.get_param("~config_file_path", f"{sr_robot_launch_path}/config/controller_spawner.yaml")
-    _service_timeout = rospy.get_param("~service_timeout", 60.0)
-    _excluded_joints = rospy.get_param("~excluded_joints", [])
-    controller_spawner = ControllerSpawner(_config_file_path, _service_timeout, _excluded_joints)
+    config_file_path_param = rospy.get_param("~config_file_path",
+                                             f"{sr_robot_launch_path}/config/controller_spawner.yaml")
+    service_timeout_param = rospy.get_param("~service_timeout", 60.0)
+    excluded_joints_param = rospy.get_param("~excluded_joints", [])
+    controller_spawner = ControllerSpawner(config_file_path_param, service_timeout_param, excluded_joints_param)
     if not controller_spawner.load_config():
         rospy.logerr("Failed to load controller spawner config.")
         sys.exit(1)
