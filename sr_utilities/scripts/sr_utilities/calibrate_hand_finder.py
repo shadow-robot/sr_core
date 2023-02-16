@@ -93,16 +93,11 @@ def main():
     # By default should be enabled, except when shutting system down
     ros_node_shutdown = rospy.get_param("~node_shutdown", False)
     ros_node_timeout = rospy.get_param("~node_timeout", False)
-    rospy.logerr("1")
     calibrate_class = CalibrateHand(ros_node_timeout)
-    rospy.logerr("2")
     services = calibrate_class.generate_reset_services_list()
-    rospy.logerr("3")
     calibrate_class.pub_calibrated.publish(False)
-    rospy.logerr("4")
     if not calibrate_class.calibrate(services):
         sys.exit(3)
-    rospy.logerr("5")
     calibrate_class.pub_calibrated.publish(True)
 
     print("Hand calibration complete")
