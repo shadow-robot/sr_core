@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright 2014, 2022 Shadow Robot Company Ltd.
+# Copyright 2014, 2022, 2023 Shadow Robot Company Ltd.
 #
 # This program is free software: you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the Free
@@ -139,6 +139,11 @@ class HandFinder:
             rospy.loginfo("Found hand H")
             self._hand_h = True
             self._hand_h_parameters = rospy.get_param("/fh_hand")
+
+    def get_hand_h_parameters(self):
+        if not self._hand_h:
+            rospy.logerr("No Hand H present - can't get hand parameters")
+        return self._hand_h_parameters
 
     def get_hand_joints(self):
         # TODO(@anyone): update HandJoints to work with Hand H. Didn't seem necessary yet, so left for now - dg
