@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright 2017 Shadow Robot Company Ltd.
+# Copyright 2017, 2022, 2023 Shadow Robot Company Ltd.
 #
 # This program is free software: you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the Free
@@ -18,33 +18,33 @@ from __future__ import absolute_import
 import rospy
 
 
-class SaveUrdfAndSrdf(object):
+class SaveUrdfAndSrdf:
     def __init__(self):
         pass
 
-    def save_urdf_from_param(self, path_to_save_files="/tmp", file_name="robot"):
+    @staticmethod
+    def save_urdf_from_param(path_to_save_files="/tmp", file_name="robot"):
         if rospy.has_param('/robot_description'):
             urdf_str = rospy.get_param('/robot_description')
             path = path_to_save_files + "/" + file_name + ".urdf"
-            urdf_file = open(path, "w")
-            urdf_file.write(urdf_str)
-            urdf_file.close()
+            with open(path, "w", encoding="utf-8") as urdf_file:
+                urdf_file.write(urdf_str)
             print("urdf saved successfully:" + path)
             return path
-        else:
-            rospy.logerr("Parameter server does not have /robot_description param")
+        rospy.logerr("Parameter server does not have /robot_description param")
+        return None
 
-    def save_srdf_from_param(self, path_to_save_files="/tmp", file_name="robot"):
+    @staticmethod
+    def save_srdf_from_param(path_to_save_files="/tmp", file_name="robot"):
         if rospy.has_param('/robot_description_semantic'):
             srdf_str = rospy.get_param('/robot_description_semantic')
             path = path_to_save_files + "/" + file_name + ".srdf"
-            srdf_file = open(path, "w")
-            srdf_file.write(srdf_str)
-            srdf_file.close()
+            with open(path, "w", encoding="utf-8") as srdf_file:
+                srdf_file.write(srdf_str)
             print("srdf saved successfully:" + path)
             return path
-        else:
-            rospy.logerr("Parameter server does not have /robot_description_semantics param")
+        rospy.logerr("Parameter server does not have /robot_description_semantics param")
+        return None
 
 
 if __name__ == '__main__':

@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# Copyright 2014 Shadow Robot Company Ltd.
+# Copyright 2014, 2022, 2023 Shadow Robot Company Ltd.
 #
 # This program is free software: you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the Free
@@ -15,43 +15,42 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import absolute_import, division
-import rospy
 import threading
+import rospy
 
-from sr_robot_msgs.msg import sendupdate, joint
 from sr_hand.shadowhand_ros import ShadowHand_ROS
 from sr_hand.grasps_interpoler import GraspInterpoler
 from sr_hand.Grasp import Grasp
 
-"""
-Module to provide a quick and easy way to script the Shadow Hand.
-This is done via creating a short script with a Commander object then calling
-methods on the commander to script the motion.
 
-Basic script will look like:
+class Commander:
 
-    #!/usr/bin/python
-    import rospy
-    from sr_hand.shadowhand_commander import Commander
+    '''
+    Module to provide a quick and easy way to script the Shadow Hand.
+    This is done via creating a short script with a Commander object then calling
+    methods on the commander to script the motion.
 
-    rospy.init_node('basic_example')
-    c = Commander()
+    Basic script will look like:
 
-    c.move_hand({
-        "THJ1": 0, "THJ2": 6, "THJ3": 10, "THJ4": 37, "THJ5": 9,
-        "FFJ0": 21, "FFJ3": 26, "FFJ4": 0,
-        "MFJ0": 18, "MFJ3": 24, "MFJ4": 0,
-        "RFJ0": 30, "RFJ3": 16, "RFJ4": 0,
-        "LFJ0": 30, "LFJ3": 0, "LFJ4": -10, "LFJ5": 10
-    })
-    rospy.sleep(3.0)
+        #!/usr/bin/python
+        import rospy
+        from sr_hand.shadowhand_commander import Commander
+
+        rospy.init_node('basic_example')
+        c = Commander()
+
+        c.move_hand({
+            "THJ1": 0, "THJ2": 6, "THJ3": 10, "THJ4": 37, "THJ5": 9,
+            "FFJ0": 21, "FFJ3": 26, "FFJ4": 0,
+            "MFJ0": 18, "MFJ3": 24, "MFJ4": 0,
+            "RFJ0": 30, "RFJ3": 16, "RFJ4": 0,
+            "LFJ0": 30, "LFJ3": 0, "LFJ4": -10, "LFJ5": 10
+        })
+        rospy.sleep(3.0)
 
 
-See the examples directory in the package sr_examples.
-"""
-
-
-class Commander(object):
+    See the examples directory in the package sr_examples.
+    '''
 
     def __init__(self):
         rospy.logwarn("The class Commander in package sr_hand is deprecated. "
@@ -106,9 +105,8 @@ class Commander(object):
             del joints['interpolation_time']
 
         if interpolation_time == 0.0:
-            self.mutex.acquire()
-            self._prune_interpolators(joints)
-            self.mutex.release()
+            with self.mutex:
+                self._prune_interpolators(joints)
             self.hand.sendupdate_from_dict(joints)
         else:
             threading.Thread(target=self._move_hand_interpolation,
@@ -127,9 +125,8 @@ class Commander(object):
         rospy.logdebug("call interpolation")
         thread_name = threading.current_thread().name
         try:
-            self.mutex.acquire()
-            self._prune_interpolators(joints)
-            self.mutex.release()
+            with self.mutex:
+                self._prune_interpolators(joints)
 
             rospy.logdebug("start interpolation")
             current_grasp = Grasp()
@@ -141,20 +138,18 @@ class Commander(object):
             interpolator = GraspInterpoler(current_grasp, target_grasp)
             self.grasp_interpolators[thread_name] = interpolator
 
-            r = rospy.Rate(1.0 / self.hand_interpolation_period)
+            rate = rospy.Rate(1.0 / self.hand_interpolation_period)
 
             for interpolation in range(1, int(interpolation_time / self.hand_interpolation_period) + 1):
-                self.mutex.acquire()
-                targets_to_send = interpolator.interpolate(
-                    100.0 * interpolation * self.hand_interpolation_period / interpolation_time)
-                self.mutex.release()
+                with self.mutex:
+                    targets_to_send = interpolator.interpolate(
+                        100.0 * interpolation * self.hand_interpolation_period / interpolation_time)
                 self.hand.sendupdate_from_dict(targets_to_send)
                 # rospy.loginfo("sent cmd n: %s" %(str(interpolation), ))
-                r.sleep()
+                rate.sleep()
         finally:
-            self.mutex.acquire()
-            self.grasp_interpolators.pop(thread_name, None)
-            self.mutex.release()
+            with self.mutex:
+                self.grasp_interpolators.pop(thread_name, None)
             rospy.logdebug("end interpolation")
 
     def _prune_interpolators(self, joints):
