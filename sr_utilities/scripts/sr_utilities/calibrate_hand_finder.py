@@ -23,7 +23,8 @@ from std_msgs.msg import Bool
 from std_srvs.srv import Empty
 
 
-CALIBRATE_TIMEOUT=120.0
+CALIBRATE_TIMEOUT = 120.0
+
 
 class CalibrateHand:
     """
