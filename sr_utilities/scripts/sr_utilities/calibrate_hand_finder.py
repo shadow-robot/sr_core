@@ -23,6 +23,8 @@ from std_msgs.msg import Bool
 from std_srvs.srv import Empty
 
 
+CALIBRATE_TIMEOUT=120.0
+
 class CalibrateHand:
     """
     This class resets all the motor boards of the Shadow Hand E present in the system.
@@ -30,7 +32,7 @@ class CalibrateHand:
     Once the hands have been successfully reset, this class publishes True on the topic /calibrated
     """
 
-    def __init__(self, timeout=120.0):
+    def __init__(self, timeout=CALIBRATE_TIMEOUT):
         rospy.wait_for_service("controller_manager/load_controller", timeout=timeout)
         self.pub_calibrated = rospy.Publisher('calibrated', Bool, queue_size=1, latch=True)
 
@@ -94,7 +96,7 @@ def main():
     rospy.init_node('calibration', anonymous=True)
     # By default should be enabled, except when shutting system down
     ros_node_shutdown = rospy.get_param("~node_shutdown", False)
-    ros_node_timeout = rospy.get_param("~node_timeout", 120)
+    ros_node_timeout = rospy.get_param("~node_timeout", CALIBRATE_TIMEOUT)
     calibrate_class = CalibrateHand(ros_node_timeout)
     services = calibrate_class.generate_reset_services_list()
     calibrate_class.pub_calibrated.publish(False)
