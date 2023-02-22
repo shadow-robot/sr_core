@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright 2014, 2020, 2022, 2023 Shadow Robot Company Ltd.
+# Copyright 2014, 2020, 2022-2023 Shadow Robot Company Ltd.
 #
 # This program is free software: you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the Free
@@ -23,6 +23,9 @@ from std_msgs.msg import Bool
 from std_srvs.srv import Empty
 
 
+CALIBRATE_TIMEOUT = 120.0
+
+
 class CalibrateHand:
     """
     This class resets all the motor boards of the Shadow Hand E present in the system.
@@ -30,8 +33,8 @@ class CalibrateHand:
     Once the hands have been successfully reset, this class publishes True on the topic /calibrated
     """
 
-    def __init__(self):
-        rospy.wait_for_service("controller_manager/load_controller", timeout=120.0)
+    def __init__(self, timeout=CALIBRATE_TIMEOUT):
+        rospy.wait_for_service("controller_manager/load_controller", timeout=timeout)
         self.pub_calibrated = rospy.Publisher('calibrated', Bool, queue_size=1, latch=True)
 
     @staticmethod
@@ -94,16 +97,12 @@ def main():
     rospy.init_node('calibration', anonymous=True)
     # By default should be enabled, except when shutting system down
     ros_node_shutdown = rospy.get_param("~node_shutdown", False)
-
-    calibrate_class = CalibrateHand()
-
+    ros_node_timeout = rospy.get_param("~node_timeout", CALIBRATE_TIMEOUT)
+    calibrate_class = CalibrateHand(ros_node_timeout)
     services = calibrate_class.generate_reset_services_list()
-
     calibrate_class.pub_calibrated.publish(False)
-
     if not calibrate_class.calibrate(services):
         sys.exit(3)
-
     calibrate_class.pub_calibrated.publish(True)
 
     print("Hand calibration complete")
