@@ -33,6 +33,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/find_iterator.hpp>
 #include <boost/circular_buffer.hpp>
+#include <sr_robot_msgs/MSTPalm.h>
 #include <sstream>
 
 #include <ros/ros.h>
@@ -395,11 +396,40 @@ public:
   boost::array<uint16_t, 16ul> palm;
 };
 
+class MSTData
+        :
+                public GenericTactileData
+{
+public:
+  MSTData()
+          : GenericTactileData()
+  {
+  };
+
+  explicit MSTData(const GenericTactileData &gtd)
+          : GenericTactileData(gtd.tactile_data_valid, gtd.sample_frequency,
+                               gtd.manufacturer, gtd.serial_number,
+                               gtd.software_version_current,
+                               gtd.software_version_server,
+                               gtd.software_version_modified,
+                               gtd.pcb_version)
+  {
+  };
+
+  ~MSTData()
+  {
+  };
+
+  sr_robot_msgs::MSTPalm sensor_data;
+  
+};
+
 struct AllTactileData
 {
   std::string type;
   BiotacData biotac;
   PST3Data pst;
+  MSTData mst;
   UBI0Data ubi0;
 };
 }  // namespace tactiles
