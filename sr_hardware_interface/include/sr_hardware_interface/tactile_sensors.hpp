@@ -1,5 +1,5 @@
 /*
-* Copyright 2011 Shadow Robot Company Ltd.
+* Copyright 2011, 2023 Shadow Robot Company Ltd.
 *
 * This program is free software: you can redistribute it and/or modify it
 * under the terms of the GNU General Public License as published by the Free
@@ -50,13 +50,15 @@ public:
   GenericTactileData(bool tactile_data_valid, int sample_frequency,
                      std::string manufacturer, std::string serial_number,
                      int software_version_current, int software_version_server,
-                     bool software_version_modified, std::string pcb_version)
-          : tactile_data_valid(tactile_data_valid), sample_frequency(sample_frequency),
-            manufacturer(manufacturer), serial_number(serial_number),
-            software_version_current(software_version_current),
-            software_version_server(software_version_server),
-            software_version_modified(software_version_modified),
-            pcb_version(pcb_version)
+                     bool software_version_modified, std::string pcb_version) :
+    tactile_data_valid(tactile_data_valid),
+    sample_frequency(sample_frequency),
+    manufacturer(manufacturer),
+    serial_number(serial_number),
+    software_version_current(software_version_current),
+    software_version_server(software_version_server),
+    software_version_modified(software_version_modified),
+    pcb_version(pcb_version)
   {
   };
 
@@ -178,32 +180,35 @@ public:
   }
 };
 
-class PST3Data
-        :
-                public GenericTactileData
+class PST3Data :
+        public GenericTactileData
 {
 public:
-  PST3Data()
-          : GenericTactileData()
+  PST3Data() :
+    GenericTactileData()
   {
   };
 
-  PST3Data(const PST3Data &pst3)
-          : GenericTactileData(pst3.tactile_data_valid, pst3.sample_frequency,
-                               pst3.manufacturer, pst3.serial_number,
-                               pst3.software_version_current,
-                               pst3.software_version_server,
-                               pst3.software_version_modified,
-                               pst3.pcb_version),
-            pressure(pst3.pressure), temperature(pst3.temperature),
-            debug_1(pst3.debug_1), debug_2(pst3.debug_2),
-            pressure_raw(pst3.pressure_raw), zero_tracking(pst3.zero_tracking), dac_value(pst3.dac_value)
+  PST3Data(const PST3Data &pst3) :
+    GenericTactileData(pst3.tactile_data_valid, pst3.sample_frequency,
+                       pst3.manufacturer, pst3.serial_number,
+                       pst3.software_version_current,
+                       pst3.software_version_server,
+                       pst3.software_version_modified,
+                       pst3.pcb_version),
+    pressure(pst3.pressure),
+    temperature(pst3.temperature),
+    debug_1(pst3.debug_1),
+    debug_2(pst3.debug_2),
+    pressure_raw(pst3.pressure_raw),
+    zero_tracking(pst3.zero_tracking),
+    dac_value(pst3.dac_value)
   {
   };
 
 
-  explicit PST3Data(const GenericTactileData &gtd)
-          : GenericTactileData(gtd.tactile_data_valid, gtd.sample_frequency,
+  explicit PST3Data(const GenericTactileData &gtd) :
+            GenericTactileData(gtd.tactile_data_valid, gtd.sample_frequency,
                                gtd.manufacturer, gtd.serial_number,
                                gtd.software_version_current,
                                gtd.software_version_server,
@@ -246,41 +251,42 @@ public:
   };
 };
 
-class BiotacData
-        :
-                public GenericTactileData
+class BiotacData :
+        public GenericTactileData
 {
 public:
-  BiotacData()
-          : GenericTactileData()
+  BiotacData() :
+    GenericTactileData()
   {
     pac_buffer_ = boost::circular_buffer<int16_t>(pac_size_);
     pac_vector_.reserve(pac_size_);
   };
 
-  BiotacData(const BiotacData &btac)
-          : GenericTactileData(btac.tactile_data_valid, btac.sample_frequency,
-                               btac.manufacturer, btac.serial_number,
-                               btac.software_version_current,
-                               btac.software_version_server,
-                               btac.software_version_modified,
-                               btac.pcb_version),
-            pac0(btac.pac0), pac1(btac.pac1),
-            pdc(btac.pdc), tac(btac.tac),
-            tdc(btac.tdc)
+  BiotacData(const BiotacData &btac) :
+    GenericTactileData(btac.tactile_data_valid, btac.sample_frequency,
+                       btac.manufacturer, btac.serial_number,
+                       btac.software_version_current,
+                       btac.software_version_server,
+                       btac.software_version_modified,
+                       btac.pcb_version),
+    pac0(btac.pac0),
+    pac1(btac.pac1),
+    pdc(btac.pdc),
+    tac(btac.tac),
+    tdc(btac.tdc)
   {
     electrodes = std::vector<int16_t>(btac.electrodes);
     pac_vector_ = std::vector<int16_t>(btac.pac_vector_);
     pac_buffer_ = boost::circular_buffer<int16_t>(btac.pac_buffer_);
   };
 
-  explicit BiotacData(const GenericTactileData &gtd)
-          : GenericTactileData(gtd.tactile_data_valid, gtd.sample_frequency,
-                               gtd.manufacturer, gtd.serial_number,
-                               gtd.software_version_current,
-                               gtd.software_version_server,
-                               gtd.software_version_modified,
-                               gtd.pcb_version)
+  explicit BiotacData(const GenericTactileData &gtd) :
+    GenericTactileData(gtd.tactile_data_valid, gtd.sample_frequency,
+                       gtd.manufacturer, gtd.serial_number,
+                       gtd.software_version_current,
+                       gtd.software_version_server,
+                       gtd.software_version_modified,
+                       gtd.pcb_version)
   {
     pac_buffer_ = boost::circular_buffer<int16_t>(pac_size_);
     pac_vector_.reserve(pac_size_);
@@ -322,23 +328,22 @@ private:
   std::vector<int16_t> pac_vector_;
 };
 
-class UBI0Data
-        :
-                public GenericTactileData
+class UBI0Data :
+        public GenericTactileData
 {
 public:
-  UBI0Data()
-          : GenericTactileData()
+  UBI0Data() :
+    GenericTactileData()
   {
   };
 
-  UBI0Data(const UBI0Data &ubi0)
-          : GenericTactileData(ubi0.tactile_data_valid, ubi0.sample_frequency,
-                               ubi0.manufacturer, ubi0.serial_number,
-                               ubi0.software_version_current,
-                               ubi0.software_version_server,
-                               ubi0.software_version_modified,
-                               ubi0.pcb_version)
+  UBI0Data(const UBI0Data &ubi0) :
+    GenericTactileData(ubi0.tactile_data_valid, ubi0.sample_frequency,
+                       ubi0.manufacturer, ubi0.serial_number,
+                       ubi0.software_version_current,
+                       ubi0.software_version_server,
+                       ubi0.software_version_modified,
+                       ubi0.pcb_version)
   {
     for (unsigned int i = 0; i < ubi0.distal.size(); i++)
     {
@@ -354,8 +359,8 @@ public:
     }
   };
 
-  explicit UBI0Data(const GenericTactileData &gtd)
-          : GenericTactileData(gtd.tactile_data_valid, gtd.sample_frequency,
+  explicit UBI0Data(const GenericTactileData &gtd) :
+            GenericTactileData(gtd.tactile_data_valid, gtd.sample_frequency,
                                gtd.manufacturer, gtd.serial_number,
                                gtd.software_version_current,
                                gtd.software_version_server,
@@ -401,18 +406,18 @@ class MSTData
                 public GenericTactileData
 {
 public:
-  MSTData()
-          : GenericTactileData()
+  MSTData() :
+    GenericTactileData()
   {
   };
 
-  explicit MSTData(const GenericTactileData &gtd)
-          : GenericTactileData(gtd.tactile_data_valid, gtd.sample_frequency,
-                               gtd.manufacturer, gtd.serial_number,
-                               gtd.software_version_current,
-                               gtd.software_version_server,
-                               gtd.software_version_modified,
-                               gtd.pcb_version)
+  explicit MSTData(const GenericTactileData &gtd) :
+    GenericTactileData(gtd.tactile_data_valid, gtd.sample_frequency,
+                       gtd.manufacturer, gtd.serial_number,
+                       gtd.software_version_current,
+                       gtd.software_version_server,
+                       gtd.software_version_modified,
+                       gtd.pcb_version)
   {
   };
 
@@ -421,7 +426,7 @@ public:
   };
 
   sr_robot_msgs::MSTPalm sensor_data;
-  
+
 };
 
 struct AllTactileData
