@@ -426,7 +426,6 @@ public:
   };
 
   sr_robot_msgs::MSTPalm sensor_data;
-
 };
 
 struct AllTactileData
