@@ -62,7 +62,15 @@ install(DIRECTORY include/${PROJECT_NAME}/
         FILES_MATCHING PATTERN "*.hpp"
 )
 
+install(TARGETS sr_arm_finder
+        LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+)
+
 install(TARGETS sr_calibration
+        LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+)
+
+install(TARGETS sr_hand_finder
         LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 )
 
