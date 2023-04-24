@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright 2011 Shadow Robot Company Ltd.
+# Copyright 2011, 2022, 2023 Shadow Robot Company Ltd.
 #
 # This program is free software: you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the Free
@@ -19,7 +19,7 @@ import rospy
 from std_msgs.msg import Float64
 
 
-class FilterMessages(object):
+class FilterMessages:
     def __init__(self):
         rospy.init_node('mean_filter', anonymous=True)
 
