@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright 2011 Shadow Robot Company Ltd.
+# Copyright 2011, 2022, 2023 Shadow Robot Company Ltd.
 #
 # This program is free software: you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the Free
@@ -15,13 +15,12 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import absolute_import
-import rospy
 
 from interactive_markers.interactive_marker_server import InteractiveMarker, InteractiveMarkerFeedback
 from visualization_msgs.msg import Marker, InteractiveMarkerControl
 
 
-class InteractiveConnectorSelector(object):
+class InteractiveConnectorSelector:
     def __init__(self, object_names, callback_fct, interactive_server):
         # create an interactive marker server on the topic namespace simple_marker
         self.server = interactive_server
@@ -73,13 +72,13 @@ class InteractiveConnectorSelector(object):
         self.int_markers[object_name].controls.append(object_control)
 
         # add the interactive marker to our collection &
-        # tell the server to call processFeedback() when feedback arrives for it
-        self.server.insert(self.int_markers[object_name], self.processFeedback)
+        # tell the server to call process_feedback() when feedback arrives for it
+        self.server.insert(self.int_markers[object_name], self.process_feedback)
 
         # 'commit' changes and send to all clients
         self.server.applyChanges()
 
-    def processFeedback(self, feedback):
+    def process_feedback(self, feedback):
         # this was not a click on the sphere
         if feedback.event_type != InteractiveMarkerFeedback.BUTTON_CLICK:
             return
@@ -91,7 +90,7 @@ class InteractiveConnectorSelector(object):
         selected_name = feedback.marker_name
 
         # we loop through all our interactive markers.
-        for index, name in enumerate(self.object_controls):
+        for name in self.object_controls.keys():  # pylint: disable=C0206
             self.object_controls[name].markers.remove(self.object_markers[name])
 
             if name == selected_name:
@@ -124,11 +123,3 @@ class InteractiveConnectorSelector(object):
         # we update the interactive marker server
         self.server.applyChanges()
         self.callback_function(selected_name)
-
-
-# this is just used for debug
-if __name__ == "__main__":
-    rospy.init_node("simple_marker")
-
-    int_mark = InteractiveConnectorSelector(["srh/position/palm"], None)
-    rospy.spin()

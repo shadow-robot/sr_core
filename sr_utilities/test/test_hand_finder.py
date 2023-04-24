@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright 2011 Shadow Robot Company Ltd.
+# Copyright 2011, 2022, 2023 Shadow Robot Company Ltd.
 #
 # This program is free software: you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the Free
@@ -15,10 +15,9 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import absolute_import
-import rospy
-import rospkg
-import rostest
 import unittest
+import rospy
+import rostest
 from sr_utilities.hand_finder import HandFinder
 joint_names = ["FFJ1", "FFJ2", "FFJ3", "FFJ4", "MFJ1", "MFJ2", "MFJ3", "MFJ4",
                "RFJ1", "RFJ2", "RFJ3", "RFJ4", "LFJ1", "LFJ2", "LFJ3", "LFJ4", "LFJ5",
