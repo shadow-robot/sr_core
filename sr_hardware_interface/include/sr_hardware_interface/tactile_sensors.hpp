@@ -93,7 +93,7 @@ public:
     {
       // Convert Git revision to hexadecimal long hash
       std::stringstream git_revision;
-      for (int i = 2; i < 22; i++)
+      for (int i = 2; i < 23; i++)
       {
         git_revision << std::setfill('0') << std::setw(2) << std::hex <<
           static_cast<int>(static_cast<uint8_t>(raw_version[i]));
