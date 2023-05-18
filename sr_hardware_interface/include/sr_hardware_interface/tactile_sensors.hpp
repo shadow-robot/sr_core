@@ -34,6 +34,7 @@
 #include <boost/algorithm/string/find_iterator.hpp>
 #include <boost/circular_buffer.hpp>
 #include <sr_robot_msgs/MSTAll.h>
+#include <geometry_msgs/Point.h>
 #include <sstream>
 
 #include <ros/ros.h>
@@ -424,7 +425,9 @@ public:
   {
   };
 
-  sr_robot_msgs::MSTAll sensor_data;
+  std::vector<geometry_msgs::Point> magnetic_data;
+  std::vector<float> temperature_data;
+  int8_t status_check;
 };
 
 struct AllTactileData
