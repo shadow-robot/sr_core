@@ -1,4 +1,4 @@
-# Copyright 2022 Shadow Robot Company Ltd.
+# Copyright 2022-2023 Shadow Robot Company Ltd.
 #
 # This program is free software: you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the Free
@@ -42,51 +42,5 @@ trunks:
       - name: install_check
         settings:
           toolset:
-            modules:
-              - check_install
-  - name: melodic-devel
-    jobs:
-      - name: code_coverage
-        settings:
-          machine_type: medium
-          ubuntu:
-            version: bionic
-          ros:
-            release: melodic
-          docker:
-            image: shadowrobot/build-tools
-            tag: bionic-melodic
-          toolset:
-            branch: master
-            modules:
-              - code_style_check
-              - check_license
-      - name: style_check
-        settings:
-          machine_type: medium
-          ubuntu:
-            version: bionic
-          ros:
-            release: melodic
-          docker:
-            image: shadowrobot/build-tools
-            tag: bionic-melodic
-          toolset:
-            branch: master
-            modules:
-              - code_style_check
-              - check_license
-      - name: install_check
-        settings:
-          machine_type: medium
-          ubuntu:
-            version: bionic
-          ros:
-            release: melodic
-          docker:
-            image: shadowrobot/build-tools
-            tag: bionic-melodic
-          toolset:
-            branch: master
             modules:
               - check_install
