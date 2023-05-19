@@ -19,7 +19,7 @@ catkin_package(
         DEPENDS
         CATKIN_DEPENDS sensor_msgs sr_robot_msgs rospy roscpp tf urdf std_msgs message_runtime sr_utilities_common
         INCLUDE_DIRS include
-        LIBRARIES sr_calibration sr_trajectory_command_publisher
+        LIBRARIES sr_arm_finder sr_calibration sr_hand_finder sr_trajectory_command_publisher
 )
 
 include_directories(
@@ -62,7 +62,15 @@ install(DIRECTORY include/${PROJECT_NAME}/
         FILES_MATCHING PATTERN "*.hpp"
 )
 
+install(TARGETS sr_arm_finder
+        LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+)
+
 install(TARGETS sr_calibration
+        LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+)
+
+install(TARGETS sr_hand_finder
         LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 )
 
