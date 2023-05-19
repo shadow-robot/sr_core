@@ -88,7 +88,7 @@ public:
    */
   void set_software_version(char* raw_version)
   {
-    // New Git format: \n\n 20 bytes Git revision
+    // New Git format: \n\n 20 bytes Git revision + 1 byte for status check enable flag
     if (raw_version[0] == '\n' && raw_version[1] == '\n')
     {
       // Convert Git revision to hexadecimal long hash
