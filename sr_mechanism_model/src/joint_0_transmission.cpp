@@ -60,18 +60,18 @@ namespace sr_mechanism_model
     // (joint 0 is composed of the 2 calibrated values: joint 1 and joint 2)
 
     SrMotorActuator *act = static_cast<SrMotorActuator *>(actuator_);
-    size_t size = act->motor_state_.calibrated_sensor_values_.size();
+    size_t size = act->motor_state_.filtered_calibrated_position_values_.size();
     if (size == 2)
     {
       ROS_DEBUG_STREAM("READING pos " << act->state_.position_
-                       << " J1 " << act->motor_state_.calibrated_sensor_values_[0]
-                       << " J2 " << act->motor_state_.calibrated_sensor_values_[1]);
+                       << " J1 " << act->motor_state_.filtered_calibrated_position_values_[0]
+                       << " J2 " << act->motor_state_.filtered_calibrated_position_values_[1]);
 
-      joint_->position_ = act->motor_state_.calibrated_sensor_values_[0];
-      joint2_->position_ = act->motor_state_.calibrated_sensor_values_[1];
+      joint_->position_ = act->motor_state_.filtered_calibrated_position_values_[0];
+      joint2_->position_ = act->motor_state_.filtered_calibrated_position_values_[1];
 
-      joint_->velocity_ = act->state_.velocity_ / 2.0;
-      joint2_->velocity_ = act->state_.velocity_ / 2.0;
+      joint_->velocity_ = act->motor_state_.filtered_calibrated_velocity_values_[0];
+      joint2_->velocity_ = act->motor_state_.filtered_calibrated_velocity_values_[1];
 
       joint_->effort_ = act->state_.last_measured_effort_;
       joint2_->effort_ = act->state_.last_measured_effort_;
