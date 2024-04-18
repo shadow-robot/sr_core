@@ -7,6 +7,6 @@
   <!-- Hand and sensor configurations-->
   <arg name="hand_id" default="rh"/>
 
-  <node name="$(arg hand_id)_MST_plotjuggler_visualiser" pkg="plotjuggler" type="plotjuggler" args="--layout $(find sr_mst)/config/hand_plotjuggler_config_$(arg hand_id).xml"/>
+  <node name="$(arg hand_id)_MST_plotjuggler_visualiser" pkg="plotjuggler" type="plotjuggler" args="--layout $(find sr_tactile_sensors)/config/hand_plotjuggler_config_$(arg hand_id).xml"/>
 
 </launch>

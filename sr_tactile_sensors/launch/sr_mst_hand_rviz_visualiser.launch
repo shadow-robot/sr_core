@@ -31,7 +31,7 @@
         args="/$(arg hand_id)/tactile /$(arg hand_id)/sr_mst_driver_th/sr_mst_data sr_robot_msgs/MST 'm.tactiles[4]' --wait-for-start" />
 
     <!-- Transform the data coming from the driver into a graphical representation -->
-    <node name="publish_hand_mst_markers" pkg="sr_mst" type="sr_mst_hand_arrow_publisher" output="screen">
+    <node name="publish_hand_mst_markers" pkg="sr_tactile_sensors" type="sr_mst_hand_arrow_publisher" output="screen">
         <param name="number_zero_readings" type="int" value="$(arg number_zeros)"/>
         <param name="scaling" type="str" value="$(arg scaling_method)"/>
         <param name="hand_prefix" value="$(arg hand_id)"/>
@@ -40,7 +40,7 @@
     </node>
 
     <!-- Launch RViz with configuration specific to right or left hand (defined with hand_id) -->
-    <node if="$(eval arg('hand_id')=='rh')" name="rviz_hand_mst" pkg="rviz" type="rviz" args="-d $(find sr_mst)/config/mstXL_rh_hand_rviz_config.rviz"/>
-    <node if="$(eval arg('hand_id')=='lh')" name="rviz_hand_mst" pkg="rviz" type="rviz" args="-d $(find sr_mst)/config/mstXL_lh_hand_rviz_config.rviz"/>
+    <node if="$(eval arg('hand_id')=='rh')" name="rviz_hand_mst" pkg="rviz" type="rviz" args="-d $(find sr_tactile_sensors)/config/mstXL_rh_hand_rviz_config.rviz"/>
+    <node if="$(eval arg('hand_id')=='lh')" name="rviz_hand_mst" pkg="rviz" type="rviz" args="-d $(find sr_tactile_sensors)/config/mstXL_lh_hand_rviz_config.rviz"/>
   </group>
 </launch>
