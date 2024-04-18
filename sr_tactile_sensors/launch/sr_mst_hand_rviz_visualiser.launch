@@ -1,0 +1,46 @@
+<!--
+ Copyright (C) 2023, 2024 Shadow Robot Company Ltd - All Rights Reserved. Proprietary and Confidential.
+ Unauthorized copying of the content in this file, via any medium is strictly prohibited.
+-->
+
+<launch>
+  <!-- Hand and sensor configurations-->
+  <arg name="hand_id" default="rh"/>
+  <!-- Specific to mst data visualiser-->
+  <arg name="number_zeros" default="1000"/>
+  <arg name="scaling_method" default="logarithmic"/>
+  <!-- This value has empirically been found to work well -->
+  <arg name="linear_scaling_value" default="0.001"/>
+  <!-- Markers publishing rate. Allows RViz the necessary time necessary to handle the incoming data -->
+  <arg name="rviz_markers_publishing_frequency" default="30"/>
+    
+  <group ns="$(arg hand_id)">
+    <node name="ff_mst_tactile_transform" pkg="topic_tools" type="transform"
+        args="/$(arg hand_id)/tactile /$(arg hand_id)/sr_mst_driver_ff/sr_mst_data sr_robot_msgs/MST 'm.tactiles[0]' --wait-for-start" />
+
+    <node name="mf_mst_tactile_transform" pkg="topic_tools" type="transform"
+        args="/$(arg hand_id)/tactile /$(arg hand_id)/sr_mst_driver_mf/sr_mst_data sr_robot_msgs/MST 'm.tactiles[1]' --wait-for-start" />
+
+    <node name="rf_mst_tactile_transform" pkg="topic_tools" type="transform"
+        args="/$(arg hand_id)/tactile /$(arg hand_id)/sr_mst_driver_rf/sr_mst_data sr_robot_msgs/MST 'm.tactiles[2]' --wait-for-start" />
+
+    <node name="lf_mst_tactile_transform" pkg="topic_tools" type="transform"
+        args="/$(arg hand_id)/tactile /$(arg hand_id)/sr_mst_driver_lf/sr_mst_data sr_robot_msgs/MST 'm.tactiles[3]' --wait-for-start" />
+
+    <node name="th_mst_tactile_transform" pkg="topic_tools" type="transform"
+        args="/$(arg hand_id)/tactile /$(arg hand_id)/sr_mst_driver_th/sr_mst_data sr_robot_msgs/MST 'm.tactiles[4]' --wait-for-start" />
+
+    <!-- Transform the data coming from the driver into a graphical representation -->
+    <node name="publish_hand_mst_markers" pkg="sr_mst" type="sr_mst_hand_arrow_publisher" output="screen">
+        <param name="number_zero_readings" type="int" value="$(arg number_zeros)"/>
+        <param name="scaling" type="str" value="$(arg scaling_method)"/>
+        <param name="hand_prefix" value="$(arg hand_id)"/>
+        <param name="rviz_markers_publishing_frequency" value="$(arg rviz_markers_publishing_frequency)"/>
+        <param name="scaling_value" type="double" value="$(arg linear_scaling_value)" if="$(eval arg('scaling_method') == 'linear')"/>
+    </node>
+
+    <!-- Launch RViz with configuration specific to right or left hand (defined with hand_id) -->
+    <node if="$(eval arg('hand_id')=='rh')" name="rviz_hand_mst" pkg="rviz" type="rviz" args="-d $(find sr_mst)/config/mstXL_rh_hand_rviz_config.rviz"/>
+    <node if="$(eval arg('hand_id')=='lh')" name="rviz_hand_mst" pkg="rviz" type="rviz" args="-d $(find sr_mst)/config/mstXL_lh_hand_rviz_config.rviz"/>
+  </group>
+</launch>

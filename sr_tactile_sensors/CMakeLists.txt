@@ -59,6 +59,34 @@ add_executable(sr_bumper_rviz_marker src/sr_bumper_rviz_marker.cpp)
 add_dependencies(sr_bumper_rviz_marker ${catkin_EXPORTED_TARGETS})
 target_link_libraries(sr_bumper_rviz_marker ${Boost_LIBRARIES} ${catkin_LIBRARIES})
 
+
+#############################
+#  MST ARROW PUBLISHERS #
+#############################
+add_library(arrow_publisher src/sr_mst_arrow_publisher.cpp)
+target_link_libraries(arrow_publisher ${catkin_LIBRARIES})
+add_dependencies(arrow_publisher ${catkin_EXPORTED_TARGETS})
+
+install (TARGETS arrow_publisher
+         ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+         LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+         RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+add_executable(sr_mst_arrow_publisher src/sr_mst_arrow_publisher.cpp)
+target_link_libraries(sr_mst_arrow_publisher ${catkin_LIBRARIES})
+add_dependencies(sr_mst_arrow_publisher ${catkin_EXPORTED_TARGETS})
+
+add_executable(sr_mst_hand_arrow_publisher src/sr_mst_hand_arrow_publisher.cpp)
+target_link_libraries(sr_mst_hand_arrow_publisher ${catkin_LIBRARIES} arrow_publisher)
+add_dependencies(sr_mst_hand_arrow_publisher ${catkin_EXPORTED_TARGETS})
+
+install(TARGETS sr_mst_arrow_publisher sr_mst_hand_arrow_publisher
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
 ###############
 #   EXAMPLES  #
 ###############

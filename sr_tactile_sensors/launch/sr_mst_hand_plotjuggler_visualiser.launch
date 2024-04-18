@@ -1,0 +1,12 @@
+<!--
+ Copyright (C) 2024 Shadow Robot Company Ltd - All Rights Reserved. Proprietary and Confidential.
+ Unauthorized copying of the content in this file, via any medium is strictly prohibited.
+-->
+
+<launch>
+  <!-- Hand and sensor configurations-->
+  <arg name="hand_id" default="rh"/>
+
+  <node name="$(arg hand_id)_MST_plotjuggler_visualiser" pkg="plotjuggler" type="plotjuggler" args="--layout $(find sr_mst)/config/hand_plotjuggler_config_$(arg hand_id).xml"/>
+
+</launch>
