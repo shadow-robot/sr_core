@@ -40,7 +40,7 @@
     </node>
 
     <!-- Launch RViz with configuration specific to right or left hand (defined with hand_id) -->
-    <node if="$(eval arg('hand_id')=='rh')" name="rviz_hand_mst" pkg="rviz" type="rviz" args="-d $(find sr_tactile_sensors)/config/mstXL_rh_hand_rviz_config.rviz"/>
-    <node if="$(eval arg('hand_id')=='lh')" name="rviz_hand_mst" pkg="rviz" type="rviz" args="-d $(find sr_tactile_sensors)/config/mstXL_lh_hand_rviz_config.rviz"/>
+    <node required="true" if="$(eval arg('hand_id')=='rh')" name="rviz_hand_mst" pkg="rviz" type="rviz" args="-d $(find sr_tactile_sensors)/config/mstXL_rh_hand_rviz_config.rviz"/>
+    <node required="true" if="$(eval arg('hand_id')=='lh')" name="rviz_hand_mst" pkg="rviz" type="rviz" args="-d $(find sr_tactile_sensors)/config/mstXL_lh_hand_rviz_config.rviz"/>
   </group>
 </launch>
