@@ -43,6 +43,10 @@
     <run_depend>sr_robot_msgs</run_depend>
     <run_depend>visualization_msgs</run_depend>
     <run_depend>gazebo_msgs</run_depend>
-    <run_depend>gazebo_ros</run_depend>
+    <run_depend>gazebo_ros</run_depend>    
+
+  <run_depend>plotjuggler</run_depend>
+  <run_depend>plotjuggler_ros</run_depend>
+  <run_depend>plotjuggler_msgs</run_depend>
 
 </package>
