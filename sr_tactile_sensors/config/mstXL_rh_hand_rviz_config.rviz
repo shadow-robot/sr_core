@@ -57,7 +57,7 @@ Visualization Manager:
       Marker Topic: /rh/publish_hand_mst_markers/rh_ff_arrows
       Name: MarkerArray
       Namespaces:
-        "": true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/MarkerArray
@@ -65,7 +65,7 @@ Visualization Manager:
       Marker Topic: /rh/publish_hand_mst_markers/rh_mf_arrows
       Name: MarkerArray
       Namespaces:
-        "": true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/MarkerArray
@@ -73,7 +73,7 @@ Visualization Manager:
       Marker Topic: /rh/publish_hand_mst_markers/rh_rf_arrows
       Name: MarkerArray
       Namespaces:
-        "": true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/MarkerArray
@@ -81,7 +81,7 @@ Visualization Manager:
       Marker Topic: /rh/publish_hand_mst_markers/rh_lf_arrows
       Name: MarkerArray
       Namespaces:
-        "": true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/MarkerArray
@@ -89,7 +89,7 @@ Visualization Manager:
       Marker Topic: /rh/publish_hand_mst_markers/rh_th_arrows
       Name: MarkerArray
       Namespaces:
-        "": true
+        {}
       Queue Size: 100
       Value: true
     - Alpha: 1
@@ -102,78 +102,57 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
-        lh_ff_mst_link:
+        la_base:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        lh_ff_taxel_0:
+        la_base_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        lh_ff_taxel_1:
+        la_base_link_inertia:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        lh_ff_taxel_10:
+          Value: true
+        la_flange:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        lh_ff_taxel_11:
+        la_forearm_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        lh_ff_taxel_12:
+          Value: true
+        la_shoulder_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        lh_ff_taxel_13:
+          Value: true
+        la_tool0:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        lh_ff_taxel_14:
+        la_upper_arm_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        lh_ff_taxel_15:
+          Value: true
+        la_wrist_1_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        lh_ff_taxel_16:
+          Value: true
+        la_wrist_2_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        lh_ff_taxel_2:
+          Value: true
+        la_wrist_3_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        lh_ff_taxel_3:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_ff_taxel_4:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_ff_taxel_5:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_ff_taxel_6:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_ff_taxel_7:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_ff_taxel_8:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_ff_taxel_9:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
+          Value: true
         lh_ffdistal:
           Alpha: 1
           Show Axes: false
@@ -204,78 +183,6 @@ Visualization Manager:
           Show Trail: false
           Value: true
         lh_imu:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_lf_mst_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_lf_taxel_0:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_lf_taxel_1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_lf_taxel_10:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_lf_taxel_11:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_lf_taxel_12:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_lf_taxel_13:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_lf_taxel_14:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_lf_taxel_15:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_lf_taxel_16:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_lf_taxel_2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_lf_taxel_3:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_lf_taxel_4:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_lf_taxel_5:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_lf_taxel_6:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_lf_taxel_7:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_lf_taxel_8:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_lf_taxel_9:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -312,78 +219,6 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        lh_mf_mst_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_mf_taxel_0:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_mf_taxel_1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_mf_taxel_10:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_mf_taxel_11:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_mf_taxel_12:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_mf_taxel_13:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_mf_taxel_14:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_mf_taxel_15:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_mf_taxel_16:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_mf_taxel_2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_mf_taxel_3:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_mf_taxel_4:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_mf_taxel_5:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_mf_taxel_6:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_mf_taxel_7:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_mf_taxel_8:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_mf_taxel_9:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
         lh_mfdistal:
           Alpha: 1
           Show Axes: false
@@ -413,78 +248,6 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        lh_rf_mst_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_rf_taxel_0:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_rf_taxel_1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_rf_taxel_10:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_rf_taxel_11:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_rf_taxel_12:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_rf_taxel_13:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_rf_taxel_14:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_rf_taxel_15:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_rf_taxel_16:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_rf_taxel_2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_rf_taxel_3:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_rf_taxel_4:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_rf_taxel_5:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_rf_taxel_6:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_rf_taxel_7:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_rf_taxel_8:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_rf_taxel_9:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
         lh_rfdistal:
           Alpha: 1
           Show Axes: false
@@ -506,78 +269,6 @@ Visualization Manager:
           Show Trail: false
           Value: true
         lh_rftip:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_th_mst_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_th_taxel_0:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_th_taxel_1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_th_taxel_10:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_th_taxel_11:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_th_taxel_12:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_th_taxel_13:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_th_taxel_14:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_th_taxel_15:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_th_taxel_16:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_th_taxel_2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_th_taxel_3:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_th_taxel_4:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_th_taxel_5:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_th_taxel_6:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_th_taxel_7:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_th_taxel_8:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lh_th_taxel_9:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -615,78 +306,57 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        rh_ff_mst_link:
+        ra_base:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        rh_ff_taxel_0:
+        ra_base_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        rh_ff_taxel_1:
+        ra_base_link_inertia:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        rh_ff_taxel_10:
+          Value: true
+        ra_flange:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        rh_ff_taxel_11:
+        ra_forearm_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        rh_ff_taxel_12:
+          Value: true
+        ra_shoulder_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        rh_ff_taxel_13:
+          Value: true
+        ra_tool0:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        rh_ff_taxel_14:
+        ra_upper_arm_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        rh_ff_taxel_15:
+          Value: true
+        ra_wrist_1_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        rh_ff_taxel_16:
+          Value: true
+        ra_wrist_2_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        rh_ff_taxel_2:
+          Value: true
+        ra_wrist_3_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        rh_ff_taxel_3:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_ff_taxel_4:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_ff_taxel_5:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_ff_taxel_6:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_ff_taxel_7:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_ff_taxel_8:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_ff_taxel_9:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
+          Value: true
         rh_ffdistal:
           Alpha: 1
           Show Axes: false
@@ -717,78 +387,6 @@ Visualization Manager:
           Show Trail: false
           Value: true
         rh_imu:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_lf_mst_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_lf_taxel_0:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_lf_taxel_1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_lf_taxel_10:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_lf_taxel_11:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_lf_taxel_12:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_lf_taxel_13:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_lf_taxel_14:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_lf_taxel_15:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_lf_taxel_16:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_lf_taxel_2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_lf_taxel_3:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_lf_taxel_4:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_lf_taxel_5:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_lf_taxel_6:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_lf_taxel_7:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_lf_taxel_8:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_lf_taxel_9:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -825,78 +423,6 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        rh_mf_mst_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_mf_taxel_0:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_mf_taxel_1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_mf_taxel_10:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_mf_taxel_11:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_mf_taxel_12:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_mf_taxel_13:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_mf_taxel_14:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_mf_taxel_15:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_mf_taxel_16:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_mf_taxel_2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_mf_taxel_3:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_mf_taxel_4:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_mf_taxel_5:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_mf_taxel_6:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_mf_taxel_7:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_mf_taxel_8:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_mf_taxel_9:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
         rh_mfdistal:
           Alpha: 1
           Show Axes: false
@@ -926,78 +452,6 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        rh_rf_mst_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_rf_taxel_0:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_rf_taxel_1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_rf_taxel_10:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_rf_taxel_11:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_rf_taxel_12:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_rf_taxel_13:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_rf_taxel_14:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_rf_taxel_15:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_rf_taxel_16:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_rf_taxel_2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_rf_taxel_3:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_rf_taxel_4:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_rf_taxel_5:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_rf_taxel_6:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_rf_taxel_7:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_rf_taxel_8:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_rf_taxel_9:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
         rh_rfdistal:
           Alpha: 1
           Show Axes: false
@@ -1019,78 +473,6 @@ Visualization Manager:
           Show Trail: false
           Value: true
         rh_rftip:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_th_mst_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_th_taxel_0:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_th_taxel_1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_th_taxel_10:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_th_taxel_11:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_th_taxel_12:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_th_taxel_13:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_th_taxel_14:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_th_taxel_15:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_th_taxel_16:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_th_taxel_2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_th_taxel_3:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_th_taxel_4:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_th_taxel_5:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_th_taxel_6:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_th_taxel_7:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_th_taxel_8:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rh_th_taxel_9:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -1153,47 +535,45 @@ Visualization Manager:
   Value: true
   Views:
     Current:
-      Class: rviz/ThirdPersonFollower
-      Distance: 0.6019673347473145
+      Class: rviz/FrameAligned
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
-      Field of View: 0.5
-      Focal Point:
-        X: 0
-        Y: 0
-        Z: 0.20000000298023224
-      Focal Shape Fixed Size: false
-      Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
+      Lock Camera: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.17500030994415283
-      Target Frame: rh_forearm
-      Yaw: 4.673187255859375
+      Pitch: 0.14020299911499023
+      Point towards: arbitrary
+      Position:
+        X: 0.014276999980211258
+        Y: -0.3928399980068207
+        Z: 0.14354999363422394
+      Roll: 0.05000000074505806
+      Target Frame: rh_wrist
+      Yaw: 1.5766000747680664
     Saved:
-      - Class: rviz/ThirdPersonFollower
-        Distance: 0.6019673347473145
+      - Class: rviz/FrameAligned
         Enable Stereo Rendering:
           Stereo Eye Separation: 0.05999999865889549
           Stereo Focal Distance: 1
           Swap Stereo Eyes: false
           Value: false
-        Field of View: 0.5
-        Focal Point:
-          X: 0
-          Y: 0
-          Z: 0.20000000298023224
-        Focal Shape Fixed Size: false
-        Focal Shape Size: 0.05000000074505806
         Invert Z Axis: false
-        Name: right_hand_viz
+        Lock Camera: false
+        Name: hand_stf_viz
         Near Clip Distance: 0.009999999776482582
-        Pitch: 0.17500030994415283
-        Target Frame: rh_forearm
-        Yaw: 4.673187255859375
+        Pitch: 0.40500035881996155
+        Point towards: arbitrary
+        Position:
+          X: 0.009675557725131512
+          Y: -0.30245205760002136
+          Z: 0.259861022233963
+        Roll: 0.02170901745557785
+        Target Frame: rh_wrist
+        Yaw: 1.526594877243042
 Window Geometry:
   Displays:
     collapsed: false
@@ -1202,9 +582,9 @@ Window Geometry:
     collapsed: false
   Hide Left Dock: false
   Hide Right Dock: false
-  QMainWindow State: 000000ff00000000fd0000000100000000000002a3000003a2fc0200000008fb000000100044006900730070006c006100790073010000003b000003a2000000c700fffffffb0000000800480065006c00700000000342000000bb0000006e00fffffffb0000000a0056006900650077007300000003b0000000b0000000a000fffffffb0000000c00430061006d00650072006100000002ff000001610000000000000000fb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e006701000002330000019e0000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000000000000000fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e0067000000021e000001740000000000000000fb0000000a005600690065007700730000000311000000cc000000a000ffffff0000048f000003a200000001000000020000000100000002fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd0000000100000000000001af000003a2fc0200000008fb000000100044006900730070006c006100790073010000003b000003a2000000c700fffffffb0000000800480065006c00700000000342000000bb0000006e00fffffffb0000000a00560069006500770073000000020f000001ce000000a000fffffffb0000000c00430061006d00650072006100000002ff000001610000000000000000fb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e006701000002330000019e0000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000000000000000fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e0067000000021e000001740000000000000000fb0000000a005600690065007700730000000311000000cc000000a000ffffff00000583000003a200000001000000020000000100000002fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Views:
     collapsed: false
   Width: 1848
-  X: 1992
+  X: 72
   Y: 27
