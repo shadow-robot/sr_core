@@ -1,5 +1,5 @@
 /*
-* Copyright 2010 Shadow Robot Company Ltd.
+* Copyright 2010, 2024 Shadow Robot Company Ltd.
 *
 * This program is free software: you can redistribute it and/or modify it
 * under the terms of the GNU General Public License as published by the Free
@@ -81,9 +81,10 @@ namespace shadowrobot
     for (SRArticulatedRobot::JointsMap::iterator joint = sr_articulated_robot->joints_map.begin();
          joint != sr_articulated_robot->joints_map.end(); ++joint)
     {
+      std::string joint_name{ joint->first };
       controllers_sub.push_back(node.subscribe<std_msgs::Float64>(
               "sh_" + boost::to_lower_copy(joint->first + "_position_controller/command"), 2,
-              boost::bind(&SRSubscriber::cmd_callback, this, _1, joint->first)));
+              [this, joint_name](auto msg) { cmd_callback(msg, joint_name); }));
     }
   }
 
@@ -110,7 +111,7 @@ namespace shadowrobot
     }
   }
 
-  void SRSubscriber::cmd_callback(const std_msgs::Float64ConstPtr &msg, std::string &joint_name)
+  void SRSubscriber::cmd_callback(const std_msgs::Float64ConstPtr &msg, const std::string &joint_name)
   {
     // converting to degrees as the old can interface was expecting degrees
     sr_articulated_robot->sendupdate(joint_name, sr_math_utils::to_degrees(msg->data));

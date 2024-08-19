@@ -1,5 +1,5 @@
 /*
-* Copyright 2011 Shadow Robot Company Ltd.
+* Copyright 2011, 2024 Shadow Robot Company Ltd.
 *
 * This program is free software: you can redistribute it and/or modify it
 * under the terms of the GNU General Public License as published by the Free
@@ -140,8 +140,7 @@ namespace shadowrobot
           nh_tilde("~"), use_sendupdate(false)
   {
     action_server = boost::shared_ptr<JTAS>(new JTAS("/r_arm_controller/joint_trajectory_action",
-                                                     boost::bind(&JointTrajectoryActionController::execute_trajectory,
-                                                                 this, _1),
+                                                     [this](auto msg){ execute_trajectory(msg); },
                                                      false));
     std::vector<std::string> joint_labels;
 
